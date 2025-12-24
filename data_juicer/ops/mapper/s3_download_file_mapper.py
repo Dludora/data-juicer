@@ -4,13 +4,14 @@ import os
 import os.path as osp
 from typing import List, Union
 
-import boto3
-from botocore.exceptions import ClientError
 from loguru import logger
 
 from data_juicer.ops.base_op import OPERATORS, Mapper
 from data_juicer.utils.s3_utils import get_aws_credentials
+from data_juicer.utils.lazy_loader import LazyLoader
 
+boto3 = LazyLoader("boto3", globals(), "boto3")
+botocore = LazyLoader("botocore", globals(), "botocore")
 OP_NAME = "s3_download_file_mapper"
 
 
@@ -171,8 +172,15 @@ class S3DownloadFileMapper(Mapper):
                     os.makedirs(save_dir, exist_ok=True)
 
                 # Download to file
-                self.s3_client.download_file(bucket, key, save_path)
-                logger.debug(f"Downloaded S3 file: {s3_url} -> {save_path}")
+                try:
+                    tmp_path = save_path + ".tmp"
+                    self.s3_client.download_file(bucket, key, tmp_path)
+                    os.rename(tmp_path, save_path)
+                    logger.debug(f"Downloaded S3 file: {s3_url} -> {save_path}")
+                except Exception as e:
+                    if os.path.exists(tmp_path):
+                        os.remove(tmp_path)
+                    raise e
 
                 # Read content if needed
                 content = None
@@ -193,7 +201,7 @@ class S3DownloadFileMapper(Mapper):
             else:
                 return "success", None, None, None
 
-        except ClientError as e:
+        except botocore.exceptions.ClientError as e:
             error_msg = f"S3 download failed: {e}"
             logger.error(error_msg)
             return "failed", error_msg, None, None
