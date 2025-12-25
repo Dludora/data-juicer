@@ -129,8 +129,16 @@ class S3DownloadFileMapper(Mapper):
     def s3_client(self):
         """Lazy initialization of S3 client to avoid serialization issues with Ray."""
         if self._s3_client is None and self.s3_config is not None:
+            from botocore.config import Config
+
+            config = Config(
+                connect_timeout=self.timeout,
+                read_timeout=self.timeout,
+                retries={"max_attempts": 3},  # 可选：建议增加重试机制
+            )
+            self.s3_config["config"] = config
             self._s3_client = boto3.client("s3", **self.s3_config)
-            logger.debug("S3 client initialized (lazy)")
+            logger.debug(f"S3 client initialized with timeout={self.timeout}")
         return self._s3_client
 
     def _is_s3_url(self, url: str) -> bool:
