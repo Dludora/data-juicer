@@ -7,8 +7,8 @@ from typing import List, Union
 from loguru import logger
 
 from data_juicer.ops.base_op import OPERATORS, Mapper
-from data_juicer.utils.s3_utils import get_aws_credentials
 from data_juicer.utils.lazy_loader import LazyLoader
+from data_juicer.utils.s3_utils import get_aws_credentials
 
 boto3 = LazyLoader("boto3", globals(), "boto3")
 botocore = LazyLoader("botocore", globals(), "botocore")
