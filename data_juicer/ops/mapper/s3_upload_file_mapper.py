@@ -2,13 +2,14 @@ import asyncio
 import os
 from typing import List, Union
 
-import boto3
-from botocore.exceptions import ClientError
 from loguru import logger
 
 from data_juicer.ops.base_op import OPERATORS, Mapper
+from data_juicer.utils.lazy_loader import LazyLoader
 from data_juicer.utils.s3_utils import get_aws_credentials
 
+boto3 = LazyLoader("boto3", globals(), "boto3")
+botocore = LazyLoader("botocore", globals(), "botocore")
 OP_NAME = "s3_upload_file_mapper"
 
 
@@ -137,7 +138,7 @@ class S3UploadFileMapper(Mapper):
         try:
             self.s3_client.head_object(Bucket=self.s3_bucket, Key=s3_key)
             return True
-        except ClientError:
+        except botocore.exceptions.ClientError:
             return False
 
     def _upload_to_s3(self, local_path: str) -> tuple:
@@ -191,7 +192,7 @@ class S3UploadFileMapper(Mapper):
 
             return "success", s3_url, None
 
-        except ClientError as e:
+        except botocore.exceptions.ClientError as e:
             error_msg = f"S3 upload failed: {e}"
             logger.error(error_msg)
             return "failed", local_path, error_msg
@@ -222,7 +223,7 @@ class S3UploadFileMapper(Mapper):
         semaphore = asyncio.Semaphore(self.max_concurrent)
         tasks = [_upload_file(semaphore, idx, path) for idx, path in enumerate(paths)]
         results = await asyncio.gather(*tasks)
-        results = list(results)
+        results = list(results) if not isinstance(results, list) else results
         results.sort(key=lambda x: x[0])
 
         return results
