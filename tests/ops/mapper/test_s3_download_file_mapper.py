@@ -40,6 +40,11 @@ class S3DownloadFileMapperTest(DataJuicerTestCaseBase):
         self.img2_s3_url = "s3://test-bucket/img2.jpg"
         self.img2_content = load_image_byte(self.img2_path)
 
+        os.environ["AWS_ACCESS_KEY_ID"] = "fake_id"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "fake_key"
+        os.environ["AWS_REGION"] = "us-east-1"
+        os.environ["AWS_SESSION_TOKEN"] = "fake_token"
+
         # 5. Define default mock behaviors for the S3 client
         self._set_default_mock_behavior()
 
@@ -49,6 +54,10 @@ class S3DownloadFileMapperTest(DataJuicerTestCaseBase):
 
         if osp.exists(self.temp_dir):
             shutil.rmtree(self.temp_dir)
+        del os.environ["AWS_ACCESS_KEY_ID"]
+        del os.environ["AWS_SECRET_ACCESS_KEY"]
+        del os.environ["AWS_REGION"]
+        del os.environ["AWS_SESSION_TOKEN"]
         super().tearDown()
 
     def _set_default_mock_behavior(self):
@@ -118,11 +127,13 @@ class S3DownloadFileMapperTest(DataJuicerTestCaseBase):
         self.assertEqual(res_list[0]["image_bytes"], self.img1_content)
 
     def test_s3_resume_logic_adaptive(self):
-        """测试断点续传：验证自适应跳过逻辑，确保已存在文件不触发 S3 下载。"""
+        """Test Resume Download: Verify adaptive skip logic ensures
+        existing files do not trigger S3 downloads."""
         os.makedirs(self.temp_dir, exist_ok=True)
 
         local_file_1 = osp.join(self.temp_dir, "img1.png")
         dummy_content = b"existing_local_data"
+
         with open(local_file_1, "wb") as f:
             f.write(dummy_content)
 
@@ -136,16 +147,15 @@ class S3DownloadFileMapperTest(DataJuicerTestCaseBase):
             "save_dir": self.temp_dir,
             "download_field": "images",
             "resume_download": True,
-            "aws_access_key_id": "fake_id",
-            "aws_secret_access_key": "fake_key",
         }
 
         self._run_op_and_verify(ds_list, params)
 
+        # Verify point A: img1 should be skipped (exists)
         self.assertEqual(self.mock_s3.download_file.call_count, 1)
 
-        called_args = self.mock_s3.download_file.call_args[1]
-        self.assertIn("img2.png", called_args["Filename"])
+        # Verify point B: Ensure img2 was downloaded
+        self.assertTrue(osp.exists(osp.join(self.temp_dir, "img2.png")))
 
         # Verify point C: Ensure img1's content has not been altered (verify resume is effective)
         with open(local_file_1, "rb") as f:
@@ -188,8 +198,6 @@ class S3DownloadFileMapperTest(DataJuicerTestCaseBase):
         params = {
             "save_dir": self.temp_dir,
             "download_field": "images",
-            "aws_access_key_id": "fake_id",
-            "aws_secret_access_key": "fake_key",
         }
 
         res_list = self._run_op_and_verify(ds_list, params)
