@@ -376,6 +376,131 @@ class DefaultModelScopeDataLoadStrategy(DefaultDataLoadStrategy):
         raise NotImplementedError("ModelScope data load strategy is not implemented")
 
 
+@DataLoadStrategyRegistry.register("default", "remote", "hdfs")
+class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
+    """
+    data load strategy for HDFS datasets for LocalExecutor
+    Uses fsspec-compatible storage_options passed through huggingface datasets
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["path"],
+        "optional_fields": ["host", "port", "user", "kerb_ticket", "extra_conf"],
+        "field_types": {"path": str},
+        "custom_validators": {
+            "path": lambda x: x.startswith("hdfs://"),
+        },
+    }
+
+    def _build_storage_options(self):
+        storage_options = {}
+        if "host" in self.ds_config:
+            storage_options["host"] = self.ds_config["host"]
+        if "port" in self.ds_config:
+            storage_options["port"] = self.ds_config["port"]
+        if "user" in self.ds_config:
+            storage_options["user"] = self.ds_config["user"]
+        if "kerb_ticket" in self.ds_config:
+            storage_options["kerb_ticket"] = self.ds_config["kerb_ticket"]
+        if "extra_conf" in self.ds_config and isinstance(self.ds_config["extra_conf"], dict):
+            storage_options.update(self.ds_config["extra_conf"])
+        return storage_options
+
+    def load_data(self, **kwargs):
+        import datasets
+
+        from data_juicer.core.data import NestedDataset
+
+        path = self.ds_config["path"]
+        load_data_np = kwargs.get("num_proc", 1)
+
+        # Get config values with defaults
+        text_keys = getattr(self.cfg, "text_keys", ["text"])
+
+        # Determine file format from extension
+        file_extension = os.path.splitext(path)[1].lower()
+        file_extension_map = {
+            ".json": "json",
+            ".jsonl": "json",
+            ".txt": "text",
+            ".csv": "csv",
+            ".tsv": "csv",
+            ".parquet": "parquet",
+        }
+        data_format = file_extension_map.get(file_extension, "json")
+
+        storage_options = self._build_storage_options()
+
+        try:
+            ds = datasets.load_dataset(
+                data_format,
+                data_files=path,
+                storage_options=storage_options,
+                **kwargs,
+            )
+            # Handle DatasetDict (multiple splits) vs Dataset (single)
+            if isinstance(ds, datasets.DatasetDict):
+                ds = NestedDataset(datasets.concatenate_datasets([d for d in ds.values()]))
+            else:
+                ds = NestedDataset(ds)
+
+            # Unify format
+            ds = unify_format(ds, text_keys=text_keys, num_proc=load_data_np, global_cfg=self.cfg)
+            return ds
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load dataset from HDFS path {path}. "
+                f"Ensure fsspec hdfs dependencies and HDFS configs are available. "
+                f"Error: {str(e)}"
+            )
+
+
+@DataLoadStrategyRegistry.register("default", "remote", "iceberg")
+class DefaultIcebergDataLoadStrategy(DefaultDataLoadStrategy):
+    """
+    data load strategy for Iceberg tables for LocalExecutor
+    Relies on pyiceberg to read the table and converts to HF Dataset
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["table"],
+        "optional_fields": ["catalog", "catalog_props"],
+        "field_types": {"table": str},
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        import datasets
+
+        from data_juicer.core.data import NestedDataset
+
+        text_keys = getattr(self.cfg, "text_keys", ["text"])
+        table_id = self.ds_config["table"]
+        catalog_name = self.ds_config.get("catalog", None)
+        catalog_props = self.ds_config.get("catalog_props", {}) or {}
+
+        try:
+            from pyiceberg.catalog import load_catalog
+
+            catalog = load_catalog(catalog_name) if catalog_name else load_catalog()
+            table = (
+                catalog.load_table(table_id, properties=catalog_props)
+                if catalog_props
+                else catalog.load_table(table_id)
+            )
+            arrow_table = table.scan().to_arrow()
+            ds = datasets.Dataset.from_table(arrow_table)
+            ds = NestedDataset(ds)
+            ds = unify_format(ds, text_keys=text_keys, num_proc=kwargs.get("num_proc", 1), global_cfg=self.cfg)
+            return ds
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load Iceberg table {table_id}. "
+                f"Ensure pyiceberg is installed and catalog configs are correct. "
+                f"Error: {str(e)}"
+            )
+
+
 @DataLoadStrategyRegistry.register("default", "remote", "arxiv")
 class DefaultArxivDataLoadStrategy(DefaultDataLoadStrategy):
     """
@@ -539,6 +664,145 @@ class DefaultS3DataLoadStrategy(DefaultDataLoadStrategy):
             raise RuntimeError(
                 f"Failed to load dataset from S3 path {path}. "
                 f"Ensure s3fs is installed and your AWS credentials are configured. "
+                f"Error: {str(e)}"
+            )
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "hdfs")
+class RayHDFSDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for HDFS datasets for RayExecutor
+    Uses PyArrow HadoopFileSystem to read from HDFS
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["path"],
+        "optional_fields": ["host", "port", "user", "kerb_ticket", "extra_conf"],
+        "field_types": {"path": str},
+        "custom_validators": {
+            "path": lambda x: x.startswith("hdfs://"),
+        },
+    }
+
+    def _create_hdfs_fs(self):
+        import pyarrow.fs as fs
+
+        host = self.ds_config.get("host", None)
+        port = self.ds_config.get("port", None)
+        user = self.ds_config.get("user", None)
+        kerb_ticket = self.ds_config.get("kerb_ticket", None)
+        extra_conf = self.ds_config.get("extra_conf", None)
+        return fs.HadoopFileSystem(host=host, port=port, user=user, kerb_ticket=kerb_ticket, extra_conf=extra_conf)
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        path = self.ds_config["path"]
+        hdfs_fs = self._create_hdfs_fs()
+
+        logger.info(f"Loading dataset from HDFS: {path}")
+
+        file_extension_map = {
+            ".json": "json",
+            ".jsonl": "json",
+            ".txt": "text",
+            ".csv": "csv",
+            ".tsv": "csv",
+            ".parquet": "parquet",
+            ".npy": "numpy",
+            ".tfrecords": "tfrecords",
+            ".lance": "lance",
+        }
+
+        auto_detect = False
+        data_source = self.ds_config.get("source", None)
+        if data_source is None:
+            auto_detect = True
+        else:
+            suffix = os.path.splitext(data_source)[1]
+            if suffix in file_extension_map:
+                data_format = file_extension_map[suffix]
+            elif "." + data_source in file_extension_map:
+                data_format = file_extension_map["." + data_source]
+            else:
+                auto_detect = True
+
+        if auto_detect:
+            file_extension = os.path.splitext(path)[1]
+            data_format = file_extension_map.get(file_extension, "parquet")
+            logger.info(f"Auto-detected data format: {data_format}")
+        else:
+            logger.info(f"Using specified data format: {data_format}")
+
+        try:
+            import ray.data
+
+            if data_format in {"json", "jsonl"}:
+                from data_juicer.core.data.ray_dataset import read_json_stream
+
+                dataset = read_json_stream(path, filesystem=hdfs_fs)
+            elif data_format == "parquet":
+                dataset = ray.data.read_parquet(path, filesystem=hdfs_fs)
+            elif data_format == "csv":
+                dataset = ray.data.read_csv(path, filesystem=hdfs_fs)
+            elif data_format == "text":
+                dataset = ray.data.read_text(path, filesystem=hdfs_fs)
+            elif data_format == "numpy":
+                dataset = ray.data.read_numpy(path, filesystem=hdfs_fs)
+            elif data_format == "tfrecords":
+                dataset = ray.data.read_tfrecords(path, filesystem=hdfs_fs)
+            elif data_format == "lance":
+                dataset = ray.data.read_lance(path, filesystem=hdfs_fs)
+            else:
+                raise ValueError(f"Unsupported data format for HDFS: {data_format}")
+
+            return RayDataset(dataset, dataset_path=path, cfg=self.cfg)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load {data_format} data from HDFS path {path}. "
+                f"Ensure Hadoop native libs and configs are available. "
+                f"Error: {str(e)}"
+            )
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "iceberg")
+class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for Iceberg tables for RayExecutor
+    Uses ray.data.read_iceberg backed by pyiceberg
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["table"],
+        "optional_fields": ["catalog", "catalog_props"],
+        "field_types": {"table": str},
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        table_id = self.ds_config["table"]
+        catalog_name = self.ds_config.get("catalog", None)
+        catalog_props = self.ds_config.get("catalog_props", {}) or {}
+
+        read_kwargs = {}
+        if catalog_name:
+            read_kwargs["catalog"] = catalog_name
+        if catalog_props:
+            read_kwargs["catalog_properties"] = catalog_props
+
+        logger.info(f"Loading Iceberg table via Ray: {table_id}")
+
+        try:
+            import ray.data
+
+            dataset = ray.data.read_iceberg(table_id, **read_kwargs)
+            return RayDataset(dataset, dataset_path=table_id, cfg=self.cfg)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load Iceberg table {table_id} with Ray. "
+                f"Ensure pyiceberg and catalog configs are available. "
                 f"Error: {str(e)}"
             )
 
