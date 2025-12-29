@@ -392,33 +392,29 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
         },
     }
 
-    def _build_storage_options(self):
-        storage_options = {}
-        if "host" in self.ds_config:
-            storage_options["host"] = self.ds_config["host"]
-        if "port" in self.ds_config:
-            storage_options["port"] = self.ds_config["port"]
-        if "user" in self.ds_config:
-            storage_options["user"] = self.ds_config["user"]
-        if "kerb_ticket" in self.ds_config:
-            storage_options["kerb_ticket"] = self.ds_config["kerb_ticket"]
-        if "extra_conf" in self.ds_config and isinstance(self.ds_config["extra_conf"], dict):
-            storage_options.update(self.ds_config["extra_conf"])
-        return storage_options
+    def _create_hdfs_fs(self):
+        import pyarrow.fs as fs
+
+        host = self.ds_config.get("host", None)
+        port = self.ds_config.get("port", None)
+        if port is not None:
+            port = int(port)
+        user = self.ds_config.get("user", None)
+        kerb_ticket = self.ds_config.get("kerb_ticket", None)
+        extra_conf = self.ds_config.get("extra_conf", None)
+        return fs.HadoopFileSystem(host=host, port=port, user=user, kerb_ticket=kerb_ticket, extra_conf=extra_conf)
 
     def load_data(self, **kwargs):
-        import datasets
+        from urllib.parse import urlparse
 
         from data_juicer.core.data import NestedDataset
 
         path = self.ds_config["path"]
         load_data_np = kwargs.get("num_proc", 1)
-
-        # Get config values with defaults
         text_keys = getattr(self.cfg, "text_keys", ["text"])
 
-        # Determine file format from extension
-        file_extension = os.path.splitext(path)[1].lower()
+        file_path = urlparse(path).path
+        file_extension = os.path.splitext(file_path)[1].lower()
         file_extension_map = {
             ".json": "json",
             ".jsonl": "json",
@@ -429,74 +425,52 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
         }
         data_format = file_extension_map.get(file_extension, "json")
 
-        storage_options = self._build_storage_options()
+        hdfs = self._create_hdfs_fs()
 
         try:
-            ds = datasets.load_dataset(
-                data_format,
-                data_files=path,
-                storage_options=storage_options,
-                **kwargs,
-            )
-            # Handle DatasetDict (multiple splits) vs Dataset (single)
-            if isinstance(ds, datasets.DatasetDict):
-                ds = NestedDataset(datasets.concatenate_datasets([d for d in ds.values()]))
-            else:
-                ds = NestedDataset(ds)
+            with hdfs.open_input_stream(file_path) as stream:
 
-            # Unify format
-            ds = unify_format(ds, text_keys=text_keys, num_proc=load_data_np, global_cfg=self.cfg)
-            return ds
+                # Use ray.data functions directly with PyArrow filesystem support
+                # Ray's read functions support filesystem parameter via PyArrow
+                if data_format in {"json", "jsonl"}:
+                    # For JSON, we need to use read_json_stream with filesystem
+                    import pyarrow.json
+
+                    arrow_table = pyarrow.json.read_json(stream)
+                elif data_format == "parquet":
+                    from pyarrow.parquet import read_table
+
+                    arrow_table = read_table(stream)
+                elif data_format in {"csv", "tsv"}:
+                    import pyarrow.csv
+
+                    delimiter = "\t" if file_extension == ".tsv" else ","
+                    parse_opts = pyarrow.csv.ParseOptions(delimiter=delimiter)
+                    arrow_table = pyarrow.csv.read_csv(stream, parse_options=parse_opts)
+                elif data_format == "text":
+                    import pyarrow.csv
+
+                    read_opts = pyarrow.csv.ReadOptions(column_names=["text"])
+                    parse_opts = pyarrow.csv.ParseOptions(delimiter="\0", quote_char=False)
+                    arrow_table = pyarrow.csv.read_csv(stream, read_options=read_opts, parse_options=parse_opts)
+                else:
+                    raise ValueError(f"Unsupported data format for hdfs: {file_extension}")
+
+            dataset = datasets.Dataset(arrow_table)
+            dataset = NestedDataset(dataset)
+            dataset = unify_format(
+                dataset,
+                text_keys=text_keys,
+                num_proc=load_data_np,
+                global_cfg=self.cfg,
+            )
+
+            return dataset
+
         except Exception as e:
             raise RuntimeError(
-                f"Failed to load dataset from HDFS path {path}. "
-                f"Ensure fsspec hdfs dependencies and HDFS configs are available. "
-                f"Error: {str(e)}"
-            )
-
-
-@DataLoadStrategyRegistry.register("default", "remote", "iceberg")
-class DefaultIcebergDataLoadStrategy(DefaultDataLoadStrategy):
-    """
-    data load strategy for Iceberg tables for LocalExecutor
-    Relies on pyiceberg to read the table and converts to HF Dataset
-    """
-
-    CONFIG_VALIDATION_RULES = {
-        "required_fields": ["table"],
-        "optional_fields": ["catalog", "catalog_props"],
-        "field_types": {"table": str},
-        "custom_validators": {},
-    }
-
-    def load_data(self, **kwargs):
-        import datasets
-
-        from data_juicer.core.data import NestedDataset
-
-        text_keys = getattr(self.cfg, "text_keys", ["text"])
-        table_id = self.ds_config["table"]
-        catalog_name = self.ds_config.get("catalog", None)
-        catalog_props = self.ds_config.get("catalog_props", {}) or {}
-
-        try:
-            from pyiceberg.catalog import load_catalog
-
-            catalog = load_catalog(catalog_name) if catalog_name else load_catalog()
-            table = (
-                catalog.load_table(table_id, properties=catalog_props)
-                if catalog_props
-                else catalog.load_table(table_id)
-            )
-            arrow_table = table.scan().to_arrow()
-            ds = datasets.Dataset.from_table(arrow_table)
-            ds = NestedDataset(ds)
-            ds = unify_format(ds, text_keys=text_keys, num_proc=kwargs.get("num_proc", 1), global_cfg=self.cfg)
-            return ds
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to load Iceberg table {table_id}. "
-                f"Ensure pyiceberg is installed and catalog configs are correct. "
+                f"Failed to load {data_format} data from HDFS path {path}. "
+                f"Ensure Hadoop native libs and configs are available. "
                 f"Error: {str(e)}"
             )
 
@@ -689,12 +663,16 @@ class RayHDFSDataLoadStrategy(RayDataLoadStrategy):
 
         host = self.ds_config.get("host", None)
         port = self.ds_config.get("port", None)
+        if port is not None:
+            port = int(port)
         user = self.ds_config.get("user", None)
         kerb_ticket = self.ds_config.get("kerb_ticket", None)
         extra_conf = self.ds_config.get("extra_conf", None)
         return fs.HadoopFileSystem(host=host, port=port, user=user, kerb_ticket=kerb_ticket, extra_conf=extra_conf)
 
     def load_data(self, **kwargs):
+        from urllib.parse import urlparse
+
         from data_juicer.core.data.ray_dataset import RayDataset
 
         path = self.ds_config["path"]
@@ -702,6 +680,7 @@ class RayHDFSDataLoadStrategy(RayDataLoadStrategy):
 
         logger.info(f"Loading dataset from HDFS: {path}")
 
+        path = urlparse(path).path
         file_extension_map = {
             ".json": "json",
             ".jsonl": "json",
@@ -761,48 +740,6 @@ class RayHDFSDataLoadStrategy(RayDataLoadStrategy):
             raise RuntimeError(
                 f"Failed to load {data_format} data from HDFS path {path}. "
                 f"Ensure Hadoop native libs and configs are available. "
-                f"Error: {str(e)}"
-            )
-
-
-@DataLoadStrategyRegistry.register("ray", "remote", "iceberg")
-class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
-    """
-    data load strategy for Iceberg tables for RayExecutor
-    Uses ray.data.read_iceberg backed by pyiceberg
-    """
-
-    CONFIG_VALIDATION_RULES = {
-        "required_fields": ["table"],
-        "optional_fields": ["catalog", "catalog_props"],
-        "field_types": {"table": str},
-        "custom_validators": {},
-    }
-
-    def load_data(self, **kwargs):
-        from data_juicer.core.data.ray_dataset import RayDataset
-
-        table_id = self.ds_config["table"]
-        catalog_name = self.ds_config.get("catalog", None)
-        catalog_props = self.ds_config.get("catalog_props", {}) or {}
-
-        read_kwargs = {}
-        if catalog_name:
-            read_kwargs["catalog"] = catalog_name
-        if catalog_props:
-            read_kwargs["catalog_properties"] = catalog_props
-
-        logger.info(f"Loading Iceberg table via Ray: {table_id}")
-
-        try:
-            import ray.data
-
-            dataset = ray.data.read_iceberg(table_id, **read_kwargs)
-            return RayDataset(dataset, dataset_path=table_id, cfg=self.cfg)
-        except Exception as e:
-            raise RuntimeError(
-                f"Failed to load Iceberg table {table_id} with Ray. "
-                f"Ensure pyiceberg and catalog configs are available. "
                 f"Error: {str(e)}"
             )
 
