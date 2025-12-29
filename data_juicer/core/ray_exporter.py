@@ -82,6 +82,27 @@ class RayExporter:
             self.s3_filesystem = create_pyarrow_s3_filesystem(s3_config)
             logger.info(f"Detected S3 export path: {export_path}. S3 filesystem configured.")
 
+        # Check if export_path is HDFS and create filesystem if needed
+        self.hdfs_filesystem = None
+        if export_path.startswith("hdfs://"):
+            import pyarrow.fs as fs
+
+            hdfs_config = {}
+            # Extract HDFS config from export_extra_args
+            if "host" in self.export_extra_args:
+                hdfs_config["host"] = self.export_extra_args.pop("host")
+            if "port" in self.export_extra_args:
+                hdfs_config["port"] = int(self.export_extra_args.pop("port"))
+            if "user" in self.export_extra_args:
+                hdfs_config["user"] = self.export_extra_args.pop("user")
+            if "kerb_ticket" in self.export_extra_args:
+                hdfs_config["kerb_ticket"] = self.export_extra_args.pop("kerb_ticket")
+            if "extra_conf" in self.export_extra_args:
+                hdfs_config["extra_conf"] = self.export_extra_args.pop("extra_conf")
+
+            self.hdfs_filesystem = fs.HadoopFileSystem(**hdfs_config)
+            logger.info(f"Detected HDFS export path: {export_path}. HDFS filesystem configured.")
+
         self.max_shard_size_str = ""
 
         # get the string format of shard size
@@ -157,6 +178,9 @@ class RayExporter:
         # Add S3 filesystem if available
         if self.s3_filesystem is not None:
             export_kwargs["export_extra_args"]["filesystem"] = self.s3_filesystem
+        elif self.hdfs_filesystem is not None:
+            export_kwargs["export_extra_args"]["filesystem"] = self.hdfs_filesystem
+
         if self.export_shard_size > 0:
             # compute the min_rows_per_file for export methods
             dataset_nbytes = dataset.size_bytes()
