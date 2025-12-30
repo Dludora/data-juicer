@@ -17,11 +17,11 @@ dataset:
         catalog_kwargs:
             type: sql
             name: local
-            uri: sqlite:////root/Project/iceberg/test_catalog.db
-            warehouse: s3://iceberg-data/warehouse
-            s3.endpoint: http://10.29.240.39:9000
-            s3.access-key-id: admin
-            s3.secret-access-key: password 
+            uri: sqlite:///your.db
+            warehouse: s3://yourbucket/your_warehouse_path
+            s3.endpoint: http://yourhost:yourport
+            s3.access-key-id: your_access_key
+            s3.secret-access-key: your_secret_key
             s3.region: us-east-1
 
 # process schedule
