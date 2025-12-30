@@ -866,9 +866,9 @@ class DefaultIcebergDataLoadStrategy(DefaultDataLoadStrategy):
     """
 
     CONFIG_VALIDATION_RULES = {
-        "required_fields": ["table"],
-        "optional_fields": ["catalog", "catalog_props"],
-        "field_types": {"table": str},
+        "required_fields": ["table_identifier", "catalog_kwargs"],
+        "optional_fields": [],
+        "field_types": {"table_identifier": str, "catalog_kwargs": dict},
         "custom_validators": {},
     }
 
@@ -876,21 +876,17 @@ class DefaultIcebergDataLoadStrategy(DefaultDataLoadStrategy):
         from data_juicer.core.data import NestedDataset
 
         text_keys = getattr(self.cfg, "text_keys", ["text"])
-        table_id = self.ds_config["table"]
-        # Default catalog name is usually 'default' in pyiceberg if not specified
-        catalog_name = self.ds_config.get("catalog", "default")
-        catalog_props = self.ds_config.get("catalog_props", {}) or {}
-
+        table_identifier = self.ds_config["table_identifier"]
+        catalog_kwargs = self.ds_config.get("catalog_kwargs", {}) or {}
         try:
             from pyiceberg.catalog import load_catalog
 
             # Load catalog with optional properties (e.g., uri, credentials)
             # if props are empty, it relies on pyiceberg.yaml or env vars
-            catalog = load_catalog(catalog_name, **catalog_props)
+            catalog = load_catalog(**catalog_kwargs)
 
             # Load the table
-            table = catalog.load_table(table_id)
-
+            table = catalog.load_table(table_identifier)
             # Scan table to PyArrow Table
             # Note: For very large tables on LocalExecutor, this might consume memory
             # equivalent to the table size.
@@ -909,7 +905,9 @@ class DefaultIcebergDataLoadStrategy(DefaultDataLoadStrategy):
             )
         except Exception as e:
             raise RuntimeError(
-                f"Failed to load Iceberg table {table_id}. " f"Ensure catalog configs are correct. " f"Error: {str(e)}"
+                f"Failed to load Iceberg table {table_identifier}. "
+                f"Ensure catalog configs are correct. "
+                f"Error: {str(e)}"
             )
 
 
@@ -921,36 +919,30 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
     """
 
     CONFIG_VALIDATION_RULES = {
-        "required_fields": ["table"],
-        "optional_fields": ["catalog", "catalog_props"],
-        "field_types": {"table": str},
+        "required_fields": ["table_identifier", "catalog_kwargs"],
+        "optional_fields": [],
+        "field_types": {"table_identifier": str, "catalog_kwargs": dict},
         "custom_validators": {},
     }
 
     def load_data(self, **kwargs):
         from data_juicer.core.data.ray_dataset import RayDataset
 
-        table_id = self.ds_config["table"]
-        catalog_name = self.ds_config.get("catalog", "default")
-        catalog_props = self.ds_config.get("catalog_props", {}) or {}
+        table_identifier = self.ds_config["table_identifier"]
+        catalog_kwargs = self.ds_config.get("catalog_kwargs", {}) or {}
 
-        logger.info(f"Loading Iceberg table: {table_id} from catalog: {catalog_name}")
-
+        logger.info(f"Loading Iceberg table: {table_identifier} with catalog kwargs: {catalog_kwargs}")
         try:
             import ray.data
-            from pyiceberg.catalog import load_catalog
 
             # Ray's read_iceberg often requires the table input to be a PyIceberg table object
             # or arguments to construct one. To be most robust and support authentication,
             # we load the table via pyiceberg first, then pass it to Ray.
 
-            catalog = load_catalog(catalog_name, **catalog_props)
-            table = catalog.load_table(table_id)
-
             # Ray reads the table distributedly based on the snapshots
-            dataset = ray.data.read_iceberg(table)
+            dataset = ray.data.read_iceberg(table_identifier=table_identifier, catalog_kwargs=catalog_kwargs)
 
-            return RayDataset(dataset, dataset_path=table_id, cfg=self.cfg)
+            return RayDataset(dataset, dataset_path=table_identifier, cfg=self.cfg)
 
         except ImportError:
             raise RuntimeError(
@@ -958,4 +950,4 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
                 "to use Iceberg data load strategy in Ray."
             )
         except Exception as e:
-            raise RuntimeError(f"Failed to load Iceberg table {table_id} in Ray. " f"Error: {str(e)}")
+            raise RuntimeError(f"Failed to load Iceberg table {table_identifier} in Ray. " f"Error: {str(e)}")
