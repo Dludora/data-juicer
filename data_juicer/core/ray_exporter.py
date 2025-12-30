@@ -1,10 +1,11 @@
 import os
+import copy
 from functools import partial
 
 from loguru import logger
 
 from data_juicer.utils.constant import Fields, HashKeys
-from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str
+from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str, create_filesystem_from_args
 from data_juicer.utils.model_utils import filter_arguments
 from data_juicer.utils.webdataset_utils import reconstruct_custom_webdataset_format
 
@@ -22,6 +23,7 @@ class RayExporter:
         "tfrecords",
         "webdataset",
         "lance",
+        "iceberg",
         # 'images',
         # 'numpy',
     }
@@ -51,7 +53,13 @@ class RayExporter:
         self.export_shard_size = export_shard_size
         self.keep_stats_in_res_ds = keep_stats_in_res_ds
         self.keep_hashes_in_res_ds = keep_hashes_in_res_ds
-        self.export_format = self._get_export_format(export_path) if export_type is None else export_type
+
+        if export_type:
+            self.export_format = export_type
+        elif export_path:
+            self.export_format = self._get_export_format(export_path)
+        else:
+            raise ValueError("Either export_path or export_type should be provided.")
         if self.export_format not in self._SUPPORTED_FORMATS:
             raise NotImplementedError(
                 f'export data format "{self.export_format}" is not supported '
@@ -59,50 +67,13 @@ class RayExporter:
             )
         self.export_extra_args = kwargs if kwargs is not None else {}
 
-        # Check if export_path is S3 and create filesystem if needed
-        self.s3_filesystem = None
-        if export_path.startswith("s3://"):
-            # Extract AWS credentials from export_extra_args (if provided)
-            s3_config = {}
-            if "aws_access_key_id" in self.export_extra_args:
-                s3_config["aws_access_key_id"] = self.export_extra_args.pop("aws_access_key_id")
-            if "aws_secret_access_key" in self.export_extra_args:
-                s3_config["aws_secret_access_key"] = self.export_extra_args.pop("aws_secret_access_key")
-            if "aws_session_token" in self.export_extra_args:
-                s3_config["aws_session_token"] = self.export_extra_args.pop("aws_session_token")
-            if "aws_region" in self.export_extra_args:
-                s3_config["aws_region"] = self.export_extra_args.pop("aws_region")
-            if "endpoint_url" in self.export_extra_args:
-                s3_config["endpoint_url"] = self.export_extra_args.pop("endpoint_url")
+        fs_args = copy.deepcopy(self.export_extra_args)
+        self.fs = create_filesystem_from_args(export_path, fs_args)
+        self._check_shard_size()
 
-            # Create PyArrow S3FileSystem with credentials
-            # This matches the pattern used in RayS3DataLoadStrategy
-            from data_juicer.utils.s3_utils import create_pyarrow_s3_filesystem
-
-            self.s3_filesystem = create_pyarrow_s3_filesystem(s3_config)
-            logger.info(f"Detected S3 export path: {export_path}. S3 filesystem configured.")
-
-        # Check if export_path is HDFS and create filesystem if needed
-        self.hdfs_filesystem = None
-        if export_path.startswith("hdfs://"):
-            import pyarrow.fs as fs
-
-            hdfs_config = {}
-            # Extract HDFS config from export_extra_args
-            if "host" in self.export_extra_args:
-                hdfs_config["host"] = self.export_extra_args.pop("host")
-            if "port" in self.export_extra_args:
-                hdfs_config["port"] = int(self.export_extra_args.pop("port"))
-            if "user" in self.export_extra_args:
-                hdfs_config["user"] = self.export_extra_args.pop("user")
-            if "kerb_ticket" in self.export_extra_args:
-                hdfs_config["kerb_ticket"] = self.export_extra_args.pop("kerb_ticket")
-            if "extra_conf" in self.export_extra_args:
-                hdfs_config["extra_conf"] = self.export_extra_args.pop("extra_conf")
-
-            self.hdfs_filesystem = fs.HadoopFileSystem(**hdfs_config)
-            logger.info(f"Detected HDFS export path: {export_path}. HDFS filesystem configured.")
-
+    def _check_shard_size(self):
+        if self.export_shard_size == 0:
+            return
         self.max_shard_size_str = ""
 
         # get the string format of shard size
@@ -170,25 +141,30 @@ class RayExporter:
         if len(removed_fields):
             dataset = dataset.drop_columns(removed_fields)
 
-        export_method = RayExporter._router()[self.export_format]
+        router = self._router()
+        if self.export_format in router:
+            export_method = router[self.export_format]
+        else:
+            export_method = RayExporter.write_others
+
         export_kwargs = {
             "export_extra_args": self.export_extra_args,
             "export_format": self.export_format,
         }
-        # Add S3 filesystem if available
-        if self.s3_filesystem is not None:
-            export_kwargs["export_extra_args"]["filesystem"] = self.s3_filesystem
-        elif self.hdfs_filesystem is not None:
-            export_kwargs["export_extra_args"]["filesystem"] = self.hdfs_filesystem
+        # Add filesystem if available
+        if self.fs is not None:
+            export_kwargs["export_extra_args"]["filesystem"] = self.fs
 
         if self.export_shard_size > 0:
-            # compute the min_rows_per_file for export methods
             dataset_nbytes = dataset.size_bytes()
             dataset_num_rows = dataset.count()
-            num_shards = int(dataset_nbytes / self.export_shard_size) + 1
-            num_shards = min(num_shards, dataset_num_rows)
-            rows_per_file = int(dataset_num_rows / num_shards)
-            export_kwargs["export_extra_args"]["min_rows_per_file"] = rows_per_file
+
+            if dataset_num_rows > 0:
+                num_shards = int(dataset_nbytes / self.export_shard_size) + 1
+                num_shards = min(num_shards, dataset_num_rows)
+                rows_per_file = max(1, int(dataset_num_rows / num_shards))
+                export_kwargs["export_extra_args"]["min_rows_per_file"] = rows_per_file
+
         return export_method(dataset, export_path, **export_kwargs)
 
     def export(self, dataset, columns=None):
@@ -260,7 +236,10 @@ class RayExporter:
         # Add S3 filesystem if available
         if "filesystem" in export_extra_args:
             filtered_kwargs["filesystem"] = export_extra_args["filesystem"]
-        return write_method(export_path, **filtered_kwargs)
+        if export_path:
+            return write_method(export_path, **filtered_kwargs)
+        else:
+            return write_method(**filtered_kwargs)
 
     # suffix to export method
     @staticmethod
