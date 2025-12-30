@@ -2,22 +2,27 @@
 
 # global parameters
 project_name: 'demo'
-
+executor_type: ray
+ray_address: local
 
 np: 1  # number of subprocess to process your dataset
 
-export_path: './outputs/demo/demo-processed.jsonl'
+export_path: './outputs/demo/'
 
 dataset:
     configs:
       - type: remote
         source: iceberg
-        catalog: local
-        table: "default.test_table"
-        catalog_props:
+        table_identifier: default.test
+        catalog_kwargs:
             type: sql
-            uri: sqlite:////root/test_catalog.db
-            warehouse: file:///root/tmp/iceberg_warehouse
+            name: local
+            uri: sqlite:////root/Project/iceberg/test_catalog.db
+            warehouse: s3://iceberg-data/warehouse
+            s3.endpoint: http://10.29.240.39:9000
+            s3.access-key-id: admin
+            s3.secret-access-key: password 
+            s3.region: us-east-1
 
 # process schedule
 # a list of several process operators with their arguments
