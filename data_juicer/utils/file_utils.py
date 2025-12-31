@@ -25,33 +25,6 @@ class Sizes:
     TiB = 2**40  # 1024*1024*1024*1024
 
 
-def create_filesystem_from_args(path: str, args: Dict[str, Any]):
-    """
-    Create a PyArrow FileSystem based on the path prefix and parameters.
-    Automatically extract relevant credentials from args and remove them from args (using pop) to avoid polluting subsequent parameters.
-    """
-    fs = None
-    if path.startswith("s3://"):
-        from data_juicer.utils.s3_utils import create_pyarrow_s3_filesystem
-
-        s3_keys = ["aws_access_key_id", "aws_secret_access_key", "aws_session_token", "aws_region", "endpoint_url"]
-        s3_conf = {k: args.pop(k) for k in s3_keys if k in args}
-        fs = create_pyarrow_s3_filesystem(s3_conf)
-        logger.info(f"Detected S3 export path: {path}. S3 filesystem configured.")
-
-    elif path.startswith("hdfs://"):
-        import pyarrow.fs as pa_fs
-
-        hdfs_keys = ["host", "port", "user", "kerb_ticket", "extra_conf"]
-        hdfs_conf = {k: args.pop(k) for k in hdfs_keys if k in args}
-        if "port" in hdfs_conf:
-            hdfs_conf["port"] = int(hdfs_conf["port"])
-        fs = pa_fs.HadoopFileSystem(**hdfs_conf)
-        logger.info(f"Detected HDFS export path: {path}. HDFS filesystem configured.")
-
-    return fs
-
-
 def byte_size_to_size_str(byte_size: int):
     # get the string format of shard size
     if byte_size // Sizes.TiB:
