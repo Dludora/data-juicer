@@ -931,16 +931,31 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
         table_identifier = self.ds_config["table_identifier"]
         catalog_kwargs = self.ds_config.get("catalog_kwargs", {}) or {}
 
-        logger.info(f"Loading Iceberg table: {table_identifier} with catalog kwargs: {catalog_kwargs}")
+        logger.info(f"Loading Iceberg table.....")
         try:
             import ray.data
 
-            # Ray's read_iceberg often requires the table input to be a PyIceberg table object
-            # or arguments to construct one. To be most robust and support authentication,
-            # we load the table via pyiceberg first, then pass it to Ray.
+            # from data_juicer.utils.s3_utils import get_aws_credentials
+            from data_juicer.utils.model_utils import filter_arguments
+
+            # s3_config = {}
+            # if "s3.access_key_id" in catalog_kwargs:
+            #     s3_config["aws_access_key_id"] = catalog_kwargs.pop("s3.access_key_id")
+            # if "s3.secret_access_key" in catalog_kwargs:
+            #     s3_config["aws_secret_access_key"] = catalog_kwargs.pop("s3.secret_access_key")
+            # if "s3.session_token" in catalog_kwargs:
+            #     s3_config["aws_session_token"] = catalog_kwargs.pop("s3.session_token")
+            # if "s3.region" in catalog_kwargs:
+            #     s3_config["aws_region"] = catalog_kwargs.pop("s3.region")
+            # if "s3.endpoint" in catalog_kwargs:
+            #     s3_config["endpoint_url"] = catalog_kwargs.pop("s3.endpoint")
+
+            # aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region = get_aws_credentials(s3_config)
+
+            read_config = filter_arguments(ray.data.read_iceberg, self.ds_config)
 
             # Ray reads the table distributedly based on the snapshots
-            dataset = ray.data.read_iceberg(table_identifier=table_identifier, catalog_kwargs=catalog_kwargs)
+            dataset = ray.data.read_iceberg(**read_config)
 
             return RayDataset(dataset, dataset_path=table_identifier, cfg=self.cfg)
 
@@ -951,3 +966,81 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
             )
         except Exception as e:
             raise RuntimeError(f"Failed to load Iceberg table {table_identifier} in Ray. " f"Error: {str(e)}")
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "delta")
+class RayDeltaDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for Delta Lake tables for RayExecutor
+    Uses ray.data.read_delta
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["path"],
+        "optional_fields": [
+            "aws_access_key_id",
+            "aws_secret_access_key",
+            "aws_session_token",
+            "aws_region",
+            "endpoint_url",
+        ],
+        "field_types": {"path": str},
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        table_path = self.ds_config["path"]
+
+        logger.info(f"Loading Delta Lake table from path: {table_path}")
+        try:
+            import ray.data
+            from data_juicer.utils.model_utils import filter_arguments
+
+            read_config = filter_arguments(ray.data.read_delta, self.ds_config)
+
+            dataset = ray.data.read_delta(
+                **read_config,
+            )
+
+            return RayDataset(dataset, dataset_path=table_path, cfg=self.cfg)
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to load Delta Lake table from path {table_path} in Ray. " f"Error: {str(e)}")
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "hudi")
+class RayHudiDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for Hudi tables for RayExecutor
+    Uses ray.data.read_hudi
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["table_uri"],
+        "optional_fields": [],
+        "field_types": {"path": str},
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        table_uri = self.ds_config["table_uri"]
+
+        logger.info(f"Loading Hudi table from path: {table_uri}")
+        try:
+            import ray.data
+            from data_juicer.utils.model_utils import filter_arguments
+
+            read_config = filter_arguments(ray.data.read_hudi, self.ds_config)
+
+            dataset = ray.data.read_hudi(
+                **read_config,
+            )
+
+            return RayDataset(dataset, dataset_path=table_uri, cfg=self.cfg)
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to load Hudi table from path {table_uri} in Ray. " f"Error: {str(e)}")
