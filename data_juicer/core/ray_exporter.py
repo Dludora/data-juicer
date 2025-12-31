@@ -241,6 +241,43 @@ class RayExporter:
         else:
             return write_method(**filtered_kwargs)
 
+    def write_iceberg(dataset, export_path, **kwargs):
+        """
+        Export method for iceberg target tables.
+        It will create the table if it does not exist.
+        """
+        from pyiceberg.catalog import load_catalog
+        from pyiceberg.exceptions import NoSuchTableError, NoSuchNamespaceError
+        from pyiceberg.io.pyarrow import pyarrow_to_schema
+
+        export_extra_args = kwargs.get("export_extra_args", {})
+        catalog_kwargs = export_extra_args.get("catalog_kwargs", {})
+        table_identifier = export_extra_args.get("table_identifier", export_path).split(os.sep)[-1]
+
+        try:
+            catalog = load_catalog(**catalog_kwargs)
+            try:
+                catalog.load_table(table_identifier)
+                logger.info(f"Iceberg table {table_identifier} exists.")
+            except NoSuchTableError:
+                logger.info(f"Iceberg table {table_identifier} not found.")
+        except Exception as e:
+            logger.error(f"Failed to check Iceberg table: {e}, export to {export_path}...")
+            filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
+            return dataset.write_json(export_path, filtered_kwargs)
+
+        filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
+        return dataset.write_iceberg(table_identifier, **filtered_kwargs)
+
+    @staticmethod
+    def _router():
+        return {
+            "jsonl": RayExporter.write_json,
+            "json": RayExporter.write_json,
+            "webdataset": RayExporter.write_webdataset,
+            "iceberg": RayExporter.write_iceberg,  # 新增这一行
+        }
+
     # suffix to export method
     @staticmethod
     def _router():
@@ -253,8 +290,5 @@ class RayExporter:
             "jsonl": RayExporter.write_json,
             "json": RayExporter.write_json,
             "webdataset": RayExporter.write_webdataset,
-            "parquet": RayExporter.write_others,
-            "csv": RayExporter.write_others,
-            "tfrecords": RayExporter.write_others,
-            "lance": RayExporter.write_others,
+            "iceberg": RayExporter.write_iceberg,
         }
