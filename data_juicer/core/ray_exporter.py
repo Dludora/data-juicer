@@ -5,7 +5,8 @@ from functools import partial
 from loguru import logger
 
 from data_juicer.utils.constant import Fields, HashKeys
-from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str, create_filesystem_from_args
+from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str
+from data_juicer.utils.s3_utils import create_filesystem_from_args
 from data_juicer.utils.model_utils import filter_arguments
 from data_juicer.utils.webdataset_utils import reconstruct_custom_webdataset_format
 
@@ -247,24 +248,23 @@ class RayExporter:
         It will create the table if it does not exist.
         """
         from pyiceberg.catalog import load_catalog
-        from pyiceberg.exceptions import NoSuchTableError, NoSuchNamespaceError
-        from pyiceberg.io.pyarrow import pyarrow_to_schema
+        from pyiceberg.exceptions import NoSuchTableError
 
         export_extra_args = kwargs.get("export_extra_args", {})
         catalog_kwargs = export_extra_args.get("catalog_kwargs", {})
-        table_identifier = export_extra_args.get("table_identifier", export_path).split(os.sep)[-1]
+        table_identifier = export_extra_args.get("table_identifier", export_path)
 
+        catalog = load_catalog(**catalog_kwargs)
         try:
-            catalog = load_catalog(**catalog_kwargs)
-            try:
-                catalog.load_table(table_identifier)
-                logger.info(f"Iceberg table {table_identifier} exists.")
-            except NoSuchTableError:
-                logger.info(f"Iceberg table {table_identifier} not found.")
+            catalog.load_table(table_identifier)
+            logger.info(f"Iceberg table {table_identifier} exists.")
+        except NoSuchTableError:
+            logger.info(f"Iceberg table {table_identifier} not found. exporting to json...")
+
+            filtered_kwargs = filter_arguments(dataset.write_json, export_extra_args)
+            return dataset.write_json(export_path)
         except Exception as e:
             logger.error(f"Failed to check Iceberg table: {e}, export to {export_path}...")
-            filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
-            return dataset.write_json(export_path, filtered_kwargs)
 
         filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
         return dataset.write_iceberg(table_identifier, **filtered_kwargs)
