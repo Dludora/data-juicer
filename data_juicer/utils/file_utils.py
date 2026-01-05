@@ -7,12 +7,11 @@ import shutil
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import AsyncGenerator, Dict, List, Optional, Union, Any
+from typing import AsyncGenerator, Dict, List, Optional, Union
 
 import aiohttp
 import pandas as pd
 from datasets.utils.extract import ZstdExtractor as Extractor
-from loguru import logger
 
 from data_juicer.utils.common_utils import dict_to_hash
 from data_juicer.utils.constant import DEFAULT_PREFIX, Fields
