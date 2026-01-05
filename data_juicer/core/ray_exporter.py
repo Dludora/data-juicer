@@ -242,10 +242,11 @@ class RayExporter:
         else:
             return write_method(**filtered_kwargs)
 
+    @staticmethod
     def write_iceberg(dataset, export_path, **kwargs):
         """
         Export method for iceberg target tables.
-        It will create the table if it does not exist.
+        Checks for table existence/connectivity. If check fails, safe fall-back to JSON.
         """
         from pyiceberg.catalog import load_catalog
         from pyiceberg.exceptions import NoSuchTableError
@@ -254,20 +255,43 @@ class RayExporter:
         catalog_kwargs = export_extra_args.get("catalog_kwargs", {})
         table_identifier = export_extra_args.get("table_identifier", export_path)
 
-        catalog = load_catalog(**catalog_kwargs)
+        use_iceberg = False
+
         try:
+            catalog = load_catalog(**catalog_kwargs)
             catalog.load_table(table_identifier)
-            logger.info(f"Iceberg table {table_identifier} exists.")
-        except NoSuchTableError:
-            logger.info(f"Iceberg table {table_identifier} not found. exporting to json...")
+            logger.info(f"Iceberg table {table_identifier} exists. Writing to Iceberg.")
+            use_iceberg = True
 
-            filtered_kwargs = filter_arguments(dataset.write_json, export_extra_args)
-            return dataset.write_json(export_path)
+        except NoSuchTableError as e:
+            logger.warning(
+                f"Iceberg target unavailable ({e.__class__.__name__}). Fallback to exporting to {export_path}..."
+            )
         except Exception as e:
-            logger.error(f"Failed to check Iceberg table: {e}, export to {export_path}...")
+            logger.error(f"Unexpected error checking Iceberg: {e}. Fallback to exporting to {export_path}...")
 
-        filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
-        return dataset.write_iceberg(table_identifier, **filtered_kwargs)
+        if use_iceberg:
+            try:
+                filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
+                return dataset.write_iceberg(table_identifier, **filtered_kwargs)
+            except Exception as e:
+                logger.error(f"Write to Iceberg failed during execution: {e}. Fallback to json...")
+
+        suffix = os.path.splitext(export_path)[-1].strip(".").lower()
+        if not suffix:
+            suffix = "jsonl"
+            logger.warning(f"No suffix found in {export_path}, using default fallback: {suffix}")
+
+        logger.info(f"Falling back to file export. Format: [{suffix}], Path: [{export_path}]")
+
+        fallback_kwargs = {}
+        if "filesystem" in export_extra_args:
+            fallback_kwargs["filesystem"] = export_extra_args["filesystem"]
+        if suffix in ["json", "jsonl"]:
+            return RayExporter.write_json(dataset, export_path, **fallback_kwargs)
+        else:
+            fallback_kwargs["export_format"] = suffix
+            return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
 
     @staticmethod
     def _router():
