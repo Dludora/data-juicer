@@ -118,7 +118,7 @@ distributed = [
     "ray[default]>=2.51.0",  # distributed computing
     "pyspark==3.5.5",  # distributed data processing
     "s3fs",  # S3 filesystem support for cloud storage
-    "pyiceberg[pyarrow]"
+    "pyiceberg[pyarrow]",
     "bitarray", # efficient arrays of booleans
 ]
 
