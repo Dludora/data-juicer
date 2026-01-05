@@ -6,7 +6,7 @@ s3fs (default executor) and PyArrow (Ray executor) backends.
 """
 
 import os
-from typing import Dict, Tuple, Any
+from typing import Any, Dict, Tuple
 
 import pyarrow.fs
 from loguru import logger

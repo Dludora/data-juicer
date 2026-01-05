@@ -929,9 +929,8 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
         from data_juicer.core.data.ray_dataset import RayDataset
 
         table_identifier = self.ds_config["table_identifier"]
-        catalog_kwargs = self.ds_config.get("catalog_kwargs", {}) or {}
 
-        logger.info(f"Loading Iceberg table.....")
+        logger.info("Loading Iceberg table.....")
         try:
             import ray.data
 
@@ -949,7 +948,6 @@ class RayIcebergDataLoadStrategy(RayDataLoadStrategy):
             #     s3_config["aws_region"] = catalog_kwargs.pop("s3.region")
             # if "s3.endpoint" in catalog_kwargs:
             #     s3_config["endpoint_url"] = catalog_kwargs.pop("s3.endpoint")
-
             # aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region = get_aws_credentials(s3_config)
 
             read_config = filter_arguments(ray.data.read_iceberg, self.ds_config)
@@ -996,6 +994,7 @@ class RayDeltaDataLoadStrategy(RayDataLoadStrategy):
         logger.info(f"Loading Delta Lake table from path: {table_path}")
         try:
             import ray.data
+
             from data_juicer.utils.model_utils import filter_arguments
 
             read_config = filter_arguments(ray.data.read_delta, self.ds_config)
@@ -1032,6 +1031,7 @@ class RayHudiDataLoadStrategy(RayDataLoadStrategy):
         logger.info(f"Loading Hudi table from path: {table_uri}")
         try:
             import ray.data
+
             from data_juicer.utils.model_utils import filter_arguments
 
             read_config = filter_arguments(ray.data.read_hudi, self.ds_config)

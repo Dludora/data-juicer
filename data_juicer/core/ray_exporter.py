@@ -1,13 +1,13 @@
-import os
 import copy
+import os
 from functools import partial
 
 from loguru import logger
 
 from data_juicer.utils.constant import Fields, HashKeys
 from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str
-from data_juicer.utils.s3_utils import create_filesystem_from_args
 from data_juicer.utils.model_utils import filter_arguments
+from data_juicer.utils.s3_utils import create_filesystem_from_args
 from data_juicer.utils.webdataset_utils import reconstruct_custom_webdataset_format
 
 
@@ -292,15 +292,6 @@ class RayExporter:
         else:
             fallback_kwargs["export_format"] = suffix
             return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
-
-    @staticmethod
-    def _router():
-        return {
-            "jsonl": RayExporter.write_json,
-            "json": RayExporter.write_json,
-            "webdataset": RayExporter.write_webdataset,
-            "iceberg": RayExporter.write_iceberg,  # 新增这一行
-        }
 
     # suffix to export method
     @staticmethod
