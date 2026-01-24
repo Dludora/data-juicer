@@ -12,6 +12,7 @@ from ray.data._internal.util import get_compute_strategy
 
 from data_juicer.core.data import DJDataset
 from data_juicer.core.data.schema import Schema
+from data_juicer.core.tracer import should_trace_op
 from data_juicer.ops import Deduplicator, Filter, Mapper, Pipeline
 from data_juicer.ops.base_op import DEFAULT_BATCH_SIZE, TAGGING_OPS
 from data_juicer.utils.constant import Fields
@@ -88,8 +89,20 @@ def filter_batch(batch, filter_func):
 
 
 class RayDataset(DJDataset):
-    def __init__(self, dataset: ray.data.Dataset, dataset_path: str = None, cfg: Optional[Namespace] = None) -> None:
+    def __init__(
+        self,
+        dataset: ray.data.Dataset,
+        dataset_path: str = None,
+        cfg: Optional[Namespace] = None,
+        auto_op_parallelism=True,
+    ) -> None:
         self.data = preprocess_dataset(dataset, dataset_path, cfg)
+
+        # if auto_op_parallelism is set in both args and cfg, cfg takes precedence
+        if cfg and cfg.get("auto_op_parallelism") is not None:
+            self._auto_proc = cfg.get("auto_op_parallelism")
+        else:
+            self._auto_proc = auto_op_parallelism
 
     def schema(self) -> Schema:
         """Get dataset schema.
@@ -148,17 +161,18 @@ class RayDataset(DJDataset):
 
         from data_juicer.utils.process_utils import calculate_ray_np
 
-        calculate_ray_np(operators)
+        if self._auto_proc:
+            calculate_ray_np(operators)
 
         # Cache columns once at start to avoid breaking pipeline with repeated columns() calls
         # Ray's columns() internally does limit(1) which forces execution and breaks streaming
         cached_columns = set(self.data.columns())
 
         for op in operators:
-            cached_columns = self._run_single_op(op, cached_columns)
+            cached_columns = self._run_single_op(op, cached_columns, tracer=tracer)
         return self
 
-    def _run_single_op(self, op, cached_columns=None):
+    def _run_single_op(self, op, cached_columns=None, tracer=None):
         # Use cached columns to avoid calling self.data.columns() which breaks pipeline
         if cached_columns is None:
             cached_columns = set(self.data.columns())
@@ -178,33 +192,45 @@ class RayDataset(DJDataset):
         try:
             batch_size = getattr(op, "batch_size", 1) if op.is_batched_op() else 1
             if isinstance(op, Mapper):
-                if op.use_ray_actor():
-                    op_kwargs = op._op_cfg[op._name]
-                    compute = get_compute_strategy(op.__class__, concurrency=op.num_proc)
-                    self.data = self.data.map_batches(
-                        op.__class__,
-                        fn_args=None,
-                        fn_kwargs=None,
-                        fn_constructor_args=None,
-                        fn_constructor_kwargs=op_kwargs,
-                        batch_size=batch_size,
-                        num_cpus=op.num_cpus,
-                        num_gpus=op.num_gpus,
-                        compute=compute,
-                        batch_format="pyarrow",
-                        runtime_env=op.runtime_env,
-                    )
-                else:
-                    compute = get_compute_strategy(op.process, concurrency=op.num_proc)
-                    self.data = self.data.map_batches(
-                        op.process,
-                        batch_size=batch_size,
-                        batch_format="pyarrow",
-                        num_cpus=op.num_cpus,
-                        num_gpus=op.num_gpus,
-                        compute=compute,
-                        runtime_env=op.runtime_env,
-                    )
+                # Wrap process method with tracer for sample-level collection
+                original_process = None
+                if tracer and should_trace_op(tracer, op._name):
+                    from data_juicer.ops.base_op import wrap_mapper_with_tracer
+
+                    original_process = op.process
+                    op.process = wrap_mapper_with_tracer(original_process, op._name, op.text_key, tracer, True)
+
+                try:
+                    if op.use_ray_actor():
+                        compute = get_compute_strategy(op.__class__, concurrency=op.num_proc)
+                        self.data = self.data.map_batches(
+                            op.__class__,
+                            fn_args=None,
+                            fn_kwargs=None,
+                            fn_constructor_args=op._init_args,
+                            fn_constructor_kwargs=op._init_kwargs,
+                            batch_size=batch_size,
+                            num_cpus=op.num_cpus,
+                            num_gpus=op.num_gpus,
+                            compute=compute,
+                            batch_format="pyarrow",
+                            runtime_env=op.runtime_env,
+                        )
+                    else:
+                        compute = get_compute_strategy(op.process, concurrency=op.num_proc)
+                        self.data = self.data.map_batches(
+                            op.process,
+                            batch_size=batch_size,
+                            batch_format="pyarrow",
+                            num_cpus=op.num_cpus,
+                            num_gpus=op.num_gpus,
+                            compute=compute,
+                            runtime_env=op.runtime_env,
+                        )
+                finally:
+                    # Restore original process method
+                    if tracer and should_trace_op(tracer, op._name) and original_process:
+                        op.process = original_process
             elif isinstance(op, Filter):
                 # Use cached_columns instead of self.data.columns() to avoid breaking pipeline
                 if Fields.stats not in cached_columns:
@@ -219,14 +245,13 @@ class RayDataset(DJDataset):
                     )
                     cached_columns.add(Fields.stats)
                 if op.use_ray_actor():
-                    op_kwargs = op._op_cfg[op._name]
                     compute = get_compute_strategy(op.__class__, concurrency=op.num_proc)
                     self.data = self.data.map_batches(
                         op.__class__,
                         fn_args=None,
                         fn_kwargs=None,
-                        fn_constructor_args=None,
-                        fn_constructor_kwargs=op_kwargs,
+                        fn_constructor_args=op._init_args,
+                        fn_constructor_kwargs=op._init_kwargs,
                         batch_size=batch_size,
                         num_cpus=op.num_cpus,
                         num_gpus=op.num_gpus,
@@ -247,26 +272,39 @@ class RayDataset(DJDataset):
                     )
                 if op.stats_export_path is not None:
                     self.data.write_json(op.stats_export_path, force_ascii=False)
-                if op.is_batched_op():
-                    # The core computation have been done in compute_stats,
-                    # and the filter process only performs simple filtering.
-                    # cpu and parallelism are not set here
-                    self.data = self.data.map_batches(
-                        partial(filter_batch, filter_func=op.process),
-                        batch_format="pyarrow",
-                        zero_copy_batch=True,
-                        batch_size=DEFAULT_BATCH_SIZE,
-                        runtime_env=op.runtime_env,
-                    )
-                else:
-                    self.data = self.data.filter(
-                        op.process,
-                        runtime_env=op.runtime_env,
-                    )
+                # Wrap process method with tracer for sample-level collection
+                original_process = None
+                if tracer and should_trace_op(tracer, op._name):
+                    from data_juicer.ops.base_op import wrap_filter_with_tracer
+
+                    original_process = op.process
+                    op.process = wrap_filter_with_tracer(original_process, op._name, tracer, op.is_batched_op())
+
+                try:
+                    if op.is_batched_op():
+                        # The core computation have been done in compute_stats,
+                        # and the filter process only performs simple filtering.
+                        # cpu and parallelism are not set here
+                        self.data = self.data.map_batches(
+                            partial(filter_batch, filter_func=op.process),
+                            batch_format="pyarrow",
+                            zero_copy_batch=True,
+                            batch_size=DEFAULT_BATCH_SIZE,
+                            runtime_env=op.runtime_env,
+                        )
+                    else:
+                        self.data = self.data.filter(
+                            op.process,
+                            runtime_env=op.runtime_env,
+                        )
+                finally:
+                    # Restore original process method
+                    if tracer and should_trace_op(tracer, op._name) and original_process:
+                        op.process = original_process
             elif isinstance(op, (Deduplicator, Pipeline)):
                 self.data = op.run(self.data)
             else:
-                logger.error("Ray executor only support Filter, Mapper Deduplicator and Pipeline OPs for now")
+                logger.error("Ray executor only support Filter, Mapper, Deduplicator and Pipeline OPs for now")
                 raise NotImplementedError
         except:  # noqa: E722
             logger.error(f"An error occurred during Op [{op._name}].")
