@@ -34,17 +34,19 @@ def get_abs_path(path, dataset_dir):
 def convert_to_absolute_paths(samples: pyarrow.Table, dataset_dir, path_keys):
     for key in path_keys:
         col_idx = samples.schema.get_field_index(key)
-        col = samples.column(col_idx)
-        paths = col.to_pylist()
-        new_paths = []
-        for path in paths:
-            if isinstance(path, str):
-                new_paths.append(get_abs_path(path, dataset_dir))
-            elif isinstance(path, list):
-                new_paths.append([get_abs_path(p, dataset_dir) for p in path])
-            else:
-                new_paths.append(path)
-        samples = samples.set_column(col_idx, key, pyarrow.array(new_paths))
+        cols = samples.column(col_idx)
+
+        def _process_paths():
+            for col in cols:
+                path = col.as_py()
+                if isinstance(path, str):
+                    yield get_abs_path(path, dataset_dir)
+                elif isinstance(path, list):
+                    yield [get_abs_path(p, dataset_dir) for p in path]
+                else:
+                    yield path
+
+        samples = samples.set_column(col_idx, key, pyarrow.array(_process_paths()))
     return samples
 
 
