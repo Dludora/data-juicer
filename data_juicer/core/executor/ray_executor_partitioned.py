@@ -26,6 +26,7 @@ from data_juicer.core.data.ray_dataset import RayDataset
 from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin, EventType
+from data_juicer.core.lineage.mixin import LineageLoggingMixin
 from data_juicer.core.ray_exporter import RayExporter
 from data_juicer.ops import load_ops
 from data_juicer.ops.op_fusion import fuse_operators
@@ -138,7 +139,7 @@ class PartitioningInfo:
             return None
 
 
-class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
+class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLoggingMixin):
     """
     Simplified Ray executor with dataset partitioning using .split().
 
@@ -166,6 +167,9 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
+
+        # Initialize LineageLoggingMixin for data lineage tracking
+        LineageLoggingMixin.__init__(self)
 
         # Override strategy methods for partitioned execution
         self._override_strategy_methods()
@@ -446,6 +450,15 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
         }
         self.log_job_start(job_config, len(ops))
 
+        # Log lineage pipeline start
+        dataset_path = getattr(self.cfg, "dataset_path", None)
+        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
+            dataset_path = dataset_path or str(self.cfg.dataset)
+        self.log_lineage_pipeline_start(
+            input_dataset=dataset_path,
+            num_operators=len(ops),
+        )
+
         # Detect convergence points for global operations
         convergence_points = self._detect_convergence_points(self.cfg)
 
@@ -466,6 +479,16 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
 
         # Log job completion with DAG context
         self.log_job_complete(job_duration, self.cfg.export_path)
+
+        # Log lineage pipeline completion
+        try:
+            row_count = final_dataset.data.count()
+        except Exception:
+            row_count = None
+        self.log_lineage_pipeline_complete(
+            output_dataset=self.cfg.export_path,
+            row_count=row_count,
+        )
 
         if skip_return:
             return None

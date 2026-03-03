@@ -538,6 +538,76 @@ def init_configs(args: Optional[List[str]] = None, which_entry: object = None, l
                 "changes during process. It might take more time when opening "
                 "insight mining.",
             )
+
+            # ---- Lineage tracking configuration ----
+            parser.add_argument(
+                "--lineage.enabled",
+                type=bool,
+                default=False,
+                help="Enable OpenLineage-inspired data lineage tracking. "
+                "Captures pipeline, operator, and column-level lineage events.",
+            )
+            parser.add_argument(
+                "--lineage.granularity.pipeline",
+                type=bool,
+                default=True,
+                help="Enable Level 0: Pipeline-level lineage (near-zero overhead).",
+            )
+            parser.add_argument(
+                "--lineage.granularity.operator",
+                type=bool,
+                default=True,
+                help="Enable Level 1: Operator-level lineage (low overhead).",
+            )
+            parser.add_argument(
+                "--lineage.granularity.column",
+                type=bool,
+                default=True,
+                help="Enable Level 2: Column-level lineage with schema diff (low overhead).",
+            )
+            parser.add_argument(
+                "--lineage.granularity.sample",
+                type=bool,
+                default=False,
+                help="Enable Level 3: Sample-level lineage (has overhead, reuses Tracer).",
+            )
+            parser.add_argument(
+                "--lineage.transport.type",
+                type=str,
+                default="file",
+                choices=["console", "file", "http", "composite"],
+                help="Transport type for lineage events.",
+            )
+            parser.add_argument(
+                "--lineage.transport.log_file_path",
+                type=Optional[str],
+                default=None,
+                help="File path for file transport. Default: {work_dir}/lineage/events.jsonl.",
+            )
+            parser.add_argument(
+                "--lineage.transport.url",
+                type=Optional[str],
+                default=None,
+                help="Base URL for HTTP transport (e.g., http://localhost:5000).",
+            )
+            parser.add_argument(
+                "--lineage.transport.endpoint",
+                type=str,
+                default="api/v1/lineage",
+                help="API endpoint path for HTTP transport.",
+            )
+            parser.add_argument(
+                "--lineage.transport.timeout",
+                type=float,
+                default=5.0,
+                help="HTTP request timeout in seconds.",
+            )
+            parser.add_argument(
+                "--lineage.namespace",
+                type=str,
+                default="data-juicer",
+                help="Default namespace for lineage jobs and datasets.",
+            )
             parser.add_argument(
                 "--op_list_to_mine",
                 type=List[str],

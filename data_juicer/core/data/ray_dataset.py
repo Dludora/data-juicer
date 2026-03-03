@@ -155,7 +155,8 @@ class RayDataset(DJDataset):
 
         return [row[column] for row in self.data.take()]
 
-    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None) -> DJDataset:
+    def process(self, operators, *, exporter=None, checkpointer=None,
+                tracer=None, lineage_adapter=None) -> DJDataset:
         if operators is None:
             return self
         if not isinstance(operators, list):
@@ -190,10 +191,28 @@ class RayDataset(DJDataset):
             return self
         cached_columns = set(columns_result)
 
-        for op in operators:
+        for op_idx, op in enumerate(operators):
+            # Capture pre-op state for lineage
+            columns_before = set(cached_columns) if lineage_adapter else None
+            row_count_before = None
+            if lineage_adapter:
+                try:
+                    row_count_before = self.data.count()
+                except Exception:
+                    pass
+                lineage_adapter.on_op_start(
+                    op=op,
+                    op_index=op_idx,
+                    columns_before=columns_before,
+                    row_count_before=row_count_before,
+                )
+
             try:
                 cached_columns = self._run_single_op(op, cached_columns, tracer=tracer)
             except Exception as e:
+                # Log lineage op failure
+                if lineage_adapter:
+                    lineage_adapter.on_op_fail(op=op, op_index=op_idx, error=e)
                 logger.error(f"Error processing operator {op}: {e}.")
                 if op.runtime_env is not None:
                     logger.error("Try to fallback to the base runtime environment.")
@@ -205,6 +224,23 @@ class RayDataset(DJDataset):
                         op.runtime_env = original_runtime_env
                 else:
                     raise e
+
+            # Log lineage op completion
+            if lineage_adapter:
+                try:
+                    row_count_after = self.data.count()
+                except Exception:
+                    row_count_after = None
+                lineage_adapter.on_op_complete(
+                    op=op,
+                    op_index=op_idx,
+                    columns_before=columns_before,
+                    columns_after=set(cached_columns),
+                    row_count_before=row_count_before,
+                    row_count_after=row_count_after,
+                    duration=None,  # Ray lazy execution, duration not meaningful
+                )
+
         return self
 
     def _run_single_op(self, op, cached_columns=None, tracer=None):

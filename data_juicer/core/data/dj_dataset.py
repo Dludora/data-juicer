@@ -32,7 +32,8 @@ class DJDataset(ABC):
     """Base dataset of DJ"""
 
     @abstractmethod
-    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None) -> DJDataset:  # TODO: add type hint
+    def process(self, operators, *, exporter=None, checkpointer=None,
+                tracer=None, **kwargs) -> DJDataset:  # TODO: add type hint
         """process a list of operators on the dataset."""
 
     @abstractmethod
@@ -261,6 +262,7 @@ class NestedDataset(Dataset, DJDataset):
         tracer=None,
         adapter=None,
         open_monitor=True,
+        lineage_adapter=None,
     ):
         # Local import to avoid logger being serialized in multiprocessing
         from loguru import logger
@@ -290,6 +292,22 @@ class NestedDataset(Dataset, DJDataset):
                 mp_context = ["forkserver", "spawn"] if (op.use_cuda() or op._name in unforkable_operators) else None
                 setup_mp(mp_context)
 
+                # Capture pre-op state for lineage
+                columns_before = None
+                row_count_before = None
+                if lineage_adapter:
+                    try:
+                        columns_before = set(dataset.column_names)
+                        row_count_before = len(dataset)
+                    except Exception:
+                        pass
+                    lineage_adapter.on_op_start(
+                        op=op,
+                        op_index=idx - 1,
+                        columns_before=columns_before,
+                        row_count_before=row_count_before,
+                    )
+
                 start = time()
                 # run single op
                 run_args = {
@@ -297,18 +315,48 @@ class NestedDataset(Dataset, DJDataset):
                     "exporter": exporter,
                     "tracer": tracer,
                 }
-                if open_monitor:
-                    dataset, resource_util_per_op = Monitor.monitor_func(op.run, args=run_args)
-                else:
-                    dataset = op.run(**run_args)
+                try:
+                    if open_monitor:
+                        dataset, resource_util_per_op = Monitor.monitor_func(op.run, args=run_args)
+                    else:
+                        dataset = op.run(**run_args)
+                except Exception as op_error:
+                    # Log lineage op failure
+                    if lineage_adapter:
+                        lineage_adapter.on_op_fail(
+                            op=op,
+                            op_index=idx - 1,
+                            error=op_error,
+                        )
+                    raise
                 # record processed ops
                 if checkpointer is not None:
                     checkpointer.record(op._op_cfg)
                 if open_monitor:
                     resource_util_list.append(resource_util_per_op)
                 end = time()
+                duration = end - start
+
+                # Capture post-op state and log lineage completion
+                if lineage_adapter:
+                    try:
+                        columns_after = set(dataset.column_names)
+                        row_count_after = len(dataset)
+                    except Exception:
+                        columns_after = None
+                        row_count_after = None
+                    lineage_adapter.on_op_complete(
+                        op=op,
+                        op_index=idx - 1,
+                        columns_before=columns_before,
+                        columns_after=columns_after,
+                        row_count_before=row_count_before,
+                        row_count_after=row_count_after,
+                        duration=duration,
+                    )
+
                 logger.info(
-                    f"[{idx}/{op_num}] OP [{op._name}] Done in " f"{end - start:.3f}s. Left {len(dataset)} samples."
+                    f"[{idx}/{op_num}] OP [{op._name}] Done in " f"{duration:.3f}s. Left {len(dataset)} samples."
                 )
 
                 # record the analysis results of the current dataset
