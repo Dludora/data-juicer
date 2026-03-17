@@ -53,7 +53,7 @@ def build_range_expr(
 
 def build_in_list_expr(column: Union[str, Expr], target_list: list, keep_in_list: bool = True):
     """
-    支持在列表中 (isin) 的判定
+    Supports the judgment of being in the list (isin)
     """
     c = col(column) if isinstance(column, str) else column
     expr = c.isin(target_list)

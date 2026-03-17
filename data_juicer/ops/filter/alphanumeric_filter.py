@@ -93,7 +93,7 @@ class AlphanumericFilter(Filter):
         from data_juicer.utils.expression_utils import build_range_expr
 
         ratio_key = StatsKeys.alpha_token_ratio if self.tokenization else StatsKeys.alnum_ratio
-        stats_col = col(Fields.stats)[ratio_key]
+        stats_col = col(Fields.stats).struct[ratio_key]
         return build_range_expr(
             stats_col,
             self.min_ratio,

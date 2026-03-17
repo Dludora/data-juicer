@@ -58,7 +58,7 @@ class TextLengthFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.text_len]
+        stats_col = col(Fields.stats).struct[StatsKeys.text_len]
         return build_range_expr(
             stats_col,
             self.min_len,

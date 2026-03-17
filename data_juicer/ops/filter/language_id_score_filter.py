@@ -80,7 +80,7 @@ class LanguageIDScoreFilter(Filter):
         )
 
         score_expr = build_range_expr(
-            col(Fields.stats)[StatsKeys.lang_score],
+            col(Fields.stats).struct[StatsKeys.lang_score],
             self.min_score,
             None,
             self.min_closed_interval,
@@ -88,6 +88,6 @@ class LanguageIDScoreFilter(Filter):
             self.reversed_range,
         )
         if self.lang:
-            lang_expr = build_in_list_expr(col(Fields.stats)[StatsKeys.lang], self.lang)
+            lang_expr = build_in_list_expr(col(Fields.stats).struct[StatsKeys.lang], self.lang)
             return lang_expr & score_expr
         return score_expr

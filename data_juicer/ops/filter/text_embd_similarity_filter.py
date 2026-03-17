@@ -210,7 +210,7 @@ class TextEmbdSimilarityFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.text_embd_similarity]
+        stats_col = col(Fields.stats).struct[StatsKeys.text_embd_similarity]
         return build_range_expr(
             stats_col,
             self.min_score,

@@ -70,7 +70,7 @@ class AverageLineLengthFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.avg_line_length]
+        stats_col = col(Fields.stats).struct[StatsKeys.avg_line_length]
         return build_range_expr(
             stats_col,
             self.min_len,

@@ -66,7 +66,7 @@ class SpecialCharactersFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.special_char_ratio]
+        stats_col = col(Fields.stats).struct[StatsKeys.special_char_ratio]
         return build_range_expr(
             stats_col,
             self.min_ratio,

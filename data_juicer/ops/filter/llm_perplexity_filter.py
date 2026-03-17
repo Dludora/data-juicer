@@ -128,7 +128,7 @@ class LLMPerplexityFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.llm_perplexity]
+        stats_col = col(Fields.stats).struct[StatsKeys.llm_perplexity]
         return build_range_expr(
             stats_col,
             self.min_score,

@@ -91,7 +91,7 @@ class WordsNumFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.num_words]
+        stats_col = col(Fields.stats).struct[StatsKeys.num_words]
         return build_range_expr(
             stats_col,
             self.min_num,

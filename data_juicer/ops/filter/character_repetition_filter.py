@@ -88,7 +88,7 @@ class CharacterRepetitionFilter(Filter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.char_rep_ratio]
+        stats_col = col(Fields.stats).struct[StatsKeys.char_rep_ratio]
         return build_range_expr(
             stats_col,
             self.min_ratio,

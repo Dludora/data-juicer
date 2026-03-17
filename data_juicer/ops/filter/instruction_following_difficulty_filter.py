@@ -55,7 +55,7 @@ class InstructionFollowingDifficultyFilter(LLMPerplexityFilter):
 
         from data_juicer.utils.expression_utils import build_range_expr
 
-        stats_col = col(Fields.stats)[StatsKeys.ifd_score]
+        stats_col = col(Fields.stats).struct[StatsKeys.ifd_score]
         return build_range_expr(
             stats_col,
             self.min_score,
