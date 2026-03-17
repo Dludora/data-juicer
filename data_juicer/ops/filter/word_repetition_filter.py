@@ -115,3 +115,18 @@ class WordRepetitionFilter(Filter):
             lambda stat: self.get_keep_boolean(stat[StatsKeys.word_rep_ratio], self.min_ratio, self.max_ratio),
             samples[Fields.stats],
         )
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.word_rep_ratio]
+        return build_range_expr(
+            stats_col,
+            self.min_ratio,
+            self.max_ratio,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

@@ -204,3 +204,18 @@ class TextEmbdSimilarityFilter(Filter):
         if similarity is None:
             return True
         return self.get_keep_boolean(similarity, self.min_score, self.max_score)
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.text_embd_similarity]
+        return build_range_expr(
+            stats_col,
+            self.min_score,
+            self.max_score,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

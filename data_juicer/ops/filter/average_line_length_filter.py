@@ -64,3 +64,18 @@ class AverageLineLengthFilter(Filter):
             lambda stat: self.get_keep_boolean(stat[StatsKeys.avg_line_length], self.min_len, self.max_len),
             samples[Fields.stats],
         )
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.avg_line_length]
+        return build_range_expr(
+            stats_col,
+            self.min_len,
+            self.max_len,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

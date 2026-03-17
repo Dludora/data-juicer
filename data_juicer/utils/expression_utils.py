@@ -1,4 +1,5 @@
 from typing import Union
+
 from ray.data.expressions import Expr, col
 
 
@@ -11,27 +12,25 @@ def build_range_expr(
     reversed_range: bool = False,
 ):
     """
-    根据给定的区间配置构建 Ray Data 的表达式 (Predicate)。
+    Construct a Ray Data expression (Predicate) based on the given interval configuration.
 
-    :param column: 统计信息对应的列名（例如：`StatsKeys.avg_line_length`）或已经构建好的 Ray 表达式
-    :param min_val: 区间下界
-    :param max_val: 区间上界
-    :param min_closed_interval: 是否为左闭区间 (>=)
-    :param max_closed_interval: 是否为右闭区间 (<=)
-    :param reversed_range: 是否取反 (将保留区间外的值)
+    :param column: The column name corresponding to the statistical information (for example: `StatsKeys.avg_line_length`) or a pre-built Ray expression
+    :param min_val: The lower bound of the interval
+    :param max_val: The upper bound of the interval
+    :param min_closed_interval: Whether the interval is left-closed (>=)
+    :param max_closed_interval: Whether the interval is right-closed (<=)
+    :param reversed_range: Whether to reverse the range (keep values outside the interval)
     :return: ray.data.expressions.Expression
     """
     expr = None
     c = col(column) if isinstance(column, str) else column
 
-    # 1. 处理 min_val
     if min_val is not None:
         if min_closed_interval:
             expr = c >= min_val
         else:
             expr = c > min_val
 
-    # 2. 处理 max_val
     if max_val is not None:
         if max_closed_interval:
             max_expr = c <= max_val
@@ -43,11 +42,9 @@ def build_range_expr(
         else:
             expr = max_expr
 
-    # 3. 处理无效输入
     if expr is None:
         raise ValueError("Both min_val and max_val cannot be None.")
 
-    # 4. 根据 reversed_range 反转逻辑
     if reversed_range:
         expr = ~expr
 

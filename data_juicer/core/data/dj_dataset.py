@@ -32,8 +32,9 @@ class DJDataset(ABC):
     """Base dataset of DJ"""
 
     @abstractmethod
-    def process(self, operators, *, exporter=None, checkpointer=None,
-                tracer=None, **kwargs) -> DJDataset:  # TODO: add type hint
+    def process(
+        self, operators, *, exporter=None, checkpointer=None, tracer=None, **kwargs
+    ) -> DJDataset:  # TODO: add type hint
         """process a list of operators on the dataset."""
 
     @abstractmethod

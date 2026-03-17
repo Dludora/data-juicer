@@ -79,3 +79,18 @@ class PerplexityFilter(Filter):
             lambda stat: self.get_keep_boolean(stat[StatsKeys.perplexity], self.min_ppl, self.max_ppl),
             samples[Fields.stats],
         )
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.perplexity]
+        return build_range_expr(
+            stats_col,
+            self.min_ppl,
+            self.max_ppl,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

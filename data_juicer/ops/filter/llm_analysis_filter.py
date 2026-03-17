@@ -302,3 +302,18 @@ json
         else:
             # disable the dimension score filter
             return True
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.llm_analysis_score]
+        return build_range_expr(
+            stats_col,
+            self.min_score,
+            self.max_score,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

@@ -70,3 +70,24 @@ class LanguageIDScoreFilter(Filter):
             )
         else:
             return self.get_keep_boolean(sample[Fields.stats][StatsKeys.lang_score], self.min_score)
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import (
+            build_in_list_expr,
+            build_range_expr,
+        )
+
+        score_expr = build_range_expr(
+            col(Fields.stats)[StatsKeys.lang_score],
+            self.min_score,
+            None,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )
+        if self.lang:
+            lang_expr = build_in_list_expr(col(Fields.stats)[StatsKeys.lang], self.lang)
+            return lang_expr & score_expr
+        return score_expr

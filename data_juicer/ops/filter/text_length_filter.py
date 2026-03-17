@@ -52,3 +52,18 @@ class TextLengthFilter(Filter):
             lambda stat: self.get_keep_boolean(stat[StatsKeys.text_len], self.min_len, self.max_len),
             samples[Fields.stats],
         )
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.text_len]
+        return build_range_expr(
+            stats_col,
+            self.min_len,
+            self.max_len,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

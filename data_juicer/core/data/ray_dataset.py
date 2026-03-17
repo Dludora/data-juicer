@@ -155,8 +155,7 @@ class RayDataset(DJDataset):
 
         return [row[column] for row in self.data.take()]
 
-    def process(self, operators, *, exporter=None, checkpointer=None,
-                tracer=None, lineage_adapter=None) -> DJDataset:
+    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None, lineage_adapter=None) -> DJDataset:
         if operators is None:
             return self
         if not isinstance(operators, list):
@@ -343,16 +342,25 @@ class RayDataset(DJDataset):
                     )
                 if op.stats_export_path is not None:
                     self.data.write_json(op.stats_export_path, force_ascii=False)
-                # Wrap process method with tracer for sample-level collection
+
+                filter_expr = op.build_filter_expr()
+
+                # Wrap process method with tracer for sample-level collection.
+                # Only needed when falling back to the UDF path.
                 original_process = None
-                if tracer and should_trace_op(tracer, op._name):
+                if filter_expr is None and tracer and should_trace_op(tracer, op._name):
                     from data_juicer.ops.base_op import wrap_filter_with_tracer
 
                     original_process = op.process
                     op.process = wrap_filter_with_tracer(original_process, op._name, tracer, op.is_batched_op())
 
                 try:
-                    if op.is_batched_op():
+                    if filter_expr is not None:
+                        # Vectorized expression path: avoids per-row Python UDF
+                        # overhead by letting Ray evaluate the predicate directly
+                        # on Arrow data after compute_stats has populated stats.
+                        self.data = self.data.filter(expr=filter_expr)
+                    elif op.is_batched_op():
                         # The core computation have been done in compute_stats,
                         # and the filter process only performs simple filtering.
                         # cpu and parallelism are not set here
@@ -370,7 +378,7 @@ class RayDataset(DJDataset):
                         )
                 finally:
                     # Restore original process method
-                    if tracer and should_trace_op(tracer, op._name) and original_process:
+                    if filter_expr is None and tracer and should_trace_op(tracer, op._name) and original_process:
                         op.process = original_process
             elif isinstance(op, (Deduplicator, Pipeline)):
                 self.data = op.run(self.data)

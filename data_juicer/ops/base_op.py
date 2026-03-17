@@ -732,6 +732,21 @@ class Filter(OP):
     def __call__(self, *args, **kwargs):
         return self.compute_stats(*args, **kwargs)
 
+    def build_filter_expr(self):
+        """
+        Return a Ray Data expression for the filter process phase.
+
+        When not None, ray_dataset will call dataset.filter(expr=...) instead
+        of a Python UDF, enabling vectorized Arrow-level filtering and avoiding
+        per-row Python call overhead.
+
+        Subclasses should override this when their process logic is a simple
+        range or membership check on a scalar value stored in Fields.stats.
+
+        :return: Ray expression, or None to fall back to the UDF path.
+        """
+        return None
+
     def get_keep_boolean(self, val, min_val=None, max_val=None):
         res_bool = True
         if min_val is not None:

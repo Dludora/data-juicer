@@ -46,3 +46,12 @@ class SuffixFilter(Filter):
             return res_bool
         else:
             return True
+
+    def build_filter_expr(self):
+        if not self.suffixes:
+            return None
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_in_list_expr
+
+        return build_in_list_expr(col(Fields.suffix), self.suffixes, keep_in_list=not self.reversed_range)

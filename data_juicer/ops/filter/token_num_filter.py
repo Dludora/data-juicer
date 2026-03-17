@@ -60,3 +60,18 @@ class TokenNumFilter(Filter):
 
     def process_single(self, sample):
         return self.get_keep_boolean(sample[Fields.stats][StatsKeys.num_token], self.min_num, self.max_num)
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.num_token]
+        return build_range_expr(
+            stats_col,
+            self.min_num,
+            self.max_num,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )

@@ -62,3 +62,18 @@ class TextActionFilter(Filter):
     def process_single(self, sample):
         num_action = sample[Fields.stats][StatsKeys.num_action]
         return self.get_keep_boolean(num_action, self.min_action_num)
+
+    def build_filter_expr(self):
+        from ray.data.expressions import col
+
+        from data_juicer.utils.expression_utils import build_range_expr
+
+        stats_col = col(Fields.stats)[StatsKeys.num_action]
+        return build_range_expr(
+            stats_col,
+            self.min_action_num,
+            None,
+            self.min_closed_interval,
+            self.max_closed_interval,
+            self.reversed_range,
+        )
