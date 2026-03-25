@@ -11,7 +11,6 @@ from data_juicer.core.data.dataset_builder import DatasetBuilder
 from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin
-from data_juicer.core.lineage.mixin import LineageLoggingMixin
 from data_juicer.core.ray_exporter import RayExporter
 from data_juicer.core.tracer.ray_tracer import RayTracer
 from data_juicer.ops import OPEnvManager, load_ops
@@ -35,7 +34,7 @@ class TempDirManager:
             shutil.rmtree(self.tmp_dir)
 
 
-class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLoggingMixin):
+class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
     """
     Executor based on Ray.
 
@@ -63,9 +62,6 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLog
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
-
-        # Initialize LineageLoggingMixin for data lineage tracking
-        LineageLoggingMixin.__init__(self)
 
         # init ray
         logger.info("Initializing Ray ...")
@@ -174,15 +170,6 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLog
         }
         self.log_job_start(job_config, len(ops))
 
-        # Log lineage pipeline start
-        dataset_path = getattr(self.cfg, "dataset_path", None)
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_path = dataset_path or str(self.cfg.dataset)
-        self.log_lineage_pipeline_start(
-            input_dataset=dataset_path,
-            num_operators=len(ops),
-        )
-
         if self.cfg.op_fusion:
             logger.info(f"Start OP fusion and reordering with strategy " f"[{self.cfg.fusion_strategy}]...")
             ops = fuse_operators(ops)
@@ -201,11 +188,7 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLog
                 self._pre_execute_operations_with_dag_monitoring(ops)
 
             # Execute operations (Ray executor uses simple dataset.process)
-            dataset = dataset.process(
-                ops,
-                tracer=self.tracer,
-                lineage_adapter=self._lineage_adapter if self.lineage_enabled else None,
-            )
+            dataset = dataset.process(ops, tracer=self.tracer)
 
             # Force materialization to get real execution
             logger.info("Materializing dataset to collect real metrics...")
@@ -230,12 +213,6 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLog
         # Log job completion with DAG context
         job_duration = time.time() - tstart
         self.log_job_complete(job_duration, self.cfg.export_path)
-
-        # Log lineage pipeline completion
-        self.log_lineage_pipeline_complete(
-            output_dataset=self.cfg.export_path,
-            row_count=output_rows,
-        )
 
         # 5. finalize the tracer results
         # Finalize sample-level traces after all operators have finished

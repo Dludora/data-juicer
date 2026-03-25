@@ -5,6 +5,7 @@ from functools import partial
 from typing import Any, Dict, List, Literal, Optional, Union
 
 import pyarrow
+import pyarrow.compute as pc
 import ray
 from jsonargparse import Namespace
 from loguru import logger
@@ -90,6 +91,30 @@ def filter_batch(batch, filter_func):
     return batch.filter(mask)
 
 
+def flatten_stats_pyarrow(batch: pyarrow.Table, cached_columns: set) -> pyarrow.Table:
+    col_name = Fields.stats
+
+    if col_name in cached_columns and col_name in batch.column_names:
+        struct_col = batch.column(col_name)
+
+        if pyarrow.types.is_struct(struct_col.type):
+            new_names = []
+            new_arrays = []
+
+            for i in range(struct_col.type.num_fields):
+                field = struct_col.type.field(i)
+
+                sub_col = pc.struct_field(struct_col, i)
+
+                new_names.append(f"{col_name}.{field.name}")
+                new_arrays.append(sub_col)
+            batch = batch.drop_columns([col_name])
+            for name, arr in zip(new_names, new_arrays):
+                batch = batch.append_column(name, arr)
+
+    return batch
+
+
 class RayDataset(DJDataset):
     def __init__(
         self,
@@ -105,6 +130,11 @@ class RayDataset(DJDataset):
             self._auto_proc = cfg.get("auto_op_parallelism")
         else:
             self._auto_proc = auto_op_parallelism
+
+        if cfg and cfg.get("flatten_stats") is not None:
+            self._flatten_stats = cfg.get("flatten_stats")
+        else:
+            self._flatten_stats = False
 
     def schema(self) -> Schema:
         """Get dataset schema.
@@ -155,7 +185,7 @@ class RayDataset(DJDataset):
 
         return [row[column] for row in self.data.take()]
 
-    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None, lineage_adapter=None) -> DJDataset:
+    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None) -> DJDataset:
         if operators is None:
             return self
         if not isinstance(operators, list):
@@ -190,28 +220,10 @@ class RayDataset(DJDataset):
             return self
         cached_columns = set(columns_result)
 
-        for op_idx, op in enumerate(operators):
-            # Capture pre-op state for lineage
-            columns_before = set(cached_columns) if lineage_adapter else None
-            row_count_before = None
-            if lineage_adapter:
-                try:
-                    row_count_before = self.data.count()
-                except Exception:
-                    pass
-                lineage_adapter.on_op_start(
-                    op=op,
-                    op_index=op_idx,
-                    columns_before=columns_before,
-                    row_count_before=row_count_before,
-                )
-
+        for op in operators:
             try:
                 cached_columns = self._run_single_op(op, cached_columns, tracer=tracer)
             except Exception as e:
-                # Log lineage op failure
-                if lineage_adapter:
-                    lineage_adapter.on_op_fail(op=op, op_index=op_idx, error=e)
                 logger.error(f"Error processing operator {op}: {e}.")
                 if op.runtime_env is not None:
                     logger.error("Try to fallback to the base runtime environment.")
@@ -224,22 +236,13 @@ class RayDataset(DJDataset):
                 else:
                     raise e
 
-            # Log lineage op completion
-            if lineage_adapter:
-                try:
-                    row_count_after = self.data.count()
-                except Exception:
-                    row_count_after = None
-                lineage_adapter.on_op_complete(
-                    op=op,
-                    op_index=op_idx,
-                    columns_before=columns_before,
-                    columns_after=set(cached_columns),
-                    row_count_before=row_count_before,
-                    row_count_after=row_count_after,
-                    duration=None,  # Ray lazy execution, duration not meaningful
-                )
-
+        if self._flatten_stats:
+            self.data = self.data.map_batches(
+                partial(flatten_stats_pyarrow, cached_columns=cached_columns),
+                batch_format="pyarrow",
+                zero_copy_batch=True,
+                batch_size=DEFAULT_BATCH_SIZE,
+            )
         return self
 
     def _run_single_op(self, op, cached_columns=None, tracer=None):

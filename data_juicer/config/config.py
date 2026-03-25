@@ -608,6 +608,15 @@ def init_configs(args: Optional[List[str]] = None, which_entry: object = None, l
                 default="data-juicer",
                 help="Default namespace for lineage jobs and datasets.",
             )
+
+            # ---- predicate pushdown configuration ----
+            parser.add_argument(
+                "--flatten_stats",
+                type=bool,
+                default=False,
+                help="Whether to flatten the stats column.",
+            )
+
             parser.add_argument(
                 "--op_list_to_mine",
                 type=List[str],

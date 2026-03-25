@@ -14,7 +14,6 @@ from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin
 from data_juicer.core.exporter import Exporter
-from data_juicer.core.lineage.mixin import LineageLoggingMixin
 from data_juicer.core.tracer import Tracer
 from data_juicer.ops import load_ops
 from data_juicer.ops.op_fusion import fuse_operators
@@ -27,7 +26,7 @@ from data_juicer.utils.ckpt_utils import CheckpointManager
 from data_juicer.utils.sample import random_sample
 
 
-class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLoggingMixin):
+class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
     """
     This Executor class is used to process a specific dataset.
 
@@ -50,10 +49,6 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, Lineag
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
-
-        # Initialize LineageLoggingMixin for data lineage tracking
-        LineageLoggingMixin.__init__(self)
-
         # Set executor type for strategy selection
         self.executor_type = "default"
 
@@ -188,15 +183,6 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, Lineag
         }
         self.log_job_start(job_config, len(ops))
 
-        # Log lineage pipeline start
-        dataset_path = getattr(self.cfg, "dataset_path", None)
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_path = dataset_path or str(self.cfg.dataset)
-        self.log_lineage_pipeline_start(
-            input_dataset=dataset_path,
-            num_operators=len(ops),
-        )
-
         # OP fusion
         if self.cfg.op_fusion:
             probe_res = None
@@ -237,7 +223,6 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, Lineag
             tracer=self.tracer if self.cfg.open_tracer else None,
             adapter=self.adapter,
             open_monitor=self.cfg.open_monitor,
-            lineage_adapter=self._lineage_adapter if self.lineage_enabled else None,
         )
 
         # Post-execute DAG monitoring (log operation completion events)
@@ -260,12 +245,6 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, Lineag
         # Log job completion with DAG context
         job_duration = time() - tstart
         self.log_job_complete(job_duration, self.cfg.export_path)
-
-        # Log lineage pipeline completion
-        self.log_lineage_pipeline_complete(
-            output_dataset=self.cfg.export_path,
-            row_count=len(dataset) if hasattr(dataset, "__len__") else None,
-        )
 
         if not skip_return:
             return dataset
