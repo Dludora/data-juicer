@@ -14,6 +14,7 @@ from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin
 from data_juicer.core.exporter import Exporter
+from data_juicer.core.lineage.mixin import LineageLoggingMixin
 from data_juicer.core.tracer import Tracer
 from data_juicer.ops import load_ops
 from data_juicer.ops.op_fusion import fuse_operators
@@ -26,7 +27,7 @@ from data_juicer.utils.ckpt_utils import CheckpointManager
 from data_juicer.utils.sample import random_sample
 
 
-class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
+class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLoggingMixin):
     """
     This Executor class is used to process a specific dataset.
 
@@ -43,14 +44,15 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
         super().__init__(cfg)
         # If work_dir contains job_id, all outputs go under it
         self.work_dir = self.cfg.work_dir
+        self.executor_type = "default"
 
         # Initialize EventLoggingMixin for job management and event logging
         EventLoggingMixin.__init__(self, cfg)
+        # Initialize lineage logging (independent from event logging)
+        LineageLoggingMixin.__init__(self, cfg, self.executor_type)
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
-        # Set executor type for strategy selection
-        self.executor_type = "default"
 
         self.ckpt_manager = None
 
@@ -146,111 +148,126 @@ class DefaultExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
         :param skip_return: skip return for API called.
         :return: processed dataset.
         """
-        # 1. format data
-        if dataset is not None:
-            logger.info(f"Using existing dataset {dataset}")
-        elif self.cfg.use_checkpoint and self.ckpt_manager.ckpt_available:
-            logger.info("Loading dataset from checkpoint...")
-            dataset = self.ckpt_manager.load_ckpt()
-        else:
-            logger.info("Loading dataset from dataset builder...")
-            if load_data_np is None:
-                load_data_np = self.np
-            load_kwargs = {"num_proc": load_data_np}
-            if getattr(self.cfg, "load_dataset_kwargs", None):
-                load_kwargs.update(dict(self.cfg.load_dataset_kwargs))
-            dataset = self.dataset_builder.load_dataset(**load_kwargs)
+        pipeline_start_time = time()
 
-        # 2. extract processes and optimize their orders
-        logger.info("Preparing process operators...")
-        ops = load_ops(self.cfg.process)
+        try:
+            # 1. format data
+            if dataset is not None:
+                logger.info(f"Using existing dataset {dataset}")
+            elif self.cfg.use_checkpoint and self.ckpt_manager.ckpt_available:
+                logger.info("Loading dataset from checkpoint...")
+                dataset = self.ckpt_manager.load_ckpt()
+            else:
+                logger.info("Loading dataset from dataset builder...")
+                if load_data_np is None:
+                    load_data_np = self.np
+                load_kwargs = {"num_proc": load_data_np}
+                if getattr(self.cfg, "load_dataset_kwargs", None):
+                    load_kwargs.update(dict(self.cfg.load_dataset_kwargs))
+                dataset = self.dataset_builder.load_dataset(**load_kwargs)
 
-        # Initialize DAG execution planning (pass ops to avoid redundant loading)
-        self._initialize_dag_execution(self.cfg, ops=ops)
+            # 2. extract processes and optimize their orders
+            logger.info("Preparing process operators...")
+            ops = load_ops(self.cfg.process)
 
-        # Log job start with DAG context
-        # Handle both dataset_path (string) and dataset (dict) configurations
-        dataset_info = {}
-        if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
-            dataset_info["dataset_path"] = self.cfg.dataset_path
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_info["dataset"] = self.cfg.dataset
+            # Initialize DAG execution planning (pass ops to avoid redundant loading)
+            self._initialize_dag_execution(self.cfg, ops=ops)
 
-        job_config = {
-            **dataset_info,
-            "work_dir": self.work_dir,
-            "executor_type": self.executor_type,
-            "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
-            "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
-            "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
-        }
-        self.log_job_start(job_config, len(ops))
+            # Log job start with DAG context
+            # Handle both dataset_path (string) and dataset (dict) configurations
+            dataset_info = {}
+            if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
+                dataset_info["dataset_path"] = self.cfg.dataset_path
+            if hasattr(self.cfg, "dataset") and self.cfg.dataset:
+                dataset_info["dataset"] = self.cfg.dataset
 
-        # OP fusion
-        if self.cfg.op_fusion:
-            probe_res = None
-            if self.cfg.fusion_strategy == "probe":
-                logger.info("Probe the OP speed for OP reordering...")
-                probe_res, _ = self.adapter.probe_small_batch(dataset, ops)
+            job_config = {
+                **dataset_info,
+                "work_dir": self.work_dir,
+                "executor_type": self.executor_type,
+                "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
+                "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
+                "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
+            }
+            self.emit_pipeline_start(extra_run={"job_config": job_config, "num_operators": len(ops)})
+            self.log_job_start(job_config, len(ops))
 
-            logger.info(f"Start OP fusion and reordering with strategy " f"[{self.cfg.fusion_strategy}]...")
-            ops = fuse_operators(ops, probe_res)
+            # OP fusion
+            if self.cfg.op_fusion:
+                probe_res = None
+                if self.cfg.fusion_strategy == "probe":
+                    logger.info("Probe the OP speed for OP reordering...")
+                    probe_res, _ = self.adapter.probe_small_batch(dataset, ops)
 
-        # adaptive batch size
-        if self.cfg.adaptive_batch_size:
-            # calculate the adaptive batch size
-            bs_per_op = self.adapter.adapt_workloads(dataset, ops)
-            assert len(bs_per_op) == len(ops)
-            # update the adaptive batch size
-            logger.info(f"Adapt batch sizes for each OP to {bs_per_op}")
-            for i, op in enumerate(ops):
-                if op.is_batched_op():
-                    op.batch_size = bs_per_op[i]
+                logger.info(f"Start OP fusion and reordering with strategy " f"[{self.cfg.fusion_strategy}]...")
+                ops = fuse_operators(ops, probe_res)
 
-        # 3. data process with DAG monitoring
-        # - If tracer is open, trace each op after it's processed
-        # - If checkpoint is open, clean the cache files after each process
-        logger.info("Processing data with DAG monitoring...")
-        tstart = time()
+            # adaptive batch size
+            if self.cfg.adaptive_batch_size:
+                # calculate the adaptive batch size
+                bs_per_op = self.adapter.adapt_workloads(dataset, ops)
+                assert len(bs_per_op) == len(ops)
+                # update the adaptive batch size
+                logger.info(f"Adapt batch sizes for each OP to {bs_per_op}")
+                for i, op in enumerate(ops):
+                    if op.is_batched_op():
+                        op.batch_size = bs_per_op[i]
 
-        # Pre-execute DAG monitoring (log operation start events)
-        if self.pipeline_dag:
-            self._pre_execute_operations_with_dag_monitoring(ops)
+            # 3. data process with DAG monitoring
+            # - If tracer is open, trace each op after it's processed
+            # - If checkpoint is open, clean the cache files after each process
+            logger.info("Processing data with DAG monitoring...")
+            tstart = time()
 
-        # Execute operations with executor-specific parameters
-        dataset = dataset.process(
-            ops,
-            work_dir=self.work_dir,
-            exporter=self.exporter,
-            checkpointer=self.ckpt_manager,
-            tracer=self.tracer if self.cfg.open_tracer else None,
-            adapter=self.adapter,
-            open_monitor=self.cfg.open_monitor,
-        )
+            # Pre-execute DAG monitoring (log operation start events)
+            if self.pipeline_dag:
+                self._pre_execute_operations_with_dag_monitoring(ops)
 
-        # Post-execute DAG monitoring (log operation completion events)
-        if self.pipeline_dag:
-            self._post_execute_operations_with_dag_monitoring(ops)
+            # Execute operations with executor-specific parameters
+            dataset = dataset.process(
+                ops,
+                work_dir=self.work_dir,
+                exporter=self.exporter,
+                checkpointer=self.ckpt_manager,
+                tracer=self.tracer if self.cfg.open_tracer else None,
+                adapter=self.adapter,
+                open_monitor=self.cfg.open_monitor,
+            )
 
-        tend = time()
-        logger.info(f"All OPs are done in {tend - tstart:.3f}s.")
+            # Post-execute DAG monitoring (log operation completion events)
+            if self.pipeline_dag:
+                self._post_execute_operations_with_dag_monitoring(ops)
 
-        # 4. data export
-        if not skip_export:
-            logger.info("Exporting dataset to disk...")
-            self.exporter.export(dataset)
-        # compress the last dataset after exporting
-        if self.cfg.use_cache and self.cfg.cache_compress:
-            from data_juicer.utils.compress import compress
+            tend = time()
+            logger.info(f"All OPs are done in {tend - tstart:.3f}s.")
 
-            compress(dataset)
+            # 4. data export
+            if not skip_export:
+                logger.info("Exporting dataset to disk...")
+                self.exporter.export(dataset)
+            # compress the last dataset after exporting
+            if self.cfg.use_cache and self.cfg.cache_compress:
+                from data_juicer.utils.compress import compress
 
-        # Log job completion with DAG context
-        job_duration = time() - tstart
-        self.log_job_complete(job_duration, self.cfg.export_path)
+                compress(dataset)
 
-        if not skip_return:
-            return dataset
+            # Log job completion with DAG context
+            job_duration = time() - tstart
+            self.log_job_complete(job_duration, self.cfg.export_path)
+            self.emit_pipeline_complete(
+                duration_seconds=time() - pipeline_start_time,
+                output_path=self.cfg.export_path,
+            )
+
+            if not skip_return:
+                return dataset
+        except Exception as e:
+            self.emit_pipeline_fail(
+                error=e,
+                duration_seconds=time() - pipeline_start_time,
+                output_path=getattr(self.cfg, "export_path", None),
+            )
+            raise
 
     def sample_data(
         self,

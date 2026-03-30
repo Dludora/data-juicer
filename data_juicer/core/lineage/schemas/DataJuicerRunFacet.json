@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DataJuicerRunFacet",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "_producer": {
+      "type": "string"
+    },
+    "_schemaURL": {
+      "type": "string"
+    },
+    "jobId": {
+      "type": ["string", "null"]
+    },
+    "executorType": {
+      "type": ["string", "null"]
+    },
+    "status": {
+      "type": ["string", "null"]
+    },
+    "durationSeconds": {
+      "type": ["number", "null"]
+    },
+    "errorMessage": {
+      "type": ["string", "null"]
+    },
+    "workDir": {
+      "type": ["string", "null"]
+    },
+    "custom": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,26 @@
+project_name: "demo_default_lineage"
+executor_type: "default"
+
+# 输入/输出
+dataset_path: "/absolute/path/to/input.jsonl"
+export_path: "/absolute/path/to/output.jsonl"
+
+# 建议保留，便于每次运行隔离
+work_dir: "./outputs/{project_name}/{job_id}"
+
+# 可选：与 lineage 平行，不互相影响
+event_logging:
+  enabled: true
+
+# OpenLineage（最小）
+lineage:
+  enabled: true
+  namespace: "data_juicer"
+  job_name_template: "{project_name}"
+  endpoint: "http://localhost:5000" # Marquez 常见地址
+  transport_type: "http"
+  fail_silently: true
+
+# 最小处理流程（1 个 op）
+process:
+  - clean_html_mapper: {}

@@ -70,6 +70,21 @@ eoc_special_token: '<|__dj__eoc|>'                          # the special token 
 # for distributed processing
 executor_type: default                                      # type of executor, support "default" or "ray" for now.
 ray_address: auto                                           # the address of the Ray cluster.
+event_logging:
+  enabled: true                                             # enable event logging for job tracking and resumption.
+lineage:
+  enabled: false                                            # enable OpenLineage logging (independent from event_logging).
+  namespace: 'data_juicer'                                  # OpenLineage job namespace.
+  job_name_template: '{project_name}'                       # supports {project_name}, {executor_type}, {job_id}.
+  producer: null                                            # custom producer URI, use default if null.
+  endpoint: null                                            # OpenLineage endpoint URL (e.g. https://lineage/api/v1/lineage).
+  transport_type: 'http'                                    # OpenLineage transport type (http, kafka, file, ...).
+  api_key: null                                             # API key for transport auth if required.
+  timeout: 3.0                                              # transport timeout in seconds.
+  retry_count: 2                                            # emit retry times when request fails.
+  retry_backoff_seconds: 1.0                                # exponential backoff base seconds.
+  fail_silently: true                                       # do not break pipeline on lineage emit failure.
+  strict_sdk: false                                         # raise if SDK missing when lineage enabled.
 
 # partition configuration (for ray_partitioned executor)
 partition:

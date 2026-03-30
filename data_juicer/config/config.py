@@ -445,6 +445,79 @@ def build_base_parser() -> ArgumentParser:
         default=True,
         help="Enable event logging for job tracking and resumption",
     )
+    # OpenLineage configuration (independent from event logging)
+    parser.add_argument(
+        "--lineage.enabled",
+        type=bool,
+        default=False,
+        help="Enable pipeline-level OpenLineage emission",
+    )
+    parser.add_argument(
+        "--lineage.namespace",
+        type=str,
+        default="data_juicer",
+        help="OpenLineage job namespace",
+    )
+    parser.add_argument(
+        "--lineage.job_name_template",
+        type=str,
+        default="{project_name}",
+        help="Template for OpenLineage job name. Supported fields: project_name, executor_type, job_id",
+    )
+    parser.add_argument(
+        "--lineage.producer",
+        type=str,
+        default=None,
+        help="Custom OpenLineage producer URI",
+    )
+    parser.add_argument(
+        "--lineage.endpoint",
+        type=str,
+        default=None,
+        help="OpenLineage transport endpoint URL",
+    )
+    parser.add_argument(
+        "--lineage.transport_type",
+        type=str,
+        default="http",
+        help="OpenLineage transport type, e.g. http, kafka, file",
+    )
+    parser.add_argument(
+        "--lineage.api_key",
+        type=str,
+        default=None,
+        help="API key used by OpenLineage transport (if required)",
+    )
+    parser.add_argument(
+        "--lineage.timeout",
+        type=float,
+        default=3.0,
+        help="OpenLineage transport timeout in seconds",
+    )
+    parser.add_argument(
+        "--lineage.retry_count",
+        type=int,
+        default=2,
+        help="Retry count for OpenLineage emit failures",
+    )
+    parser.add_argument(
+        "--lineage.retry_backoff_seconds",
+        type=float,
+        default=1.0,
+        help="Initial exponential backoff seconds for OpenLineage retry",
+    )
+    parser.add_argument(
+        "--lineage.fail_silently",
+        type=bool,
+        default=True,
+        help="Do not interrupt pipeline execution on OpenLineage failures",
+    )
+    parser.add_argument(
+        "--lineage.strict_sdk",
+        type=bool,
+        default=False,
+        help="Raise error if OpenLineage SDK is unavailable when lineage is enabled",
+    )
     # Logging configuration
     parser.add_argument(
         "--max_log_size_mb",

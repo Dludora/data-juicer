@@ -26,6 +26,7 @@ from data_juicer.core.data.ray_dataset import RayDataset
 from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin, EventType
+from data_juicer.core.lineage.mixin import LineageLoggingMixin
 from data_juicer.core.ray_exporter import RayExporter
 from data_juicer.ops import load_ops
 from data_juicer.ops.op_fusion import fuse_operators
@@ -138,7 +139,7 @@ class PartitioningInfo:
             return None
 
 
-class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
+class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin, LineageLoggingMixin):
     """
     Simplified Ray executor with dataset partitioning using .split().
 
@@ -163,6 +164,8 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
 
         # Initialize EventLoggingMixin for job management and event logging
         EventLoggingMixin.__init__(self, cfg)
+        # Initialize lineage logging (independent from event logging)
+        LineageLoggingMixin.__init__(self, cfg, self.executor_type)
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
@@ -363,114 +366,133 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
         """
         job_start_time = time.time()
 
-        # Check if user provided a job_id (indicating resumption attempt)
-        user_provided_job_id = getattr(self.cfg, "_user_provided_job_id", False)
+        try:
+            # Check if user provided a job_id (indicating resumption attempt)
+            user_provided_job_id = getattr(self.cfg, "_user_provided_job_id", False)
 
-        if user_provided_job_id and self.job_id:
-            logger.info(f"🔄 User provided job_id: {self.job_id} - attempting to resume job")
-            resume_result = self._resume_job(self.job_id)
-            if resume_result == "completed":
-                logger.info("✅ Job is already completed - nothing to do")
-                return None  # Exit gracefully
-            elif resume_result == "resuming":
-                logger.info("✅ Job resumption successful - will use existing checkpoints")
-                is_resuming = True
-            else:  # resume_result == "failed"
-                logger.info("❌ Job resumption failed - starting fresh")
-                is_resuming = False
-        else:
-            if self.job_id:
-                logger.info(f"🚀 Starting new job with auto-generated job_id: {self.job_id}")
+            if user_provided_job_id and self.job_id:
+                logger.info(f"🔄 User provided job_id: {self.job_id} - attempting to resume job")
+                resume_result = self._resume_job(self.job_id)
+                if resume_result == "completed":
+                    logger.info("✅ Job is already completed - nothing to do")
+                    return None  # Exit gracefully
+                elif resume_result == "resuming":
+                    logger.info("✅ Job resumption successful - will use existing checkpoints")
+                    is_resuming = True
+                else:  # resume_result == "failed"
+                    logger.info("❌ Job resumption failed - starting fresh")
+                    is_resuming = False
             else:
-                logger.info("🚀 Starting new job")
-            is_resuming = False
+                if self.job_id:
+                    logger.info(f"🚀 Starting new job with auto-generated job_id: {self.job_id}")
+                else:
+                    logger.info("🚀 Starting new job")
+                is_resuming = False
 
-        if not is_resuming:
-            logger.info("🚀 Starting simplified partitioned processing...")
-        else:
-            logger.info("🔄 Resuming partitioned processing from checkpoints...")
+            if not is_resuming:
+                logger.info("🚀 Starting simplified partitioned processing...")
+            else:
+                logger.info("🔄 Resuming partitioned processing from checkpoints...")
 
-        # Log job start event
-        self._log_event(
-            event_type=EventType.JOB_START,
-            message=(
-                "Starting partitioned dataset processing"
-                if not is_resuming
-                else "Resuming partitioned dataset processing"
-            ),
-            metadata={
-                "num_partitions": self.num_partitions,
-                "checkpoint_enabled": self.ckpt_manager.checkpoint_enabled,
-                "is_resuming": is_resuming,
-                "job_id": self.job_id,
-                "user_provided_job_id": user_provided_job_id,
-            },
-        )
+            # Log job start event
+            self._log_event(
+                event_type=EventType.JOB_START,
+                message=(
+                    "Starting partitioned dataset processing"
+                    if not is_resuming
+                    else "Resuming partitioned dataset processing"
+                ),
+                metadata={
+                    "num_partitions": self.num_partitions,
+                    "checkpoint_enabled": self.ckpt_manager.checkpoint_enabled,
+                    "is_resuming": is_resuming,
+                    "job_id": self.job_id,
+                    "user_provided_job_id": user_provided_job_id,
+                },
+            )
 
-        # Note: Config validation is handled in _resume_job() if resuming
+            # Note: Config validation is handled in _resume_job() if resuming
 
-        # Load the full dataset using a single DatasetBuilder
-        logger.info("Loading dataset with single DatasetBuilder...")
+            # Load the full dataset using a single DatasetBuilder
+            logger.info("Loading dataset with single DatasetBuilder...")
 
-        dataset = self.datasetbuilder.load_dataset(num_proc=load_data_np)
-        columns = dataset.schema().columns
+            dataset = self.datasetbuilder.load_dataset(num_proc=load_data_np)
+            columns = dataset.schema().columns
 
-        # Prepare operations
-        logger.info("Preparing operations...")
-        ops = self._prepare_operators()
+            # Prepare operations
+            logger.info("Preparing operations...")
+            ops = self._prepare_operators()
 
-        # Handle auto partition mode BEFORE initializing DAG
-        # (DAG needs final partition count)
-        if self.partition_mode == "auto":
-            self._configure_auto_partitioning(dataset, ops)
+            # Handle auto partition mode BEFORE initializing DAG
+            # (DAG needs final partition count)
+            if self.partition_mode == "auto":
+                self._configure_auto_partitioning(dataset, ops)
 
-        # Initialize DAG execution planning with final partition count
-        # Pass ops to avoid redundant loading
-        self._initialize_dag_execution(self.cfg, ops=ops)
+            # Initialize DAG execution planning with final partition count
+            # Pass ops to avoid redundant loading
+            self._initialize_dag_execution(self.cfg, ops=ops)
 
-        # Log job start with DAG context
-        # Handle both dataset_path (string) and dataset (dict) configurations
-        dataset_info = {}
-        if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
-            dataset_info["dataset_path"] = self.cfg.dataset_path
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_info["dataset"] = self.cfg.dataset
+            # Log job start with DAG context
+            # Handle both dataset_path (string) and dataset (dict) configurations
+            dataset_info = {}
+            if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
+                dataset_info["dataset_path"] = self.cfg.dataset_path
+            if hasattr(self.cfg, "dataset") and self.cfg.dataset:
+                dataset_info["dataset"] = self.cfg.dataset
 
-        job_config = {
-            **dataset_info,
-            "work_dir": self.work_dir,
-            "executor_type": self.executor_type,
-            "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
-            "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
-            "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
-        }
-        self.log_job_start(job_config, len(ops))
+            job_config = {
+                **dataset_info,
+                "work_dir": self.work_dir,
+                "executor_type": self.executor_type,
+                "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
+                "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
+                "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
+            }
+            self.emit_pipeline_start(
+                extra_run={
+                    "job_config": job_config,
+                    "num_operators": len(ops),
+                    "is_resuming": is_resuming,
+                }
+            )
+            self.log_job_start(job_config, len(ops))
 
-        # Detect convergence points for global operations
-        convergence_points = self._detect_convergence_points(self.cfg)
+            # Detect convergence points for global operations
+            convergence_points = self._detect_convergence_points(self.cfg)
 
-        if convergence_points:
-            logger.info(f"Found convergence points at operations: {convergence_points}")
-            final_dataset = self._process_with_convergence(dataset, ops, convergence_points)
-        else:
-            logger.info("No convergence points found, processing with simple partitioning")
-            final_dataset = self._process_with_simple_partitioning(dataset, ops)
+            if convergence_points:
+                logger.info(f"Found convergence points at operations: {convergence_points}")
+                final_dataset = self._process_with_convergence(dataset, ops, convergence_points)
+            else:
+                logger.info("No convergence points found, processing with simple partitioning")
+                final_dataset = self._process_with_simple_partitioning(dataset, ops)
 
-        # Export final dataset
-        logger.info("Exporting final dataset...")
-        self.exporter.export(final_dataset.data, columns=columns)
+            # Export final dataset
+            logger.info("Exporting final dataset...")
+            self.exporter.export(final_dataset.data, columns=columns)
 
-        job_duration = time.time() - job_start_time
-        logger.info(f"✅ Job completed successfully in {job_duration:.2f}s")
-        logger.info(f"📁 Output saved to: {self.cfg.export_path}")
+            job_duration = time.time() - job_start_time
+            logger.info(f"✅ Job completed successfully in {job_duration:.2f}s")
+            logger.info(f"📁 Output saved to: {self.cfg.export_path}")
 
-        # Log job completion with DAG context
-        self.log_job_complete(job_duration, self.cfg.export_path)
+            # Log job completion with DAG context
+            self.log_job_complete(job_duration, self.cfg.export_path)
+            self.emit_pipeline_complete(
+                duration_seconds=job_duration,
+                output_path=self.cfg.export_path,
+            )
 
-        if skip_return:
-            return None
+            if skip_return:
+                return None
 
-        return final_dataset
+            return final_dataset
+        except Exception as e:
+            self.emit_pipeline_fail(
+                error=e,
+                duration_seconds=time.time() - job_start_time,
+                output_path=getattr(self.cfg, "export_path", None),
+            )
+            raise
 
     def cleanup_temp_files(self):
         """Manually clean up temporary files from previous runs."""
