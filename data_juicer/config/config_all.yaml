@@ -78,6 +78,7 @@ lineage:
   job_name_template: '{project_name}'                       # supports {project_name}, {executor_type}, {job_id}.
   producer: null                                            # custom producer URI, use default if null.
   endpoint: null                                            # OpenLineage endpoint URL (e.g. https://lineage/api/v1/lineage).
+  transport: {}                                             # native OpenLineage transport config (preferred, passed through as-is).
   transport_type: 'http'                                    # OpenLineage transport type (http, kafka, file, ...).
   api_key: null                                             # API key for transport auth if required.
   timeout: 3.0                                              # transport timeout in seconds.

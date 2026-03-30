@@ -18,7 +18,11 @@ lineage:
   namespace: "data_juicer"
   job_name_template: "{project_name}"
   endpoint: "http://localhost:5000" # Marquez 常见地址
-  transport_type: "http"
+  transport:
+    type: file
+    log_file_path: "./lineage_events"
+    append: true
+    debug_mode: true
   fail_silently: true
 
 # 最小处理流程（1 个 op）

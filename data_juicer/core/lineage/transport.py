@@ -1,4 +1,3 @@
-import time
 from typing import Any
 
 from loguru import logger
@@ -14,8 +13,6 @@ class OpenLineageTransport:
         self.client = None
         self.enabled = False
         self.fail_silently = True
-        self.retry_count = 2
-        self.retry_backoff_seconds = 1.0
         self.strict_sdk = False
 
         self._initialize()
@@ -24,8 +21,6 @@ class OpenLineageTransport:
         lineage_cfg = ConfigAccessor.get(self.cfg, "lineage", {})
         self.enabled = bool(ConfigAccessor.get(lineage_cfg, "enabled", False))
         self.fail_silently = bool(ConfigAccessor.get(lineage_cfg, "fail_silently", True))
-        self.retry_count = int(ConfigAccessor.get(lineage_cfg, "retry_count", 2))
-        self.retry_backoff_seconds = float(ConfigAccessor.get(lineage_cfg, "retry_backoff_seconds", 1.0))
         self.strict_sdk = bool(ConfigAccessor.get(lineage_cfg, "strict_sdk", False))
 
         if not self.enabled:
@@ -40,20 +35,35 @@ class OpenLineageTransport:
             self.enabled = False
             return
 
+        transport_cfg = ConfigAccessor.get(lineage_cfg, "transport", None)
         transport_type = ConfigAccessor.get(lineage_cfg, "transport_type", "http")
         endpoint = ConfigAccessor.get(lineage_cfg, "endpoint", None)
         timeout = float(ConfigAccessor.get(lineage_cfg, "timeout", 3.0))
         api_key = ConfigAccessor.get(lineage_cfg, "api_key", None)
+        retry_count = int(ConfigAccessor.get(lineage_cfg, "retry_count", 2))
+        retry_backoff_seconds = float(ConfigAccessor.get(lineage_cfg, "retry_backoff_seconds", 1.0))
 
-        client_config = {}
-        if endpoint:
-            transport_config = {"type": transport_type, "url": endpoint, "timeout": timeout}
+        client_config = None
+        if transport_cfg:
+            # Preferred path: pass native OpenLineage transport config directly.
+            client_config = {"transport": transport_cfg}
+        elif endpoint:
+            # Backward-compatible shortcut config.
+            transport_config = {
+                "type": transport_type,
+                "url": endpoint,
+                "timeout": timeout,
+                "retry": {
+                    "total": retry_count,
+                    "backoff_factor": retry_backoff_seconds,
+                },
+            }
             if api_key:
                 transport_config["auth"] = {"type": "api_key", "apiKey": api_key}
-            client_config["transport"] = transport_config
+            client_config = {"transport": transport_config}
 
         try:
-            self.client = OpenLineageClient(config=client_config or None)
+            self.client = OpenLineageClient(config=client_config)
             self.enabled = True
         except Exception as e:
             if self.fail_silently:
@@ -66,23 +76,10 @@ class OpenLineageTransport:
         if not self.enabled or self.client is None:
             return
 
-        last_error = None
-        for attempt in range(self.retry_count + 1):
-            try:
-                self.client.emit(event)
+        try:
+            self.client.emit(event)
+        except Exception as e:
+            if self.fail_silently:
+                logger.warning(f"OpenLineage emit failed and ignored: {e}")
                 return
-            except Exception as e:
-                last_error = e
-                if attempt < self.retry_count:
-                    sleep_seconds = self.retry_backoff_seconds * (2**attempt)
-                    logger.warning(
-                        f"OpenLineage emit failed (attempt {attempt + 1}/{self.retry_count + 1}): {e}. "
-                        f"Retry in {sleep_seconds:.1f}s"
-                    )
-                    time.sleep(sleep_seconds)
-
-        if self.fail_silently:
-            logger.warning(f"OpenLineage emit dropped after retries: {last_error}")
-            return
-
-        raise RuntimeError("Failed to emit OpenLineage event") from last_error
+            raise RuntimeError("Failed to emit OpenLineage event") from e

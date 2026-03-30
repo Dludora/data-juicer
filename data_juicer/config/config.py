@@ -477,6 +477,12 @@ def build_base_parser() -> ArgumentParser:
         help="OpenLineage transport endpoint URL",
     )
     parser.add_argument(
+        "--lineage.transport",
+        type=Dict,
+        default={},
+        help="Native OpenLineage transport config passed to OpenLineageClient (preferred path)",
+    )
+    parser.add_argument(
         "--lineage.transport_type",
         type=str,
         default="http",
