@@ -1478,7 +1478,9 @@ def update_sampling_params(
     if fetch_generation_config_from_hf:
         pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
         try:
-            model_generation_config = transformers.GenerationConfig.from_pretrained(pretrained_model_name_or_path).to_dict()
+            model_generation_config = transformers.GenerationConfig.from_pretrained(
+                pretrained_model_name_or_path
+            ).to_dict()
         except Exception as e:
             logger.warning(
                 f"No generation config found for the model " f"[{pretrained_model_name_or_path}]. Error: {e}"
