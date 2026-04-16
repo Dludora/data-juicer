@@ -46,7 +46,7 @@ Data-Juicer 中的算子分为以下 8 种类型。
 | [filter](#filter) | 56 | Filters out low-quality samples. 过滤低质量样本。 |
 | [formatter](#formatter) | 8 | Discovers, loads, and canonicalizes source data. 发现、加载、规范化原始数据。 |
 | [grouper](#grouper) | 3 | Group samples to batched samples. 将样本分组，每一组组成一个批量样本。 |
-| [mapper](#mapper) | 105 | Edits and transforms samples. 对数据样本进行编辑和转换。 |
+| [mapper](#mapper) | 107 | Edits and transforms samples. 对数据样本进行编辑和转换。 |
 | [pipeline](#pipeline) | 3 | Applies dataset-level processing; both input and output are datasets. 执行数据集级别的操作，输入和输出均为完整数据集。 |
 | [selector](#selector) | 5 | Selects top samples based on ranking. 基于排序选取高质量样本。 |
 
@@ -256,6 +256,8 @@ All the specific operators are listed below, each featured with several capabili
 | sdxl_prompt2prompt_mapper | 🔤Text 🚀GPU 🟢Stable | Generates pairs of similar images using the SDXL model. 使用SDXL模型生成成对的相似图像。 | [info](operators/mapper/sdxl_prompt2prompt_mapper.md) | - |
 | sentence_augmentation_mapper | 🔤Text 🚀GPU 🧩HF 🟢Stable | Augments sentences by generating enhanced versions using a Hugging Face model. 通过使用拥抱面部模型生成增强版本来增强句子。 | [info](operators/mapper/sentence_augmentation_mapper.md) | - |
 | sentence_split_mapper | 🔤Text 💻CPU 🟢Stable | Splits text samples into individual sentences based on the specified language. 根据指定的语言将文本样本拆分为单个句子。 | [info](operators/mapper/sentence_split_mapper.md) | - |
+| smiles_augmentation_mapper | 🔤Text 💻CPU 🟡Beta | Generates randomized but equivalent SMILES strings for molecular augmentation. 生成随机但等价的 SMILES 写法，用于分子样本增强。 | [info](operators/mapper/smiles_augmentation_mapper.md) | - |
+| smiles_captioning_mapper | 🔤Text 💻CPU 🔗API 🟡Beta | Generates molecule descriptions from SMILES strings with an API model. 使用 API 模型根据 SMILES 生成分子文本描述。 | [info](operators/mapper/smiles_captioning_mapper.md) | - |
 | text_chunk_mapper | 🔤Text 💻CPU 🔗API 🟢Stable | Split input text into chunks based on specified criteria. 根据指定的条件将输入文本拆分为块。 | [info](operators/mapper/text_chunk_mapper.md) | - |
 | text_tagging_by_prompt_mapper | 🔤Text 🚀GPU 🌊vLLM 🧩HF 🟡Beta | Mapper to generate text tags using prompt with LLM. Mapper使用带有LLM的prompt生成文本标记。 | [info](operators/mapper/text_tagging_by_prompt_mapper.md) | - |
 | vggt_mapper | 🎬Video 🚀GPU 🟡Beta | Input a video of a single scene, and use VGGT to extract information including Camera Pose, Depth Maps, Point Maps, and 3D Point Tracks. 输入单个场景的视频，并使用VGGT提取包括相机姿态、深度图、点图和3D点轨迹的信息。 | [info](operators/mapper/vggt_mapper.md) | - |

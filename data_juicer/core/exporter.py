@@ -257,7 +257,7 @@ class Exporter:
                     if self.storage_options is not None:
                         export_kwargs["storage_options"] = self.storage_options
                     if suffix == "iceberg":
-                         export_kwargs["export_extra_args"] = self.export_extra_args
+                        export_kwargs["export_extra_args"] = self.export_extra_args
                     pool.apply_async(
                         export_method,
                         args=(
@@ -367,7 +367,7 @@ class Exporter:
             logger.warning(
                 f"Iceberg target unavailable ({e.__class__.__name__}). Fallback to exporting to {export_path}..."
             )
-            import pyarrow as pa
+
             # Get pyarrow schema from HF Dataset
             schema = dataset.features.arrow_schema
             logger.info(f"Creating new Iceberg table {table_identifier} with schema: {schema}")
@@ -382,6 +382,7 @@ class Exporter:
         if use_iceberg:
             try:
                 import daft
+
                 # convert huggingface dataset to daft dataframe
                 df = daft.from_arrow(dataset.data.table)
                 table = catalog.load_table(table_identifier)

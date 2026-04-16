@@ -81,6 +81,8 @@ from .s3_upload_file_mapper import S3UploadFileMapper
 from .sdxl_prompt2prompt_mapper import SDXLPrompt2PromptMapper
 from .sentence_augmentation_mapper import SentenceAugmentationMapper
 from .sentence_split_mapper import SentenceSplitMapper
+from .smiles_augmentation_mapper import SmilesAugmentationMapper
+from .smiles_captioning_mapper import SmilesCaptioningMapper
 from .text_chunk_mapper import TextChunkMapper
 from .text_tagging_by_prompt_mapper import TextTaggingByPromptMapper
 from .vggt_mapper import VggtMapper
@@ -193,6 +195,8 @@ __all__ = [
     "SDXLPrompt2PromptMapper",
     "SentenceAugmentationMapper",
     "SentenceSplitMapper",
+    "SmilesAugmentationMapper",
+    "SmilesCaptioningMapper",
     "TextChunkMapper",
     "TextTaggingByPromptMapper",
     "VggtMapper",

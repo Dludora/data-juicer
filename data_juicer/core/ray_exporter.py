@@ -268,6 +268,7 @@ class RayExporter:
                 f"Iceberg target unavailable ({e.__class__.__name__}). Fallback to exporting to {export_path}..."
             )
             import pyarrow as pa
+
             schema = pa.Schema.from_pandas(dataset.limit(1).to_pandas())
             logger.info(f"Creating new Iceberg table {table_identifier} with schema: {schema}")
             try:
