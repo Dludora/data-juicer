@@ -25,6 +25,7 @@ class RayExporter:
         "webdataset",
         "lance",
         "iceberg",
+        "paimon",
         # 'images',
         # 'numpy',
     }
@@ -307,6 +308,103 @@ class RayExporter:
             fallback_kwargs["export_format"] = suffix
             return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
 
+    @staticmethod
+    def write_paimon(dataset, export_path, **kwargs):
+        """
+        Export method for paimon target tables.
+        Prefers distributed Ray writes when supported by pypaimon and falls
+        back to arrow-based commit for older versions.
+        """
+        export_extra_args = kwargs.get("export_extra_args", {})
+        catalog_options = export_extra_args.get("catalog_options", {})
+        table_identifier = export_extra_args.get("table_identifier", export_path)
+        schema_kwargs = export_extra_args.get("schema_kwargs", {})
+        write_options = {
+            key: value
+            for key, value in export_extra_args.items()
+            if key
+            not in {
+                "catalog_options",
+                "table_identifier",
+                "schema_kwargs",
+                "overwrite",
+                "overwrite_partition",
+                "filesystem",
+            }
+        }
+
+        table_write = None
+        table_commit = None
+
+        try:
+            import pyarrow as pa
+            from pypaimon import Schema
+            from pypaimon.catalog.catalog_factory import CatalogFactory
+
+            catalog = CatalogFactory.create(catalog_options)
+            try:
+                table = catalog.get_table(table_identifier)
+                logger.info(f"Paimon table {table_identifier} exists. Writing to Paimon.")
+            except Exception as e:
+                logger.warning(
+                    f"Paimon target unavailable ({e.__class__.__name__}). Trying to create table {table_identifier}..."
+                )
+                pa_schema = pa.Schema.from_pandas(dataset.limit(1).to_pandas())
+                if hasattr(Schema, "from_pyarrow_schema"):
+                    schema = Schema.from_pyarrow_schema(pa_schema=pa_schema, **schema_kwargs)
+                else:
+                    schema = Schema(pa_schema=pa_schema, **schema_kwargs)
+                catalog.create_table(table_identifier, schema=schema, ignore_if_exists=True)
+                table = catalog.get_table(table_identifier)
+
+            write_builder = table.new_batch_write_builder()
+            overwrite = export_extra_args.get("overwrite", False)
+            overwrite_partition = export_extra_args.get("overwrite_partition")
+            if overwrite:
+                if overwrite_partition is None:
+                    write_builder = write_builder.overwrite()
+                else:
+                    write_builder = write_builder.overwrite(overwrite_partition)
+
+            table_write = write_builder.new_write()
+
+            if hasattr(table_write, "write_ray"):
+                filtered_kwargs = filter_arguments(table_write.write_ray, write_options)
+                return table_write.write_ray(dataset, **filtered_kwargs)
+
+            table_commit = write_builder.new_commit()
+            arrow_table = dataset.to_arrow()
+            table_write.write_arrow(arrow_table)
+            commit_messages = table_write.prepare_commit()
+            table_commit.commit(commit_messages)
+            return
+
+        except ImportError as e:
+            logger.error(f"Paimon export is unavailable ({e.__class__.__name__}: {e}). Fallback to file export...")
+        except Exception as e:
+            logger.error(f"Unexpected error writing Paimon: {e}. Fallback to file export...")
+        finally:
+            if table_write is not None and hasattr(table_write, "close"):
+                table_write.close()
+            if table_commit is not None and hasattr(table_commit, "close"):
+                table_commit.close()
+
+        suffix = os.path.splitext(export_path)[-1].strip(".").lower()
+        if not suffix:
+            suffix = "jsonl"
+            logger.warning(f"No suffix found in {export_path}, using default fallback: {suffix}")
+
+        logger.info(f"Falling back to file export. Format: [{suffix}], Path: [{export_path}]")
+
+        fallback_kwargs = {}
+        if "filesystem" in export_extra_args:
+            fallback_kwargs["filesystem"] = export_extra_args["filesystem"]
+        if suffix in ["json", "jsonl"]:
+            return RayExporter.write_json(dataset, export_path, **fallback_kwargs)
+        else:
+            fallback_kwargs["export_format"] = suffix
+            return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
+
     # suffix to export method
     @staticmethod
     def _router():
@@ -320,4 +418,5 @@ class RayExporter:
             "json": RayExporter.write_json,
             "webdataset": RayExporter.write_webdataset,
             "iceberg": RayExporter.write_iceberg,
+            "paimon": RayExporter.write_paimon,
         }

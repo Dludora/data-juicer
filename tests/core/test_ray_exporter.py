@@ -2,7 +2,10 @@ import copy
 import os
 import os.path as osp
 import shutil
+import sys
+import types
 import unittest
+from unittest.mock import MagicMock, patch
 
 from data_juicer.utils.unittest_utils import TEST_TAG, DataJuicerTestCaseBase
 from data_juicer.core.ray_exporter import RayExporter
@@ -322,6 +325,130 @@ class TestRayExporter(DataJuicerTestCaseBase):
                 import numpy as np
                 np.testing.assert_array_equal(arr, tgt_arr)
                 self.assertEqual(sampling_rate, tgt_sampling_rate)
+
+class TestRayExporterPaimon(DataJuicerTestCaseBase):
+    def _build_fake_paimon_modules(self, catalog_factory_create, schema_cls=None):
+        fake_pypaimon = types.ModuleType("pypaimon")
+        fake_pypaimon.__path__ = []
+        fake_pypaimon.Schema = schema_cls or MagicMock(name="Schema")
+
+        fake_pypaimon_catalog = types.ModuleType("pypaimon.catalog")
+        fake_pypaimon_catalog.__path__ = []
+        fake_pypaimon_catalog_factory = types.ModuleType("pypaimon.catalog.catalog_factory")
+        fake_pypaimon_catalog_factory.CatalogFactory = types.SimpleNamespace(create=catalog_factory_create)
+
+        fake_pypaimon.catalog = fake_pypaimon_catalog
+        fake_pypaimon_catalog.catalog_factory = fake_pypaimon_catalog_factory
+
+        return {
+            "pypaimon": fake_pypaimon,
+            "pypaimon.catalog": fake_pypaimon_catalog,
+            "pypaimon.catalog.catalog_factory": fake_pypaimon_catalog_factory,
+        }
+
+    def test_write_paimon_uses_write_ray_when_available(self):
+        dataset = MagicMock(name="ray_dataset")
+
+        table_write = MagicMock(name="table_write")
+        write_builder = MagicMock(name="write_builder")
+        write_builder.new_write.return_value = table_write
+
+        table = MagicMock(name="table")
+        table.new_batch_write_builder.return_value = write_builder
+
+        catalog = MagicMock(name="catalog")
+        catalog.get_table.return_value = table
+        mock_create = MagicMock(return_value=catalog)
+
+        fake_modules = self._build_fake_paimon_modules(mock_create)
+
+        export_extra_args = {
+            "catalog_options": {"metastore": "filesystem", "warehouse": "file:///tmp/warehouse"},
+            "table_identifier": "db.sample_table",
+            "concurrency": 4,
+            "ray_remote_args": {"num_cpus": 1},
+        }
+
+        with patch.dict(sys.modules, fake_modules):
+            RayExporter.write_paimon(dataset, "/tmp/fallback.jsonl", export_extra_args=export_extra_args)
+
+        mock_create.assert_called_once_with(export_extra_args["catalog_options"])
+        catalog.get_table.assert_called_once_with("db.sample_table")
+        table_write.write_ray.assert_called_once_with(
+            dataset,
+            concurrency=4,
+            ray_remote_args={"num_cpus": 1},
+        )
+        table_write.close.assert_called_once()
+        write_builder.new_commit.assert_not_called()
+
+    def test_write_paimon_falls_back_to_arrow_commit_when_write_ray_unavailable(self):
+        import pandas as pd
+
+        dataset = MagicMock(name="ray_dataset")
+        dataset.limit.return_value.to_pandas.return_value = pd.DataFrame({"dt": ["2024-01-01"], "value": ["x"]})
+        dataset.to_arrow.return_value = "arrow_table"
+
+        table_write = types.SimpleNamespace(
+            write_arrow=MagicMock(),
+            prepare_commit=MagicMock(return_value=["commit_msg"]),
+            close=MagicMock(),
+        )
+        table_commit = types.SimpleNamespace(commit=MagicMock(), close=MagicMock())
+        overwrite_builder = MagicMock(name="overwrite_builder")
+        overwrite_builder.new_write.return_value = table_write
+        overwrite_builder.new_commit.return_value = table_commit
+
+        write_builder = MagicMock(name="write_builder")
+        write_builder.overwrite.return_value = overwrite_builder
+
+        table = MagicMock(name="table")
+        table.new_batch_write_builder.return_value = write_builder
+
+        catalog = MagicMock(name="catalog")
+        catalog.get_table.side_effect = [ValueError("missing table"), table]
+        mock_create = MagicMock(return_value=catalog)
+
+        schema_cls = MagicMock(name="Schema")
+        schema_cls.from_pyarrow_schema = MagicMock(return_value="paimon_schema")
+
+        fake_modules = self._build_fake_paimon_modules(mock_create, schema_cls=schema_cls)
+
+        export_extra_args = {
+            "catalog_options": {"metastore": "filesystem", "warehouse": "file:///tmp/warehouse"},
+            "table_identifier": "db.sample_table",
+            "overwrite": True,
+            "schema_kwargs": {"partition_keys": ["dt"]},
+        }
+
+        with patch.dict(sys.modules, fake_modules):
+            RayExporter.write_paimon(dataset, "/tmp/fallback.parquet", export_extra_args=export_extra_args)
+
+        mock_create.assert_called_once_with(export_extra_args["catalog_options"])
+        schema_cls.from_pyarrow_schema.assert_called_once()
+        schema_call_kwargs = schema_cls.from_pyarrow_schema.call_args.kwargs
+        self.assertEqual(schema_call_kwargs["partition_keys"], ["dt"])
+        self.assertIn("pa_schema", schema_call_kwargs)
+        catalog.create_table.assert_called_once_with(
+            "db.sample_table",
+            schema="paimon_schema",
+            ignore_if_exists=True,
+        )
+        write_builder.overwrite.assert_called_once_with()
+        table_write.write_arrow.assert_called_once_with("arrow_table")
+        table_write.prepare_commit.assert_called_once_with()
+        table_commit.commit.assert_called_once_with(["commit_msg"])
+        table_write.close.assert_called_once()
+        table_commit.close.assert_called_once()
+
+    def test_write_paimon_falls_back_to_json_when_pypaimon_missing(self):
+        dataset = MagicMock(name="ray_dataset")
+
+        with patch.object(RayExporter, "write_json", return_value="json_fallback") as mock_write_json:
+            result = RayExporter.write_paimon(dataset, "/tmp/fallback.jsonl", export_extra_args={})
+
+        mock_write_json.assert_called_once_with(dataset, "/tmp/fallback.jsonl")
+        self.assertEqual(result, "json_fallback")
 
 
 if __name__ == '__main__':

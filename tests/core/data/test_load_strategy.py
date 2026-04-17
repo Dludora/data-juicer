@@ -26,6 +26,7 @@ from data_juicer.core.data.load_strategy import (
     RayDeltaDataLoadStrategy,
     RayHudiDataLoadStrategy,
     RayIcebergDataLoadStrategy,
+    RayPaimonDataLoadStrategy,
     DefaultS3DataLoadStrategy,
     RayS3DataLoadStrategy,
 )
@@ -1433,6 +1434,149 @@ class TestRayIcebergDataLoadStrategy(DataJuicerTestCaseBase):
             cfg=self.cfg,
         )
         self.assertIs(result, wrapped_dataset)
+
+
+class TestRayPaimonDataLoadStrategy(DataJuicerTestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.cfg = Namespace(text_keys=["text"])
+
+    def test_strategy_registration(self):
+        strategy_class = DataLoadStrategyRegistry.get_strategy_class(
+            executor_type="ray", data_type="remote", data_source="paimon"
+        )
+        self.assertIsNotNone(strategy_class)
+        self.assertEqual(strategy_class, RayPaimonDataLoadStrategy)
+
+    def test_load_data_creates_catalog_and_returns_ray_dataset(self):
+        raw_dataset = object()
+        wrapped_dataset = object()
+        splits = [object(), object()]
+
+        mock_to_ray = MagicMock(return_value=raw_dataset)
+        mock_table_read = MagicMock()
+        mock_table_read.to_ray = mock_to_ray
+
+        mock_scan_plan = MagicMock()
+        mock_scan_plan.splits.return_value = splits
+        mock_table_scan = MagicMock()
+        mock_table_scan.plan.return_value = mock_scan_plan
+
+        mock_read_builder = MagicMock()
+        mock_read_builder.new_scan.return_value = mock_table_scan
+        mock_read_builder.new_read.return_value = mock_table_read
+
+        mock_table = MagicMock()
+        mock_table.new_read_builder.return_value = mock_read_builder
+
+        mock_catalog = MagicMock()
+        mock_catalog.get_table.return_value = mock_table
+
+        mock_catalog_create = MagicMock(return_value=mock_catalog)
+
+        fake_pypaimon = types.ModuleType("pypaimon")
+        fake_pypaimon.__path__ = []
+        fake_pypaimon_catalog = types.ModuleType("pypaimon.catalog")
+        fake_pypaimon_catalog.__path__ = []
+        fake_pypaimon_catalog_factory = types.ModuleType("pypaimon.catalog.catalog_factory")
+        fake_pypaimon_catalog_factory.CatalogFactory = types.SimpleNamespace(create=mock_catalog_create)
+        fake_pypaimon.catalog = fake_pypaimon_catalog
+        fake_pypaimon_catalog.catalog_factory = fake_pypaimon_catalog_factory
+
+        mock_ray_dataset = MagicMock(return_value=wrapped_dataset)
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=mock_ray_dataset)
+
+        ds_config = {
+            "type": "remote",
+            "source": "paimon",
+            "table_identifier": "db.sample_table",
+            "path": "warehouse/sample_table",
+            "catalog_options": {
+                "metastore": "filesystem",
+                "warehouse": "oss://bucket/path",
+            },
+        }
+        strategy = RayPaimonDataLoadStrategy(copy.deepcopy(ds_config), self.cfg)
+
+        with patch.dict(
+            sys.modules,
+            {
+                "pypaimon": fake_pypaimon,
+                "pypaimon.catalog": fake_pypaimon_catalog,
+                "pypaimon.catalog.catalog_factory": fake_pypaimon_catalog_factory,
+                "data_juicer.core.data.ray_dataset": fake_ray_dataset_module,
+            },
+        ):
+            result = strategy.load_data()
+
+        mock_catalog_create.assert_called_once_with(ds_config["catalog_options"])
+        mock_catalog.get_table.assert_called_once_with("db.sample_table")
+        mock_to_ray.assert_called_once_with(splits)
+        mock_ray_dataset.assert_called_once_with(
+            raw_dataset,
+            dataset_path="warehouse/sample_table",
+            cfg=self.cfg,
+        )
+        self.assertIs(result, wrapped_dataset)
+
+    def test_load_data_raises_runtime_error_when_pypaimon_missing(self):
+        real_import = __import__
+
+        def raising_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "pypaimon.catalog.catalog_factory" or name.startswith("pypaimon"):
+                raise ImportError("No module named 'pypaimon'")
+            return real_import(name, globals, locals, fromlist, level)
+
+        ds_config = {
+            "type": "remote",
+            "source": "paimon",
+            "table_identifier": "db.sample_table",
+            "catalog_options": {"metastore": "filesystem"},
+        }
+        strategy = RayPaimonDataLoadStrategy(ds_config, self.cfg)
+
+        with patch("builtins.__import__", side_effect=raising_import):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("pypaimon is not installed", str(ctx.exception))
+
+    def test_load_data_wraps_catalog_errors(self):
+        mock_catalog_create = MagicMock(side_effect=ValueError("catalog unavailable"))
+
+        fake_pypaimon = types.ModuleType("pypaimon")
+        fake_pypaimon.__path__ = []
+        fake_pypaimon_catalog = types.ModuleType("pypaimon.catalog")
+        fake_pypaimon_catalog.__path__ = []
+        fake_pypaimon_catalog_factory = types.ModuleType("pypaimon.catalog.catalog_factory")
+        fake_pypaimon_catalog_factory.CatalogFactory = types.SimpleNamespace(create=mock_catalog_create)
+        fake_pypaimon.catalog = fake_pypaimon_catalog
+        fake_pypaimon_catalog.catalog_factory = fake_pypaimon_catalog_factory
+
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=MagicMock())
+
+        ds_config = {
+            "type": "remote",
+            "source": "paimon",
+            "table_identifier": "db.sample_table",
+            "catalog_options": {"metastore": "filesystem"},
+        }
+        strategy = RayPaimonDataLoadStrategy(ds_config, self.cfg)
+
+        with patch.dict(
+            sys.modules,
+            {
+                "pypaimon": fake_pypaimon,
+                "pypaimon.catalog": fake_pypaimon_catalog,
+                "pypaimon.catalog.catalog_factory": fake_pypaimon_catalog_factory,
+                "data_juicer.core.data.ray_dataset": fake_ray_dataset_module,
+            },
+        ):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("Failed to load Paimon table db.sample_table in Ray", str(ctx.exception))
+        self.assertIn("catalog unavailable", str(ctx.exception))
 
 
 class TestRayDeltaDataLoadStrategy(DataJuicerTestCaseBase):

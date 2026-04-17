@@ -1087,3 +1087,50 @@ class RayHudiDataLoadStrategy(RayDataLoadStrategy):
 
         except Exception as e:
             raise RuntimeError(f"Failed to load Hudi table from {table_uri} in Ray. " f"Error: {str(e)}")
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "paimon")
+class RayPaimonDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for Paimon tables for RayExecutor
+    Uses pypaimon catalog + table read builder to convert splits to Ray Dataset
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["table_identifier", "catalog_options"],
+        "optional_fields": ["path"],
+        "field_types": {"table_identifier": str, "catalog_options": dict, "path": str},
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        table_identifier = self.ds_config["table_identifier"]
+        catalog_options = dict(self.ds_config["catalog_options"])
+        path = self.ds_config.get("path", table_identifier)
+
+        logger.info(f"Loading Paimon table... from table: {table_identifier}")
+        if self.ds_config.get("path"):
+            logger.info(f"Relative path for dataset: {self.ds_config['path']}")
+        try:
+            from pypaimon.catalog.catalog_factory import CatalogFactory
+
+            catalog = CatalogFactory.create(catalog_options)
+            table = catalog.get_table(table_identifier)
+
+            read_builder = table.new_read_builder()
+            table_scan = read_builder.new_scan()
+            splits = table_scan.plan().splits()
+            table_read = read_builder.new_read()
+            dataset = table_read.to_ray(splits)
+
+            return RayDataset(dataset, dataset_path=path, cfg=self.cfg)
+
+        except ImportError:
+            raise RuntimeError(
+                "pypaimon is not installed. Please install it via `pip install pypaimon` "
+                "to use Paimon data load strategy in Ray."
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to load Paimon table {table_identifier} in Ray. " f"Error: {str(e)}")
