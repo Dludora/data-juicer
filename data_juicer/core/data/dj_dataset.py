@@ -32,7 +32,16 @@ class DJDataset(ABC):
     """Base dataset of DJ"""
 
     @abstractmethod
-    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None) -> DJDataset:  # TODO: add type hint
+    def process(
+        self,
+        operators,
+        *,
+        exporter=None,
+        checkpointer=None,
+        tracer=None,
+        metadata_manager=None,
+        partition_id: int = 0,
+    ) -> DJDataset:  # TODO: add type hint
         """process a list of operators on the dataset."""
 
     @abstractmethod
@@ -261,6 +270,8 @@ class NestedDataset(Dataset, DJDataset):
         tracer=None,
         adapter=None,
         open_monitor=True,
+        metadata_manager=None,
+        partition_id: int = 0,
     ):
         # Local import to avoid logger being serialized in multiprocessing
         from loguru import logger
@@ -290,6 +301,16 @@ class NestedDataset(Dataset, DJDataset):
                 mp_context = ["forkserver", "spawn"] if (op.use_cuda() or op._name in unforkable_operators) else None
                 setup_mp(mp_context)
 
+                op_index = idx - 1
+                input_rows = len(dataset)
+                if metadata_manager is not None:
+                    metadata_manager.start_operator(
+                        op=op,
+                        op_index=op_index,
+                        input_dataset_obj=dataset,
+                        partition_id=partition_id,
+                    )
+
                 start = time()
                 # run single op
                 run_args = {
@@ -307,6 +328,18 @@ class NestedDataset(Dataset, DJDataset):
                 if open_monitor:
                     resource_util_list.append(resource_util_per_op)
                 end = time()
+                output_rows = len(dataset)
+                if metadata_manager is not None:
+                    metadata_manager.complete_operator(
+                        op_index=op_index,
+                        output_dataset_obj=dataset,
+                        partition_id=partition_id,
+                        metrics={
+                            "duration_seconds": end - start,
+                            "input_rows": input_rows,
+                            "output_rows": output_rows,
+                        },
+                    )
                 logger.info(
                     f"[{idx}/{op_num}] OP [{op._name}] Done in " f"{end - start:.3f}s. Left {len(dataset)} samples."
                 )
@@ -317,10 +350,17 @@ class NestedDataset(Dataset, DJDataset):
                         f"Analyze small batch for the current dataset after " f"OP [{op._name}] for insight mining..."
                     )
                     adapter.analyze_small_batch(dataset, f"{idx}_{op._name}")
-        except:  # noqa: E722
+        except BaseException as error:
+            if metadata_manager is not None:
+                metadata_manager.fail_operator(
+                    op_index=op_index,
+                    error=error if isinstance(error, Exception) else Exception(str(error)),
+                    output_dataset_obj=dataset if dataset is not None else None,
+                    partition_id=partition_id,
+                )
             logger.error(f"An error occurred during Op [{op._name}].")
             traceback.print_exc()
-            exit(1)
+            raise
         finally:
             if checkpointer and dataset is not self:
                 logger.info("Writing checkpoint of dataset processed by " "last op...")

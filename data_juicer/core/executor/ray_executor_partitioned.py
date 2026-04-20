@@ -26,6 +26,7 @@ from data_juicer.core.data.ray_dataset import RayDataset
 from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin, EventType
+from data_juicer.core.metadata import MetadataManager
 from data_juicer.core.ray_exporter import RayExporter
 from data_juicer.ops import load_ops
 from data_juicer.ops.op_fusion import fuse_operators
@@ -166,6 +167,7 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
+        self.metadata_manager = MetadataManager(self, self.cfg, self.executor_type)
 
         # Override strategy methods for partitioned execution
         self._override_strategy_methods()
@@ -392,23 +394,6 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
         else:
             logger.info("🔄 Resuming partitioned processing from checkpoints...")
 
-        # Log job start event
-        self._log_event(
-            event_type=EventType.JOB_START,
-            message=(
-                "Starting partitioned dataset processing"
-                if not is_resuming
-                else "Resuming partitioned dataset processing"
-            ),
-            metadata={
-                "num_partitions": self.num_partitions,
-                "checkpoint_enabled": self.ckpt_manager.checkpoint_enabled,
-                "is_resuming": is_resuming,
-                "job_id": self.job_id,
-                "user_provided_job_id": user_provided_job_id,
-            },
-        )
-
         # Note: Config validation is handled in _resume_job() if resuming
 
         # Load the full dataset using a single DatasetBuilder
@@ -430,44 +415,43 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
         # Pass ops to avoid redundant loading
         self._initialize_dag_execution(self.cfg, ops=ops)
 
-        # Log job start with DAG context
-        # Handle both dataset_path (string) and dataset (dict) configurations
-        dataset_info = {}
-        if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
-            dataset_info["dataset_path"] = self.cfg.dataset_path
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_info["dataset"] = self.cfg.dataset
+        self.metadata_manager.start_pipeline(
+            input_dataset_obj=dataset,
+            operators=ops,
+            extra={
+                "is_resuming": is_resuming,
+                "user_provided_job_id": user_provided_job_id,
+                "partition_mode": self.partition_mode,
+                "num_partitions": self.num_partitions,
+                "checkpoint_enabled": self.ckpt_manager.checkpoint_enabled,
+            },
+        )
 
-        job_config = {
-            **dataset_info,
-            "work_dir": self.work_dir,
-            "executor_type": self.executor_type,
-            "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
-            "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
-            "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
-        }
-        self.log_job_start(job_config, len(ops))
+        try:
+            # Detect convergence points for global operations
+            convergence_points = self._detect_convergence_points(self.cfg)
 
-        # Detect convergence points for global operations
-        convergence_points = self._detect_convergence_points(self.cfg)
+            if convergence_points:
+                logger.info(f"Found convergence points at operations: {convergence_points}")
+                final_dataset = self._process_with_convergence(dataset, ops, convergence_points)
+            else:
+                logger.info("No convergence points found, processing with simple partitioning")
+                final_dataset = self._process_with_simple_partitioning(dataset, ops)
 
-        if convergence_points:
-            logger.info(f"Found convergence points at operations: {convergence_points}")
-            final_dataset = self._process_with_convergence(dataset, ops, convergence_points)
-        else:
-            logger.info("No convergence points found, processing with simple partitioning")
-            final_dataset = self._process_with_simple_partitioning(dataset, ops)
-
-        # Export final dataset
-        logger.info("Exporting final dataset...")
-        self.exporter.export(final_dataset.data, columns=columns)
+            # Export final dataset
+            logger.info("Exporting final dataset...")
+            self.exporter.export(final_dataset.data, columns=columns)
+        except BaseException as error:
+            self.metadata_manager.fail_pipeline(
+                error if isinstance(error, Exception) else Exception(str(error)),
+                output_dataset_obj=dataset,
+            )
+            raise
 
         job_duration = time.time() - job_start_time
         logger.info(f"✅ Job completed successfully in {job_duration:.2f}s")
         logger.info(f"📁 Output saved to: {self.cfg.export_path}")
-
-        # Log job completion with DAG context
-        self.log_job_complete(job_duration, self.cfg.export_path)
+        self.metadata_manager.complete_pipeline(output_dataset_obj=final_dataset)
 
         if skip_return:
             return None
@@ -576,17 +560,11 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
         if post_convergence_ops:
             logger.info("Processing merged dataset with global operations...")
             merged_ray_dataset = RayDataset(merged_dataset, cfg=self.cfg)
-
-            # Pre-execute DAG monitoring (log operation start events)
-            if self.pipeline_dag:
-                self._pre_execute_operations_with_dag_monitoring(post_convergence_ops, partition_id=0)
-
-            # Execute operations
-            final_dataset = merged_ray_dataset.process(post_convergence_ops)
-
-            # Post-execute DAG monitoring (log operation completion events)
-            if self.pipeline_dag:
-                self._post_execute_operations_with_dag_monitoring(post_convergence_ops, partition_id=0)
+            final_dataset = merged_ray_dataset.process(
+                post_convergence_ops,
+                metadata_manager=self.metadata_manager,
+                partition_id=0,
+            )
 
             logger.info("Global operations completed. Final dataset ready for export")
             return final_dataset
@@ -603,31 +581,14 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
 
         if not self.ckpt_manager.checkpoint_enabled:
             logger.info(f"Checkpointing disabled, processing all operations at once for partition {partition_id}")
-
-            # Get input row count before processing
-            input_rows = dataset.data.count()
-            start_time = time.time()
-
-            # Pre-execute DAG monitoring (log operation start events)
-            if self.pipeline_dag:
-                self._pre_execute_operations_with_dag_monitoring(ops, partition_id=partition_id)
-
-            # Execute operations (lazy)
-            processed_dataset = dataset.process(ops)
+            processed_dataset = dataset.process(
+                ops,
+                metadata_manager=self.metadata_manager,
+                partition_id=partition_id,
+            )
 
             # Force materialization to get real execution (required for union anyway)
             processed_dataset.data = processed_dataset.data.materialize()
-
-            # Get metrics after execution
-            duration = time.time() - start_time
-            output_rows = processed_dataset.data.count()
-
-            logger.info(f"Partition {partition_id}: Processed {input_rows}→{output_rows} rows in {duration:.2f}s")
-
-            # Post-execute DAG monitoring with real metrics
-            if self.pipeline_dag:
-                metrics = {"duration": duration, "input_rows": input_rows, "output_rows": output_rows}
-                self._post_execute_operations_with_dag_monitoring(ops, partition_id=partition_id, metrics=metrics)
 
             return processed_dataset
 
@@ -684,35 +645,14 @@ class PartitionedRayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin)
                 logger.info(
                     f"Partition {partition_id}: Processing {len(group_ops)} operations in group {group_idx + 1}"
                 )
-
-                # Get input row count before processing
-                input_rows = current_dataset.data.count()
-                start_time = time.time()
-
-                # Pre-execute DAG monitoring (log operation start events)
-                if self.pipeline_dag:
-                    self._pre_execute_operations_with_dag_monitoring(group_ops, partition_id=partition_id)
-
-                # Execute operations (lazy)
-                current_dataset = current_dataset.process(group_ops)
+                current_dataset = current_dataset.process(
+                    group_ops,
+                    metadata_manager=self.metadata_manager,
+                    partition_id=partition_id,
+                )
 
                 # Force materialization (required for checkpointing anyway)
                 current_dataset.data = current_dataset.data.materialize()
-
-                # Get metrics after execution
-                duration = time.time() - start_time
-                output_rows = current_dataset.data.count()
-
-                logger.info(
-                    f"Partition {partition_id}, group {group_idx + 1}: Processed {input_rows}→{output_rows} rows in {duration:.2f}s"
-                )
-
-                # Post-execute DAG monitoring with real metrics
-                if self.pipeline_dag:
-                    metrics = {"duration": duration, "input_rows": input_rows, "output_rows": output_rows}
-                    self._post_execute_operations_with_dag_monitoring(
-                        group_ops, partition_id=partition_id, metrics=metrics
-                    )
 
             # Checkpoint after the last operation in the group
             if group_ops:

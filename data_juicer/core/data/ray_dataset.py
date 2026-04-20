@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import time
 from functools import partial
 from typing import Any, Dict, List, Literal, Optional, Union
 
@@ -155,7 +156,16 @@ class RayDataset(DJDataset):
 
         return [row[column] for row in self.data.take()]
 
-    def process(self, operators, *, exporter=None, checkpointer=None, tracer=None) -> DJDataset:
+    def process(
+        self,
+        operators,
+        *,
+        exporter=None,
+        checkpointer=None,
+        tracer=None,
+        metadata_manager=None,
+        partition_id: int = 0,
+    ) -> DJDataset:
         if operators is None:
             return self
         if not isinstance(operators, list):
@@ -190,7 +200,22 @@ class RayDataset(DJDataset):
             return self
         cached_columns = set(columns_result)
 
-        for op in operators:
+        for op_index, op in enumerate(operators):
+            input_rows = None
+            if metadata_manager is not None:
+                metadata_manager.start_operator(
+                    op=op,
+                    op_index=op_index,
+                    input_dataset_obj=self,
+                    partition_id=partition_id,
+                )
+                if metadata_manager.resolver.capture_rows:
+                    try:
+                        input_rows = self.count()
+                    except Exception:
+                        input_rows = None
+
+            op_start = time.time()
             try:
                 cached_columns = self._run_single_op(op, cached_columns, tracer=tracer)
             except Exception as e:
@@ -201,10 +226,45 @@ class RayDataset(DJDataset):
                     try:
                         op.runtime_env = None
                         cached_columns = self._run_single_op(op, cached_columns, tracer=tracer)
+                    except Exception as fallback_error:
+                        if metadata_manager is not None:
+                            metadata_manager.fail_operator(
+                                op_index=op_index,
+                                error=fallback_error,
+                                output_dataset_obj=self,
+                                partition_id=partition_id,
+                                metrics={"retry_count": 1},
+                            )
+                        raise
                     finally:
                         op.runtime_env = original_runtime_env
                 else:
+                    if metadata_manager is not None:
+                        metadata_manager.fail_operator(
+                            op_index=op_index,
+                            error=e,
+                            output_dataset_obj=self,
+                            partition_id=partition_id,
+                        )
                     raise e
+            output_rows = None
+            if metadata_manager is not None:
+                if metadata_manager.resolver.capture_rows:
+                    try:
+                        output_rows = self.count()
+                    except Exception:
+                        output_rows = None
+                metrics = {"duration_seconds": time.time() - op_start}
+                if input_rows is not None:
+                    metrics["input_rows"] = input_rows
+                if output_rows is not None:
+                    metrics["output_rows"] = output_rows
+                metadata_manager.complete_operator(
+                    op_index=op_index,
+                    output_dataset_obj=self,
+                    partition_id=partition_id,
+                    metrics=metrics,
+                )
         return self
 
     def _run_single_op(self, op, cached_columns=None, tracer=None):
@@ -341,12 +401,12 @@ class RayDataset(DJDataset):
             else:
                 logger.error("Ray executor only support Filter, Mapper, Deduplicator and Pipeline OPs for now")
                 raise NotImplementedError
-        except:  # noqa: E722
+        except BaseException:  # noqa: E722
             logger.error(f"An error occurred during Op [{op._name}].")
             import traceback
 
             traceback.print_exc()
-            exit(1)
+            raise
 
         return cached_columns
 

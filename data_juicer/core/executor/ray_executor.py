@@ -11,6 +11,7 @@ from data_juicer.core.data.dataset_builder import DatasetBuilder
 from data_juicer.core.executor import ExecutorBase
 from data_juicer.core.executor.dag_execution_mixin import DAGExecutionMixin
 from data_juicer.core.executor.event_logging_mixin import EventLoggingMixin
+from data_juicer.core.metadata import MetadataManager
 from data_juicer.core.ray_exporter import RayExporter
 from data_juicer.core.tracer.ray_tracer import RayTracer
 from data_juicer.ops import OPEnvManager, load_ops
@@ -69,6 +70,7 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
 
         # Initialize DAGExecutionMixin for AST/DAG functionality
         DAGExecutionMixin.__init__(self)
+        self.metadata_manager = MetadataManager(self, self.cfg, self.executor_type)
 
         # init ray
         logger.info("Initializing Ray ...")
@@ -168,23 +170,10 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
         # Initialize DAG execution planning (pass ops to avoid redundant loading)
         self._initialize_dag_execution(self.cfg, ops=ops)
 
-        # Log job start with DAG context
-        # Handle both dataset_path (string) and dataset (dict) configurations
-        dataset_info = {}
-        if hasattr(self.cfg, "dataset_path") and self.cfg.dataset_path:
-            dataset_info["dataset_path"] = self.cfg.dataset_path
-        if hasattr(self.cfg, "dataset") and self.cfg.dataset:
-            dataset_info["dataset"] = self.cfg.dataset
-
-        job_config = {
-            **dataset_info,
-            "work_dir": self.work_dir,
-            "executor_type": self.executor_type,
-            "dag_node_count": len(self.pipeline_dag.nodes) if self.pipeline_dag else 0,
-            "dag_edge_count": len(self.pipeline_dag.edges) if self.pipeline_dag else 0,
-            "parallel_groups_count": len(self.pipeline_dag.parallel_groups) if self.pipeline_dag else 0,
-        }
-        self.log_job_start(job_config, len(ops))
+        self.metadata_manager.start_pipeline(
+            input_dataset_obj=dataset,
+            operators=ops,
+        )
 
         if self.cfg.op_fusion:
             logger.info(f"Start OP fusion and reordering with strategy " f"[{self.cfg.fusion_strategy}]...")
@@ -194,41 +183,29 @@ class RayExecutor(ExecutorBase, DAGExecutionMixin, EventLoggingMixin):
             # 3. data process with DAG monitoring
             logger.info("Processing data with DAG monitoring...")
             tstart = time.time()
+            try:
+                # Execute operations (Ray executor uses simple dataset.process)
+                dataset = dataset.process(ops, tracer=self.tracer, metadata_manager=self.metadata_manager)
 
-            # Get input row count before processing
-            input_rows = dataset.data.count()
-            start_time = time.time()
+                # Force materialization to get real execution
+                logger.info("Materializing dataset to collect real metrics...")
+                dataset.data = dataset.data.materialize()
 
-            # Pre-execute DAG monitoring (log operation start events)
-            if self.pipeline_dag:
-                self._pre_execute_operations_with_dag_monitoring(ops)
+                # 4. data export
+                if not skip_export:
+                    logger.info("Exporting dataset to disk...")
+                    self.exporter.export(dataset.data, columns=columns)
+            except BaseException as error:
+                self.metadata_manager.fail_pipeline(
+                    error if isinstance(error, Exception) else Exception(str(error)),
+                    output_dataset_obj=dataset,
+                )
+                raise
 
-            # Execute operations (Ray executor uses simple dataset.process)
-            dataset = dataset.process(ops, tracer=self.tracer)
-
-            # Force materialization to get real execution
-            logger.info("Materializing dataset to collect real metrics...")
-            dataset.data = dataset.data.materialize()
-
-            # Get metrics after execution
-            duration = time.time() - start_time
-            output_rows = dataset.data.count()
-
-            # Post-execute DAG monitoring (log operation completion events with real metrics)
-            if self.pipeline_dag:
-                metrics = {"duration": duration, "input_rows": input_rows, "output_rows": output_rows}
-                self._post_execute_operations_with_dag_monitoring(ops, metrics=metrics)
-
-            # 4. data export
-            if not skip_export:
-                logger.info("Exporting dataset to disk...")
-                self.exporter.export(dataset.data, columns=columns)
             tend = time.time()
             logger.info(f"All Ops are done in {tend - tstart:.3f}s.")
 
-        # Log job completion with DAG context
-        job_duration = time.time() - tstart
-        self.log_job_complete(job_duration, self.cfg.export_path)
+        self.metadata_manager.complete_pipeline(output_dataset_obj=dataset)
 
         # 5. finalize the tracer results
         # Finalize sample-level traces after all operators have finished

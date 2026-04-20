@@ -240,6 +240,29 @@ class DAGExecutionMixin:
 
         return self.dag_execution_strategy.get_dag_node_id(op_name, op_idx, **kwargs)
 
+    def get_dag_node_id(self, op_name: str, op_idx: int, partition_id: int = 0) -> Optional[str]:
+        """Public helper for metadata consumers to resolve a DAG node ID."""
+        return self._get_dag_node_for_operation(op_name, op_idx, partition_id=partition_id)
+
+    def get_dag_metadata(self) -> Dict[str, Any]:
+        """Get a lightweight summary of the current DAG state."""
+        if not self.pipeline_dag:
+            return {
+                "enabled": False,
+                "node_count": 0,
+                "edge_count": 0,
+                "parallel_groups_count": 0,
+                "execution_plan_path": None,
+            }
+
+        return {
+            "enabled": True,
+            "node_count": len(self.pipeline_dag.nodes),
+            "edge_count": len(self.pipeline_dag.edges),
+            "parallel_groups_count": len(self.pipeline_dag.parallel_groups),
+            "execution_plan_path": self.get_dag_execution_plan_path(),
+        }
+
     def _mark_dag_node_started(self, node_id: str) -> None:
         """Mark a DAG node as started."""
         if not self.pipeline_dag or node_id not in self.pipeline_dag.nodes:

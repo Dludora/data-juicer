@@ -480,6 +480,36 @@ def build_base_parser() -> ArgumentParser:
         default=True,
         help="Enable event logging for job tracking and resumption",
     )
+    parser.add_argument(
+        "--metadata.enabled",
+        type=bool,
+        default=True,
+        help="Enable metadata collection and provider fan-out during pipeline execution",
+    )
+    parser.add_argument(
+        "--metadata.capture.schema",
+        type=bool,
+        default=True,
+        help="Capture dataset schema snapshots for pipeline and operator contexts",
+    )
+    parser.add_argument(
+        "--metadata.capture.rows",
+        type=bool,
+        default=False,
+        help="Capture dataset row counts for pipeline and operator contexts",
+    )
+    parser.add_argument(
+        "--metadata.providers",
+        type=List[Dict],
+        default=[{"name": "event_log", "enabled": True}],
+        help="Metadata providers configuration. Event log provider is enabled by default.",
+    )
+    parser.add_argument(
+        "--metadata.namespace",
+        type=str,
+        default=None,
+        help="Optional metadata namespace used by external providers",
+    )
     # Logging configuration
     parser.add_argument(
         "--max_log_size_mb",
