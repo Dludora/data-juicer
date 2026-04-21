@@ -27,6 +27,8 @@ from data_juicer.core.data.load_strategy import (
     RayHudiDataLoadStrategy,
     RayIcebergDataLoadStrategy,
     RayPaimonDataLoadStrategy,
+    DefaultGravitinoDataLoadStrategy,
+    RayGravitinoDataLoadStrategy,
     DefaultS3DataLoadStrategy,
     RayS3DataLoadStrategy,
 )
@@ -1577,6 +1579,431 @@ class TestRayPaimonDataLoadStrategy(DataJuicerTestCaseBase):
 
         self.assertIn("Failed to load Paimon table db.sample_table in Ray", str(ctx.exception))
         self.assertIn("catalog unavailable", str(ctx.exception))
+
+
+class TestDefaultGravitinoDataLoadStrategy(DataJuicerTestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.cfg = Namespace(text_keys=["text"])
+
+    def _build_mock_session(self, payload):
+        mock_response = MagicMock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = payload
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_response
+        return mock_session
+
+    def test_strategy_registration(self):
+        strategy_class = DataLoadStrategyRegistry.get_strategy_class(
+            executor_type="default", data_type="remote", data_source="gravitino"
+        )
+        self.assertIsNotNone(strategy_class)
+        self.assertEqual(strategy_class, DefaultGravitinoDataLoadStrategy)
+
+    @patch("data_juicer.core.data.load_strategy.get_aws_credentials", return_value=(None, None, None, None))
+    def test_load_iceberg_data_success(self, _mock_get_credentials):
+        payload = {
+            "table": {
+                "provider": "lakehouse-iceberg",
+                "properties": {"format": "ICEBERG", "default-location-name": "default"},
+                "storageLocations": {"default": "file:/tmp/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        arrow_table = object()
+        hf_dataset = MagicMock(name="hf_dataset")
+        nested_dataset = MagicMock(name="nested_dataset")
+        unified_dataset = MagicMock(name="unified_dataset")
+
+        mock_table = MagicMock()
+        mock_table.scan.return_value.to_arrow.return_value = arrow_table
+        mock_catalog = MagicMock()
+        mock_catalog.load_table.return_value = mock_table
+        mock_hadoop_catalog = MagicMock(return_value=mock_catalog)
+
+        fake_pyiceberg = types.ModuleType("pyiceberg")
+        fake_pyiceberg.__path__ = []
+        fake_pyiceberg_catalog = types.ModuleType("pyiceberg.catalog")
+        fake_pyiceberg_catalog.__path__ = []
+        fake_pyiceberg_catalog_hadoop = types.ModuleType("pyiceberg.catalog.hadoop")
+        fake_pyiceberg_catalog_hadoop.HadoopCatalog = mock_hadoop_catalog
+        fake_pyiceberg.catalog = fake_pyiceberg_catalog
+        fake_pyiceberg_catalog.hadoop = fake_pyiceberg_catalog_hadoop
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+        }
+        strategy = DefaultGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch.dict(
+                sys.modules,
+                {
+                    "pyiceberg": fake_pyiceberg,
+                    "pyiceberg.catalog": fake_pyiceberg_catalog,
+                    "pyiceberg.catalog.hadoop": fake_pyiceberg_catalog_hadoop,
+                },
+            ),
+            patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=hf_dataset) as mock_dataset,
+            patch("data_juicer.core.data.NestedDataset", return_value=nested_dataset) as mock_nested,
+            patch("data_juicer.core.data.load_strategy.unify_format", return_value=unified_dataset) as mock_unify,
+        ):
+            result = strategy.load_data(num_proc=2)
+
+        mock_session.request.assert_called_once_with(
+            "GET",
+            "http://gravitino:8090/api/metalakes/demo_metalake/catalogs/demo_catalog/schemas/db/tables/sample_table",
+            timeout=30,
+        )
+        mock_hadoop_catalog.assert_called_once_with(
+            "gravitino_reader",
+            {"warehouse": "file:///tmp/warehouse/db.db"},
+        )
+        mock_catalog.load_table.assert_called_once_with("sample_table")
+        mock_dataset.assert_called_once_with(arrow_table)
+        mock_nested.assert_called_once_with(hf_dataset)
+        mock_unify.assert_called_once_with(
+            nested_dataset,
+            text_keys=["text"],
+            num_proc=2,
+            global_cfg=self.cfg,
+        )
+        self.assertIs(result, unified_dataset)
+
+    def test_load_data_rejects_non_iceberg(self):
+        payload = {
+            "table": {
+                "provider": "lakehouse-paimon",
+                "properties": {"format": "PAIMON", "default-location-name": "default"},
+                "storageLocations": {"default": "file:/tmp/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+        }
+        strategy = DefaultGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("only supports Iceberg tables", str(ctx.exception))
+
+    def test_load_data_raises_runtime_error_when_pyiceberg_missing(self):
+        payload = {
+            "table": {
+                "provider": "lakehouse-iceberg",
+                "properties": {"format": "ICEBERG", "default-location-name": "default"},
+                "storageLocations": {"default": "file:/tmp/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        real_import = __import__
+
+        def raising_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "pyiceberg.catalog.hadoop" or name.startswith("pyiceberg"):
+                raise ImportError("No module named 'pyiceberg'")
+            return real_import(name, globals, locals, fromlist, level)
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+        }
+        strategy = DefaultGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch("builtins.__import__", side_effect=raising_import),
+        ):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("pyiceberg is not installed", str(ctx.exception))
+
+
+class TestRayGravitinoDataLoadStrategy(DataJuicerTestCaseBase):
+    def setUp(self):
+        super().setUp()
+        self.cfg = Namespace(text_keys=["text"])
+
+    def _build_mock_session(self, payload):
+        mock_response = MagicMock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = payload
+        mock_session = MagicMock()
+        mock_session.request.return_value = mock_response
+        return mock_session
+
+    def test_strategy_registration(self):
+        strategy_class = DataLoadStrategyRegistry.get_strategy_class(
+            executor_type="ray", data_type="remote", data_source="gravitino"
+        )
+        self.assertIsNotNone(strategy_class)
+        self.assertEqual(strategy_class, RayGravitinoDataLoadStrategy)
+
+    @patch("data_juicer.core.data.load_strategy.get_aws_credentials")
+    def test_load_iceberg_data_success(self, mock_get_credentials):
+        mock_get_credentials.return_value = ("resolved_key", "resolved_secret", "resolved_token", "resolved_region")
+        payload = {
+            "table": {
+                "provider": "lakehouse-iceberg",
+                "properties": {"format": "ICEBERG", "default-location-name": "default"},
+                "storageLocations": {"default": "s3://bucket/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        arrow_table = object()
+        raw_dataset = object()
+        wrapped_dataset = object()
+
+        mock_from_arrow = MagicMock(return_value=raw_dataset)
+        fake_ray = types.ModuleType("ray")
+        fake_ray.__path__ = []
+        fake_ray_data = types.ModuleType("ray.data")
+        fake_ray_data.from_arrow = mock_from_arrow
+        fake_ray.data = fake_ray_data
+
+        mock_ray_dataset = MagicMock(return_value=wrapped_dataset)
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=mock_ray_dataset)
+
+        mock_table = MagicMock()
+        mock_table.scan.return_value.to_arrow.return_value = arrow_table
+        mock_catalog = MagicMock()
+        mock_catalog.load_table.return_value = mock_table
+        mock_hadoop_catalog = MagicMock(return_value=mock_catalog)
+
+        fake_pyiceberg = types.ModuleType("pyiceberg")
+        fake_pyiceberg.__path__ = []
+        fake_pyiceberg_catalog = types.ModuleType("pyiceberg.catalog")
+        fake_pyiceberg_catalog.__path__ = []
+        fake_pyiceberg_catalog_hadoop = types.ModuleType("pyiceberg.catalog.hadoop")
+        fake_pyiceberg_catalog_hadoop.HadoopCatalog = mock_hadoop_catalog
+        fake_pyiceberg.catalog = fake_pyiceberg_catalog
+        fake_pyiceberg_catalog.hadoop = fake_pyiceberg_catalog_hadoop
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+            "path": "warehouse/sample_table",
+            "endpoint_url": "http://minio:9000",
+        }
+        strategy = RayGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch.dict(
+                sys.modules,
+                {
+                    "ray": fake_ray,
+                    "ray.data": fake_ray_data,
+                    "pyiceberg": fake_pyiceberg,
+                    "pyiceberg.catalog": fake_pyiceberg_catalog,
+                    "pyiceberg.catalog.hadoop": fake_pyiceberg_catalog_hadoop,
+                    "data_juicer.core.data.ray_dataset": fake_ray_dataset_module,
+                },
+            ),
+        ):
+            result = strategy.load_data()
+
+        mock_hadoop_catalog.assert_called_once_with(
+            "gravitino_reader",
+            {
+                "warehouse": "s3://bucket/warehouse/db.db",
+                "s3.access-key-id": "resolved_key",
+                "s3.secret-access-key": "resolved_secret",
+                "s3.session-token": "resolved_token",
+                "s3.region": "resolved_region",
+                "s3.endpoint": "http://minio:9000",
+            },
+        )
+        mock_catalog.load_table.assert_called_once_with("sample_table")
+        mock_from_arrow.assert_called_once_with(arrow_table)
+        mock_ray_dataset.assert_called_once_with(raw_dataset, dataset_path="warehouse/sample_table", cfg=self.cfg)
+        self.assertIs(result, wrapped_dataset)
+
+    def test_load_paimon_data_success(self):
+        payload = {
+            "table": {
+                "provider": "lakehouse-paimon",
+                "properties": {"format": "PAIMON", "default-location-name": "default"},
+                "storageLocations": {"default": "s3://bucket/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        raw_dataset = object()
+        wrapped_dataset = object()
+        splits = [object(), object()]
+
+        mock_to_ray = MagicMock(return_value=raw_dataset)
+        mock_table_read = MagicMock()
+        mock_table_read.to_ray = mock_to_ray
+
+        mock_scan_plan = MagicMock()
+        mock_scan_plan.splits.return_value = splits
+        mock_table_scan = MagicMock()
+        mock_table_scan.plan.return_value = mock_scan_plan
+
+        mock_read_builder = MagicMock()
+        mock_read_builder.new_scan.return_value = mock_table_scan
+        mock_read_builder.new_read.return_value = mock_table_read
+
+        mock_table = MagicMock()
+        mock_table.new_read_builder.return_value = mock_read_builder
+
+        mock_catalog = MagicMock()
+        mock_catalog.get_table.return_value = mock_table
+        mock_catalog_create = MagicMock(return_value=mock_catalog)
+
+        fake_pypaimon = types.ModuleType("pypaimon")
+        fake_pypaimon.__path__ = []
+        fake_pypaimon_catalog = types.ModuleType("pypaimon.catalog")
+        fake_pypaimon_catalog.__path__ = []
+        fake_pypaimon_catalog_factory = types.ModuleType("pypaimon.catalog.catalog_factory")
+        fake_pypaimon_catalog_factory.CatalogFactory = types.SimpleNamespace(create=mock_catalog_create)
+        fake_pypaimon.catalog = fake_pypaimon_catalog
+        fake_pypaimon_catalog.catalog_factory = fake_pypaimon_catalog_factory
+
+        mock_ray_dataset = MagicMock(return_value=wrapped_dataset)
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=mock_ray_dataset)
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+            "path": "warehouse/sample_table",
+            "catalog_options": {},
+        }
+        strategy = RayGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch.dict(
+                sys.modules,
+                {
+                    "pypaimon": fake_pypaimon,
+                    "pypaimon.catalog": fake_pypaimon_catalog,
+                    "pypaimon.catalog.catalog_factory": fake_pypaimon_catalog_factory,
+                    "data_juicer.core.data.ray_dataset": fake_ray_dataset_module,
+                },
+            ),
+        ):
+            result = strategy.load_data()
+
+        mock_catalog_create.assert_called_once_with({"warehouse": "s3://bucket/warehouse", "metastore": "filesystem"})
+        mock_catalog.get_table.assert_called_once_with("db.sample_table")
+        mock_to_ray.assert_called_once_with(splits)
+        mock_ray_dataset.assert_called_once_with(raw_dataset, dataset_path="warehouse/sample_table", cfg=self.cfg)
+        self.assertIs(result, wrapped_dataset)
+
+    def test_load_iceberg_raises_runtime_error_when_pyiceberg_missing(self):
+        payload = {
+            "table": {
+                "provider": "lakehouse-iceberg",
+                "properties": {"format": "ICEBERG", "default-location-name": "default"},
+                "storageLocations": {"default": "file:/tmp/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        fake_ray = types.ModuleType("ray")
+        fake_ray.__path__ = []
+        fake_ray_data = types.ModuleType("ray.data")
+        fake_ray_data.from_arrow = MagicMock()
+        fake_ray.data = fake_ray_data
+
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=MagicMock())
+        real_import = __import__
+
+        def raising_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "pyiceberg.catalog.hadoop" or name.startswith("pyiceberg"):
+                raise ImportError("No module named 'pyiceberg'")
+            return real_import(name, globals, locals, fromlist, level)
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+        }
+        strategy = RayGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch.dict(
+                sys.modules,
+                {
+                    "ray": fake_ray,
+                    "ray.data": fake_ray_data,
+                    "data_juicer.core.data.ray_dataset": fake_ray_dataset_module,
+                },
+            ),
+            patch("builtins.__import__", side_effect=raising_import),
+        ):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("pyiceberg is not installed", str(ctx.exception))
+
+    def test_load_paimon_raises_runtime_error_when_pypaimon_missing(self):
+        payload = {
+            "table": {
+                "provider": "lakehouse-paimon",
+                "properties": {"format": "PAIMON", "default-location-name": "default"},
+                "storageLocations": {"default": "s3://bucket/warehouse/db.db/sample_table"},
+            }
+        }
+        mock_session = self._build_mock_session(payload)
+
+        fake_ray_dataset_module = build_fake_ray_dataset_module(ray_dataset_cls=MagicMock())
+        real_import = __import__
+
+        def raising_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "pypaimon.catalog.catalog_factory" or name.startswith("pypaimon"):
+                raise ImportError("No module named 'pypaimon'")
+            return real_import(name, globals, locals, fromlist, level)
+
+        ds_config = {
+            "type": "remote",
+            "source": "gravitino",
+            "endpoint": "http://gravitino:8090",
+            "metalake_name": "demo_metalake",
+            "table_identifier": "demo_catalog.db.sample_table",
+        }
+        strategy = RayGravitinoDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch("data_juicer.core.data.load_strategy.requests.Session", return_value=mock_session),
+            patch.dict(sys.modules, {"data_juicer.core.data.ray_dataset": fake_ray_dataset_module}),
+            patch("builtins.__import__", side_effect=raising_import),
+        ):
+            with self.assertRaises(RuntimeError) as ctx:
+                strategy.load_data()
+
+        self.assertIn("pypaimon is not installed", str(ctx.exception))
 
 
 class TestRayDeltaDataLoadStrategy(DataJuicerTestCaseBase):

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Optional, Type
 
 import datasets
+import requests
 from jsonargparse import Namespace
 from loguru import logger
 
@@ -181,6 +182,194 @@ class DefaultDataLoadStrategy(DataLoadStrategy):
     @abstractmethod
     def load_data(self, **kwargs) -> DJDataset:
         """Need to be implemented in the"""
+
+
+def _normalize_file_url(path: str) -> str:
+    if path.startswith("file:/") and not path.startswith("file:///"):
+        return path.replace("file:/", "file:///", 1)
+    return path
+
+
+def _parse_gravitino_table_identifier(table_identifier: str) -> tuple[str, str, str]:
+    parts = table_identifier.split(".")
+    if len(parts) != 3:
+        raise ValueError(f"Expected table_identifier format 'catalog.schema.table', got: {table_identifier}")
+    return parts[0], parts[1], parts[2]
+
+
+def _resolve_gravitino_storage_location(table_data: Dict[str, Any]) -> tuple[str, Dict[str, Any]]:
+    properties = table_data.get("properties", {}) or {}
+    storage_locations = table_data.get("storageLocations", {}) or {}
+
+    storage_location = ""
+    if storage_locations:
+        default_location_name = properties.get("default-location-name", "default")
+        storage_location = storage_locations.get(default_location_name, "")
+        if not storage_location and storage_locations:
+            storage_location = next(iter(storage_locations.values()))
+    else:
+        storage_location = properties.get("location", "")
+
+    return _normalize_file_url(storage_location), properties
+
+
+def _build_gravitino_session(ds_config: Dict[str, Any]) -> requests.Session:
+    auth_type = ds_config.get("auth_type", "simple")
+    username = ds_config.get("username")
+    password = ds_config.get("password")
+    token = ds_config.get("token")
+
+    session = requests.Session()
+    if auth_type == "simple" and username:
+        if password:
+            session.auth = (username, password)
+        else:
+            session.headers.update({"X-Gravitino-User": username})
+    elif auth_type == "oauth2" and token:
+        session.headers.update({"Authorization": f"Bearer {token}"})
+    return session
+
+
+def _fetch_gravitino_table_metadata(ds_config: Dict[str, Any]) -> Dict[str, Any]:
+    endpoint = ds_config["endpoint"].rstrip("/")
+    metalake_name = ds_config["metalake_name"]
+    table_identifier = ds_config["table_identifier"]
+    catalog_name, schema_name, table_name = _parse_gravitino_table_identifier(table_identifier)
+
+    session = _build_gravitino_session(ds_config)
+    api_path = f"/metalakes/{metalake_name}/catalogs/{catalog_name}/schemas/{schema_name}/tables/{table_name}"
+    url = f"{endpoint}/api{api_path}"
+
+    try:
+        response = session.request("GET", url, timeout=30)
+        response.raise_for_status()
+        payload = response.json()
+    except requests.exceptions.HTTPError as e:
+        status = getattr(e.response, "status_code", None)
+        if status == 404:
+            raise RuntimeError(f"Gravitino table {table_identifier} was not found in metalake {metalake_name}.")
+        raise RuntimeError(f"Failed to query Gravitino table {table_identifier}. Error: {str(e)}")
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Failed to query Gravitino table {table_identifier}. Error: {str(e)}")
+
+    table_data = payload.get("table", {}) or {}
+    storage_location, properties = _resolve_gravitino_storage_location(table_data)
+
+    return {
+        "catalog_name": catalog_name,
+        "schema_name": schema_name,
+        "table_name": table_name,
+        "table_identifier": table_identifier,
+        "provider": str(table_data.get("provider", "") or ""),
+        "table_format": str(properties.get("format", table_data.get("format", "") or "")).upper(),
+        "storage_location": storage_location,
+        "properties": properties,
+    }
+
+
+def _detect_gravitino_table_engine(table_metadata: Dict[str, Any], explicit: Optional[str] = None) -> str:
+    if explicit:
+        engine = explicit.strip().lower()
+        if engine in {"iceberg", "paimon"}:
+            return engine
+        raise ValueError(f"Unsupported explicit table_format for Gravitino: {explicit}")
+
+    table_format = table_metadata.get("table_format", "").upper()
+    provider = table_metadata.get("provider", "").upper()
+    if "PAIMON" in table_format or "PAIMON" in provider:
+        return "paimon"
+    if "ICEBERG" in table_format or "ICEBERG" in provider:
+        return "iceberg"
+
+    raise ValueError(f"Unsupported Gravitino table format/provider: format={table_format!r}, provider={provider!r}.")
+
+
+def _extract_gravitino_s3_credentials(
+    ds_config: Dict[str, Any], table_properties: Dict[str, Any]
+) -> tuple[Optional[str], Optional[str], Optional[str], Optional[str], Optional[str]]:
+    s3_config = {
+        "aws_access_key_id": ds_config.get("aws_access_key_id") or table_properties.get("s3-access-key-id"),
+        "aws_secret_access_key": ds_config.get("aws_secret_access_key") or table_properties.get("s3-secret-access-key"),
+        "aws_session_token": ds_config.get("aws_session_token") or table_properties.get("s3-session-token"),
+        "aws_region": ds_config.get("aws_region") or table_properties.get("s3-region"),
+        "endpoint_url": ds_config.get("endpoint_url") or table_properties.get("s3-endpoint"),
+    }
+
+    aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region = get_aws_credentials(s3_config)
+    return (
+        aws_access_key_id,
+        aws_secret_access_key,
+        aws_session_token,
+        aws_region,
+        s3_config.get("endpoint_url"),
+    )
+
+
+def _load_gravitino_iceberg_as_arrow(ds_config: Dict[str, Any], table_metadata: Dict[str, Any]):
+    storage_location = table_metadata.get("storage_location", "")
+    if not storage_location:
+        raise RuntimeError(f"Missing storage location for Gravitino table {table_metadata['table_identifier']}.")
+    if "/" not in storage_location.rstrip("/"):
+        raise RuntimeError(
+            f"Invalid storage location for Gravitino table {table_metadata['table_identifier']}: {storage_location}"
+        )
+
+    from pyiceberg.catalog.hadoop import HadoopCatalog
+
+    parent, table_dir = storage_location.rstrip("/").rsplit("/", 1)
+    pyiceberg_props = {"warehouse": parent}
+
+    aws_access_key_id, aws_secret_access_key, aws_session_token, aws_region, endpoint_url = (
+        _extract_gravitino_s3_credentials(ds_config, table_metadata["properties"])
+    )
+    if aws_access_key_id:
+        pyiceberg_props["s3.access-key-id"] = aws_access_key_id
+    if aws_secret_access_key:
+        pyiceberg_props["s3.secret-access-key"] = aws_secret_access_key
+    if aws_session_token:
+        pyiceberg_props["s3.session-token"] = aws_session_token
+    if aws_region:
+        pyiceberg_props["s3.region"] = aws_region
+    if endpoint_url:
+        pyiceberg_props["s3.endpoint"] = endpoint_url
+
+    table = HadoopCatalog("gravitino_reader", pyiceberg_props).load_table(table_dir)
+    return table.scan().to_arrow()
+
+
+def _derive_paimon_warehouse(storage_location: str, schema_name: str, table_name: str) -> str:
+    normalized = storage_location.rstrip("/")
+    marker = f"/{schema_name}.db/{table_name}"
+    if marker in normalized:
+        return normalized.rsplit(marker, 1)[0]
+    if "/" in normalized:
+        return normalized.rsplit("/", 1)[0]
+    return normalized
+
+
+def _load_gravitino_paimon_as_ray_dataset(ds_config: Dict[str, Any], table_metadata: Dict[str, Any]):
+    from pypaimon.catalog.catalog_factory import CatalogFactory
+
+    table_identifier = ds_config.get(
+        "paimon_table_identifier",
+        f"{table_metadata['schema_name']}.{table_metadata['table_name']}",
+    )
+
+    catalog_options = dict(ds_config.get("catalog_options", {}) or {})
+    if "warehouse" not in catalog_options and table_metadata.get("storage_location"):
+        catalog_options["warehouse"] = _derive_paimon_warehouse(
+            table_metadata["storage_location"], table_metadata["schema_name"], table_metadata["table_name"]
+        )
+    catalog_options.setdefault("metastore", "filesystem")
+
+    catalog = CatalogFactory.create(catalog_options)
+    table = catalog.get_table(table_identifier)
+
+    read_builder = table.new_read_builder()
+    table_scan = read_builder.new_scan()
+    splits = table_scan.plan().splits()
+    table_read = read_builder.new_read()
+    return table_read.to_ray(splits)
 
 
 # TODO dask support
@@ -865,6 +1054,160 @@ class RayS3DataLoadStrategy(RayDataLoadStrategy):
                 f"Ensure your AWS credentials are configured. "
                 f"Error: {str(e)}"
             )
+
+
+@DataLoadStrategyRegistry.register("default", "remote", "gravitino")
+class DefaultGravitinoDataLoadStrategy(DefaultDataLoadStrategy):
+    """
+    data load strategy for Gravitino catalog tables for LocalExecutor
+    Supports Gravitino-backed Iceberg tables.
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["endpoint", "metalake_name", "table_identifier"],
+        "optional_fields": [
+            "auth_type",
+            "username",
+            "password",
+            "token",
+            "path",
+            "table_format",
+            "aws_access_key_id",
+            "aws_secret_access_key",
+            "aws_session_token",
+            "aws_region",
+            "endpoint_url",
+            "catalog_options",
+            "paimon_table_identifier",
+        ],
+        "field_types": {
+            "endpoint": str,
+            "metalake_name": str,
+            "table_identifier": str,
+            "path": str,
+            "auth_type": str,
+            "username": str,
+            "password": str,
+            "token": str,
+            "table_format": str,
+            "catalog_options": dict,
+            "paimon_table_identifier": str,
+        },
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data import NestedDataset
+
+        text_keys = getattr(self.cfg, "text_keys", ["text"])
+        table_identifier = self.ds_config["table_identifier"]
+        table_metadata = _fetch_gravitino_table_metadata(self.ds_config)
+        table_engine = _detect_gravitino_table_engine(table_metadata, self.ds_config.get("table_format"))
+
+        logger.info(f"Loading Gravitino table {table_identifier} with engine={table_engine}")
+        if self.ds_config.get("path"):
+            logger.info(f"Relative path for dataset: {self.ds_config['path']}")
+
+        if table_engine != "iceberg":
+            raise RuntimeError(
+                "Default Gravitino data load strategy only supports Iceberg tables. "
+                "Use Ray executor for Paimon tables."
+            )
+
+        try:
+            arrow_table = _load_gravitino_iceberg_as_arrow(self.ds_config, table_metadata)
+            ds = datasets.Dataset(arrow_table)
+            ds = NestedDataset(ds)
+            return unify_format(ds, text_keys=text_keys, num_proc=kwargs.get("num_proc", 1), global_cfg=self.cfg)
+        except ImportError:
+            raise RuntimeError(
+                "pyiceberg is not installed. Please install it via `pip install pyiceberg` "
+                "to use Gravitino Iceberg data load strategy."
+            )
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to load Gravitino table {table_identifier} in default executor. Error: {str(e)}"
+            )
+
+
+@DataLoadStrategyRegistry.register("ray", "remote", "gravitino")
+class RayGravitinoDataLoadStrategy(RayDataLoadStrategy):
+    """
+    data load strategy for Gravitino catalog tables for RayExecutor
+    Supports Gravitino-backed Iceberg and Paimon tables.
+    """
+
+    CONFIG_VALIDATION_RULES = {
+        "required_fields": ["endpoint", "metalake_name", "table_identifier"],
+        "optional_fields": [
+            "auth_type",
+            "username",
+            "password",
+            "token",
+            "path",
+            "table_format",
+            "aws_access_key_id",
+            "aws_secret_access_key",
+            "aws_session_token",
+            "aws_region",
+            "endpoint_url",
+            "catalog_options",
+            "paimon_table_identifier",
+        ],
+        "field_types": {
+            "endpoint": str,
+            "metalake_name": str,
+            "table_identifier": str,
+            "path": str,
+            "auth_type": str,
+            "username": str,
+            "password": str,
+            "token": str,
+            "table_format": str,
+            "catalog_options": dict,
+            "paimon_table_identifier": str,
+        },
+        "custom_validators": {},
+    }
+
+    def load_data(self, **kwargs):
+        from data_juicer.core.data.ray_dataset import RayDataset
+
+        table_identifier = self.ds_config["table_identifier"]
+        table_path = self.ds_config.get("path", table_identifier)
+        table_metadata = _fetch_gravitino_table_metadata(self.ds_config)
+        table_engine = _detect_gravitino_table_engine(table_metadata, self.ds_config.get("table_format"))
+
+        logger.info(f"Loading Gravitino table {table_identifier} with engine={table_engine}")
+        if self.ds_config.get("path"):
+            logger.info(f"Relative path for dataset: {self.ds_config['path']}")
+
+        try:
+            if table_engine == "iceberg":
+                import ray.data
+
+                arrow_table = _load_gravitino_iceberg_as_arrow(self.ds_config, table_metadata)
+                dataset = ray.data.from_arrow(arrow_table)
+            elif table_engine == "paimon":
+                dataset = _load_gravitino_paimon_as_ray_dataset(self.ds_config, table_metadata)
+            else:
+                raise RuntimeError(f"Unsupported Gravitino table engine: {table_engine}")
+
+            return RayDataset(dataset, dataset_path=table_path, cfg=self.cfg)
+        except ImportError as e:
+            if table_engine == "iceberg":
+                raise RuntimeError(
+                    "pyiceberg is not installed. Please install it via `pip install pyiceberg` "
+                    "to use Gravitino Iceberg data load strategy in Ray."
+                )
+            if table_engine == "paimon":
+                raise RuntimeError(
+                    "pypaimon is not installed. Please install it via `pip install pypaimon` "
+                    "to use Gravitino Paimon data load strategy in Ray."
+                )
+            raise RuntimeError(f"Failed to import required dependencies for Gravitino strategy: {str(e)}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to load Gravitino table {table_identifier} in Ray executor. Error: {str(e)}")
 
 
 @DataLoadStrategyRegistry.register("default", "remote", "iceberg")
