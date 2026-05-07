@@ -80,8 +80,9 @@ class RayExporter:
         # Set up encryption for local export
         self.encrypt_before_export = encrypt_before_export
         self._fernet = None
+        is_s3_export = bool(export_path and export_path.startswith("s3://"))
         if encrypt_before_export:
-            if export_path.startswith("s3://"):
+            if is_s3_export:
                 logger.warning(
                     "encrypt_before_export is True but export_path is an S3 "
                     "path. Local-file encryption is skipped for S3 exports. "
@@ -95,7 +96,7 @@ class RayExporter:
 
         # Check if export_path is S3 and create filesystem if needed
         self.fs = None
-        if export_path.startswith("s3://"):
+        if is_s3_export:
             # Extract AWS credentials from export_extra_args (if provided)
             s3_config = {}
             if "aws_access_key_id" in self.export_extra_args:
