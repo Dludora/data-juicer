@@ -1,0 +1,14 @@
+project_name: local-integration
+np: 1
+text_keys: text
+export_path: /Users/dludora/Code/data-juicer/tests/local_integration/runtime/outputs/paimon/default_export_placeholder.jsonl
+process: []
+dataset:
+  configs:
+  - type: local
+    path: /Users/dludora/Code/data-juicer/tests/local_integration/runtime/sources/integration_documents.parquet
+export_type: paimon
+export_extra_args:
+  table_identifier: default.integration_documents
+  catalog_options:
+    warehouse: file:///Users/dludora/Code/data-juicer/tests/local_integration/runtime/paimon_warehouse

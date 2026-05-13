@@ -1,0 +1,23 @@
+[
+  {
+    "text": "alpha sample for local integration testing",
+    "doc_id": 1,
+    "lang": "en",
+    "score": 0.98,
+    "is_valid": true
+  },
+  {
+    "text": "beta sample used for exporter and loader verification",
+    "doc_id": 2,
+    "lang": "en",
+    "score": 0.87,
+    "is_valid": false
+  },
+  {
+    "text": "gamma sample keeps the recipe path realistic",
+    "doc_id": 3,
+    "lang": "fr",
+    "score": 0.91,
+    "is_valid": true
+  }
+]

@@ -1,0 +1,4 @@
+text,doc_id,lang,score,is_valid
+alpha sample for local integration testing,1,en,0.98,True
+beta sample used for exporter and loader verification,2,en,0.87,False
+gamma sample keeps the recipe path realistic,3,fr,0.91,True

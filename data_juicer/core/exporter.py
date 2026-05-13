@@ -538,6 +538,9 @@ class Exporter:
                 logger.info(f"Iceberg table {table_identifier} exists. Writing to Iceberg.")
             except NoSuchTableError:
                 logger.info(f"Iceberg table {table_identifier} does not exist. " "Creating it before export.")
+                namespace = table_identifier.rsplit(".", 1)[0] if "." in table_identifier else None
+                if namespace:
+                    catalog.create_namespace_if_not_exists(namespace)
                 logger.info(f"Creating Iceberg table {table_identifier} with schema: {arrow_table.schema}")
                 catalog.create_table(table_identifier, arrow_table.schema)
                 created_table = True

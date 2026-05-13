@@ -1,0 +1,15 @@
+project_name: local-integration
+np: 1
+text_keys: text
+export_path: /Users/dludora/Code/data-juicer/tests/local_integration/runtime/outputs/paimon/ray_load_output
+process: []
+executor_type: ray
+ray_address: local
+export_type: jsonl
+dataset:
+  configs:
+  - type: remote
+    source: paimon
+    table_identifier: default.integration_documents
+    catalog_options:
+      warehouse: file:///Users/dludora/Code/data-juicer/tests/local_integration/runtime/paimon_warehouse

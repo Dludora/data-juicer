@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "id": 0,
+  "fields": [
+    {
+      "id": 0,
+      "name": "text",
+      "type": "STRING"
+    },
+    {
+      "id": 1,
+      "name": "doc_id",
+      "type": "BIGINT"
+    },
+    {
+      "id": 2,
+      "name": "lang",
+      "type": "STRING"
+    },
+    {
+      "id": 3,
+      "name": "score",
+      "type": "DOUBLE"
+    },
+    {
+      "id": 4,
+      "name": "is_valid",
+      "type": "BOOLEAN"
+    }
+  ],
+  "highestFieldId": 4,
+  "partitionKeys": [],
+  "primaryKeys": [],
+  "options": {},
+  "comment": null,
+  "timeMillis": 1778680807277
+}

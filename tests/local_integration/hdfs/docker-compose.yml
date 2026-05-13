@@ -1,0 +1,26 @@
+services:
+  namenode:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
+    container_name: dj-hdfs-namenode
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    environment:
+      CLUSTER_NAME: data-juicer-local
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+    volumes:
+      - ../runtime/hdfs/namenode:/hadoop/dfs/name
+      - ../runtime/hdfs/seed:/seed:ro
+
+  datanode:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    platform: linux/amd64
+    container_name: dj-hdfs-datanode
+    ports:
+      - "9864:9864"
+    environment:
+      SERVICE_PRECONDITION: namenode:9870
+      CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+    volumes:
+      - ../runtime/hdfs/datanode:/hadoop/dfs/data

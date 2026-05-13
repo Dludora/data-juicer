@@ -17,7 +17,7 @@ classifiers = [
 
 # Core dependencies
 dependencies = [
-    "datasets>=4.7.0", # core data loading
+    "datasets>=4.0.0", # core data loading
     "fsspec>=2024.3.1,<2025.0.0", # file system operations
     "pandas", # data manipulation
     "numpy>=1.26.4,<2.0.0", # numerical operations

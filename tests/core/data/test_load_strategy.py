@@ -759,11 +759,15 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         self.assertIsNotNone(strategy_class)
         self.assertEqual(strategy_class, DefaultHDFSDataLoadStrategy)
 
-    def test_create_hdfs_fs_casts_port_to_int(self):
-        _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "fs")
-        mock_hadoop_fs = MagicMock(return_value="fake_hdfs_fs")
-        pyarrow_modules["fs"].HadoopFileSystem = mock_hadoop_fs
+    def _build_fake_pyarrow_modules(self):
+        fake_pyarrow, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "fs", "json", "csv", "parquet")
+        pyarrow_modules["fs"].FileType = types.SimpleNamespace(File="file", Directory="directory")
+        return fake_pyarrow, pyarrow_modules, fake_modules
 
+    def _mock_hdfs_file_info(self, file_type="file"):
+        return types.SimpleNamespace(type=file_type)
+
+    def test_load_data_passes_config_to_create_filesystem_from_args(self):
         ds_config = {
             "type": "remote",
             "source": "hdfs",
@@ -775,21 +779,30 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
             "extra_conf": {"dfs.replication": "1"},
         }
         strategy = DefaultHDFSDataLoadStrategy(ds_config, self.cfg)
+        fake_pyarrow, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
+        fake_pyarrow.Table = types.SimpleNamespace(from_pylist=MagicMock(return_value=object()))
+        pyarrow_modules["json"].read_json = MagicMock(return_value=object())
 
-        with patch.dict(sys.modules, fake_modules):
-            result = strategy._create_hdfs_fs()
+        mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__enter__.return_value = MagicMock(read=MagicMock(return_value=b'{"text": "hello"}'))
+        mock_stream_ctx.__exit__.return_value = False
+        mock_hdfs.open_input_file.return_value = mock_stream_ctx
 
-        self.assertEqual(result, "fake_hdfs_fs")
-        mock_hadoop_fs.assert_called_once_with(
-            host="namenode",
-            port=9000,
-            user="tester",
-            kerb_ticket="/tmp/krb5cc",
-            extra_conf={"dfs.replication": "1"},
-        )
+        with (
+            patch.dict(sys.modules, fake_modules),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs) as mock_fs,
+            patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.NestedDataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.load_strategy.unify_format", return_value=MagicMock()),
+        ):
+            strategy.load_data()
+
+        mock_fs.assert_called_once_with(ds_config["path"], ds_config)
 
     def test_load_json_uses_hdfs_stream_and_unify_format(self):
-        _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
         arrow_table = object()
         pyarrow_modules["json"].read_json = MagicMock(return_value=arrow_table)
 
@@ -798,6 +811,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         mock_stream_ctx.__enter__.return_value = hdfs_stream
         mock_stream_ctx.__exit__.return_value = False
         mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
         mock_hdfs.open_input_stream.return_value = mock_stream_ctx
 
         hf_dataset = MagicMock(name="hf_dataset")
@@ -812,7 +826,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
 
         with (
             patch.dict(sys.modules, fake_modules),
-            patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
             patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=hf_dataset) as mock_dataset,
             patch("data_juicer.core.data.NestedDataset", return_value=nested_dataset) as mock_nested,
             patch("data_juicer.core.data.load_strategy.unify_format", return_value=unified_dataset) as mock_unify,
@@ -832,19 +846,19 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         self.assertIs(result, unified_dataset)
 
     def test_load_json_document_uses_single_document_reader(self):
-        fake_pyarrow, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        fake_pyarrow, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
         arrow_table = object()
         fake_pyarrow.Table = types.SimpleNamespace(from_pylist=MagicMock(return_value=arrow_table))
-        fake_pyarrow.table = MagicMock(return_value=arrow_table)
         pyarrow_modules["json"].read_json = MagicMock()
 
-        hdfs_stream = MagicMock()
-        hdfs_stream.readall.return_value = b'{"text": "hello", "doc_id": 1}'
-        mock_stream_ctx = MagicMock()
-        mock_stream_ctx.__enter__.return_value = hdfs_stream
-        mock_stream_ctx.__exit__.return_value = False
+        input_file = MagicMock()
+        input_file.read.return_value = b'{"text": "hello", "doc_id": 1}'
+        mock_file_ctx = MagicMock()
+        mock_file_ctx.__enter__.return_value = input_file
+        mock_file_ctx.__exit__.return_value = False
         mock_hdfs = MagicMock()
-        mock_hdfs.open_input_stream.return_value = mock_stream_ctx
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
+        mock_hdfs.open_input_file.return_value = mock_file_ctx
 
         hf_dataset = MagicMock(name="hf_dataset")
         nested_dataset = MagicMock(name="nested_dataset")
@@ -858,15 +872,15 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
 
         with (
             patch.dict(sys.modules, fake_modules),
-            patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
             patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=hf_dataset) as mock_dataset,
             patch("data_juicer.core.data.NestedDataset", return_value=nested_dataset) as mock_nested,
             patch("data_juicer.core.data.load_strategy.unify_format", return_value=unified_dataset) as mock_unify,
         ):
             result = strategy.load_data(num_proc=4)
 
-        mock_hdfs.open_input_stream.assert_called_once_with("/data/sample.json")
-        hdfs_stream.readall.assert_called_once_with()
+        mock_hdfs.open_input_file.assert_called_once_with("/data/sample.json")
+        input_file.read.assert_called_once_with()
         pyarrow_modules["json"].read_json.assert_not_called()
         fake_pyarrow.Table.from_pylist.assert_called_once_with([{"text": "hello", "doc_id": 1}])
         mock_dataset.assert_called_once_with(arrow_table)
@@ -880,7 +894,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         self.assertIs(result, unified_dataset)
 
     def test_load_text_uses_single_text_column_read_options(self):
-        _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
         arrow_table = object()
         pyarrow_modules["csv"].ReadOptions = MagicMock(side_effect=lambda **kwargs: kwargs)
         pyarrow_modules["csv"].ParseOptions = MagicMock(side_effect=lambda **kwargs: kwargs)
@@ -891,6 +905,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         mock_stream_ctx.__enter__.return_value = hdfs_stream
         mock_stream_ctx.__exit__.return_value = False
         mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
         mock_hdfs.open_input_stream.return_value = mock_stream_ctx
 
         ds_config = {
@@ -902,7 +917,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
 
         with (
             patch.dict(sys.modules, fake_modules),
-            patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
             patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=MagicMock()),
             patch("data_juicer.core.data.NestedDataset", return_value=MagicMock()),
             patch("data_juicer.core.data.load_strategy.unify_format", return_value=MagicMock()),
@@ -917,14 +932,91 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
             parse_options={"delimiter": "\0", "quote_char": False},
         )
 
+    def test_load_csv_uses_comma_delimiter(self):
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
+        arrow_table = object()
+        pyarrow_modules["csv"].ParseOptions = MagicMock(side_effect=lambda **kwargs: kwargs)
+        pyarrow_modules["csv"].read_csv = MagicMock(return_value=arrow_table)
+
+        hdfs_stream = object()
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__enter__.return_value = hdfs_stream
+        mock_stream_ctx.__exit__.return_value = False
+        mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
+        mock_hdfs.open_input_stream.return_value = mock_stream_ctx
+
+        strategy = DefaultHDFSDataLoadStrategy(
+            {
+                "type": "remote",
+                "source": "hdfs",
+                "path": "hdfs://namenode:9000/data/sample.csv",
+            },
+            self.cfg,
+        )
+
+        with (
+            patch.dict(sys.modules, fake_modules),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.NestedDataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.load_strategy.unify_format", return_value=MagicMock()),
+        ):
+            strategy.load_data()
+
+        pyarrow_modules["csv"].ParseOptions.assert_called_once_with(delimiter=",")
+        pyarrow_modules["csv"].read_csv.assert_called_once_with(
+            hdfs_stream,
+            parse_options={"delimiter": ","},
+        )
+
+    def test_load_tsv_uses_tab_delimiter(self):
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
+        arrow_table = object()
+        pyarrow_modules["csv"].ParseOptions = MagicMock(side_effect=lambda **kwargs: kwargs)
+        pyarrow_modules["csv"].read_csv = MagicMock(return_value=arrow_table)
+
+        hdfs_stream = object()
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__enter__.return_value = hdfs_stream
+        mock_stream_ctx.__exit__.return_value = False
+        mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
+        mock_hdfs.open_input_stream.return_value = mock_stream_ctx
+
+        strategy = DefaultHDFSDataLoadStrategy(
+            {
+                "type": "remote",
+                "source": "hdfs",
+                "path": "hdfs://namenode:9000/data/sample.tsv",
+            },
+            self.cfg,
+        )
+
+        with (
+            patch.dict(sys.modules, fake_modules),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.NestedDataset", return_value=MagicMock()),
+            patch("data_juicer.core.data.load_strategy.unify_format", return_value=MagicMock()),
+        ):
+            strategy.load_data()
+
+        pyarrow_modules["csv"].ParseOptions.assert_called_once_with(delimiter="\t")
+        pyarrow_modules["csv"].read_csv.assert_called_once_with(
+            hdfs_stream,
+            parse_options={"delimiter": "\t"},
+        )
+
     def test_load_parquet_uses_hdfs_input_file(self):
-        _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
 
         parquet_file = object()
         mock_file_ctx = MagicMock()
         mock_file_ctx.__enter__.return_value = parquet_file
         mock_file_ctx.__exit__.return_value = False
         mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
         mock_hdfs.open_input_file.return_value = mock_file_ctx
 
         arrow_table = object()
@@ -941,7 +1033,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
 
         with (
             patch.dict(sys.modules, fake_modules),
-            patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs),
             patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=hf_dataset) as mock_dataset,
             patch("data_juicer.core.data.NestedDataset", return_value=nested_dataset) as mock_nested,
             patch("data_juicer.core.data.load_strategy.unify_format", return_value=unified_dataset) as mock_unify,
@@ -962,7 +1054,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         self.assertIs(result, unified_dataset)
 
     def test_load_data_wraps_reader_errors(self):
-        _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        _, pyarrow_modules, fake_modules = self._build_fake_pyarrow_modules()
         pyarrow_modules["json"].read_json = MagicMock(side_effect=ValueError("broken json"))
 
         hdfs_stream = object()
@@ -970,6 +1062,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         mock_stream_ctx.__enter__.return_value = hdfs_stream
         mock_stream_ctx.__exit__.return_value = False
         mock_hdfs = MagicMock()
+        mock_hdfs.get_file_info.return_value = self._mock_hdfs_file_info(pyarrow_modules["fs"].FileType.File)
         mock_hdfs.open_input_stream.return_value = mock_stream_ctx
 
         ds_config = {
@@ -979,7 +1072,9 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         }
         strategy = DefaultHDFSDataLoadStrategy(ds_config, self.cfg)
 
-        with patch.dict(sys.modules, fake_modules), patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs):
+        with patch.dict(sys.modules, fake_modules), patch(
+            "data_juicer.core.data.load_strategy.create_filesystem_from_args", return_value=mock_hdfs
+        ):
             with self.assertRaises(RuntimeError) as ctx:
                 strategy.load_data()
 
@@ -994,7 +1089,7 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         }
         strategy = DefaultHDFSDataLoadStrategy(ds_config, self.cfg)
 
-        with patch.object(strategy, "_create_hdfs_fs") as mock_create_hdfs_fs:
+        with patch("data_juicer.core.data.load_strategy.create_filesystem_from_args") as mock_create_hdfs_fs:
             with self.assertRaises(ValueError) as ctx:
                 strategy.load_data()
 
@@ -1405,6 +1500,15 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
                     b"\x00\x01alpha-part-1",
                     b"alpha-part-2",
                 ],
+                "metadata": {
+                    "source": "news",
+                    "priority": 1,
+                    "verified": True,
+                },
+                "attributes": {
+                    "region": "cn",
+                    "topic": "alpha",
+                },
             },
             {
                 "text": "beta sample",
@@ -1418,6 +1522,15 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
                 "payloads": [
                     b"beta-part-1",
                 ],
+                "metadata": {
+                    "source": "forum",
+                    "priority": 2,
+                    "verified": False,
+                },
+                "attributes": {
+                    "region": "us",
+                    "topic": "beta",
+                },
             },
             {
                 "text": "gamma sample",
@@ -1432,6 +1545,15 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
                     b"gamma-part-1",
                     b"\x10\x11gamma-part-2",
                 ],
+                "metadata": {
+                    "source": "archive",
+                    "priority": 3,
+                    "verified": True,
+                },
+                "attributes": {
+                    "region": "eu",
+                    "topic": "gamma",
+                },
             },
         ]
 
@@ -1441,30 +1563,74 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         super().tearDown()
 
     def _build_ray_dataset(self):
+        import pyarrow as pa
         import ray
 
-        return ray.data.from_items(copy.deepcopy(self.records))
+        return ray.data.from_arrow(pa.Table.from_pylist(copy.deepcopy(self.records), schema=self._arrow_schema()))
+
+    @staticmethod
+    def _arrow_schema():
+        import pyarrow as pa
+
+        return pa.schema(
+            [
+                pa.field("text", pa.string()),
+                pa.field("doc_id", pa.int64()),
+                pa.field("lang", pa.string()),
+                pa.field("source_rank", pa.int64()),
+                pa.field("quality_score", pa.float64()),
+                pa.field("has_image", pa.bool_()),
+                pa.field("payload", pa.binary()),
+                pa.field("tags", pa.list_(pa.string())),
+                pa.field("payloads", pa.list_(pa.binary())),
+                pa.field(
+                    "metadata",
+                    pa.struct(
+                        [
+                            pa.field("source", pa.string()),
+                            pa.field("priority", pa.int64()),
+                            pa.field("verified", pa.bool_()),
+                        ]
+                    ),
+                ),
+                pa.field("attributes", pa.map_(pa.string(), pa.string())),
+            ]
+        )
 
     def _write_iceberg_table(self, catalog_kwargs, table_identifier):
         import pyarrow as pa
-        import pyarrow.parquet as pq
         from pyiceberg.catalog import load_catalog
 
-        arrow_table = pa.Table.from_pylist(copy.deepcopy(self.records))
+        arrow_table = pa.Table.from_pylist(copy.deepcopy(self.records), schema=self._arrow_schema())
         catalog = load_catalog(**catalog_kwargs)
         catalog.create_namespace_if_not_exists("default")
         table = catalog.create_table(table_identifier, arrow_table.schema)
-        original_parquet_writer = pq.ParquetWriter
+        table.append(arrow_table)
 
-        def compatible_parquet_writer(*args, **kwargs):
-            kwargs.pop("store_decimal_as_integer", None)
-            return original_parquet_writer(*args, **kwargs)
+    @staticmethod
+    def _normalize_nested_value(value):
+        import numpy
 
-        try:
-            pq.ParquetWriter = compatible_parquet_writer
-            table.append(arrow_table)
-        finally:
-            pq.ParquetWriter = original_parquet_writer
+        if isinstance(value, dict):
+            return tuple(sorted((key, TestTableFormatsLoadStrategy._normalize_nested_value(val)) for key, val in value.items()))
+        if isinstance(value, numpy.ndarray):
+            return tuple(TestTableFormatsLoadStrategy._normalize_nested_value(item) for item in value.tolist())
+        if isinstance(value, list):
+            if value and all(isinstance(item, tuple) and len(item) == 2 for item in value):
+                return tuple(sorted((TestTableFormatsLoadStrategy._normalize_nested_value(k), TestTableFormatsLoadStrategy._normalize_nested_value(v)) for k, v in value))
+            return tuple(TestTableFormatsLoadStrategy._normalize_nested_value(item) for item in value)
+        if isinstance(value, tuple):
+            return tuple(TestTableFormatsLoadStrategy._normalize_nested_value(item) for item in value)
+        return value
+
+    def _assert_complex_records_equal(self, actual_records):
+        def normalize_record(record):
+            return tuple(sorted((key, self._normalize_nested_value(value)) for key, value in record.items()))
+
+        self.assertEqual(
+            sorted(normalize_record(record) for record in actual_records),
+            sorted(normalize_record(record) for record in self.records),
+        )
 
     @staticmethod
     def _get_paimon_column_stats_for_complex_types(record_batch, column_name):
@@ -1497,7 +1663,7 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         }
 
     @TEST_TAG("ray")
-    def test_default_iceberg_load_data_reads_local_catalog_table(self):
+    def test_default_iceberg_load_data_rejects_map_fields_from_local_catalog_table(self):
         if importlib.util.find_spec("pyiceberg") is None:
             self.skipTest("pyiceberg is required for local Iceberg integration tests")
 
@@ -1523,9 +1689,10 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
             self.cfg,
         )
 
-        loaded = strategy.load_data()
+        with self.assertRaises(RuntimeError) as ctx:
+            strategy.load_data()
 
-        self.assertDatasetEqual(loaded.to_list(), self.records)
+        self.assertIn("Arrow type map<string, string> does not have a datasets dtype equivalent", str(ctx.exception))
 
     @TEST_TAG("ray")
     def test_ray_iceberg_load_data_reads_local_catalog_table(self):
@@ -1556,7 +1723,7 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
 
         loaded = strategy.load_data()
 
-        self.assertDatasetEqual(loaded.to_list(), self.records)
+        self._assert_complex_records_equal(loaded.to_list())
 
     @TEST_TAG("ray")
     def test_ray_paimon_load_data_reads_local_catalog_table(self):
@@ -1602,7 +1769,7 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
 
         loaded = strategy.load_data()
 
-        self.assertDatasetEqual(loaded.to_list(), self.records)
+        self._assert_complex_records_equal(loaded.to_list())
 
 
 class TestRayDeltaDataLoadStrategy(DataJuicerTestCaseBase):

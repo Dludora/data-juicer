@@ -1,0 +1,13 @@
+project_name: local-integration
+np: 1
+text_keys: text
+export_path: /Users/dludora/Code/data-juicer/tests/local_integration/runtime/outputs/hdfs/jsonl.jsonl
+process: []
+dataset:
+  configs:
+  - type: remote
+    source: hdfs
+    path: hdfs://localhost:9000/data-juicer/sample.jsonl
+    host: localhost
+    port: 9000
+    user: dludora

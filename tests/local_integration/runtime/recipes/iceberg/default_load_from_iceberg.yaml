@@ -1,0 +1,15 @@
+project_name: local-integration
+np: 1
+text_keys: text
+export_path: /Users/dludora/Code/data-juicer/tests/local_integration/runtime/outputs/iceberg/default_load_output.jsonl
+process: []
+dataset:
+  configs:
+  - type: remote
+    source: iceberg
+    table_identifier: default.integration_documents
+    catalog_kwargs:
+      name: local
+      type: sql
+      uri: sqlite:////Users/dludora/Code/data-juicer/tests/local_integration/runtime/iceberg_catalog.db
+      warehouse: file:///Users/dludora/Code/data-juicer/tests/local_integration/runtime/iceberg_warehouse
