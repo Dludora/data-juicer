@@ -831,6 +831,54 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
         )
         self.assertIs(result, unified_dataset)
 
+    def test_load_json_document_uses_single_document_reader(self):
+        fake_pyarrow, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
+        arrow_table = object()
+        fake_pyarrow.Table = types.SimpleNamespace(from_pylist=MagicMock(return_value=arrow_table))
+        fake_pyarrow.table = MagicMock(return_value=arrow_table)
+        pyarrow_modules["json"].read_json = MagicMock()
+
+        hdfs_stream = MagicMock()
+        hdfs_stream.readall.return_value = b'{"text": "hello", "doc_id": 1}'
+        mock_stream_ctx = MagicMock()
+        mock_stream_ctx.__enter__.return_value = hdfs_stream
+        mock_stream_ctx.__exit__.return_value = False
+        mock_hdfs = MagicMock()
+        mock_hdfs.open_input_stream.return_value = mock_stream_ctx
+
+        hf_dataset = MagicMock(name="hf_dataset")
+        nested_dataset = MagicMock(name="nested_dataset")
+        unified_dataset = MagicMock(name="unified_dataset")
+        ds_config = {
+            "type": "remote",
+            "source": "hdfs",
+            "path": "hdfs://namenode:9000/data/sample.json",
+        }
+        strategy = DefaultHDFSDataLoadStrategy(ds_config, self.cfg)
+
+        with (
+            patch.dict(sys.modules, fake_modules),
+            patch.object(strategy, "_create_hdfs_fs", return_value=mock_hdfs),
+            patch("data_juicer.core.data.load_strategy.datasets.Dataset", return_value=hf_dataset) as mock_dataset,
+            patch("data_juicer.core.data.NestedDataset", return_value=nested_dataset) as mock_nested,
+            patch("data_juicer.core.data.load_strategy.unify_format", return_value=unified_dataset) as mock_unify,
+        ):
+            result = strategy.load_data(num_proc=4)
+
+        mock_hdfs.open_input_stream.assert_called_once_with("/data/sample.json")
+        hdfs_stream.readall.assert_called_once_with()
+        pyarrow_modules["json"].read_json.assert_not_called()
+        fake_pyarrow.Table.from_pylist.assert_called_once_with([{"text": "hello", "doc_id": 1}])
+        mock_dataset.assert_called_once_with(arrow_table)
+        mock_nested.assert_called_once_with(hf_dataset)
+        mock_unify.assert_called_once_with(
+            nested_dataset,
+            text_keys=["text"],
+            num_proc=4,
+            global_cfg=self.cfg,
+        )
+        self.assertIs(result, unified_dataset)
+
     def test_load_text_uses_single_text_column_read_options(self):
         _, pyarrow_modules, fake_modules = build_fake_package("pyarrow", "json", "csv", "parquet")
         arrow_table = object()
@@ -937,6 +985,21 @@ class TestDefaultHDFSDataLoadStrategy(DataJuicerTestCaseBase):
 
         self.assertIn("hdfs://namenode:9000/data/bad.jsonl", str(ctx.exception))
         self.assertIn("broken json", str(ctx.exception))
+
+    def test_load_data_rejects_unsupported_extension_before_opening_hdfs(self):
+        ds_config = {
+            "type": "remote",
+            "source": "hdfs",
+            "path": "hdfs://namenode:9000/data/sample.avro",
+        }
+        strategy = DefaultHDFSDataLoadStrategy(ds_config, self.cfg)
+
+        with patch.object(strategy, "_create_hdfs_fs") as mock_create_hdfs_fs:
+            with self.assertRaises(ValueError) as ctx:
+                strategy.load_data()
+
+        mock_create_hdfs_fs.assert_not_called()
+        self.assertIn("Unsupported HDFS file extension: .avro", str(ctx.exception))
 
 
 class TestRayHDFSDataLoadStrategy(DataJuicerTestCaseBase):
@@ -1382,6 +1445,27 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
 
         return ray.data.from_items(copy.deepcopy(self.records))
 
+    def _write_iceberg_table(self, catalog_kwargs, table_identifier):
+        import pyarrow as pa
+        import pyarrow.parquet as pq
+        from pyiceberg.catalog import load_catalog
+
+        arrow_table = pa.Table.from_pylist(copy.deepcopy(self.records))
+        catalog = load_catalog(**catalog_kwargs)
+        catalog.create_namespace_if_not_exists("default")
+        table = catalog.create_table(table_identifier, arrow_table.schema)
+        original_parquet_writer = pq.ParquetWriter
+
+        def compatible_parquet_writer(*args, **kwargs):
+            kwargs.pop("store_decimal_as_integer", None)
+            return original_parquet_writer(*args, **kwargs)
+
+        try:
+            pq.ParquetWriter = compatible_parquet_writer
+            table.append(arrow_table)
+        finally:
+            pq.ParquetWriter = original_parquet_writer
+
     @staticmethod
     def _get_paimon_column_stats_for_complex_types(record_batch, column_name):
         import pyarrow as pa
@@ -1417,8 +1501,6 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         if importlib.util.find_spec("pyiceberg") is None:
             self.skipTest("pyiceberg is required for local Iceberg integration tests")
 
-        from pyiceberg.catalog import load_catalog
-
         warehouse = osp.join(self.tmp_dir, "iceberg_warehouse")
         os.makedirs(warehouse, exist_ok=True)
         catalog_kwargs = {
@@ -1429,16 +1511,7 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         }
         table_identifier = "default.integration_documents"
 
-        catalog = load_catalog(**catalog_kwargs)
-        catalog.create_namespace_if_not_exists("default")
-
-        exporter = RayExporter(
-            export_path=osp.join(self.tmp_dir, "iceberg_fallback.jsonl"),
-            export_type="iceberg",
-            table_identifier=table_identifier,
-            catalog_kwargs=copy.deepcopy(catalog_kwargs),
-        )
-        exporter.export(self._build_ray_dataset())
+        self._write_iceberg_table(catalog_kwargs, table_identifier)
 
         strategy = DefaultIcebergDataLoadStrategy(
             {
@@ -1459,8 +1532,6 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         if importlib.util.find_spec("pyiceberg") is None:
             self.skipTest("pyiceberg is required for local Iceberg integration tests")
 
-        from pyiceberg.catalog import load_catalog
-
         warehouse = osp.join(self.tmp_dir, "iceberg_warehouse")
         os.makedirs(warehouse, exist_ok=True)
         catalog_kwargs = {
@@ -1471,16 +1542,7 @@ class TestTableFormatsLoadStrategy(DataJuicerTestCaseBase):
         }
         table_identifier = "default.integration_documents"
 
-        catalog = load_catalog(**catalog_kwargs)
-        catalog.create_namespace_if_not_exists("default")
-
-        exporter = RayExporter(
-            export_path=osp.join(self.tmp_dir, "iceberg_fallback.jsonl"),
-            export_type="iceberg",
-            table_identifier=table_identifier,
-            catalog_kwargs=copy.deepcopy(catalog_kwargs),
-        )
-        exporter.export(self._build_ray_dataset())
+        self._write_iceberg_table(catalog_kwargs, table_identifier)
 
         strategy = RayIcebergDataLoadStrategy(
             {

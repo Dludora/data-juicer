@@ -419,6 +419,7 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
         data_format = file_extension_map.get(file_extension, "json")
 
         hdfs = create_filesystem_from_args(path, self.ds_config)
+
         try:
             # Parquet needs a random-access file handle instead of a forward-only stream.
             if data_format == "parquet":
@@ -428,18 +429,14 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
                     arrow_table = read_table(input_file)
             else:
                 with hdfs.open_input_stream(file_path) as stream:
-
-                    # Use ray.data functions directly with PyArrow filesystem support
-                    # Ray's read functions support filesystem parameter via PyArrow
-                    if data_format in {"json", "jsonl"}:
-                        # For JSON, we need to use read_json_stream with filesystem
+                    if data_format == "json":
                         import pyarrow.json
 
                         arrow_table = pyarrow.json.read_json(stream)
                     elif data_format in {"csv", "tsv"}:
                         import pyarrow.csv
 
-                        delimiter = "\t" if file_extension == ".tsv" else ","
+                        delimiter = "\t" if data_format == "tsv" else ","
                         parse_opts = pyarrow.csv.ParseOptions(delimiter=delimiter)
                         arrow_table = pyarrow.csv.read_csv(stream, parse_options=parse_opts)
                     elif data_format == "text":
@@ -448,8 +445,6 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
                         read_opts = pyarrow.csv.ReadOptions(column_names=["text"])
                         parse_opts = pyarrow.csv.ParseOptions(delimiter="\0", quote_char=False)
                         arrow_table = pyarrow.csv.read_csv(stream, read_options=read_opts, parse_options=parse_opts)
-                    else:
-                        raise ValueError(f"Unsupported data format for hdfs: {file_extension}")
 
             dataset = datasets.Dataset(arrow_table)
             dataset = NestedDataset(dataset)
@@ -1026,10 +1021,10 @@ class RayDeltaDataLoadStrategy(RayDataLoadStrategy):
 
             from data_juicer.utils.model_utils import filter_arguments
 
-            read_options = filter_arguments(ray.data.read_delta, {**self.ds_config, **read_options})
-
             if path.startswith("s3://"):
                 read_options["filesystem"] = create_pyarrow_s3_filesystem(self.ds_config)
+
+            read_options = filter_arguments(ray.data.read_delta, {**self.ds_config, **read_options})
 
             dataset = ray.data.read_delta(**read_options)
 

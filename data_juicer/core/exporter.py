@@ -8,6 +8,8 @@ from loguru import logger
 from data_juicer.utils.constant import Fields, HashKeys
 from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str
 
+TABLE_EXPORT_FORMATS = {"iceberg", "paimon"}
+
 
 class Exporter:
     """The Exporter class is used to export a dataset to files of specific
@@ -60,6 +62,9 @@ class Exporter:
         self.keep_stats_in_res_ds = keep_stats_in_res_ds
         self.keep_hashes_in_res_ds = keep_hashes_in_res_ds
         self.export_stats = export_stats
+        if export_path is None and export_type is None:
+            raise ValueError("Either export_path or export_type should be provided.")
+
         self.export_extra_args = kwargs
         self.export_type = export_type
         self.suffix = self._get_suffix(export_path) if export_type is None else export_type
@@ -69,6 +74,32 @@ class Exporter:
                 f"Suffix of export path [{export_path}] or specified export_type [{export_type}] is not supported "
                 f"for now. Only support {list(support_dict.keys())}."
             )
+        if self.suffix in TABLE_EXPORT_FORMATS:
+            if export_type is None:
+                raise ValueError(
+                    f"export_type must be explicitly set for {self.suffix} export. "
+                    "Table exports should not be inferred from export_path suffix."
+                )
+
+            if not kwargs.get("table_identifier"):
+                raise ValueError(
+                    f"table_identifier is required for {self.suffix} export. "
+                    "export_path is not used as the table identifier."
+                )
+            if export_stats:
+                logger.warning(
+                    f"export_stats is ignored for {self.suffix} export because "
+                    "table exports do not use export_path as a filesystem path. "
+                    "Please export stats separately to an explicit file path if needed."
+                )
+                self.export_stats = False
+            if encrypt_before_export:
+                logger.warning(
+                    f"encrypt_before_export is ignored for {self.suffix} export because "
+                    "table exports do not write to export_path directly."
+                )
+                encrypt_before_export = False
+
         self.num_proc = num_proc
         self.max_shard_size_str = ""
 
@@ -76,7 +107,7 @@ class Exporter:
         self.encrypt_before_export = encrypt_before_export
         self._fernet = None
         if encrypt_before_export:
-            if export_path.startswith("s3://"):
+            if export_path and export_path.startswith("s3://"):
                 logger.warning(
                     "encrypt_before_export is True but export_path is an S3 "
                     "path. Local-file encryption is skipped for S3 exports. "
@@ -90,7 +121,7 @@ class Exporter:
 
         # Check if export_path is S3 and create storage_options if needed
         self.storage_options = None
-        if export_path.startswith("s3://"):
+        if export_path and export_path.startswith("s3://"):
             # Extract AWS credentials from kwargs (if provided)
             s3_config = {}
             if "aws_access_key_id" in kwargs:
@@ -161,15 +192,12 @@ class Exporter:
         """
         Get the suffix of export path and check if it's supported.
 
-        We only support ["jsonl", "json", "parquet", "iceberg"] for now.
+        We only support ["jsonl", "json", "parquet", "iceberg", "paimon"] for now.
 
         :param export_path: the path to export datasets.
         :return: the suffix of export_path.
         """
-        suffix = export_path.split(".")[-1].lower()
-        if self.export_type == "iceberg":
-            suffix = "iceberg"
-        return suffix
+        return export_path.split(".")[-1].lower()
 
     @staticmethod
     def _ensure_meta_stats_dicts_for_export(dataset):
@@ -215,7 +243,7 @@ class Exporter:
         :param export_stats: whether to export stats of dataset.
         :return:
         """
-        if export_stats:
+        if export_stats and self.export_type not in TABLE_EXPORT_FORMATS:
             # export stats of datasets into a single file.
             logger.info("Exporting computed stats into a single file...")
             export_columns = []
@@ -238,6 +266,12 @@ class Exporter:
 
         if self.export_ds:
             # fetch the corresponding export method according to the suffix
+            if suffix in TABLE_EXPORT_FORMATS and self.export_shard_size > 0:
+                logger.warning(
+                    f"export_shard_size is not supported for {suffix} export. "
+                    f"set export_shard_size to 0 to export the whole dataset into a single file."
+                )
+                self.export_shard_size = 0
             if not self.keep_stats_in_res_ds:
                 extra_fields = {Fields.stats, Fields.meta}
                 feature_fields = set(dataset.features.keys())
@@ -254,7 +288,7 @@ class Exporter:
                 feature_fields = set(dataset.features.keys())
                 removed_fields = extra_fields.intersection(feature_fields)
                 dataset = dataset.remove_columns(removed_fields)
-            export_method = Exporter._router().get(suffix, Exporter.to_parquet)
+            export_method = Exporter._router()[suffix]
             if self.export_shard_size <= 0:
                 # export the whole dataset into one single file.
                 logger.info("Export dataset into a single file...")
@@ -262,7 +296,7 @@ class Exporter:
                 # Add storage_options if available (for S3 export)
                 if self.storage_options is not None:
                     export_kwargs["storage_options"] = self.storage_options
-                if suffix == "iceberg":
+                if suffix in TABLE_EXPORT_FORMATS:
                     export_kwargs["export_extra_args"] = self.export_extra_args
                 export_method(dataset, export_path, **export_kwargs)
                 self._encrypt_local_file(export_path)
@@ -287,7 +321,7 @@ class Exporter:
 
                 # regard the export path as a directory and set file names for
                 # each shard
-                if self.export_path.startswith("s3://"):
+                if export_path and self.export_path.startswith("s3://"):
                     # For S3 paths, construct S3 paths for each shard
                     # Extract bucket and prefix from S3 path
                     s3_path_parts = self.export_path.replace("s3://", "").split("/", 1)
@@ -323,7 +357,7 @@ class Exporter:
                     # Add storage_options if available (for S3 export)
                     if self.storage_options is not None:
                         export_kwargs["storage_options"] = self.storage_options
-                    if suffix == "iceberg":
+                    if suffix in TABLE_EXPORT_FORMATS:
                         export_kwargs["export_extra_args"] = self.export_extra_args
                     pool.apply_async(
                         export_method,
@@ -460,62 +494,148 @@ class Exporter:
     @staticmethod
     def to_iceberg(dataset, export_path, **kwargs):
         """
-        Export method for iceberg target tables.
-        Checks for table existence/connectivity. If check fails, safe fall-back to JSON.
+        Export a HuggingFace dataset to an Iceberg table using PyIceberg + PyArrow.
+
+        The table is created if it does not exist. This method does not fall back
+        to file export; Iceberg export errors are surfaced to callers.
         """
-        from pyiceberg.catalog import load_catalog
-        from pyiceberg.exceptions import NoSuchTableError
+        try:
+            import pyarrow as pa
+            from pyiceberg.catalog import load_catalog
+            from pyiceberg.exceptions import NoSuchTableError
+        except ImportError as e:
+            raise RuntimeError(
+                "Iceberg export requires pyiceberg and pyarrow. "
+                "Please install them before using export_type='iceberg'."
+            ) from e
 
         export_extra_args = kwargs.get("export_extra_args", {})
         catalog_kwargs = export_extra_args.get("catalog_kwargs", {})
-        table_identifier = export_extra_args.get("table_identifier", export_path)
+        table_identifier = export_extra_args.get("table_identifier")
+        if not table_identifier:
+            raise ValueError("table_identifier is required for Iceberg export.")
 
-        use_iceberg = False
+        try:
+            arrow_table = dataset.data.table
+            if not isinstance(arrow_table, pa.Table):
+                arrow_table = pa.Table.from_batches(arrow_table.to_batches())
+        except Exception as e:
+            raise RuntimeError("Failed to convert HuggingFace dataset to PyArrow table for Iceberg export.") from e
+
+        if len(arrow_table.schema) == 0:
+            raise ValueError(
+                "Cannot export an empty-schema dataset to Iceberg. "
+                "Please provide a dataset with a valid Arrow schema."
+            )
+
+        created_table = False
 
         try:
             catalog = load_catalog(**catalog_kwargs)
-            catalog.load_table(table_identifier)
-            logger.info(f"Iceberg table {table_identifier} exists. Writing to Iceberg.")
-            use_iceberg = True
 
-        except NoSuchTableError as e:
-            logger.warning(
-                f"Iceberg target unavailable ({e.__class__.__name__}). Fallback to exporting to {export_path}..."
-            )
-            # Get pyarrow schema from HF Dataset
-            schema = dataset.features.arrow_schema
-            logger.info(f"Creating new Iceberg table {table_identifier} with schema: {schema}")
             try:
-                catalog.create_table(table_identifier, schema)
-                use_iceberg = True
-            except Exception as e:
-                logger.error(f"Failed to create Iceberg table: {e}. Fallback to exporting to {export_path}...")
-        except Exception as e:
-            logger.error(f"Unexpected error checking Iceberg: {e}. Fallback to exporting to {export_path}...")
-
-        if use_iceberg:
-            try:
-                import daft
-
-                # convert huggingface dataset to daft dataframe
-                df = daft.from_arrow(dataset.data.table)
                 table = catalog.load_table(table_identifier)
-                df.write_iceberg(table, mode="append")
-                return
-            except Exception as e:
-                logger.error(f"Write to Iceberg failed during execution: {e}. Fallback to json...")
+                logger.info(f"Iceberg table {table_identifier} exists. Writing to Iceberg.")
+            except NoSuchTableError:
+                logger.info(f"Iceberg table {table_identifier} does not exist. " "Creating it before export.")
+                logger.info(f"Creating Iceberg table {table_identifier} with schema: {arrow_table.schema}")
+                catalog.create_table(table_identifier, arrow_table.schema)
+                created_table = True
+                table = catalog.load_table(table_identifier)
 
-        suffix = os.path.splitext(export_path)[-1].strip(".").lower()
-        if not suffix:
-            suffix = "jsonl"
-            logger.warning(f"No suffix found in {export_path}, using default fallback: {suffix}")
+            table.append(arrow_table)
+            return
 
-        logger.info(f"Falling back to file export. Format: [{suffix}], Path: [{export_path}]")
+        except Exception as e:
+            if created_table:
+                try:
+                    catalog.drop_table(table_identifier)
+                    logger.warning(f"Dropped newly created Iceberg table {table_identifier} " "after append failed.")
+                except Exception as cleanup_error:
+                    logger.warning(
+                        f"Failed to clean up newly created Iceberg table " f"{table_identifier}: {cleanup_error}"
+                    )
 
-        if suffix in ["json", "jsonl"]:
-            return Exporter.to_jsonl(dataset, export_path, **kwargs)
-        else:
-            return Exporter.to_parquet(dataset, export_path, **kwargs)
+            raise RuntimeError(f"Iceberg table export failed for {table_identifier}") from e
+
+    @staticmethod
+    def to_paimon(dataset, export_path, **kwargs):
+        """
+        Export a HuggingFace dataset to an existing Paimon table using PyPaimon + PyArrow.
+
+        This method does not create tables and does not fall back to file export.
+        The table must already exist in the configured Paimon catalog.
+        """
+        try:
+            import pyarrow as pa
+            from pypaimon.catalog.catalog_exception import TableNotExistException
+            from pypaimon.catalog.catalog_factory import CatalogFactory
+        except ImportError as e:
+            raise RuntimeError(
+                "Paimon export requires pypaimon and pyarrow. " "Please install them before using export_type='paimon'."
+            ) from e
+
+        export_extra_args = kwargs.get("export_extra_args", {})
+        catalog_options = export_extra_args.get("catalog_options", {})
+        table_identifier = export_extra_args.get("table_identifier")
+        if not table_identifier:
+            raise ValueError("table_identifier is required for Paimon export.")
+
+        try:
+            arrow_table = dataset.data.table
+            if not isinstance(arrow_table, pa.Table):
+                arrow_table = pa.Table.from_batches(arrow_table.to_batches())
+        except Exception as e:
+            raise RuntimeError("Failed to convert HuggingFace dataset to PyArrow table for Paimon export.") from e
+
+        if len(arrow_table.schema) == 0:
+            raise ValueError(
+                "Cannot export an empty-schema dataset to Paimon. "
+                "Please provide a dataset with a valid Arrow schema."
+            )
+
+        table_write = None
+        table_commit = None
+
+        try:
+            catalog = CatalogFactory.create(catalog_options)
+
+            try:
+                table = catalog.get_table(table_identifier)
+            except TableNotExistException as e:
+                raise RuntimeError(
+                    f"Paimon table {table_identifier} does not exist. " "Please create the table before exporting."
+                ) from e
+
+            logger.info(f"Paimon table {table_identifier} exists. Writing to Paimon.")
+
+            write_builder = table.new_batch_write_builder()
+
+            overwrite = export_extra_args.get("overwrite", False)
+            overwrite_partition = export_extra_args.get("overwrite_partition")
+
+            if overwrite:
+                if overwrite_partition is None:
+                    write_builder = write_builder.overwrite()
+                else:
+                    write_builder = write_builder.overwrite(overwrite_partition)
+
+            table_write = write_builder.new_write()
+            table_commit = write_builder.new_commit()
+
+            table_write.write_arrow(arrow_table)
+            commit_messages = table_write.prepare_commit()
+            table_commit.commit(commit_messages)
+            return
+
+        except Exception as e:
+            raise RuntimeError(f"Paimon table export failed for {table_identifier}") from e
+
+        finally:
+            if table_write is not None and hasattr(table_write, "close"):
+                table_write.close()
+            if table_commit is not None and hasattr(table_commit, "close"):
+                table_commit.close()
 
     # suffix to export method
     @staticmethod
@@ -530,4 +650,5 @@ class Exporter:
             "json": Exporter.to_json,
             "parquet": Exporter.to_parquet,
             "iceberg": Exporter.to_iceberg,
+            "paimon": Exporter.to_paimon,
         }

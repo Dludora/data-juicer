@@ -163,3 +163,37 @@ def ray_gpu_memories():
         gpu_mems.extend(info["gpus_memory"])
 
     return gpu_mems
+
+
+def ray_dataset_arrow_schema(dataset):
+    import pyarrow as pa
+
+    # Ray >= 2.6: dataset.schema() may return Ray Schema wrapper.
+    if hasattr(dataset, "schema"):
+        try:
+            schema = dataset.schema(fetch_if_missing=True)
+        except TypeError:
+            schema = dataset.schema()
+
+        if hasattr(schema, "base_schema"):
+            schema = schema.base_schema
+
+        if isinstance(schema, pa.Schema):
+            if len(schema) == 0:
+                raise ValueError("Ray dataset schema is empty. Please provide an explicit pyarrow.Schema.")
+            return schema
+
+    # Fallback for older Ray / unknown schema cases.
+    if hasattr(dataset, "to_arrow_refs"):
+        import ray
+
+        refs = dataset.to_arrow_refs()
+        for ref in refs:
+            table = ray.get(ref)
+            if isinstance(table, pa.Table) and len(table.schema) > 0:
+                return table.schema
+
+    raise ValueError(
+        "Unable to infer a non-empty Arrow schema from Ray dataset. "
+        "Please pass export_extra_args['schema'] as a pyarrow.Schema."
+    )

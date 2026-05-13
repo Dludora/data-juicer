@@ -7,7 +7,10 @@ from loguru import logger
 from data_juicer.utils.constant import Fields, HashKeys
 from data_juicer.utils.file_utils import Sizes, byte_size_to_size_str
 from data_juicer.utils.model_utils import filter_arguments
+from data_juicer.utils.ray_utils import ray_dataset_arrow_schema
 from data_juicer.utils.webdataset_utils import reconstruct_custom_webdataset_format
+
+TABLE_EXPORT_FORMATS = {"iceberg", "paimon"}
 
 
 class RayExporter:
@@ -76,13 +79,24 @@ class RayExporter:
                 f"for now. Only support {self._SUPPORTED_FORMATS}. Please check export_type or export_path."
             )
         self.export_extra_args = kwargs if kwargs is not None else {}
+        if self.export_format in TABLE_EXPORT_FORMATS:
+            if "table_identifier" not in self.export_extra_args:
+                raise ValueError(
+                    f"table_identifier is required for {self.export_format} export. "
+                    "export_path is not used as the table identifier."
+                )
+            if encrypt_before_export:
+                logger.warning(
+                    f"encrypt_before_export is ignored for {self.export_format} export because "
+                    "table exports do not write to export_path directly."
+                )
+                encrypt_before_export = False
 
         # Set up encryption for local export
         self.encrypt_before_export = encrypt_before_export
         self._fernet = None
-        is_s3_export = bool(export_path and export_path.startswith("s3://"))
         if encrypt_before_export:
-            if is_s3_export:
+            if export_path and export_path.startswith("s3://"):
                 logger.warning(
                     "encrypt_before_export is True but export_path is an S3 "
                     "path. Local-file encryption is skipped for S3 exports. "
@@ -96,7 +110,7 @@ class RayExporter:
 
         # Check if export_path is S3 and create filesystem if needed
         self.fs = None
-        if is_s3_export:
+        if export_path and export_path.startswith("s3://"):
             # Extract AWS credentials from export_extra_args (if provided)
             s3_config = {}
             if "aws_access_key_id" in self.export_extra_args:
@@ -141,7 +155,8 @@ class RayExporter:
     def _get_export_format(self, export_path):
         """
         Get the suffix of export path and check if it's supported.
-        We only support ["jsonl", "json", "parquet"] for now.
+        We only support ["jsonl", "json", "parquet", "csv", "tfrecords",
+        "webdataset", "lance", "iceberg", "paimon"] for now.
 
         :param export_path: the path to export datasets.
         :return: the export data format.
@@ -208,14 +223,21 @@ class RayExporter:
                 rows_per_file = max(1, int(dataset_num_rows / num_shards))
                 export_kwargs["export_extra_args"]["min_rows_per_file"] = rows_per_file
 
-        # Ensure export directory exists (Ray's write_json treats export_path as a directory)
-        if not export_path.startswith("s3://"):
+        # Ensure export directory exists (Ray's write_json treats export_path as a directory).
+        # Table formats can omit export_path because the catalog/table identifier
+        # carries the destination.
+        if export_path and not export_path.startswith("s3://"):
             os.makedirs(export_path, exist_ok=True)
 
         result = export_method(dataset, export_path, **export_kwargs)
 
         # Encrypt all exported files in-place after Ray has finished writing
-        if self.encrypt_before_export and self._fernet is not None and not export_path.startswith("s3://"):
+        if (
+            export_path
+            and self.encrypt_before_export
+            and self._fernet is not None
+            and not export_path.startswith("s3://")
+        ):
             from data_juicer.utils.encryption_utils import encrypt_file
 
             export_dir = Path(export_path)
@@ -309,78 +331,56 @@ class RayExporter:
     @staticmethod
     def write_iceberg(dataset, export_path, **kwargs):
         """
-        Export method for iceberg target tables.
-        Checks for table existence/connectivity. If check fails, safe fall-back to JSON.
+        Export a Ray dataset to an Iceberg table.
+
+        The table is created if it does not exist. This method does not fall back
+        to file export; catalog, schema, and write errors are surfaced to callers.
         """
         export_extra_args = kwargs.get("export_extra_args", {})
         catalog_kwargs = export_extra_args.get("catalog_kwargs", {})
-        table_identifier = export_extra_args.get("table_identifier", export_path)
-
-        use_iceberg = False
+        table_identifier = export_extra_args.get("table_identifier")
+        if not table_identifier:
+            raise ValueError("table_identifier is required for Iceberg export.")
 
         try:
             from pyiceberg.catalog import load_catalog
             from pyiceberg.exceptions import NoSuchTableError
+        except ImportError as e:
+            raise RuntimeError("Iceberg export is unavailable. Please install pyiceberg.") from e
+
+        try:
+            catalog = load_catalog(**catalog_kwargs)
 
             try:
-                catalog = load_catalog(**catalog_kwargs)
                 catalog.load_table(table_identifier)
                 logger.info(f"Iceberg table {table_identifier} exists. Writing to Iceberg.")
-                use_iceberg = True
+            except NoSuchTableError:
+                logger.info(f"Iceberg table {table_identifier} does not exist. " "Creating it before export.")
+                pa_schema = ray_dataset_arrow_schema(dataset)
+                logger.info(f"Creating Iceberg table {table_identifier} with schema: {pa_schema}")
+                catalog.create_table(table_identifier, pa_schema)
 
-            except NoSuchTableError as e:
-                logger.warning(
-                    f"Iceberg target unavailable ({e.__class__.__name__}). Fallback to exporting to {export_path}..."
-                )
-                import pyarrow as pa
+            filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
+            return dataset.write_iceberg(**filtered_kwargs)
 
-                schema = pa.Schema.from_pandas(dataset.limit(1).to_pandas())
-                logger.info(f"Creating new Iceberg table {table_identifier} with schema: {schema}")
-                try:
-                    catalog.create_table(table_identifier, schema)
-                    use_iceberg = True
-                except Exception as e:
-                    logger.error(f"Failed to create Iceberg table: {e}. Fallback to exporting to {export_path}...")
-            except Exception as e:
-                logger.error(f"Unexpected error checking Iceberg: {e}. Fallback to exporting to {export_path}...")
         except Exception as e:
-            logger.error(f"Iceberg export is unavailable ({e.__class__.__name__}: {e}). Fallback to file export...")
-
-        if use_iceberg:
-            try:
-                filtered_kwargs = filter_arguments(dataset.write_iceberg, export_extra_args)
-                return dataset.write_iceberg(**filtered_kwargs)
-            except Exception as e:
-                logger.error(f"Write to Iceberg failed during execution: {e}. Fallback to json...")
-
-        suffix = os.path.splitext(export_path)[-1].strip(".").lower()
-        if not suffix:
-            suffix = "jsonl"
-            logger.warning(f"No suffix found in {export_path}, using default fallback: {suffix}")
-
-        logger.info(f"Falling back to file export. Format: [{suffix}], Path: [{export_path}]")
-
-        fallback_kwargs = {}
-        if "filesystem" in export_extra_args:
-            fallback_kwargs["filesystem"] = export_extra_args["filesystem"]
-        if suffix in ["json", "jsonl"]:
-            return RayExporter.write_json(dataset, export_path, **fallback_kwargs)
-        else:
-            fallback_kwargs["export_format"] = suffix
-            return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
+            raise RuntimeError(f"Iceberg table export failed for {table_identifier}") from e
 
     @staticmethod
     def write_paimon(dataset, export_path, **kwargs):
         """
-        Export method for paimon target tables.
-        Prefers distributed Ray writes when supported by pypaimon and falls
-        back to arrow-based commit for older versions.
-        Only missing pypaimon support falls back to file export; catalog and
-        table write errors are surfaced to callers.
+        Export a Ray dataset to a Paimon table.
+
+        The table is created if it does not exist. This method prefers
+        distributed Ray writes when supported by PyPaimon and falls back to an
+        Arrow commit path for older versions. Catalog and write errors are
+        surfaced to callers.
         """
         export_extra_args = kwargs.get("export_extra_args", {})
         catalog_options = export_extra_args.get("catalog_options", {})
-        table_identifier = export_extra_args.get("table_identifier", export_path)
+        table_identifier = export_extra_args.get("table_identifier")
+        if not table_identifier:
+            raise ValueError("table_identifier is required for Paimon export.")
         schema_kwargs = export_extra_args.get("schema_kwargs", {})
         write_options = {
             key: value
@@ -402,79 +402,66 @@ class RayExporter:
             from pypaimon.catalog.catalog_exception import TableNotExistException
             from pypaimon.catalog.catalog_factory import CatalogFactory
         except ImportError as e:
-            logger.error(f"Paimon export is unavailable ({e.__class__.__name__}: {e}). Fallback to file export...")
-        else:
-            table_write = None
-            table_commit = None
+            raise RuntimeError("Paimon export is unavailable. Please install pypaimon.") from e
 
+        table_write = None
+        table_commit = None
+
+        try:
+            catalog = CatalogFactory.create(catalog_options)
             try:
-                catalog = CatalogFactory.create(catalog_options)
-                try:
-                    table = catalog.get_table(table_identifier)
-                    logger.info(f"Paimon table {table_identifier} exists. Writing to Paimon.")
-                except TableNotExistException:
-                    logger.info(f"Paimon table {table_identifier} does not exist. Creating it before export.")
-                    pa_schema = pa.Schema.from_pandas(dataset.limit(1).to_pandas())
-                    if hasattr(Schema, "from_pyarrow_schema"):
-                        schema = Schema.from_pyarrow_schema(pa_schema=pa_schema, **schema_kwargs)
-                    else:
-                        schema = Schema(pa_schema=pa_schema, **schema_kwargs)
-                    catalog.create_table(table_identifier, schema=schema, ignore_if_exists=False)
-                    table = catalog.get_table(table_identifier)
-
-                write_builder = table.new_batch_write_builder()
-                overwrite = export_extra_args.get("overwrite", False)
-                overwrite_partition = export_extra_args.get("overwrite_partition")
-                if overwrite:
-                    if overwrite_partition is None:
-                        write_builder = write_builder.overwrite()
-                    else:
-                        write_builder = write_builder.overwrite(overwrite_partition)
-
-                table_write = write_builder.new_write()
-
-                if hasattr(table_write, "write_ray"):
-                    filtered_kwargs = filter_arguments(table_write.write_ray, write_options)
-                    return table_write.write_ray(dataset, **filtered_kwargs)
-
-                table_commit = write_builder.new_commit()
-                if hasattr(dataset, "to_arrow"):
-                    arrow_table = dataset.to_arrow()
+                table = catalog.get_table(table_identifier)
+                logger.info(f"Paimon table {table_identifier} exists. Writing to Paimon.")
+            except TableNotExistException:
+                logger.info(f"Paimon table {table_identifier} does not exist. Creating it before export.")
+                pa_schema = ray_dataset_arrow_schema(dataset)
+                if hasattr(Schema, "from_pyarrow_schema"):
+                    schema = Schema.from_pyarrow_schema(pa_schema=pa_schema, **schema_kwargs)
                 else:
-                    import ray
+                    schema = Schema(pa_schema=pa_schema, **schema_kwargs)
+                catalog.create_table(table_identifier, schema=schema, ignore_if_exists=False)
+                table = catalog.get_table(table_identifier)
 
-                    arrow_tables = ray.get(dataset.to_arrow_refs())
-                    if len(arrow_tables) == 0:
-                        arrow_table = pa.table({})
-                    elif len(arrow_tables) == 1:
-                        arrow_table = arrow_tables[0]
-                    else:
-                        arrow_table = pa.concat_tables(arrow_tables)
-                table_write.write_arrow(arrow_table)
-                commit_messages = table_write.prepare_commit()
-                table_commit.commit(commit_messages)
-                return
-            finally:
-                if table_write is not None and hasattr(table_write, "close"):
-                    table_write.close()
-                if table_commit is not None and hasattr(table_commit, "close"):
-                    table_commit.close()
+            write_builder = table.new_batch_write_builder()
+            overwrite = export_extra_args.get("overwrite", False)
+            overwrite_partition = export_extra_args.get("overwrite_partition")
+            if overwrite:
+                if overwrite_partition is None:
+                    write_builder = write_builder.overwrite()
+                else:
+                    write_builder = write_builder.overwrite(overwrite_partition)
 
-        suffix = os.path.splitext(export_path)[-1].strip(".").lower()
-        if not suffix:
-            suffix = "jsonl"
-            logger.warning(f"No suffix found in {export_path}, using default fallback: {suffix}")
+            table_write = write_builder.new_write()
 
-        logger.info(f"Falling back to file export. Format: [{suffix}], Path: [{export_path}]")
+            if hasattr(table_write, "write_ray"):
+                filtered_kwargs = filter_arguments(table_write.write_ray, write_options)
+                return table_write.write_ray(dataset, **filtered_kwargs)
 
-        fallback_kwargs = {}
-        if "filesystem" in export_extra_args:
-            fallback_kwargs["filesystem"] = export_extra_args["filesystem"]
-        if suffix in ["json", "jsonl"]:
-            return RayExporter.write_json(dataset, export_path, **fallback_kwargs)
-        else:
-            fallback_kwargs["export_format"] = suffix
-            return RayExporter.write_others(dataset, export_path, **fallback_kwargs)
+            table_commit = write_builder.new_commit()
+            if hasattr(dataset, "to_arrow"):
+                arrow_table = dataset.to_arrow()
+            else:
+                import ray
+
+                arrow_tables = ray.get(dataset.to_arrow_refs())
+                if len(arrow_tables) == 0:
+                    pa_schema = ray_dataset_arrow_schema(dataset)
+                    arrow_table = pa_schema.empty_table()
+                elif len(arrow_tables) == 1:
+                    arrow_table = arrow_tables[0]
+                else:
+                    arrow_table = pa.concat_tables(arrow_tables)
+            table_write.write_arrow(arrow_table)
+            commit_messages = table_write.prepare_commit()
+            table_commit.commit(commit_messages)
+            return
+        except Exception as e:
+            raise RuntimeError(f"Paimon table export failed for {table_identifier}") from e
+        finally:
+            if table_write is not None and hasattr(table_write, "close"):
+                table_write.close()
+            if table_commit is not None and hasattr(table_commit, "close"):
+                table_commit.close()
 
     # suffix to export method
     @staticmethod

@@ -138,8 +138,12 @@ def create_filesystem_from_args(path: str, args: Dict[str, Any]):
 
         hdfs_keys = ["host", "port", "user", "kerb_ticket", "extra_conf"]
         hdfs_conf = {k: args.pop(k) for k in hdfs_keys if k in args}
-        if "port" in hdfs_conf:
-            hdfs_conf["port"] = int(hdfs_conf["port"])
+
+        port = hdfs_conf.get("port")
+        if port in (None, ""):
+            hdfs_conf.pop("port", None)
+        else:
+            hdfs_conf["port"] = int(port)
         fs = pa_fs.HadoopFileSystem(**hdfs_conf)
         logger.info(f"Detected HDFS export path: {path}. HDFS filesystem configured.")
 

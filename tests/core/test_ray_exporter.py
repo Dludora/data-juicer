@@ -630,11 +630,9 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
         write_builder.new_commit.assert_not_called()
 
     def test_write_paimon_falls_back_to_arrow_commit_when_write_ray_unavailable(self):
-        import pandas as pd
-
         dataset = MagicMock(name="ray_dataset")
-        dataset.limit.return_value.to_pandas.return_value = pd.DataFrame({"dt": ["2024-01-01"], "value": ["x"]})
         dataset.to_arrow.return_value = "arrow_table"
+        pa_schema = object()
 
         table_write = types.SimpleNamespace(
             write_arrow=MagicMock(),
@@ -675,14 +673,18 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
             "schema_kwargs": {"partition_keys": ["dt"]},
         }
 
-        with patch.dict(sys.modules, fake_modules):
+        with patch.dict(sys.modules, fake_modules), patch(
+            "data_juicer.core.ray_exporter.ray_dataset_arrow_schema",
+            return_value=pa_schema,
+        ) as mock_arrow_schema:
             RayExporter.write_paimon(dataset, "/tmp/fallback.parquet", export_extra_args=export_extra_args)
 
         mock_create.assert_called_once_with(export_extra_args["catalog_options"])
+        mock_arrow_schema.assert_called_once_with(dataset)
         schema_cls.from_pyarrow_schema.assert_called_once()
         schema_call_kwargs = schema_cls.from_pyarrow_schema.call_args.kwargs
         self.assertEqual(schema_call_kwargs["partition_keys"], ["dt"])
-        self.assertIn("pa_schema", schema_call_kwargs)
+        self.assertIs(schema_call_kwargs["pa_schema"], pa_schema)
         catalog.create_table.assert_called_once_with(
             "db.sample_table",
             schema="paimon_schema",
@@ -695,7 +697,7 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
         table_write.close.assert_called_once()
         table_commit.close.assert_called_once()
 
-    def test_write_paimon_raises_catalog_errors_without_fallback(self):
+    def test_write_paimon_wraps_catalog_errors_without_fallback(self):
         dataset = MagicMock(name="ray_dataset")
 
         catalog = MagicMock(name="catalog")
@@ -705,7 +707,7 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
         fake_modules = self._build_fake_paimon_modules(mock_create)
 
         with patch.dict(sys.modules, fake_modules), patch.object(RayExporter, "write_json") as mock_write_json:
-            with self.assertRaises(PermissionError):
+            with self.assertRaises(RuntimeError) as ctx:
                 RayExporter.write_paimon(
                     dataset,
                     "/tmp/fallback.jsonl",
@@ -718,13 +720,13 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
                     },
                 )
 
+        self.assertIn("Paimon table export failed for db.sample_table", str(ctx.exception))
+        self.assertIsInstance(ctx.exception.__cause__, PermissionError)
         mock_write_json.assert_not_called()
 
     def test_write_paimon_raises_create_table_errors_without_fallback(self):
-        import pandas as pd
-
         dataset = MagicMock(name="ray_dataset")
-        dataset.limit.return_value.to_pandas.return_value = pd.DataFrame({"dt": ["2024-01-01"], "value": ["x"]})
+        pa_schema = object()
 
         class TableNotExistException(Exception):
             pass
@@ -743,7 +745,11 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
             table_not_exist_error=TableNotExistException,
         )
 
-        with patch.dict(sys.modules, fake_modules), patch.object(RayExporter, "write_json") as mock_write_json:
+        with (
+            patch.dict(sys.modules, fake_modules),
+            patch.object(RayExporter, "write_json") as mock_write_json,
+            patch("data_juicer.core.ray_exporter.ray_dataset_arrow_schema", return_value=pa_schema) as mock_arrow_schema,
+        ):
             with self.assertRaises(RuntimeError):
                 RayExporter.write_paimon(
                     dataset,
@@ -757,6 +763,7 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
                     },
                 )
 
+        mock_arrow_schema.assert_called_once_with(dataset)
         schema_cls.from_pyarrow_schema.assert_called_once()
         catalog.create_table.assert_called_once_with(
             "db.sample_table",
@@ -800,7 +807,7 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
         table_write.close.assert_called_once()
         mock_write_json.assert_not_called()
 
-    def test_write_paimon_falls_back_to_json_when_pypaimon_missing(self):
+    def test_write_paimon_raises_when_pypaimon_missing(self):
         dataset = MagicMock(name="ray_dataset")
         real_import = __import__
 
@@ -809,14 +816,18 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
                 raise ImportError("No module named 'pypaimon'")
             return real_import(name, globals, locals, fromlist, level)
 
-        with (
-            patch("builtins.__import__", side_effect=raising_import),
-            patch.object(RayExporter, "write_json", return_value="json_fallback") as mock_write_json,
-        ):
-            result = RayExporter.write_paimon(dataset, "/tmp/fallback.jsonl", export_extra_args={})
+        with patch("builtins.__import__", side_effect=raising_import), patch.object(
+            RayExporter, "write_json"
+        ) as mock_write_json:
+            with self.assertRaises(RuntimeError) as ctx:
+                RayExporter.write_paimon(
+                    dataset,
+                    "/tmp/fallback.jsonl",
+                    export_extra_args={"table_identifier": "db.sample_table"},
+                )
 
-        mock_write_json.assert_called_once_with(dataset, "/tmp/fallback.jsonl")
-        self.assertEqual(result, "json_fallback")
+        self.assertIn("Paimon export is unavailable", str(ctx.exception))
+        mock_write_json.assert_not_called()
 
     def _build_fake_iceberg_modules(self, load_catalog, no_such_table_error):
         fake_pyiceberg = types.ModuleType("pyiceberg")
@@ -867,10 +878,8 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
         )
 
     def test_write_iceberg_creates_table_when_missing(self):
-        import pandas as pd
-
         dataset = MagicMock(name="ray_dataset")
-        dataset.limit.return_value.to_pandas.return_value = pd.DataFrame({"dt": ["2024-01-01"], "value": ["x"]})
+        pa_schema = object()
 
         class NoSuchTableError(Exception):
             pass
@@ -886,21 +895,22 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
             "catalog_kwargs": {"name": "demo_catalog", "uri": "http://catalog:8181"},
         }
 
-        with patch.dict(sys.modules, fake_modules):
+        with patch.dict(sys.modules, fake_modules), patch(
+            "data_juicer.core.ray_exporter.ray_dataset_arrow_schema",
+            return_value=pa_schema,
+        ) as mock_arrow_schema:
             RayExporter.write_iceberg(dataset, "/tmp/fallback.parquet", export_extra_args=export_extra_args)
 
         mock_load_catalog.assert_called_once_with(**export_extra_args["catalog_kwargs"])
         catalog.load_table.assert_called_once_with("db.sample_table")
-        catalog.create_table.assert_called_once()
-        create_table_args = catalog.create_table.call_args.args
-        self.assertEqual(create_table_args[0], "db.sample_table")
-        self.assertIsNotNone(create_table_args[1])
+        mock_arrow_schema.assert_called_once_with(dataset)
+        catalog.create_table.assert_called_once_with("db.sample_table", pa_schema)
         dataset.write_iceberg.assert_called_once_with(
             table_identifier="db.sample_table",
             catalog_kwargs={"name": "demo_catalog", "uri": "http://catalog:8181"},
         )
 
-    def test_write_iceberg_falls_back_to_json_when_pyiceberg_missing(self):
+    def test_write_iceberg_raises_when_pyiceberg_missing(self):
         dataset = MagicMock(name="ray_dataset")
         real_import = __import__
 
@@ -909,14 +919,24 @@ class TestRayExporterTableFormats(DataJuicerTestCaseBase):
                 raise ImportError("No module named 'pyiceberg'")
             return real_import(name, globals, locals, fromlist, level)
 
-        with (
-            patch("builtins.__import__", side_effect=raising_import),
-            patch.object(RayExporter, "write_json", return_value="json_fallback") as mock_write_json,
-        ):
-            result = RayExporter.write_iceberg(dataset, "/tmp/fallback.jsonl", export_extra_args={})
+        with patch("builtins.__import__", side_effect=raising_import), patch.object(
+            RayExporter, "write_json"
+        ) as mock_write_json:
+            with self.assertRaises(RuntimeError) as ctx:
+                RayExporter.write_iceberg(
+                    dataset,
+                    "/tmp/fallback.jsonl",
+                    export_extra_args={"table_identifier": "db.sample_table"},
+                )
 
-        mock_write_json.assert_called_once_with(dataset, "/tmp/fallback.jsonl")
-        self.assertEqual(result, "json_fallback")
+        self.assertIn("Iceberg export is unavailable", str(ctx.exception))
+        mock_write_json.assert_not_called()
+
+    def test_table_export_requires_table_identifier(self):
+        with self.assertRaises(ValueError) as ctx:
+            RayExporter(export_path=None, export_type="paimon")
+
+        self.assertIn("table_identifier is required for paimon export", str(ctx.exception))
 
 
 if __name__ == "__main__":
