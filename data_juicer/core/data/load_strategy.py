@@ -1,4 +1,5 @@
 import fnmatch
+import json
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -384,8 +385,16 @@ class DefaultModelScopeDataLoadStrategy(DefaultDataLoadStrategy):
 @DataLoadStrategyRegistry.register("default", "remote", "hdfs")
 class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
     """
-    data load strategy for HDFS datasets for LocalExecutor
-    Uses fsspec-compatible storage_options passed through huggingface datasets
+    Data load strategy for loading a single file from HDFS for LocalExecutor.
+
+    Supported suffixes:
+      - .json   : regular JSON document
+      - .jsonl  : line-delimited JSON
+      - .ndjson : line-delimited JSON
+      - .txt    : plain text
+      - .csv    : comma-separated values
+      - .tsv    : tab-separated values
+      - .parquet: Parquet file
     """
 
     CONFIG_VALIDATION_RULES = {
@@ -397,8 +406,122 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
         },
     }
 
+    _FILE_EXTENSION_MAP = {
+        ".json": "json",
+        ".jsonl": "jsonl",
+        ".ndjson": "jsonl",
+        ".txt": "text",
+        ".csv": "csv",
+        ".tsv": "tsv",
+        ".parquet": "parquet",
+    }
+
+    @classmethod
+    def _resolve_data_format(cls, file_path):
+        suffix = os.path.splitext(file_path)[1].lower()
+        data_format = cls._FILE_EXTENSION_MAP.get(suffix)
+
+        if data_format is None:
+            raise ValueError(
+                f"Unsupported HDFS file extension: {suffix or '(none)'}. "
+                f"Supported extensions are: {sorted(cls._FILE_EXTENSION_MAP.keys())}."
+            )
+
+        return data_format
+
+    @staticmethod
+    def _read_hdfs_json_file(hdfs, file_path):
+        """
+        Read a regular JSON document from HDFS.
+
+        Supported structures:
+          - {"text": "..."}                       -> one row
+          - [{"text": "..."}, {"text": "..."}]    -> rows
+          - {"text": ["a", "b"], "id": [1, 2]}    -> column-oriented table
+        """
+        import pyarrow as pa
+
+        with hdfs.open_input_file(file_path) as input_file:
+            raw = input_file.read()
+
+        if isinstance(raw, memoryview):
+            raw = raw.tobytes()
+
+        if not raw:
+            raise ValueError(f"JSON file is empty: {file_path}")
+
+        obj = json.loads(raw.decode("utf-8"))
+
+        if isinstance(obj, list):
+            if not obj:
+                raise ValueError(f"JSON file contains an empty list and no schema can be inferred: {file_path}")
+            if not all(isinstance(item, dict) for item in obj):
+                raise ValueError(
+                    f"Unsupported JSON array structure in {file_path}. " "Expected a list of JSON objects."
+                )
+            return pa.Table.from_pylist(obj)
+
+        if isinstance(obj, dict):
+            if obj and all(isinstance(value, list) for value in obj.values()):
+                lengths = {len(value) for value in obj.values()}
+                if len(lengths) != 1:
+                    raise ValueError(f"Column-oriented JSON file has columns with different lengths: {file_path}")
+                return pa.Table.from_pydict(obj)
+
+            return pa.Table.from_pylist([obj])
+
+        raise ValueError(
+            f"Unsupported JSON structure in {file_path}. "
+            "Expected a JSON object, a list of objects, or a dict of columns."
+        )
+
+    @staticmethod
+    def _read_hdfs_file(hdfs, file_path, data_format):
+        if data_format == "parquet":
+            from pyarrow.parquet import read_table
+
+            # Parquet needs a random-access file handle, not a forward-only stream.
+            with hdfs.open_input_file(file_path) as input_file:
+                return read_table(input_file)
+
+        if data_format == "jsonl":
+            import pyarrow.json
+
+            # PyArrow JSON reader expects line-delimited JSON.
+            with hdfs.open_input_stream(file_path) as stream:
+                return pyarrow.json.read_json(stream)
+
+        if data_format == "json":
+            return DefaultHDFSDataLoadStrategy._read_hdfs_json_file(hdfs, file_path)
+
+        if data_format in {"csv", "tsv"}:
+            import pyarrow.csv
+
+            delimiter = "\t" if data_format == "tsv" else ","
+            parse_opts = pyarrow.csv.ParseOptions(delimiter=delimiter)
+
+            with hdfs.open_input_stream(file_path) as stream:
+                return pyarrow.csv.read_csv(stream, parse_options=parse_opts)
+
+        if data_format == "text":
+            import pyarrow.csv
+
+            read_opts = pyarrow.csv.ReadOptions(column_names=["text"])
+            parse_opts = pyarrow.csv.ParseOptions(delimiter="\0", quote_char=False)
+
+            with hdfs.open_input_stream(file_path) as stream:
+                return pyarrow.csv.read_csv(
+                    stream,
+                    read_options=read_opts,
+                    parse_options=parse_opts,
+                )
+
+        raise ValueError(f"Unsupported HDFS data format: {data_format}")
+
     def load_data(self, **kwargs):
         from urllib.parse import urlparse
+
+        import pyarrow.fs as pa_fs
 
         from data_juicer.core.data import NestedDataset
 
@@ -407,44 +530,22 @@ class DefaultHDFSDataLoadStrategy(DefaultDataLoadStrategy):
         text_keys = getattr(self.cfg, "text_keys", ["text"])
 
         file_path = urlparse(path).path
-        file_extension = os.path.splitext(file_path)[1].lower()
-        file_extension_map = {
-            ".json": "json",
-            ".jsonl": "json",
-            ".txt": "text",
-            ".csv": "csv",
-            ".tsv": "csv",
-            ".parquet": "parquet",
-        }
-        data_format = file_extension_map.get(file_extension, "json")
+        data_format = self._resolve_data_format(file_path)
 
         hdfs = create_filesystem_from_args(path, self.ds_config)
 
         try:
-            # Parquet needs a random-access file handle instead of a forward-only stream.
-            if data_format == "parquet":
-                from pyarrow.parquet import read_table
+            file_info = hdfs.get_file_info(file_path)
+            if file_info.type == pa_fs.FileType.Directory:
+                raise ValueError(
+                    f"HDFS directory loading is not supported yet: {path}. " "Please provide a single HDFS file path."
+                )
+            if file_info.type != pa_fs.FileType.File:
+                raise FileNotFoundError(f"HDFS path does not exist or is not a file: {path}")
 
-                with hdfs.open_input_file(file_path) as input_file:
-                    arrow_table = read_table(input_file)
-            else:
-                with hdfs.open_input_stream(file_path) as stream:
-                    if data_format == "json":
-                        import pyarrow.json
+            logger.info(f"Loading {data_format} data from HDFS file: {path}")
 
-                        arrow_table = pyarrow.json.read_json(stream)
-                    elif data_format in {"csv", "tsv"}:
-                        import pyarrow.csv
-
-                        delimiter = "\t" if data_format == "tsv" else ","
-                        parse_opts = pyarrow.csv.ParseOptions(delimiter=delimiter)
-                        arrow_table = pyarrow.csv.read_csv(stream, parse_options=parse_opts)
-                    elif data_format == "text":
-                        import pyarrow.csv
-
-                        read_opts = pyarrow.csv.ReadOptions(column_names=["text"])
-                        parse_opts = pyarrow.csv.ParseOptions(delimiter="\0", quote_char=False)
-                        arrow_table = pyarrow.csv.read_csv(stream, read_options=read_opts, parse_options=parse_opts)
+            arrow_table = self._read_hdfs_file(hdfs, file_path, data_format)
 
             dataset = datasets.Dataset(arrow_table)
             dataset = NestedDataset(dataset)
