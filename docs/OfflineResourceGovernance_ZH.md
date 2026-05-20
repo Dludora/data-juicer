@@ -130,7 +130,7 @@
 
 第一步先新增一个统一管理模块：
 
-- `data_juicer/utils/resource_locator.py`
+- `data_juicer/utils/resource_policy_utils.py`
 
 第一阶段它只负责两件事：
 
@@ -156,8 +156,6 @@
 - `DJ_NLTK_DATA_DIR`
 - `DJ_NLTK_ALLOW_DOWNLOAD`
 - `DJ_PACKAGE_AUTO_INSTALL`
-- `DJ_PIP_INDEX_URL`
-- `DJ_PIP_EXTRA_INDEX_URLS`
 
 第一阶段优先级固定为：
 
@@ -189,8 +187,6 @@ resource:
   nltk_data_dir: null
   nltk_allow_download: true
   package_auto_install: true
-  pip_index_url: null
-  pip_extra_index_urls: []
 ```
 
 这里先保持扁平，不做太深的嵌套。
@@ -201,14 +197,13 @@ resource:
 
 ### 5.4 统一管理文件第一阶段职责
 
-`resource_locator.py` 第一阶段建议只做这些事：
+`resource_policy_utils.py` 第一阶段建议只做这些事：
 
 - 读取环境变量并生成标准化 policy
 - 解析模型文件来源
 - 解析静态词表来源
 - 配置 HF 运行环境
 - 配置 NLTK 运行环境
-- 配置 pip 子进程环境
 - 统一判断是否允许公网 fallback
 - 统一判断是否允许自动安装包
 
@@ -221,7 +216,6 @@ resource:
 - `configure_nltk_env()`
 - `should_allow_public_fallback()`
 - `should_auto_install_package()`
-- `build_pip_env_overrides()`
 
 第一阶段不追求大而全，不要求一开始就把 repo / HF / package 都抽象成统一对象。
 
@@ -266,7 +260,7 @@ resource:
 
 新增：
 
-- `data_juicer/utils/resource_locator.py`
+- `data_juicer/utils/resource_policy_utils.py`
 
 负责：
 
@@ -276,7 +270,7 @@ resource:
 
 交付物：
 
-- `resource_locator.py`
+- `resource_policy_utils.py`
 - 基础 policy 读取与解析测试
 
 ### Todo 2. 暴露第一阶段环境变量入口
@@ -303,8 +297,6 @@ resource:
 - `DJ_NLTK_DATA_DIR`
 - `DJ_NLTK_ALLOW_DOWNLOAD`
 - `DJ_PACKAGE_AUTO_INSTALL`
-- `DJ_PIP_INDEX_URL`
-- `DJ_PIP_EXTRA_INDEX_URLS`
 
 交付物：
 
@@ -333,7 +325,6 @@ resource:
   - `ensure_nltk_resource()` 受 `DJ_NLTK_ALLOW_DOWNLOAD` 和 `offline_mode` 控制
 - `lazy_loader.py`
   - 自动安装受 `DJ_PACKAGE_AUTO_INSTALL` 控制
-  - pip 源受 `DJ_PIP_INDEX_URL` / `DJ_PIP_EXTRA_INDEX_URLS` 控制
 
 交付物：
 

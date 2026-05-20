@@ -5,6 +5,7 @@ import requests
 from loguru import logger
 
 from .cache_utils import DATA_JUICER_ASSETS_CACHE
+from .resource_policy_utils import resolve_asset_source
 
 # Default directory to store auxiliary resources
 ASSET_DIR = DATA_JUICER_ASSETS_CACHE
@@ -48,7 +49,15 @@ def load_words_asset(words_dir: str, words_type: str):
         )
         if words_type not in ASSET_LINKS:
             raise ValueError(f"{words_type} is not in remote server.")
-        response = requests.get(ASSET_LINKS[words_type])
+        source = resolve_asset_source(words_type)
+        if source["kind"] == "local_path":
+            with open(source["value"], "r") as file:
+                words_dict = json.load(file)
+            return words_dict
+
+        asset_url = ASSET_LINKS[words_type] if source["source"] == "default_public" else source["value"]
+        response = requests.get(asset_url)
+        response.raise_for_status()
         words_dict = response.json()
         # cache the asset file locally
         cache_path = os.path.join(words_dir, f"{words_type}.json")

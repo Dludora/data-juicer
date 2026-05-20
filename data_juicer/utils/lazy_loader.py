@@ -11,6 +11,8 @@ import types
 import tomli
 from loguru import logger
 
+from .resource_policy_utils import should_auto_install_package
+
 
 def get_toml_file_path():
     """Get the path to pyproject.toml file."""
@@ -211,6 +213,10 @@ class LazyLoader(types.ModuleType):
 
         for package_spec in package_specs:
             if not _is_package_installed(package_spec):
+                if not should_auto_install_package():
+                    raise ImportError(
+                        f"Package [{package_spec}] is required but auto installation is disabled by the current resource policy."
+                    )
                 logger.info(f"Package [{package_spec}] not found, installing...")
                 try:
                     cls._install_package(package_spec, pip_args)

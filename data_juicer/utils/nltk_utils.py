@@ -10,6 +10,8 @@ import shutil
 
 from loguru import logger
 
+from .resource_policy_utils import configure_nltk_env, is_nltk_download_allowed
+
 # Global mappings that can be accessed by all functions
 # Resource path mappings - direct replacements for problematic resources
 path_mappings = {
@@ -40,6 +42,8 @@ def ensure_nltk_resource(resource_path, fallback_package=None):
     """
     import nltk
 
+    configure_nltk_env()
+
     # Check for known problematic paths and map them directly
     for problematic_path, replacement_path in path_mappings.items():
         if problematic_path in resource_path:
@@ -55,17 +59,22 @@ def ensure_nltk_resource(resource_path, fallback_package=None):
     # This ensures the resources are available before we try to access them
     if fallback_package:
         try:
-            logger.info(f"Proactively downloading package '{fallback_package}' for " f"resource '{resource_path}'")
-            # Try different download methods, prioritizing the default location
-            try:
-                nltk_data_dir = nltk.data.path[0] if nltk.data.path else None
-                if nltk_data_dir:
-                    nltk.download(fallback_package, download_dir=nltk_data_dir, quiet=False)
-                else:
-                    nltk.download(fallback_package, quiet=False)
-            except Exception:
-                # Fallback to simpler download method
-                nltk.download(fallback_package, quiet=True)
+            if is_nltk_download_allowed():
+                logger.info(f"Proactively downloading package '{fallback_package}' for " f"resource '{resource_path}'")
+                # Try different download methods, prioritizing the default location
+                try:
+                    nltk_data_dir = nltk.data.path[0] if nltk.data.path else None
+                    if nltk_data_dir:
+                        nltk.download(fallback_package, download_dir=nltk_data_dir, quiet=False)
+                    else:
+                        nltk.download(fallback_package, quiet=False)
+                except Exception:
+                    # Fallback to simpler download method
+                    nltk.download(fallback_package, quiet=True)
+            else:
+                logger.warning(
+                    f"Skipping NLTK download for '{fallback_package}' because the current resource policy forbids it."
+                )
         except Exception as e:
             logger.warning(f"Failed to download '{fallback_package}': {e}")
 
@@ -78,11 +87,16 @@ def ensure_nltk_resource(resource_path, fallback_package=None):
             try:
                 # Try a different download method as a last resort
                 logger.warning(f"Resource '{resource_path}' not found, trying one more " f"download attempt")
-                try:
-                    # Download to default location w/o download_dir specified
-                    nltk.download(fallback_package, download_dir=None, quiet=False)
-                except Exception:
-                    pass
+                if is_nltk_download_allowed():
+                    try:
+                        # Download to default location w/o download_dir specified
+                        nltk.download(fallback_package, download_dir=None, quiet=False)
+                    except Exception:
+                        pass
+                else:
+                    logger.warning(
+                        f"Skipping final NLTK download attempt for '{fallback_package}' because the current resource policy forbids it."
+                    )
 
                 # Try finding the resource one more time
                 try:

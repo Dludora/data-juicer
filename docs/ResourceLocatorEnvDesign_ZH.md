@@ -4,7 +4,7 @@
 
 这份文档只讨论两件事：
 
-- `resource_locator.py` 第一阶段应该怎么写
+- `resource_policy_utils.py` 第一阶段应该怎么写
 - 环境变量怎么按 DJ 现有实现风格暴露出去
 
 这里不讨论 `config.py`，也不讨论第二阶段的统一大抽象。目标是先把第一阶段做成一个能落地的工程方案。
@@ -40,7 +40,7 @@
 
 第一阶段新增一个管理文件：
 
-- `data_juicer/utils/resource_locator.py`
+- `data_juicer/utils/resource_policy_utils.py`
 
 它的职责是：
 
@@ -71,8 +71,6 @@
 - `DJ_NLTK_DATA_DIR`
 - `DJ_NLTK_ALLOW_DOWNLOAD`
 - `DJ_PACKAGE_AUTO_INSTALL`
-- `DJ_PIP_INDEX_URL`
-- `DJ_PIP_EXTRA_INDEX_URLS`
 
 ### 4.2 与 DJ 现有变量的关系
 
@@ -95,7 +93,7 @@
 
 - 使用 `os.getenv(...)`
 - 或使用 `os.environ.get(...)`
-- 在 `resource_locator.py` 内集中解析
+- 在 `resource_policy_utils.py` 内集中解析
 
 不要在第一阶段把解析逻辑散落到：
 
@@ -120,9 +118,8 @@
 例如：
 
 - `DJ_RESOURCE_LOCAL_CACHE_ROOTS=/mnt/dj-cache:/mnt/share/models`
-- `DJ_PIP_EXTRA_INDEX_URLS=https://mirror-a/simple:https://mirror-b/simple`
 
-## 5. `resource_locator.py` 第一阶段接口
+## 5. `resource_policy_utils.py` 第一阶段接口
 
 第一阶段建议只暴露下面这些接口：
 
@@ -133,7 +130,6 @@
 - `configure_nltk_env()`
 - `should_allow_public_fallback()`
 - `should_auto_install_package()`
-- `build_pip_env_overrides()`
 
 不建议第一阶段一上来就提供：
 
@@ -143,7 +139,7 @@
 
 因为这些会拉高接入成本，也会让第一阶段跟第二批 OP 散点治理绑死。
 
-## 6. `resource_locator.py` 建议实现
+## 6. `resource_policy_utils.py` 建议实现
 
 ### 6.1 `get_resource_policy()`
 
@@ -169,8 +165,6 @@
   "nltk_data_dir": None,
   "nltk_allow_download": True,
   "package_auto_install": True,
-  "pip_index_url": None,
-  "pip_extra_index_urls": [],
 }
 ```
 
@@ -286,27 +280,6 @@
 - 直接受 `DJ_PACKAGE_AUTO_INSTALL` 控制
 - 如果 `offline_mode=true`，也建议强制关闭自动安装
 
-### 6.8 `build_pip_env_overrides()`
-
-职责：
-
-- 给 `LazyLoader` 启动 pip / uv 子进程时提供环境变量覆盖
-
-建议输出：
-
-```python
-{
-  "PIP_INDEX_URL": "...",
-  "PIP_EXTRA_INDEX_URL": "...",
-}
-```
-
-其中：
-
-- `DJ_PIP_INDEX_URL` -> `PIP_INDEX_URL`
-- `DJ_PIP_EXTRA_INDEX_URLS` -> `PIP_EXTRA_INDEX_URL`
-  - 第一阶段可以先用空格或单值拼接策略，但实现时需要和当前 `LazyLoader` 的 subprocess 方式统一
-
 ## 7. 如何接入 DJ 现有实现
 
 ### 7.1 接入 `model_utils.py`
@@ -344,7 +317,6 @@
 要改的点：
 
 - `LazyLoader.check_packages(...)` 安装前先判断 `should_auto_install_package()`
-- 若允许安装，则将 `build_pip_env_overrides()` 注入到 pip / uv 子进程环境
 
 第一阶段不需要重写 `LazyLoader` 的整体安装实现。
 
@@ -352,7 +324,7 @@
 
 建议顺序：
 
-1. 新增 `resource_locator.py`
+1. 新增 `resource_policy_utils.py`
 2. 在其中补环境变量解析和策略判断
 3. 接入 `model_utils.py`
 4. 接入 `asset_utils.py`

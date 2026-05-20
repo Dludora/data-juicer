@@ -22,10 +22,16 @@ from data_juicer.utils.nltk_utils import (
     patch_nltk_pickle_security,
 )
 from data_juicer.utils.ray_utils import is_ray_mode
+from data_juicer.utils.resource_policy_utils import (
+    configure_hf_env,
+    configure_nltk_env,
+    is_nltk_download_allowed,
+    resolve_model_source,
+    should_allow_public_fallback,
+)
 from data_juicer.utils.resource_utils import cuda_device_count
 
 from .cache_utils import DATA_JUICER_ASSETS_CACHE
-from .cache_utils import DATA_JUICER_EXTERNAL_MODELS_HOME as DJEMH
 from .cache_utils import DATA_JUICER_MODELS_CACHE as DJMC
 
 torch = LazyLoader("torch")
@@ -93,6 +99,49 @@ def get_backup_model_link(model_name):
     return None
 
 
+def _download_model_to_path(model_name, cached_model_path, source=None):
+    if source is None:
+        source = resolve_model_source(model_name, force=True)
+    allow_public_fallback = source["source"] != "mirror" or should_allow_public_fallback()
+
+    model_link = os.path.join(MODEL_LINKS, model_name)
+    backup_model_link = get_backup_model_link(model_name)
+    if backup_model_link is not None:
+        backup_model_link = os.path.join(backup_model_link, model_name)
+
+    try:
+        if source["source"] == "mirror":
+            wget.download(source["value"], cached_model_path)
+        else:
+            wget.download(model_link, cached_model_path)
+    except Exception:  # noqa: BLE001
+        if source["source"] == "mirror" and allow_public_fallback:
+            if backup_model_link and source["value"] != backup_model_link:
+                try:
+                    wget.download(backup_model_link, cached_model_path)
+                    return cached_model_path
+                except Exception:  # noqa: BLE001
+                    pass
+        elif source["source"] != "mirror" and backup_model_link is not None:
+            try:
+                wget.download(backup_model_link, cached_model_path)
+                return cached_model_path
+            except Exception:  # noqa: BLE001
+                pass
+
+        import traceback
+
+        traceback.print_exc()
+        raise RuntimeError(
+            f"Downloading model [{model_name}] error. "
+            f"Please retry later or download it into {DJMC} "
+            f"manually from {source['value'] if source['source'] == 'mirror' else model_link} "
+            f"or {backup_model_link} "
+        )
+
+    return cached_model_path
+
+
 def check_model(model_name, force=False):
     """
     Check whether a model exists in DATA_JUICER_MODELS_CACHE.
@@ -104,60 +153,32 @@ def check_model(model_name, force=False):
         the model file maybe incomplete for some reason, so need to
         download again forcefully.
     """
-    # check for local model
-    if not force and os.path.exists(model_name):
-        return model_name
-
-    if not force and DJEMH:
-        external_paths = DJEMH.split(os.pathsep)
-        for path in external_paths:
-            clean_path = path.strip()
-            if not clean_path:
-                continue
-            model_path = os.path.join(clean_path, model_name)
-            if os.path.exists(model_path):
-                return model_path
-
     if not os.path.exists(DJMC):
         os.makedirs(DJMC)
 
-    # check if the specified model exists. If it does not exist, download it
     cached_model_path = os.path.join(DJMC, model_name)
+    source = resolve_model_source(model_name, force=force)
+    if source["kind"] == "local_path":
+        return source["value"]
+
     if force:
         if os.path.exists(cached_model_path):
             os.remove(cached_model_path)
             logger.info(f"Model [{cached_model_path}] is invalid. Forcing download...")
         else:
             logger.info(f"Model [{cached_model_path}] is not found. Downloading...")
+        return _download_model_to_path(model_name, cached_model_path, source=source)
 
-        model_link = os.path.join(MODEL_LINKS, model_name)
-        try:
-            wget.download(model_link, cached_model_path)
-        except:  # noqa: E722
-            backup_model_link = get_backup_model_link(model_name)
-            if backup_model_link is not None:
-                backup_model_link = os.path.join(backup_model_link, model_name)
-            try:
-                wget.download(backup_model_link, cached_model_path)
-            except:  # noqa: E722
-                import traceback
-
-                traceback.print_exc()
-                raise RuntimeError(
-                    f"Downloading model [{model_name}] error. "
-                    f"Please retry later or download it into {DJMC} "
-                    f"manually from {model_link} or {backup_model_link} "
-                )
+    if not os.path.exists(cached_model_path):
+        logger.info(f"Model [{cached_model_path}] is not found. Downloading...")
+        return _download_model_to_path(model_name, cached_model_path, source=source)
     return cached_model_path
 
 
 def check_model_home(model_name):
-    if not DJEMH:
-        return model_name
-
-    cached_model_path = os.path.join(DJEMH, model_name)
-    if os.path.exists(cached_model_path):
-        return cached_model_path
+    source = resolve_model_source(model_name, force=False)
+    if source["kind"] == "local_path":
+        return source["value"]
     return model_name
 
 
@@ -490,6 +511,7 @@ def prepare_api_model(
             pass
 
         try:
+            configure_hf_env()
             processor = transformers.AutoProcessor.from_pretrained(
                 pretrained_model_name_or_path=check_model_home(model), **processor_config
             )
@@ -505,6 +527,7 @@ def prepare_api_model(
         )
 
     if processor_config is not None and "pretrained_model_name_or_path" in processor_config:
+        configure_hf_env()
         processor = transformers.AutoProcessor.from_pretrained(**processor_config)
     else:
         processor = get_processor()
@@ -604,6 +627,7 @@ def prepare_diffusion_model(pretrained_model_name_or_path, diffusion_type, **mod
         )
 
     pipeline = diffusion_type_to_pipeline[diffusion_type]
+    configure_hf_env()
     model = pipeline.from_pretrained(check_model_home(pretrained_model_name_or_path), **model_params)
     if device:
         model = model.to(device)
@@ -691,6 +715,7 @@ def prepare_huggingface_model(
                 logger.warning("accelerate not found, using device directly")
 
     pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
+    configure_hf_env()
     processor = transformers.AutoProcessor.from_pretrained(pretrained_model_name_or_path, **model_params)
 
     if return_model:
@@ -804,6 +829,7 @@ def prepare_moge_model(model_path, **model_params):
     LazyLoader.check_packages(["moge@ git+https://github.com/microsoft/MoGe.git"])
     from moge.model.v2 import MoGeModel
 
+    configure_hf_env()
     model = MoGeModel.from_pretrained(model_path).to(device)
 
     return model
@@ -821,6 +847,7 @@ def prepare_nltk_model(lang, name_pattern="punkt.{}.pickle", **model_params):
 
     # Ensure pickle security is patched
     patch_nltk_pickle_security()
+    configure_nltk_env()
 
     nltk_to_punkt = {"en": "english", "fr": "french", "pt": "portuguese", "es": "spanish"}
     assert lang in nltk_to_punkt.keys(), "lang must be one of the following: {}".format(list(nltk_to_punkt.keys()))
@@ -843,6 +870,8 @@ def prepare_nltk_model(lang, name_pattern="punkt.{}.pickle", **model_params):
         # Fallback to downloading and retrying
         logger.warning(f"Error loading model: {e}. Attempting to download...")
         try:
+            if not is_nltk_download_allowed():
+                raise RuntimeError("NLTK downloads are disabled by the current resource policy.")
             nltk.download("punkt", quiet=False)
             nltk_model = nltk.data.load(resource_path, **model_params)
         except Exception as download_error:
@@ -863,6 +892,7 @@ def prepare_nltk_pos_tagger(**model_params):
 
     # Ensure pickle security is patched
     patch_nltk_pickle_security()
+    configure_nltk_env()
 
     logger.info("Loading NLTK POS tagger model...")
 
@@ -884,6 +914,8 @@ def prepare_nltk_pos_tagger(**model_params):
         # Fallback to downloading and retrying
         logger.warning(f"Error loading POS tagger: {e}. Attempting to download...")
         try:
+            if not is_nltk_download_allowed():
+                raise RuntimeError("NLTK downloads are disabled by the current resource policy.")
             nltk.download("averaged_perceptron_tagger", quiet=False)
             import nltk.tag
 
@@ -927,6 +959,7 @@ def prepare_recognizeAnything_model(
 
 def prepare_sdxl_prompt2prompt(pretrained_model_name_or_path, pipe_func, torch_dtype="fp32", device="cpu"):
     pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
+    configure_hf_env()
     if torch_dtype == "fp32":
         model = pipe_func.from_pretrained(
             pretrained_model_name_or_path, torch_dtype=torch.float32, use_safetensors=True
@@ -988,6 +1021,7 @@ def prepare_simple_aesthetics_model(pretrained_model_name_or_path, *, return_mod
                 logger.warning("accelerate not found, using device directly")
 
     pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
+    configure_hf_env()
     processor = transformers.CLIPProcessor.from_pretrained(pretrained_model_name_or_path, **model_params)
     if not return_model:
         return processor
@@ -1176,6 +1210,7 @@ def prepare_video_blip_model(pretrained_model_name_or_path, *, return_model=True
             self.post_init()
 
     pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
+    configure_hf_env()
     processor = transformers.AutoProcessor.from_pretrained(
         pretrained_model_name_or_path, num_query_tokens=32, **model_params
     )
@@ -1275,6 +1310,7 @@ def prepare_vggt_model(model_path, **model_params):
 
     from vggt.models.vggt import VGGT
 
+    configure_hf_env()
     model = VGGT.from_pretrained(check_model_home(model_path)).to(device)
 
     return model
@@ -1304,6 +1340,7 @@ def prepare_vllm_model(pretrained_model_name_or_path, return_processor=False, **
     tokenizer = model.get_tokenizer()
 
     if return_processor:
+        configure_hf_env()
         processor = transformers.AutoProcessor.from_pretrained(pretrained_model_name_or_path)
         return model, processor
     else:
@@ -1400,6 +1437,7 @@ def prepare_embedding_model(model_path, **model_params):
         pooling = None
 
     model_path = check_model_home(model_path)
+    configure_hf_env()
     tokenizer = transformers.AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
     model = transformers.AutoModel.from_pretrained(model_path, trust_remote_code=True).to(device).eval()
 
@@ -1478,6 +1516,7 @@ def update_sampling_params(
     if fetch_generation_config_from_hf:
         pretrained_model_name_or_path = check_model_home(pretrained_model_name_or_path)
         try:
+            configure_hf_env()
             model_generation_config = transformers.GenerationConfig.from_pretrained(
                 pretrained_model_name_or_path
             ).to_dict()
