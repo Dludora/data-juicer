@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.s3_upload_file_mapper</span></li>
   </ul>
 </nav>
@@ -523,17 +526,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aws_credentials</span>
 
-<span class="n">boto3</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;boto3&quot;</span><span class="p">)</span>
-<span class="n">botocore_exceptions</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;botocore.exceptions&quot;</span><span class="p">)</span>
+<span class="n">boto3</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"boto3"</span><span class="p">)</span>
+<span class="n">botocore_exceptions</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"botocore.exceptions"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;s3_upload_file_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"s3_upload_file_mapper"</span>
 
 
 <div class="viewcode-block" id="S3UploadFileMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3UploadFileMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3UploadFileMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to upload local files to S3 and update paths to S3 URLs.</span>
+<span class="w">    </span><span class="sd">"""Mapper to upload local files to S3 and update paths to S3 URLs.</span>
 
 <span class="sd">    This operator uploads files from local paths to S3 storage. It supports:</span>
 <span class="sd">    - Uploading multiple files concurrently</span>
@@ -543,7 +546,7 @@
 <span class="sd">    - Skipping already uploaded files (based on S3 key)</span>
 
 <span class="sd">    The operator processes nested lists of paths, maintaining the original structure</span>
-<span class="sd">    in the output.&quot;&quot;&quot;</span>
+<span class="sd">    in the output."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -553,7 +556,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">upload_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">s3_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">s3_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="c1"># S3 credentials</span>
         <span class="n">aws_access_key_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">aws_secret_access_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -567,12 +570,12 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param upload_field: The field name containing file paths to upload.</span>
 <span class="sd">        :param s3_bucket: S3 bucket name to upload files to.</span>
-<span class="sd">        :param s3_prefix: Prefix (folder path) in S3 bucket. E.g., &#39;videos/&#39; or &#39;data/videos/&#39;.</span>
+<span class="sd">        :param s3_prefix: Prefix (folder path) in S3 bucket. E.g., 'videos/' or 'data/videos/'.</span>
 <span class="sd">        :param aws_access_key_id: AWS access key ID for S3.</span>
 <span class="sd">        :param aws_secret_access_key: AWS secret access key for S3.</span>
 <span class="sd">        :param aws_session_token: AWS session token for S3 (optional).</span>
@@ -583,32 +586,32 @@
 <span class="sd">        :param max_concurrent: Maximum concurrent uploads.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">upload_field</span> <span class="o">=</span> <span class="n">upload_field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span> <span class="o">=</span> <span class="n">s3_bucket</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">s3_prefix</span> <span class="o">=</span> <span class="n">s3_prefix</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="k">if</span> <span class="n">s3_prefix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">s3_prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">s3_prefix</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s3_prefix</span> <span class="o">=</span> <span class="n">s3_prefix</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"/"</span> <span class="k">if</span> <span class="n">s3_prefix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">s3_prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span> <span class="k">else</span> <span class="n">s3_prefix</span> <span class="ow">or</span> <span class="s2">""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_local</span> <span class="o">=</span> <span class="n">remove_local</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">skip_existing</span> <span class="o">=</span> <span class="n">skip_existing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent</span> <span class="o">=</span> <span class="n">max_concurrent</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;s3_bucket must be specified&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"s3_bucket must be specified"</span><span class="p">)</span>
 
         <span class="c1"># Prepare config dict for get_aws_credentials</span>
         <span class="n">ds_config</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">aws_access_key_id</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_access_key_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
         <span class="k">if</span> <span class="n">aws_secret_access_key</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_secret_access_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
         <span class="k">if</span> <span class="n">aws_session_token</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
         <span class="k">if</span> <span class="n">aws_region</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_region"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span>
         <span class="k">if</span> <span class="n">endpoint_url</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
 
         <span class="c1"># Get credentials with priority: environment variables &gt; operator parameters</span>
         <span class="p">(</span>
@@ -620,42 +623,42 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">resolved_access_key_id</span> <span class="ow">and</span> <span class="n">resolved_secret_access_key</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;AWS credentials (aws_access_key_id and aws_secret_access_key) must be provided &quot;</span>
-                <span class="s2">&quot;either through operator parameters or environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)&quot;</span>
+                <span class="s2">"AWS credentials (aws_access_key_id and aws_secret_access_key) must be provided "</span>
+                <span class="s2">"either through operator parameters or environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)"</span>
             <span class="p">)</span>
 
-        <span class="c1"># Store S3 configuration (don&#39;t create client here to avoid serialization issues)</span>
+        <span class="c1"># Store S3 configuration (don't create client here to avoid serialization issues)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">:</span> <span class="n">resolved_access_key_id</span><span class="p">,</span>
-            <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">:</span> <span class="n">resolved_secret_access_key</span><span class="p">,</span>
+            <span class="s2">"aws_access_key_id"</span><span class="p">:</span> <span class="n">resolved_access_key_id</span><span class="p">,</span>
+            <span class="s2">"aws_secret_access_key"</span><span class="p">:</span> <span class="n">resolved_secret_access_key</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">resolved_session_token</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_session_token</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_session_token</span>
         <span class="k">if</span> <span class="n">resolved_region</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;region_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_region</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"region_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_region</span>
         <span class="k">if</span> <span class="n">endpoint_url</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;S3 upload mapper initialized: bucket=</span><span class="si">{</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">, prefix=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_prefix</span><span class="si">}</span><span class="s2">, endpoint=</span><span class="si">{</span><span class="n">endpoint_url</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;default&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"S3 upload mapper initialized: bucket=</span><span class="si">{</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">, prefix=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_prefix</span><span class="si">}</span><span class="s2">, endpoint=</span><span class="si">{</span><span class="n">endpoint_url</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'default'</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">s3_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazy initialization of S3 client to avoid serialization issues with Ray.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Lazy initialization of S3 client to avoid serialization issues with Ray."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;S3 client initialized (lazy)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"S3 client initialized (lazy)"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_is_s3_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the path is already an S3 URL.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Check if the path is already an S3 URL."""</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s3://"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_s3_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a file exists in S3.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a file exists in S3."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">head_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">s3_key</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -663,73 +666,73 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_upload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload a single file to S3.</span>
+<span class="w">        </span><span class="sd">"""Upload a single file to S3.</span>
 
 <span class="sd">        :param local_path: Local file path to upload</span>
 <span class="sd">        :return: (status, s3_url, error_message)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Already an S3 URL, skip</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_s3_url</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path is already S3 URL: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;skipped&quot;</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Path is already S3 URL: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">"skipped"</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="c1"># Check if file exists locally</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">local_path</span><span class="p">):</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Local file not found: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Local file not found: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
+            <span class="k">return</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Construct S3 key</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
             <span class="n">s3_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_prefix</span> <span class="o">+</span> <span class="n">filename</span>
-            <span class="n">s3_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">s3_key</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">s3_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"s3://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">s3_key</span><span class="si">}</span><span class="s2">"</span>
 
             <span class="c1"># Check if file already exists in S3</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_existing</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_s3_exists</span><span class="p">(</span><span class="n">s3_key</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File already exists in S3, skipping: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"File already exists in S3, skipping: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
                 <span class="c1"># Delete local file if configured</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_local</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed local file: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removed local file: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove local file </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to remove local file </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-                <span class="k">return</span> <span class="s2">&quot;exists&quot;</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="s2">"exists"</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="kc">None</span>
 
             <span class="c1"># Upload to S3</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_key</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Uploaded: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="c1"># Delete local file if configured</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_local</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">local_path</span><span class="p">)</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removed local file: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removed local file: </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to remove local file </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to remove local file </span><span class="si">{</span><span class="n">local_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="s2">"success"</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="k">except</span> <span class="n">botocore_exceptions</span><span class="o">.</span><span class="n">ClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S3 upload failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"S3 upload failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
+            <span class="k">return</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Upload error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Upload error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
+            <span class="k">return</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">local_path</span><span class="p">,</span> <span class="n">error_msg</span>
 
 <div class="viewcode-block" id="S3UploadFileMapper.upload_files_async">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3UploadFileMapper.upload_files_async">[文档]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upload_files_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload multiple files asynchronously.</span>
+<span class="w">        </span><span class="sd">"""Upload multiple files asynchronously.</span>
 
 <span class="sd">        :param paths: List of local file paths</span>
 <span class="sd">        :return: List of (idx, status, s3_url, error_message) tuples</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_upload_file</span><span class="p">(</span><span class="n">semaphore</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
@@ -739,9 +742,9 @@
                     <span class="n">status</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="k">await</span> <span class="n">loop</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_to_s3</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="n">error</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Upload error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Upload error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">error_msg</span>
+                    <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">error_msg</span>
 
         <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_concurrent</span><span class="p">)</span>
         <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">_upload_file</span><span class="p">(</span><span class="n">semaphore</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">)]</span>
@@ -753,7 +756,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_flat_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_paths</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flatten nested paths while preserving structure information.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Flatten nested paths while preserving structure information."""</span>
         <span class="n">flat_paths</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">structure_info</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># (original_index, sub_index)</span>
 
@@ -769,7 +772,7 @@
         <span class="k">return</span> <span class="n">flat_paths</span><span class="p">,</span> <span class="n">structure_info</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_path_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create path structure for output.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create path structure for output."""</span>
         <span class="n">reconstructed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">nested_paths</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -781,11 +784,11 @@
 <div class="viewcode-block" id="S3UploadFileMapper.upload_nested_paths">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3UploadFileMapper.upload_nested_paths">[文档]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upload_nested_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_paths</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload nested paths with structure preservation.</span>
+<span class="w">        </span><span class="sd">"""Upload nested paths with structure preservation.</span>
 
 <span class="sd">        :param nested_paths: Nested list of file paths</span>
 <span class="sd">        :return: (reconstructed_paths, failed_info)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">flat_paths</span><span class="p">,</span> <span class="n">structure_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat_paths</span><span class="p">(</span><span class="n">nested_paths</span><span class="p">)</span>
 
         <span class="c1"># Upload all files asynchronously</span>
@@ -794,7 +797,7 @@
         <span class="c1"># Reconstruct nested structure</span>
         <span class="n">reconstructed_paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_path_struct</span><span class="p">(</span><span class="n">nested_paths</span><span class="p">)</span>
 
-        <span class="n">failed_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">failed_info</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="n">success_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">failed_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">skipped_count</span> <span class="o">=</span> <span class="mi">0</span>
@@ -803,15 +806,15 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">upload_results</span><span class="p">):</span>
             <span class="n">orig_idx</span><span class="p">,</span> <span class="n">sub_idx</span> <span class="o">=</span> <span class="n">structure_info</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;success&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"success"</span><span class="p">:</span>
                 <span class="n">success_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;failed&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"failed"</span><span class="p">:</span>
                 <span class="n">failed_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-                    <span class="n">failed_info</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">flat_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;skipped&quot;</span><span class="p">:</span>
+                    <span class="n">failed_info</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">flat_paths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"skipped"</span><span class="p">:</span>
                 <span class="n">skipped_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">&quot;exists&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="s2">"exists"</span><span class="p">:</span>
                 <span class="n">exists_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># Update path in reconstructed structure</span>
@@ -822,8 +825,8 @@
 
         <span class="c1"># Log summary</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Upload summary: </span><span class="si">{</span><span class="n">success_count</span><span class="si">}</span><span class="s2"> uploaded, </span><span class="si">{</span><span class="n">exists_count</span><span class="si">}</span><span class="s2"> already exists, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">skipped_count</span><span class="si">}</span><span class="s2"> skipped, </span><span class="si">{</span><span class="n">failed_count</span><span class="si">}</span><span class="s2"> failed&quot;</span>
+            <span class="sa">f</span><span class="s2">"Upload summary: </span><span class="si">{</span><span class="n">success_count</span><span class="si">}</span><span class="s2"> uploaded, </span><span class="si">{</span><span class="n">exists_count</span><span class="si">}</span><span class="s2"> already exists, "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">skipped_count</span><span class="si">}</span><span class="s2"> skipped, </span><span class="si">{</span><span class="n">failed_count</span><span class="si">}</span><span class="s2"> failed"</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">reconstructed_paths</span><span class="p">,</span> <span class="n">failed_info</span></div>
@@ -832,7 +835,7 @@
 <div class="viewcode-block" id="S3UploadFileMapper.process_batched">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3UploadFileMapper.process_batched">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a batch of samples.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Process a batch of samples."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">upload_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samples</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_field</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">samples</span>
 
@@ -845,7 +848,7 @@
         <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">upload_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">reconstructed_paths</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">failed_info</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed uploads:</span><span class="se">\n</span><span class="si">{</span><span class="n">failed_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed uploads:</span><span class="se">\n</span><span class="si">{</span><span class="n">failed_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">samples</span></div>
 </div>

@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.image_face_count_filter</span></li>
   </ul>
 </nav>
@@ -525,9 +528,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">UNFORKABLE</span><span class="p">,</span> <span class="n">Filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_face_count_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_face_count_filter"</span>
 
 
 <div class="viewcode-block" id="ImageFaceCountFilter">
@@ -536,51 +539,51 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageFaceCountFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with the number of faces within a specific range.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with the number of faces within a specific range.</span>
 
 <span class="sd">    This operator uses an OpenCV classifier for face detection. It filters samples based on</span>
 <span class="sd">    the number of faces detected in the images, keeping only those with a face count within</span>
-<span class="sd">    the specified range. The operator supports two strategies: &#39;any&#39; (keep if any image</span>
-<span class="sd">    meets the condition) and &#39;all&#39; (keep only if all images meet the condition). The face</span>
-<span class="sd">    counts are cached in the &#39;face_counts&#39; field. If no images are present in the sample,</span>
-<span class="sd">    the face count is set to an empty array.&quot;&quot;&quot;</span>
+<span class="sd">    the specified range. The operator supports two strategies: 'any' (keep if any image</span>
+<span class="sd">    meets the condition) and 'all' (keep only if all images meet the condition). The face</span>
+<span class="sd">    counts are cached in the 'face_counts' field. If no images are present in the sample,</span>
+<span class="sd">    the face count is set to an empty array."""</span>
 
     <span class="n">_default_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;scaleFactor&quot;</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span>
-        <span class="s2">&quot;minNeighbors&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="s2">&quot;minSize&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;maxSize&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">"scaleFactor"</span><span class="p">:</span> <span class="mf">1.1</span><span class="p">,</span>
+        <span class="s2">"minNeighbors"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">"minSize"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">"maxSize"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="ImageFaceCountFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_face_count_filter.html#data_juicer.ops.filter.ImageFaceCountFilter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">cv_classifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">cv_classifier</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">min_face_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">max_face_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param cv_classifier: OpenCV classifier path for face detection.</span>
-<span class="sd">            By default, we will use &#39;haarcascade_frontalface_alt.xml&#39;.</span>
+<span class="sd">            By default, we will use 'haarcascade_frontalface_alt.xml'.</span>
 <span class="sd">        :param min_face_count: Minimum number of faces required for samples.</span>
 <span class="sd">        :param max_face_count: Maximum number of faces required for samples.</span>
-<span class="sd">        :param any_or_all: Keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all images. &#39;any&#39;: keep this sample if any images meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all images meet the</span>
+<span class="sd">        :param any_or_all: Keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all images. 'any': keep this sample if any images meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all images meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: Extra positional arguments.</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">cv_classifier</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">cv_classifier</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">haarcascades</span><span class="p">,</span> <span class="s2">&quot;haarcascade_frontalface_alt.xml&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cv_classifier</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">cv_classifier</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">haarcascades</span><span class="p">,</span> <span class="s2">"haarcascade_frontalface_alt.xml"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">min_face_count</span> <span class="o">=</span> <span class="n">min_face_count</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_face_count</span> <span class="o">=</span> <span class="n">max_face_count</span>
@@ -588,17 +591,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;opencv_classifier&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">cv_classifier</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"opencv_classifier"</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">cv_classifier</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImageFaceCountFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_face_count_filter.html#data_juicer.ops.filter.ImageFaceCountFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">face_counts</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -620,7 +623,7 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">dets</span> <span class="o">=</span> <span class="n">detect_faces</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_kwargs</span><span class="p">)</span>
             <span class="n">face_counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dets</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;face counts: </span><span class="si">{</span><span class="n">face_counts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"face counts: </span><span class="si">{</span><span class="n">face_counts</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">face_counts</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">face_counts</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">loaded_image_keys</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sample</span></div>

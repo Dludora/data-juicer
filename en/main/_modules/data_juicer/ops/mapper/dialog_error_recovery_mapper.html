@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_error_recovery_mapper</span></li>
   </ul>
 </nav>
@@ -515,14 +518,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: reply after user disputes a prior error (1–5).</span>
+<span class="sd">"""LLM: reply after user disputes a prior error (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge self-correction; DJ: no dispute context → neutral high.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/multi_turn/</span>
 <span class="sd">#selfcorrectiongrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -530,7 +533,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper.dialog_quality_llm_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_DialogTurnQualityMapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;dialog_error_recovery_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"dialog_error_recovery_mapper"</span>
 
 
 <div class="viewcode-block" id="DialogErrorRecoveryMapper">
@@ -538,24 +541,24 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DialogErrorRecoveryMapper</span><span class="p">(</span><span class="n">_DialogTurnQualityMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;When the user disputes a prior assistant mistake, is the reply corrective.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""When the user disputes a prior assistant mistake, is the reply corrective."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_error_recovery</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;If the transcript shows the user **explicitly** correcting or &quot;</span>
-            <span class="s2">&quot;disputing an **earlier assistant** mistake, score whether the &quot;</span>
-            <span class="s2">&quot;**Assistant reply to score** acknowledges professionally, fixes &quot;</span>
-            <span class="s2">&quot;the issue, and keeps a respectful tone.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;**Mandatory:** If there is **no** such correction/dispute context &quot;</span>
-            <span class="s2">&quot;in Earlier turns + Current user message, output **score 5** and &quot;</span>
-            <span class="s2">&quot;state in `reason` that there was no error-recovery scenario. &quot;</span>
-            <span class="s2">&quot;Do **not** output 1–3 merely because the reply lacks an apology or &quot;</span>
-            <span class="s2">&quot;because no error was visible.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = denial or hostile tone when a fix was needed; 5 = clear, &quot;</span>
-            <span class="s2">&quot;correct fix when a fix was needed.&quot;</span>
+            <span class="s2">"If the transcript shows the user **explicitly** correcting or "</span>
+            <span class="s2">"disputing an **earlier assistant** mistake, score whether the "</span>
+            <span class="s2">"**Assistant reply to score** acknowledges professionally, fixes "</span>
+            <span class="s2">"the issue, and keeps a respectful tone.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"**Mandatory:** If there is **no** such correction/dispute context "</span>
+            <span class="s2">"in Earlier turns + Current user message, output **score 5** and "</span>
+            <span class="s2">"state in `reason` that there was no error-recovery scenario. "</span>
+            <span class="s2">"Do **not** output 1–3 merely because the reply lacks an apology or "</span>
+            <span class="s2">"because no error was visible.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = denial or hostile tone when a fix was needed; 5 = clear, "</span>
+            <span class="s2">"correct fix when a fix was needed."</span>
         <span class="p">)</span></div>
 
 </pre></div>

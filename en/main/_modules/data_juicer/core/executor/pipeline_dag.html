@@ -512,19 +512,20 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.core.executor.pipeline_dag</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Pipeline DAG Representation for Data-Juicer Pipelines</span>
 
 <span class="sd">This module provides Pipeline DAG (Directed Acyclic Graph) representation</span>
 <span class="sd">for tracking execution state, dependencies, and monitoring.</span>
 
 <span class="sd">Refactored to:</span>
-<span class="sd">- Live in core/executor/ where it&#39;s actually used</span>
+<span class="sd">- Live in core/executor/ where it's actually used</span>
 <span class="sd">- Use dict nodes consistently (matching strategy output)</span>
 <span class="sd">- Share status enum with DAGNodeStatusTransition</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -536,7 +537,7 @@
 <div class="viewcode-block" id="DAGNodeStatus">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.DAGNodeStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DAGNodeStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Status of a DAG node during execution.</span>
+<span class="w">    </span><span class="sd">"""Status of a DAG node during execution.</span>
 
 <span class="sd">    State machine transitions (enforced by DAGNodeStatusTransition):</span>
 <span class="sd">    - pending -&gt; running (node starts execution)</span>
@@ -545,37 +546,37 @@
 <span class="sd">    - running -&gt; failed (node fails)</span>
 <span class="sd">    - failed -&gt; running (node retries)</span>
 <span class="sd">    - completed is terminal (no transitions out)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">PENDING</span> <span class="o">=</span> <span class="s2">&quot;pending&quot;</span>
-    <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">&quot;running&quot;</span>
-    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="s2">&quot;completed&quot;</span>
-    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">&quot;failed&quot;</span></div>
+    <span class="n">PENDING</span> <span class="o">=</span> <span class="s2">"pending"</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="s2">"running"</span>
+    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="s2">"completed"</span>
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">"failed"</span></div>
 
 
 
 <div class="viewcode-block" id="PipelineDAG">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PipelineDAG</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pipeline DAG representation and execution state tracker.</span>
+<span class="w">    </span><span class="sd">"""Pipeline DAG representation and execution state tracker.</span>
 
 <span class="sd">    Stores DAG nodes as dicts (matching strategy output format).</span>
 <span class="sd">    Provides methods for state management, serialization, and visualization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="PipelineDAG.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Pipeline DAG.</span>
+<span class="w">        </span><span class="sd">"""Initialize the Pipeline DAG.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            work_dir: Working directory for storing DAG execution plans</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dag_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span>  <span class="c1"># Save directly in work_dir</span>
 
         <span class="c1"># Pipeline nodes - dicts from strategies</span>
-        <span class="c1"># Dependencies are stored in nodes themselves: node[&quot;dependencies&quot;]</span>
+        <span class="c1"># Dependencies are stored in nodes themselves: node["dependencies"]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Reserved for future DAG enhancements:</span>
@@ -584,241 +585,252 @@
         <span class="c1"># - parallel_groups: ops that can run concurrently</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execution_plan</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parallel_groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel_groups</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.save_execution_plan">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.save_execution_plan">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">save_execution_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dag_execution_plan.json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the execution plan to file.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_execution_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"dag_execution_plan.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Save the execution plan to file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: Name of the file to save the plan</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Path to the saved file</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">static_nodes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">static_nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;node_id&quot;</span><span class="p">],</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;node_type&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_type&quot;</span><span class="p">,</span> <span class="s2">&quot;operation&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;partition_id&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">),</span>
-                <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="p">{}),</span>
-                <span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-                <span class="s2">&quot;execution_order&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;execution_order&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                <span class="s2">&quot;estimated_duration&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;estimated_duration&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-                <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="s2">"node_id"</span><span class="p">:</span> <span class="n">node</span><span class="p">[</span><span class="s2">"node_id"</span><span class="p">],</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                <span class="s2">"node_type"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node_type"</span><span class="p">,</span> <span class="s2">"operation"</span><span class="p">),</span>
+                <span class="s2">"partition_id"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">),</span>
+                <span class="s2">"config"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="s2">"dependencies"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[]),</span>
+                <span class="s2">"execution_order"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"execution_order"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">"estimated_duration"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"estimated_duration"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="s2">"metadata"</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="p">}</span>
 
         <span class="n">plan_data</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">static_nodes</span><span class="p">,</span>
-            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;created_at&quot;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
-                <span class="s2">&quot;total_nodes&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span>
+            <span class="s2">"nodes"</span><span class="p">:</span> <span class="n">static_nodes</span><span class="p">,</span>
+            <span class="s2">"metadata"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"created_at"</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
+                <span class="s2">"total_nodes"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">}</span>
 
         <span class="n">plan_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dag_dir</span> <span class="o">/</span> <span class="n">filename</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">plan_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">plan_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">plan_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution plan saved to: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Execution plan saved to: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">plan_path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.load_execution_plan">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.load_execution_plan">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">load_execution_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dag_execution_plan.json&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load execution plan from file.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_execution_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"dag_execution_plan.json"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Load execution plan from file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: Name of the file to load the plan from</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if loaded successfully, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">plan_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dag_dir</span> <span class="o">/</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">plan_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution plan file not found: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Execution plan file not found: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">plan_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">plan_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">plan_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node_data</span> <span class="ow">in</span> <span class="n">plan_data</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node_data</span> <span class="ow">in</span> <span class="n">plan_data</span><span class="p">[</span><span class="s2">"nodes"</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;node_id&quot;</span><span class="p">],</span>
-                    <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;node_type&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_type&quot;</span><span class="p">,</span> <span class="s2">&quot;operation&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;partition_id&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">),</span>
-                    <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="p">{}),</span>
-                    <span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-                    <span class="s2">&quot;execution_order&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;execution_order&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                    <span class="s2">&quot;estimated_duration&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;estimated_duration&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-                    <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="s2">"node_id"</span><span class="p">:</span> <span class="n">node_data</span><span class="p">[</span><span class="s2">"node_id"</span><span class="p">],</span>
+                    <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="s2">"node_type"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node_type"</span><span class="p">,</span> <span class="s2">"operation"</span><span class="p">),</span>
+                    <span class="s2">"partition_id"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">),</span>
+                    <span class="s2">"config"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"config"</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="s2">"dependencies"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[]),</span>
+                    <span class="s2">"execution_order"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"execution_order"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="s2">"estimated_duration"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"estimated_duration"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                    <span class="s2">"metadata"</span><span class="p">:</span> <span class="n">node_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{}),</span>
                     <span class="c1"># Reset execution state</span>
-                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                    <span class="s2">&quot;actual_duration&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"status"</span><span class="p">:</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                    <span class="s2">"actual_duration"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"start_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"end_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"error_message"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="p">}</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution plan loaded from: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Execution plan loaded from: </span><span class="si">{</span><span class="n">plan_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load execution plan: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to load execution plan: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.mark_node_started">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.mark_node_started">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_node_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark a node as started (running).&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
+<span class="w">        </span><span class="sd">"""Mark a node as started (running)."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"start_time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.mark_node_completed">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.mark_node_completed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_node_completed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark a node as completed.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
-            <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span>
-            <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">node</span><span class="p">[</span><span class="s2">&quot;actual_duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">current_time</span>
-                <span class="n">node</span><span class="p">[</span><span class="s2">&quot;actual_duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">start</span></div>
+<span class="w">        </span><span class="sd">"""Mark a node as completed."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
+                <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"end_time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span>
+                <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">node</span><span class="p">[</span><span class="s2">"actual_duration"</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">current_time</span>
+                    <span class="n">node</span><span class="p">[</span><span class="s2">"actual_duration"</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">start</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.mark_node_failed">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.mark_node_failed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_node_failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error_message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark a node as failed.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
-            <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;error_message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_message</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">current_time</span>
-            <span class="n">node</span><span class="p">[</span><span class="s2">&quot;actual_duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">start</span></div>
+<span class="w">        </span><span class="sd">"""Mark a node as failed."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
+                <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"end_time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"error_message"</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_message</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">current_time</span>
+                <span class="n">node</span><span class="p">[</span><span class="s2">"actual_duration"</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">start</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.get_node_status">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.get_node_status">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_node_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DAGNodeStatus</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get status of a node by ID.</span>
+<span class="w">        </span><span class="sd">"""Get status of a node by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            node_id: The node identifier</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            DAGNodeStatus of the node</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">node_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span>
-        <span class="n">status_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">DAGNodeStatus</span><span class="p">(</span><span class="n">status_str</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span>
+            <span class="n">status_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="s2">"pending"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">DAGNodeStatus</span><span class="p">(</span><span class="n">status_str</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.get_ready_nodes">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.get_ready_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_ready_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get list of nodes ready to execute (all dependencies completed).&quot;&quot;&quot;</span>
-        <span class="n">ready_nodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="k">continue</span>
+<span class="w">        </span><span class="sd">"""Get list of nodes ready to execute (all dependencies completed)."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="n">ready_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="s2">"pending"</span><span class="p">)</span> <span class="o">!=</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                    <span class="k">continue</span>
 
-            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">all_deps_completed</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_node_status</span><span class="p">(</span><span class="n">dep_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span> <span class="k">for</span> <span class="n">dep_id</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">all_deps_completed</span><span class="p">:</span>
-                <span class="n">ready_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+                <span class="n">dependencies</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="n">all_deps_completed</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_node_status</span><span class="p">(</span><span class="n">dep_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span> <span class="k">for</span> <span class="n">dep_id</span> <span class="ow">in</span> <span class="n">dependencies</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">all_deps_completed</span><span class="p">:</span>
+                    <span class="n">ready_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ready_nodes</span></div>
+            <span class="k">return</span> <span class="n">ready_nodes</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.get_execution_summary">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.get_execution_summary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_execution_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get execution summary statistics.&quot;&quot;&quot;</span>
-        <span class="n">total_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Get execution summary statistics."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state_lock</span><span class="p">:</span>
+            <span class="n">total_nodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-        <span class="n">completed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">failed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">running</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">pending</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">completed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">failed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">running</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">pending</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="s2">"pending"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-        <span class="n">total_duration</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;actual_duration&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">total_duration</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"actual_duration"</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;total_nodes&quot;</span><span class="p">:</span> <span class="n">total_nodes</span><span class="p">,</span>
-            <span class="s2">&quot;completed_nodes&quot;</span><span class="p">:</span> <span class="n">completed</span><span class="p">,</span>
-            <span class="s2">&quot;failed_nodes&quot;</span><span class="p">:</span> <span class="n">failed</span><span class="p">,</span>
-            <span class="s2">&quot;running_nodes&quot;</span><span class="p">:</span> <span class="n">running</span><span class="p">,</span>
-            <span class="s2">&quot;pending_nodes&quot;</span><span class="p">:</span> <span class="n">pending</span><span class="p">,</span>
-            <span class="s2">&quot;completion_percentage&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">completed</span> <span class="o">/</span> <span class="n">total_nodes</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_nodes</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;total_duration&quot;</span><span class="p">:</span> <span class="n">total_duration</span><span class="p">,</span>
-        <span class="p">}</span></div>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">"total_nodes"</span><span class="p">:</span> <span class="n">total_nodes</span><span class="p">,</span>
+                <span class="s2">"completed_nodes"</span><span class="p">:</span> <span class="n">completed</span><span class="p">,</span>
+                <span class="s2">"failed_nodes"</span><span class="p">:</span> <span class="n">failed</span><span class="p">,</span>
+                <span class="s2">"running_nodes"</span><span class="p">:</span> <span class="n">running</span><span class="p">,</span>
+                <span class="s2">"pending_nodes"</span><span class="p">:</span> <span class="n">pending</span><span class="p">,</span>
+                <span class="s2">"completion_percentage"</span><span class="p">:</span> <span class="p">(</span><span class="n">completed</span> <span class="o">/</span> <span class="n">total_nodes</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">if</span> <span class="n">total_nodes</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">"total_duration"</span><span class="p">:</span> <span class="n">total_duration</span><span class="p">,</span>
+            <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="PipelineDAG.visualize">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.pipeline_dag.html#data_juicer.core.executor.pipeline_dag.PipelineDAG.visualize">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">visualize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a string representation of the DAG for visualization.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate a string representation of the DAG for visualization."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Empty DAG&quot;</span>
+            <span class="k">return</span> <span class="s2">"Empty DAG"</span>
 
-        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DAG Execution Plan:&quot;</span><span class="p">]</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"DAG Execution Plan:"</span><span class="p">]</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
 
         <span class="n">status_icons</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;[ ]&quot;</span><span class="p">,</span>
-            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;[~]&quot;</span><span class="p">,</span>
-            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;[x]&quot;</span><span class="p">,</span>
-            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;[!]&quot;</span><span class="p">,</span>
+            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"[ ]"</span><span class="p">,</span>
+            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"[~]"</span><span class="p">,</span>
+            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"[x]"</span><span class="p">,</span>
+            <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="s2">"[!]"</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="c1"># Sort by execution order</span>
-        <span class="n">sorted_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;execution_order&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">sorted_nodes</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"execution_order"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Nodes:&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Nodes:"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sorted_nodes</span><span class="p">):</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;pending&quot;</span><span class="p">)</span>
-            <span class="n">op_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
-            <span class="n">node_type</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_type&quot;</span><span class="p">,</span> <span class="s2">&quot;operation&quot;</span><span class="p">)</span>
-            <span class="n">partition_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">,</span> <span class="s2">"pending"</span><span class="p">)</span>
+            <span class="n">op_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">)</span>
+            <span class="n">node_type</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node_type"</span><span class="p">,</span> <span class="s2">"operation"</span><span class="p">)</span>
+            <span class="n">partition_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
 
-            <span class="n">icon</span> <span class="o">=</span> <span class="n">status_icons</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="s2">&quot;[?]&quot;</span><span class="p">)</span>
-            <span class="n">partition_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; (partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">icon</span> <span class="o">=</span> <span class="n">status_icons</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="s2">"[?]"</span><span class="p">)</span>
+            <span class="n">partition_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" (partition </span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
 
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">icon</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">op_name</span><span class="si">}{</span><span class="n">partition_info</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">node_type</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">icon</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">op_name</span><span class="si">}{</span><span class="n">partition_info</span><span class="si">}</span><span class="s2"> [</span><span class="si">{</span><span class="n">node_type</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 
         <span class="c1"># Show dependencies</span>
-        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Dependencies:&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Dependencies:"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">sorted_nodes</span><span class="p">:</span>
-            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">dependencies</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[])</span>
             <span class="k">if</span> <span class="n">dependencies</span><span class="p">:</span>
-                <span class="n">op_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+                <span class="n">op_name</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">,</span> <span class="s2">"unknown"</span><span class="p">)</span>
                 <span class="n">dep_names</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">dep_id</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
                     <span class="n">dep_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">dep_id</span><span class="p">,</span> <span class="p">{})</span>
-                    <span class="n">dep_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">,</span> <span class="n">dep_id</span><span class="p">))</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2"> &lt;- </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dep_names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">dep_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep_node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">,</span> <span class="n">dep_id</span><span class="p">))</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2"> &lt;- </span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dep_names</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

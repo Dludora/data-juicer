@@ -517,13 +517,18 @@
 <span id="data-juicer-ops-op-fusion-module"></span><h1>data_juicer.ops.op_fusion module<a class="headerlink" href="#module-data_juicer.ops.op_fusion" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="data_juicer.ops.op_fusion.fuse_operators">
-<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.op_fusion.</span></span><span class="sig-name descname"><span class="pre">fuse_operators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ops</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/op_fusion.html#fuse_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.ops.op_fusion.fuse_operators" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.op_fusion.</span></span><span class="sig-name descname"><span class="pre">fuse_operators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ops</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probe_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper_fusion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper_fusion_vram_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/op_fusion.html#fuse_operators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.ops.op_fusion.fuse_operators" title="Link to this definition">#</a></dt>
 <dd><p>Fuse the input ops list and return the fused ops list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ops</strong> – the corresponding list of op objects.</p></li>
 <li><p><strong>probe_res</strong> – the probed speed for each OP from Monitor.</p></li>
+<li><p><strong>mapper_fusion</strong> – whether to fuse consecutive independent GPU Mappers
+into FusedSequentialBatchOp for single-stage execution. Only effective when
+op_fusion is true.</p></li>
+<li><p><strong>mapper_fusion_vram_limit</strong> – max aggregate GPU memory budget (fraction
+of one GPU) for a fused mapper group. Default 0.9.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -616,6 +621,30 @@ for video containers, are cleaned up.</p>
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.ops.op_fusion.fuse_mapper_group">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.op_fusion.</span></span><span class="sig-name descname"><span class="pre">fuse_mapper_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapper_group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vram_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/data_juicer/ops/op_fusion.html#fuse_mapper_group"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.ops.op_fusion.fuse_mapper_group" title="Link to this definition">#</a></dt>
+<dd><p>Fuse consecutive independent GPU Mappers into FusedSequentialBatchOp.</p>
+<p>Safety rules:
+- All ops must be Mapper instances with num_gpus &gt; 0
+- All ops must explicitly opt in with _fused_sequential_batch_op_safe = True
+- Ops must be independent (disjoint declared output columns)
+- All ops must declare estimated_vram_fraction
+- Aggregate estimated VRAM should not exceed vram_limit
+- All ops must use the same Ray runtime environment</p>
+<p>Returns a list with either the original ops (if not fuseable)
+or a single FusedSequentialBatchOp wrapping the group.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.ops.op_fusion.fuse_consecutive_mappers">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.op_fusion.</span></span><span class="sig-name descname"><span class="pre">fuse_consecutive_mappers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vram_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="reference internal" href="../_modules/data_juicer/ops/op_fusion.html#fuse_consecutive_mappers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.ops.op_fusion.fuse_consecutive_mappers" title="Link to this definition">#</a></dt>
+<dd><p>Scan op list and fuse consecutive GPU Mapper groups.</p>
+<p>Groups are delimited by non-Mapper ops or CPU ops.
+Each group of &gt;= 2 consecutive GPU Mappers is fused
+into a FusedSequentialBatchOp. Single GPU Mappers pass through.</p>
+</dd></dl>
+
 </section>
 
 
@@ -661,6 +690,8 @@ for video containers, are cleaned up.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.op_fusion.GeneralFusedOP.run"><code class="docutils literal notranslate"><span class="pre">GeneralFusedOP.run()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.op_fusion.fuse_mapper_group"><code class="docutils literal notranslate"><span class="pre">fuse_mapper_group()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.op_fusion.fuse_consecutive_mappers"><code class="docutils literal notranslate"><span class="pre">fuse_consecutive_mappers()</span></code></a></li>
 </ul>
   </nav></div>
 

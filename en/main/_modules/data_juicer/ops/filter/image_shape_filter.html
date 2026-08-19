@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.image_shape_filter</span></li>
   </ul>
 </nav>
@@ -525,18 +528,18 @@
 
 <div class="viewcode-block" id="ImageShapeFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_shape_filter.html#data_juicer.ops.filter.ImageShapeFilter">[docs]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;image_shape_filter&quot;</span><span class="p">)</span>
-<span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;image_shape_filter&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"image_shape_filter"</span><span class="p">)</span>
+<span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"image_shape_filter"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageShapeFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with image shape (width, height) within specific ranges.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with image shape (width, height) within specific ranges.</span>
 
 <span class="sd">    This operator filters samples based on the width and height of images. It keeps samples</span>
 <span class="sd">    where the image dimensions fall within the specified ranges. The operator supports two</span>
-<span class="sd">    strategies: &#39;any&#39; and &#39;all&#39;. In &#39;any&#39; mode, a sample is kept if at least one image meets</span>
-<span class="sd">    the criteria. In &#39;all&#39; mode, all images in the sample must meet the criteria for the</span>
-<span class="sd">    sample to be kept. The image width and height are stored in the &#39;image_width&#39; and</span>
-<span class="sd">    &#39;image_height&#39; fields of the sample&#39;s stats. If no images are present in the sample, the</span>
-<span class="sd">    corresponding stats fields will be empty arrays.&quot;&quot;&quot;</span>
+<span class="sd">    strategies: 'any' and 'all'. In 'any' mode, a sample is kept if at least one image meets</span>
+<span class="sd">    the criteria. In 'all' mode, all images in the sample must meet the criteria for the</span>
+<span class="sd">    sample to be kept. The image width and height are stored in the 'image_width' and</span>
+<span class="sd">    'image_height' fields of the sample's stats. If no images are present in the sample, the</span>
+<span class="sd">    corresponding stats fields will be empty arrays."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -548,38 +551,38 @@
         <span class="n">max_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
         <span class="n">min_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">max_height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_width: The min width to keep samples.</span>
 <span class="sd">        :param max_width: The max width to keep samples.</span>
 <span class="sd">        :param min_height: The min height to keep samples.</span>
 <span class="sd">        :param max_height: The max height to keep samples.</span>
-<span class="sd">        :param any_or_all: keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all images. &#39;any&#39;: keep this sample if any images meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all images meet the</span>
+<span class="sd">        :param any_or_all: keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all images. 'any': keep this sample if any images meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all images meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_width</span> <span class="o">=</span> <span class="n">min_width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_width</span> <span class="o">=</span> <span class="n">max_width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_height</span> <span class="o">=</span> <span class="n">min_height</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_height</span> <span class="o">=</span> <span class="n">max_height</span>
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span></div>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span></div>
 
 
 <div class="viewcode-block" id="ImageShapeFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_shape_filter.html#data_juicer.ops.filter.ImageShapeFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_width</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]</span> <span class="ow">and</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_height</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

@@ -529,7 +529,7 @@
 <span class="p">)</span>
 
 <span class="c1"># A safety fraction to avoid OOM by not allocating all available memory to operators.</span>
-<span class="c1"># This leaves some memory for Ray&#39;s overhead and other system processes.</span>
+<span class="c1"># This leaves some memory for Ray's overhead and other system processes.</span>
 <span class="n">_OPS_MEMORY_LIMIT_FRACTION</span> <span class="o">=</span> <span class="mf">1.0</span>
 
 <span class="c1"># Track whether worker threads have been configured</span>
@@ -539,7 +539,7 @@
 <div class="viewcode-block" id="setup_worker_threads">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.process_utils.html#data_juicer.utils.process_utils.setup_worker_threads">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">setup_worker_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Configure thread limits for worker processes to prevent thread over-subscription.</span>
 
 <span class="sd">    When running with multiple worker processes (e.g., num_proc &gt; 1), each worker</span>
@@ -547,7 +547,7 @@
 <span class="sd">    contention. This function limits threads per worker to prevent this issue.</span>
 
 <span class="sd">    :param num_threads: Number of threads per worker process (default: 1)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">global</span> <span class="n">_WORKER_THREADS_CONFIGURED</span>
 
     <span class="c1"># Only configure once per process</span>
@@ -560,12 +560,12 @@
 
         <span class="n">torch</span><span class="o">.</span><span class="n">set_num_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">set_num_interop_threads</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Set torch threads to </span><span class="si">{</span><span class="n">num_threads</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Set torch threads to </span><span class="si">{</span><span class="n">num_threads</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># torch.set_num_interop_threads can only be called once</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not set torch interop threads: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not set torch interop threads: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">_WORKER_THREADS_CONFIGURED</span> <span class="o">=</span> <span class="kc">True</span></div>
 
@@ -574,16 +574,16 @@
 <div class="viewcode-block" id="setup_mp">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.process_utils.html#data_juicer.utils.process_utils.setup_mp">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">setup_mp</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">mp</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;MainProcess&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mp</span><span class="o">.</span><span class="n">current_process</span><span class="p">()</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">"MainProcess"</span><span class="p">:</span>
         <span class="k">return</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fork&quot;</span><span class="p">,</span> <span class="s2">&quot;forkserver&quot;</span><span class="p">,</span> <span class="s2">&quot;spawn&quot;</span><span class="p">]</span>
+        <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"fork"</span><span class="p">,</span> <span class="s2">"forkserver"</span><span class="p">,</span> <span class="s2">"spawn"</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span><span class="p">]</span>
     <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">method</span><span class="p">]</span>
 
-    <span class="n">env_method</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MP_START_METHOD&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">env_method</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"MP_START_METHOD"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">env_method</span> <span class="ow">in</span> <span class="n">method</span><span class="p">:</span>
         <span class="n">method</span> <span class="o">=</span> <span class="p">[</span><span class="n">env_method</span><span class="p">]</span>
 
@@ -591,10 +591,10 @@
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">method</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">available_methods</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting multiprocess start method to &#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Setting multiprocess start method to '</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
                 <span class="n">mp</span><span class="o">.</span><span class="n">set_start_method</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error setting multiprocess start method: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error setting multiprocess start method: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">break</span></div>
 
 
@@ -602,14 +602,14 @@
 <div class="viewcode-block" id="get_min_cuda_memory">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.process_utils.html#data_juicer.utils.process_utils.get_min_cuda_memory">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_min_cuda_memory</span><span class="p">():</span>
-    <span class="c1"># get cuda memory info using &quot;nvidia-smi&quot; command</span>
+    <span class="c1"># get cuda memory info using "nvidia-smi" command</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
     <span class="n">min_cuda_memory</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_properties</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">total_memory</span> <span class="o">/</span> <span class="mi">1024</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-        <span class="p">[</span><span class="s2">&quot;nvidia-smi&quot;</span><span class="p">,</span> <span class="s2">&quot;--query-gpu=memory.free&quot;</span><span class="p">,</span> <span class="s2">&quot;--format=csv,noheader,nounits&quot;</span><span class="p">]</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="p">[</span><span class="s2">"nvidia-smi"</span><span class="p">,</span> <span class="s2">"--query-gpu=memory.free"</span><span class="p">,</span> <span class="s2">"--format=csv,noheader,nounits"</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
         <span class="n">free_memory</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="n">min_cuda_memory</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">min_cuda_memory</span><span class="p">,</span> <span class="n">free_memory</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">min_cuda_memory</span></div>
@@ -619,13 +619,13 @@
 <div class="viewcode-block" id="calculate_np">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.process_utils.html#data_juicer.utils.process_utils.calculate_np">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_np</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">memory</span><span class="p">,</span> <span class="n">num_cpus</span><span class="p">,</span> <span class="n">use_cuda</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_gpus</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the optimum number of processes for the given OP automatically。&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Calculate the optimum number of processes for the given OP automatically。"""</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">use_cuda</span> <span class="ow">and</span> <span class="n">num_gpus</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), &quot;</span>
-            <span class="s2">&quot;but appears to lack GPU support. If you have verified this operator support GPU acceleration, &quot;</span>
-            <span class="s1">&#39;please explicitly set its property: `_accelerator = &quot;cuda&quot;`.&#39;</span>
+            <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), "</span>
+            <span class="s2">"but appears to lack GPU support. If you have verified this operator support GPU acceleration, "</span>
+            <span class="s1">'please explicitly set its property: `_accelerator = "cuda"`.'</span>
         <span class="p">)</span>
 
     <span class="n">cpu_num</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
@@ -637,11 +637,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">memory</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">num_gpus</span><span class="p">:</span>
             <span class="n">auto_num_proc</span> <span class="o">=</span> <span class="n">gpu_count</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The required cuda memory and gpu of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;has not been specified. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Please specify the memory field or num_gpus field in the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;config file. You can reference data_juicer/config/config_all.yaml.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Set the auto `num_proc` to number of GPUs </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"The required cuda memory and gpu of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] "</span>
+                <span class="sa">f</span><span class="s2">"has not been specified. "</span>
+                <span class="sa">f</span><span class="s2">"Please specify the memory field or num_gpus field in the "</span>
+                <span class="sa">f</span><span class="s2">"config file. You can reference data_juicer/config/config_all.yaml."</span>
+                <span class="sa">f</span><span class="s2">"Set the auto `num_proc` to number of GPUs </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">memory</span><span class="p">:</span>
@@ -656,9 +656,9 @@
                 <span class="n">auto_num_proc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">available_memories</span><span class="p">())</span>  <span class="c1"># set to the number of available nodes</span>
 
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Set the auto `num_proc` to </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2"> of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] based on the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;required cuda memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;required gpu: </span><span class="si">{</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2"> and required cpu: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Set the auto `num_proc` to </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2"> of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] based on the "</span>
+                <span class="sa">f</span><span class="s2">"required cuda memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB "</span>
+                <span class="sa">f</span><span class="s2">"required gpu: </span><span class="si">{</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2"> and required cpu: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">auto_num_proc</span>
     <span class="k">else</span><span class="p">:</span>
@@ -674,26 +674,26 @@
         <span class="k">if</span> <span class="n">auto_num_proc</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
             <span class="n">auto_num_proc</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">available_memories</span><span class="p">())</span>  <span class="c1"># number of processes is equal to the number of nodes</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The required CPU number: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB might &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;be more than the available CPU: </span><span class="si">{</span><span class="n">cpu_num</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and memory: </span><span class="si">{</span><span class="n">mems_available</span><span class="si">}</span><span class="s2">GB.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;This Op [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] might &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;require more resource to run. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Set the auto `num_proc` to available nodes number </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"The required CPU number: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"and memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB might "</span>
+                <span class="sa">f</span><span class="s2">"be more than the available CPU: </span><span class="si">{</span><span class="n">cpu_num</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"and memory: </span><span class="si">{</span><span class="n">mems_available</span><span class="si">}</span><span class="s2">GB."</span>
+                <span class="sa">f</span><span class="s2">"This Op [</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] might "</span>
+                <span class="sa">f</span><span class="s2">"require more resource to run. "</span>
+                <span class="sa">f</span><span class="s2">"Set the auto `num_proc` to available nodes number </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Set the auto `num_proc` to </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2"> of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] based on the &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;required memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and required cpu: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Set the auto `num_proc` to </span><span class="si">{</span><span class="n">auto_num_proc</span><span class="si">}</span><span class="s2"> of Op[</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">] based on the "</span>
+                <span class="sa">f</span><span class="s2">"required memory: </span><span class="si">{</span><span class="n">memory</span><span class="si">}</span><span class="s2">GB "</span>
+                <span class="sa">f</span><span class="s2">"and required cpu: </span><span class="si">{</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">auto_num_proc</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_optimal_concurrency</span><span class="p">(</span><span class="n">resource_ratios</span><span class="p">,</span> <span class="n">total_resource</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Search for the optimal concurrency allocation to achieve the</span>
 <span class="sd">    highest total resource utilization and the most balanced processing capacity.</span>
 
@@ -704,7 +704,7 @@
 <span class="sd">    Return:</span>
 <span class="sd">        tuple: (list of optimal concurrency, total resource usage, standard deviation of processing capacity)</span>
 <span class="sd">        If there is no valid combination, return (None, 0, 0)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resource_ratios</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -730,7 +730,7 @@
     <span class="c1"># traverse all combinations</span>
     <span class="n">best_combination</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">max_resource_usage</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">min_std</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="n">min_std</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">candidates</span><span class="p">):</span>
         <span class="n">total_used</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span> <span class="o">*</span> <span class="n">r</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">combo</span><span class="p">,</span> <span class="n">resource_ratios</span><span class="p">))</span>
@@ -762,14 +762,14 @@
 <div class="viewcode-block" id="calculate_ray_np">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.process_utils.html#data_juicer.utils.process_utils.calculate_ray_np">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calculate_ray_np</span><span class="p">(</span><span class="n">operators</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Automatically calculates optimal concurrency for Ray Data operator.</span>
 <span class="sd">    This function handles both task and actor based operators, considering</span>
-<span class="sd">    resource requirements and user specifications. The computation follows Ray Data&#39;s</span>
+<span class="sd">    resource requirements and user specifications. The computation follows Ray Data's</span>
 <span class="sd">    concurrency semantics while optimizing resource utilization.</span>
 
 <span class="sd">    Key Concepts:</span>
-<span class="sd">    - Resource Ratio: Individual operator&#39;s resource requirement (GPU/CPU/memory)</span>
+<span class="sd">    - Resource Ratio: Individual operator's resource requirement (GPU/CPU/memory)</span>
 <span class="sd">        compared to total cluster resources, using max(cpu_ratio, gpu_ratio, adjusted_mem_ratio)</span>
 <span class="sd">    - Fixed Allocation: Portion of resources reserved by operators with user-specified num_proc</span>
 <span class="sd">    - Dynamic Allocation: Remaining resources distributed among auto-scaling operators</span>
@@ -791,7 +791,7 @@
 <span class="sd">                If the resources are insufficient, back to the batch mode, only guarantee the actor operators.</span>
 <span class="sd">            ii. Maximum: Allows full utilization of remaining resources by single</span>
 <span class="sd">                operator when others are idle</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">ray_available_gpu_memories</span><span class="p">,</span>
         <span class="n">ray_available_memories</span><span class="p">,</span>
@@ -809,15 +809,15 @@
     <span class="c1"># Validate cluster resources to prevent divide-by-zero</span>
     <span class="k">if</span> <span class="n">total_cpu</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;Ray cluster has no CPU resources available (ray_cpu_count() returned 0). &quot;</span>
-            <span class="s2">&quot;This typically indicates the Ray cluster is not properly initialized. &quot;</span>
-            <span class="s2">&quot;Please ensure the Ray cluster has active worker nodes.&quot;</span>
+            <span class="s2">"Ray cluster has no CPU resources available (ray_cpu_count() returned 0). "</span>
+            <span class="s2">"This typically indicates the Ray cluster is not properly initialized. "</span>
+            <span class="s2">"Please ensure the Ray cluster has active worker nodes."</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">available_mem</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;Ray cluster has no memory resources available. &quot;</span>
-            <span class="s2">&quot;Please verify the Ray cluster status with ray.cluster_resources().&quot;</span>
+            <span class="s2">"Ray cluster has no memory resources available. "</span>
+            <span class="s2">"Please verify the Ray cluster status with ray.cluster_resources()."</span>
         <span class="p">)</span>
 
     <span class="n">resource_configs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -831,15 +831,15 @@
         <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), &quot;</span>
-                    <span class="s2">&quot;but appears to lack GPU support. If you have verified this operator support GPU acceleration, &quot;</span>
-                    <span class="s1">&#39;please explicitly set its property: `_accelerator = &quot;cuda&quot;`.&#39;</span>
+                    <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), "</span>
+                    <span class="s2">"but appears to lack GPU support. If you have verified this operator support GPU acceleration, "</span>
+                    <span class="s1">'please explicitly set its property: `_accelerator = "cuda"`.'</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">cuda_available</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), &quot;</span>
-                    <span class="s2">&quot;but the gpu is unavailable. Please check whether your environment is installed correctly&quot;</span>
-                    <span class="s2">&quot; and whether there is a gpu in the resource pool.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] attempted to request GPU resources (num_gpus=</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">), "</span>
+                    <span class="s2">"but the gpu is unavailable. Please check whether your environment is installed correctly"</span>
+                    <span class="s2">" and whether there is a gpu in the resource pool."</span>
                 <span class="p">)</span>
         <span class="c1"># if it is a cuda operator, memory will be calculated as gpu memory;</span>
         <span class="c1"># if it is a cpu, it will be calculated as memory.</span>
@@ -848,24 +848,24 @@
         <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">total_gpu</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] requires GPU but no GPUs are available in Ray cluster &quot;</span>
-                    <span class="s2">&quot;(ray_gpu_count() returned 0). &quot;</span>
-                    <span class="s2">&quot;Please ensure GPU nodes are configured in the Ray cluster.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] requires GPU but no GPUs are available in Ray cluster "</span>
+                    <span class="s2">"(ray_gpu_count() returned 0). "</span>
+                    <span class="s2">"Please ensure GPU nodes are configured in the Ray cluster."</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="n">available_gpu_mem</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] requires GPU but no GPU memory is available. &quot;</span>
-                    <span class="s2">&quot;Please verify GPU nodes are properly configured.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] requires GPU but no GPU memory is available. "</span>
+                    <span class="s2">"Please verify GPU nodes are properly configured."</span>
                 <span class="p">)</span>
 
             <span class="n">gpu_req</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span>
             <span class="n">gpu_mem_req</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">memory</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">gpu_req</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">gpu_mem_req</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Neither the required cuda memory nor gpu of Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] is specified. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;We recommend specifying the `memory` field or `num_gpus` field in the &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;config file. You can reference data_juicer/config/config_all.yaml.&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Set the `num_gpus` to 1 now.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Neither the required cuda memory nor gpu of Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] is specified. "</span>
+                    <span class="sa">f</span><span class="s2">"We recommend specifying the `memory` field or `num_gpus` field in the "</span>
+                    <span class="sa">f</span><span class="s2">"config file. You can reference data_juicer/config/config_all.yaml."</span>
+                    <span class="sa">f</span><span class="s2">"Set the `num_gpus` to 1 now."</span>
                 <span class="p">)</span>
                 <span class="n">gpu_req</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -891,9 +891,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">use_auto_proc</span><span class="p">():</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Neither the required memory nor cpu of Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] is specified. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;We recommend specifying the `num_cpus` field in the &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;config file. You can reference data_juicer/config/config_all.yaml.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Neither the required memory nor cpu of Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] is specified. "</span>
+                        <span class="sa">f</span><span class="s2">"We recommend specifying the `num_cpus` field in the "</span>
+                        <span class="sa">f</span><span class="s2">"config file. You can reference data_juicer/config/config_all.yaml."</span>
                     <span class="p">)</span>
                 <span class="c1"># if no cpu is specified, ray will apply for 1 cpu by default</span>
                 <span class="n">cpu_required_frac</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">total_cpu</span>
@@ -902,39 +902,39 @@
                 <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># prevent repeated op</span>
-        <span class="n">resource_configs</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;cpu_required&quot;</span><span class="p">:</span> <span class="n">cpu_req</span><span class="p">,</span>
-            <span class="s2">&quot;gpu_required&quot;</span><span class="p">:</span> <span class="n">gpu_req</span><span class="p">,</span>
-            <span class="s2">&quot;mem_required&quot;</span><span class="p">:</span> <span class="n">mem_req</span><span class="p">,</span>
-            <span class="s2">&quot;gpu_mem_required&quot;</span><span class="p">:</span> <span class="n">gpu_mem_req</span><span class="p">,</span>
-            <span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">:</span> <span class="n">cpu_required_frac</span><span class="p">,</span>
-            <span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">:</span> <span class="n">gpu_required_frac</span><span class="p">,</span>
-            <span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">,</span>
-            <span class="s2">&quot;auto_proc&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">use_auto_proc</span><span class="p">(),</span>
-            <span class="s2">&quot;is_actor&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">(),</span>
+        <span class="n">resource_configs</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"cpu_required"</span><span class="p">:</span> <span class="n">cpu_req</span><span class="p">,</span>
+            <span class="s2">"gpu_required"</span><span class="p">:</span> <span class="n">gpu_req</span><span class="p">,</span>
+            <span class="s2">"mem_required"</span><span class="p">:</span> <span class="n">mem_req</span><span class="p">,</span>
+            <span class="s2">"gpu_mem_required"</span><span class="p">:</span> <span class="n">gpu_mem_req</span><span class="p">,</span>
+            <span class="s2">"cpu_required_frac"</span><span class="p">:</span> <span class="n">cpu_required_frac</span><span class="p">,</span>
+            <span class="s2">"gpu_required_frac"</span><span class="p">:</span> <span class="n">gpu_required_frac</span><span class="p">,</span>
+            <span class="s2">"num_proc"</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="p">,</span>
+            <span class="s2">"auto_proc"</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">use_auto_proc</span><span class="p">(),</span>
+            <span class="s2">"is_actor"</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">use_ray_actor</span><span class="p">(),</span>
         <span class="p">}</span>
 
     <span class="n">fixed_min_cpu</span> <span class="o">=</span> <span class="n">fixed_max_cpu</span> <span class="o">=</span> <span class="n">fixed_min_gpu</span> <span class="o">=</span> <span class="n">fixed_max_gpu</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">fixed_actor_min_cpu</span> <span class="o">=</span> <span class="n">fixed_actor_max_cpu</span> <span class="o">=</span> <span class="n">fixed_actor_min_gpu</span> <span class="o">=</span> <span class="n">fixed_actor_max_gpu</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">auto_resource_frac_map</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">resource_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;auto_proc&quot;</span><span class="p">]:</span>
-            <span class="n">auto_resource_frac_map</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;is_actor&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"auto_proc"</span><span class="p">]:</span>
+            <span class="n">auto_resource_frac_map</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"is_actor"</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">num_proc</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;is_actor&quot;</span><span class="p">]:</span>
+            <span class="n">num_proc</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"is_actor"</span><span class="p">]:</span>
                 <span class="n">min_proc</span> <span class="o">=</span> <span class="n">num_proc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_proc</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="k">else</span> <span class="n">num_proc</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">min_proc</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># when ``fn`` is a function, , only the maximum concurrency can be specified</span>
             <span class="n">max_proc</span> <span class="o">=</span> <span class="n">num_proc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_proc</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="k">else</span> <span class="n">num_proc</span>
-            <span class="n">_min_cpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">min_proc</span>
-            <span class="n">_min_gpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">min_proc</span>
+            <span class="n">_min_cpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">]</span> <span class="o">*</span> <span class="n">min_proc</span>
+            <span class="n">_min_gpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">]</span> <span class="o">*</span> <span class="n">min_proc</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">max_proc</span><span class="p">:</span>  <span class="c1"># when num_proc is none, at least one process will be started</span>
                 <span class="n">max_proc</span> <span class="o">=</span> <span class="n">min_proc</span>  <span class="c1"># 1</span>
-            <span class="n">_max_cpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_proc</span>
-            <span class="n">_max_gpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_proc</span>
+            <span class="n">_max_cpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_proc</span>
+            <span class="n">_max_gpu</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">]</span> <span class="o">*</span> <span class="n">max_proc</span>
 
-            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;is_actor&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"is_actor"</span><span class="p">]:</span>
                 <span class="n">fixed_actor_min_cpu</span> <span class="o">+=</span> <span class="n">_min_cpu</span>
                 <span class="n">fixed_actor_min_gpu</span> <span class="o">+=</span> <span class="n">_min_gpu</span>
                 <span class="n">fixed_actor_max_cpu</span> <span class="o">+=</span> <span class="n">_max_cpu</span>
@@ -955,20 +955,20 @@
 
     <span class="c1"># Precheck: if actors resources are insufficient,</span>
     <span class="c1"># the job will hang and keep waiting to add more nodes to the Ray cluster</span>
-    <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">error_str</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="n">fixed_actor_min_cpu</span> <span class="o">+</span> <span class="n">total_auto_base_cpu_actor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">error_str</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="s2">&quot;CPU resource is not enough for the current operators configuration. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;At least </span><span class="si">{</span><span class="p">(</span><span class="n">fixed_actor_min_cpu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">total_auto_base_cpu_actor</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">total_cpu</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> cpus are required, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;but only </span><span class="si">{</span><span class="n">total_cpu</span><span class="si">}</span><span class="s2"> cpus are available. &quot;</span>
-            <span class="s2">&quot;Please consider configuring the &#39;num_cpus&#39; of operators to a smaller value or increase the number of CPUs.&quot;</span>
+            <span class="s2">"CPU resource is not enough for the current operators configuration. "</span>
+            <span class="sa">f</span><span class="s2">"At least </span><span class="si">{</span><span class="p">(</span><span class="n">fixed_actor_min_cpu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">total_auto_base_cpu_actor</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">total_cpu</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> cpus are required, "</span>
+            <span class="sa">f</span><span class="s2">"but only </span><span class="si">{</span><span class="n">total_cpu</span><span class="si">}</span><span class="s2"> cpus are available. "</span>
+            <span class="s2">"Please consider configuring the 'num_cpus' of operators to a smaller value or increase the number of CPUs."</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">fixed_actor_min_gpu</span> <span class="o">+</span> <span class="n">total_auto_base_gpu_actor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">error_str</span> <span class="o">+=</span> <span class="p">(</span>
-            <span class="s2">&quot;GPU resource is not enough for the current operators configuration. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;At least </span><span class="si">{</span><span class="p">(</span><span class="n">fixed_actor_min_gpu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">total_auto_base_gpu_actor</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">total_gpu</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> gpus are required, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;but only </span><span class="si">{</span><span class="n">total_gpu</span><span class="si">}</span><span class="s2"> gpus are available. &quot;</span>
-            <span class="s2">&quot;Please consider configuring the &#39;num_gpus&#39; of cuda operators to a smaller value or increase the number of GPUs.&quot;</span>
+            <span class="s2">"GPU resource is not enough for the current operators configuration. "</span>
+            <span class="sa">f</span><span class="s2">"At least </span><span class="si">{</span><span class="p">(</span><span class="n">fixed_actor_min_gpu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">total_auto_base_gpu_actor</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">total_gpu</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> gpus are required, "</span>
+            <span class="sa">f</span><span class="s2">"but only </span><span class="si">{</span><span class="n">total_gpu</span><span class="si">}</span><span class="s2"> gpus are available. "</span>
+            <span class="s2">"Please consider configuring the 'num_gpus' of cuda operators to a smaller value or increase the number of GPUs."</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">error_str</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
@@ -1020,48 +1020,52 @@
                 <span class="n">best_combination_gpu</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">),</span> <span class="n">best_combination_cpu</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">for</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">resource_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;auto_proc&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"auto_proc"</span><span class="p">]:</span>
                 <span class="c1"># TODO:</span>
                 <span class="c1"># issue: https://github.com/ray-project/ray/issues/55307</span>
                 <span class="c1"># or min_proc = 1 ?</span>
-                <span class="c1"># or max_proc = int(max(1, 1 / cfg[&quot;base_resource_frac&quot;])) ? use all resources</span>
+                <span class="c1"># or max_proc = int(max(1, 1 / cfg["base_resource_frac"])) ? use all resources</span>
 
                 <span class="c1"># max_frac_cpu, max_frac_gpu = 1, 1</span>
                 <span class="n">max_frac_cpu</span><span class="p">,</span> <span class="n">max_frac_gpu</span> <span class="o">=</span> <span class="n">remaining_max_frac_cpu</span><span class="p">,</span> <span class="n">remaining_max_frac_gpu</span>
                 <span class="n">min_proc</span> <span class="o">=</span> <span class="n">best_combination</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span>
 
-                <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">]</span> <span class="ow">and</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">]:</span>
                     <span class="n">max_proc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
-                        <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_cpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">])),</span>
-                        <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_gpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">])),</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_cpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">])),</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_gpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">])),</span>
                     <span class="p">)</span>
-                <span class="k">elif</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">]:</span>
-                    <span class="n">max_proc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_gpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required_frac&quot;</span><span class="p">]))</span>
+                <span class="k">elif</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">]:</span>
+                    <span class="n">max_proc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_gpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required_frac"</span><span class="p">]))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">max_proc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_cpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required_frac&quot;</span><span class="p">]))</span>
+                    <span class="n">max_proc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_frac_cpu</span> <span class="o">/</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required_frac"</span><span class="p">]))</span>
 
-                <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_proc</span> <span class="k">if</span> <span class="n">min_proc</span> <span class="o">&gt;=</span> <span class="n">max_proc</span> <span class="k">else</span> <span class="p">(</span><span class="n">min_proc</span><span class="p">,</span> <span class="n">max_proc</span><span class="p">)</span>
+                <span class="n">cfg</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_proc</span> <span class="k">if</span> <span class="n">min_proc</span> <span class="o">&gt;=</span> <span class="n">max_proc</span> <span class="k">else</span> <span class="p">(</span><span class="n">min_proc</span><span class="p">,</span> <span class="n">max_proc</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operators</span><span class="p">):</span>
-        <span class="n">cfg</span> <span class="o">=</span> <span class="n">resource_configs</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
-        <span class="n">auto_proc</span><span class="p">,</span> <span class="n">num_proc</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;auto_proc&quot;</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;is_actor&quot;</span><span class="p">]:</span>
-            <span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required&quot;</span><span class="p">]</span>
-            <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;gpu_required&quot;</span><span class="p">]</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">resource_configs</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
+        <span class="n">auto_proc</span><span class="p">,</span> <span class="n">num_proc</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"auto_proc"</span><span class="p">],</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"is_actor"</span><span class="p">]:</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required"</span><span class="p">]</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required"</span><span class="p">]</span>
             <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="n">num_proc</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># * If ``fn`` is a function and ``concurrency`` is an  int ``n``, Ray Data</span>
             <span class="c1"># launches *at most* ``n`` concurrent tasks.</span>
-            <span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;cpu_required&quot;</span><span class="p">]</span>
-            <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"cpu_required"</span><span class="p">]</span>
+            <span class="c1"># GPU-capable operators can explicitly opt into Ray task mode. Keep</span>
+            <span class="c1"># their requested GPU resource so Ray assigns CUDA_VISIBLE_DEVICES</span>
+            <span class="c1"># to each task. Clearing it makes the CUDA operator run in a CPU-only</span>
+            <span class="c1"># task and can silently drop every sample when skip_op_error is on.</span>
+            <span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">"gpu_required"</span><span class="p">]</span> <span class="ow">or</span> <span class="kc">None</span>
             <span class="c1"># if concurrency left to None, the automatic concurrency of ray may be slightly higher, which could lead to OOM</span>
             <span class="n">op</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="n">num_proc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">auto_proc</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_proc</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)))</span> <span class="k">else</span> <span class="n">num_proc</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] will be executed with the following resources: &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;num_cpus: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;num_gpus: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;concurrency: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="si">}</span><span class="s2">, &quot;</span>
+            <span class="sa">f</span><span class="s2">"Op[</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] will be executed with the following resources: "</span>
+            <span class="sa">f</span><span class="s2">"num_cpus: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_cpus</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"num_gpus: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_gpus</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"concurrency: </span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">num_proc</span><span class="si">}</span><span class="s2">, "</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">operators</span></div>
 

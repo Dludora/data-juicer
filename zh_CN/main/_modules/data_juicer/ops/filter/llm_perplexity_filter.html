@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.llm_perplexity_filter</span></li>
   </ul>
 </nav>
@@ -524,20 +527,20 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"transformers"</span><span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_perplexity_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_perplexity_filter"</span>
 
 
 <div class="viewcode-block" id="LLMPerplexityFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_perplexity_filter.html#data_juicer.ops.filter.LLMPerplexityFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMPerplexityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with perplexity scores within a specified range, computed using a</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with perplexity scores within a specified range, computed using a</span>
 <span class="sd">    specified LLM.</span>
 
 <span class="sd">    This operator computes the perplexity score for each sample using a Hugging Face LLM. It</span>
@@ -545,15 +548,15 @@
 <span class="sd">    specified minimum and maximum score range. The perplexity score is calculated as the</span>
 <span class="sd">    exponential of the loss value from the LLM. The operator uses a query and response</span>
 <span class="sd">    template to format the input text for the LLM. If the perplexity score is not already</span>
-<span class="sd">    cached in the sample&#39;s stats under the key &#39;llm_perplexity&#39;, it will be computed.&quot;&quot;&quot;</span>
+<span class="sd">    cached in the sample's stats under the key 'llm_perplexity', it will be computed."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="LLMPerplexityFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_perplexity_filter.html#data_juicer.ops.filter.LLMPerplexityFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-0.5B&quot;</span><span class="p">,</span>
+        <span class="n">hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-0.5B"</span><span class="p">,</span>
         <span class="n">model_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
         <span class="n">max_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">100.0</span><span class="p">,</span>
@@ -562,7 +565,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_model: huggingface embedding model name.</span>
@@ -573,16 +576,16 @@
 <span class="sd">        :param response_template: Template for building the response string.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="n">min_score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">max_score</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">query_template</span> <span class="o">=</span> <span class="n">query_template</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">response_template</span> <span class="o">=</span> <span class="n">response_template</span> <span class="ow">or</span> <span class="s2">&quot;</span><span class="si">{text}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_template</span> <span class="o">=</span> <span class="n">query_template</span> <span class="ow">or</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response_template</span> <span class="o">=</span> <span class="n">response_template</span> <span class="ow">or</span> <span class="s2">"</span><span class="si">{text}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">model_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="o">=</span> <span class="n">model_params</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">example</span><span class="p">,</span> <span class="n">pre_example</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -590,19 +593,19 @@
             <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">())</span>
             <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
             <span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">pad_token</span> <span class="ow">or</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">eos_token</span>
-            <span class="n">tokenizer</span><span class="o">.</span><span class="n">padding_side</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
-            <span class="n">tokenizer</span><span class="o">.</span><span class="n">truncation_side</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">padding_side</span> <span class="o">=</span> <span class="s2">"left"</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">truncation_side</span> <span class="o">=</span> <span class="s2">"left"</span>
 
-            <span class="n">pre_msgs</span> <span class="o">=</span> <span class="n">pre_example</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">pre_example</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
-            <span class="n">msgs</span> <span class="o">=</span> <span class="n">pre_msgs</span> <span class="o">+</span> <span class="n">example</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
+            <span class="n">pre_msgs</span> <span class="o">=</span> <span class="n">pre_example</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">]</span> <span class="k">if</span> <span class="n">pre_example</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+            <span class="n">msgs</span> <span class="o">=</span> <span class="n">pre_msgs</span> <span class="o">+</span> <span class="n">example</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">]</span>
             <span class="c1"># TODO: chat template</span>
-            <span class="n">full_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">msgs</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">response_text</span> <span class="o">=</span> <span class="n">msgs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_length&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="n">full_tokenized</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">full_text</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
-            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">full_tokenized</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span>
-            <span class="n">response_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">response_text</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)[</span>
-                <span class="s2">&quot;input_ids&quot;</span>
+            <span class="n">full_text</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">msg</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">msgs</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">response_text</span> <span class="o">=</span> <span class="n">msgs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"content"</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"max_length"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">full_tokenized</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">full_text</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">full_tokenized</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span>
+            <span class="n">response_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">response_text</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)[</span>
+                <span class="s2">"input_ids"</span>
             <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">response_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response_ids</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">bos_token_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
@@ -617,23 +620,23 @@
 <div class="viewcode-block" id="LLMPerplexityFilter.sample_with_messages">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_perplexity_filter.html#data_juicer.ops.filter.LLMPerplexityFilter.sample_with_messages">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample_with_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">system_prompt</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"messages"</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sample</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sample</span><span class="p">)},</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sample</span><span class="p">)},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sample</span><span class="p">)},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"assistant"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sample</span><span class="p">)},</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="n">system_prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">}]</span> <span class="o">+</span> <span class="n">messages</span>
+            <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">}]</span> <span class="o">+</span> <span class="n">messages</span>
 
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="n">sample</span><span class="p">}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"messages"</span><span class="p">:</span> <span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="n">sample</span><span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="LLMPerplexityFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_perplexity_filter.html#data_juicer.ops.filter.LLMPerplexityFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_perplexity</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

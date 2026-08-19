@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.vggt_mapper</span></li>
   </ul>
 </nav>
@@ -528,9 +531,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;vggt_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"vggt_mapper"</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="VggtMapper">
@@ -538,7 +541,7 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VggtMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input a video of a single scene, and use VGGT to extract information including Camera</span>
+<span class="w">    </span><span class="sd">"""Input a video of a single scene, and use VGGT to extract information including Camera</span>
 <span class="sd">    Pose, Depth Maps, Point Maps, and 3D Point Tracks.</span>
 
 <span class="sd">    - The operator processes a video and extracts frames based on the specified frame number</span>
@@ -547,20 +550,20 @@
 <span class="sd">      such as camera parameters, depth maps, point maps, and 3D point tracks.</span>
 <span class="sd">    - If 3D point tracks are required, the user must provide query points in the format [x,</span>
 <span class="sd">      y], relative to the top-left corner.</span>
-<span class="sd">    - The results are stored in the sample&#39;s metadata under the specified tag field name,</span>
-<span class="sd">      which defaults to &#39;vggt_tags&#39;.</span>
+<span class="sd">    - The results are stored in the sample's metadata under the specified tag field name,</span>
+<span class="sd">      which defaults to 'vggt_tags'.</span>
 <span class="sd">    - The operator can output camera parameters, depth maps, point maps from projection,</span>
 <span class="sd">      point maps from unprojection, and 3D point tracks, depending on the configuration.</span>
 <span class="sd">    - The VGGT model is loaded from the provided path, and the operator runs in CUDA mode if</span>
-<span class="sd">      available.&quot;&quot;&quot;</span>
+<span class="sd">      available."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VggtMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VggtMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">vggt_model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;facebook/VGGT-1B&quot;</span><span class="p">,</span>
+        <span class="n">vggt_model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"facebook/VGGT-1B"</span><span class="p">,</span>
         <span class="n">frame_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">vggt_tags</span><span class="p">,</span>
@@ -573,22 +576,22 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param vggt_model_path: The path to the VGGT model.</span>
 <span class="sd">        :param frame_num: The number of frames to be extracted uniformly from</span>
-<span class="sd">            the video. If it&#39;s 1, only the middle frame will be extracted. If</span>
-<span class="sd">            it&#39;s 2, only the first and the last frames will be extracted. If</span>
-<span class="sd">            it&#39;s larger than 2, in addition to the first and the last frames,</span>
+<span class="sd">            the video. If it's 1, only the middle frame will be extracted. If</span>
+<span class="sd">            it's 2, only the first and the last frames will be extracted. If</span>
+<span class="sd">            it's larger than 2, in addition to the first and the last frames,</span>
 <span class="sd">            other frames will be extracted uniformly within the video duration.</span>
-<span class="sd">            If &quot;duration&quot; &gt; 0, frame_num is the number of frames per segment.</span>
+<span class="sd">            If "duration" &gt; 0, frame_num is the number of frames per segment.</span>
 <span class="sd">        :param duration: The duration of each segment in seconds.</span>
 <span class="sd">            If 0, frames are extracted from the entire video.</span>
 <span class="sd">            If duration &gt; 0, the video is segmented into multiple segments</span>
 <span class="sd">            based on duration, and frames are extracted from each segment.</span>
-<span class="sd">        :param tag_field_name: The field name to store the tags. It&#39;s</span>
-<span class="sd">            &quot;vggt_tags&quot; in default.</span>
+<span class="sd">        :param tag_field_name: The field name to store the tags. It's</span>
+<span class="sd">            "vggt_tags" in default.</span>
 <span class="sd">        :param frame_dir: Output directory to save extracted frames.</span>
 <span class="sd">        :param if_output_camera_parameters: Determines whether to output</span>
 <span class="sd">            camera parameters.</span>
@@ -606,24 +609,24 @@
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;frame_sampling_method&quot;</span><span class="p">:</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;frame_num&quot;</span><span class="p">:</span> <span class="n">frame_num</span><span class="p">,</span>
-            <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="n">duration</span><span class="p">,</span>
-            <span class="s2">&quot;frame_dir&quot;</span><span class="p">:</span> <span class="n">frame_dir</span><span class="p">,</span>
-            <span class="s2">&quot;frame_key&quot;</span><span class="p">:</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_frames</span><span class="p">,</span>
-            <span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Disable multiprocessing to avoid nested process pool issue</span>
-            <span class="s2">&quot;auto_op_parallelism&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Disable auto parallelism to avoid nested process pool issue</span>
+            <span class="s2">"frame_sampling_method"</span><span class="p">:</span> <span class="s2">"uniform"</span><span class="p">,</span>
+            <span class="s2">"frame_num"</span><span class="p">:</span> <span class="n">frame_num</span><span class="p">,</span>
+            <span class="s2">"duration"</span><span class="p">:</span> <span class="n">duration</span><span class="p">,</span>
+            <span class="s2">"frame_dir"</span><span class="p">:</span> <span class="n">frame_dir</span><span class="p">,</span>
+            <span class="s2">"frame_key"</span><span class="p">:</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_frames</span><span class="p">,</span>
+            <span class="s2">"num_proc"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Disable multiprocessing to avoid nested process pool issue</span>
+            <span class="s2">"auto_op_parallelism"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Disable auto parallelism to avoid nested process pool issue</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">([{</span><span class="s2">&quot;video_extract_frames_mapper&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span><span class="p">}])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">([{</span><span class="s2">"video_extract_frames_mapper"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span><span class="p">}])</span>
 
-        <span class="n">vggt_repo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">&quot;vggt&quot;</span><span class="p">)</span>
+        <span class="n">vggt_repo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="s2">"vggt"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vggt_repo_path</span><span class="p">):</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;git&quot;</span><span class="p">,</span> <span class="s2">&quot;clone&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/facebookresearch/vggt.git&quot;</span><span class="p">,</span> <span class="n">vggt_repo_path</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">"git"</span><span class="p">,</span> <span class="s2">"clone"</span><span class="p">,</span> <span class="s2">"https://github.com/facebookresearch/vggt.git"</span><span class="p">,</span> <span class="n">vggt_repo_path</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vggt_repo_path</span><span class="p">)</span>
@@ -640,7 +643,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="o">=</span> <span class="n">tag_field_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_dir</span> <span class="o">=</span> <span class="n">frame_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_capability</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">8</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vggt&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">vggt_model_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"vggt"</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">vggt_model_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">if_output_camera_parameters</span> <span class="o">=</span> <span class="n">if_output_camera_parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">if_output_depth_maps</span> <span class="o">=</span> <span class="n">if_output_depth_maps</span>
@@ -653,7 +656,11 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VggtMapper.process_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># ensure __dj__meta__ exists</span>
+        <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -662,7 +669,7 @@
             <span class="k">return</span> <span class="p">[]</span>
 
         <span class="c1"># load videos</span>
-        <span class="n">ds_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="s2">&quot;videos&quot;</span><span class="p">:</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]}]</span>
+        <span class="n">ds_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="s2">"videos"</span><span class="p">:</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]}]</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">ds_list</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
@@ -674,9 +681,9 @@
         <span class="n">frames_path</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frames_root</span><span class="p">,</span> <span class="n">frame_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">frame_name</span> <span class="ow">in</span> <span class="n">frame_names</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_and_preprocess_images</span><span class="p">(</span><span class="n">frames_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_and_preprocess_images</span><span class="p">(</span><span class="n">frames_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_and_preprocess_images</span><span class="p">(</span><span class="n">frames_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_and_preprocess_images</span><span class="p">(</span><span class="n">frames_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">amp</span><span class="o">.</span><span class="n">autocast</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
@@ -723,16 +730,16 @@
         <span class="c1"># If point track output is required, users must provide a list of non-normalized [x, y]</span>
         <span class="c1"># coordinates (shape (N, 2)) relative to the top-left corner.</span>
         <span class="c1"># The tracking is done in 4 iterations. The last iteration should be the best one.</span>
-        <span class="n">query_points</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;query_points&quot;</span><span class="p">)</span>
+        <span class="n">query_points</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"query_points"</span><span class="p">)</span>
         <span class="c1"># choose your own points to track, with shape (N, 2) for one scene</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_output_point_tracks</span> <span class="ow">and</span> <span class="n">query_points</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">query_points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">query_points_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">query_points</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+                        <span class="sa">f</span><span class="s2">"cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">query_points_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">query_points</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+                    <span class="n">query_points_tensor</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">query_points</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
                 <span class="n">track_list</span><span class="p">,</span> <span class="n">vis_score</span><span class="p">,</span> <span class="n">conf_score</span> <span class="o">=</span> <span class="n">vggt_model</span><span class="o">.</span><span class="n">track_head</span><span class="p">(</span>
                     <span class="n">aggregated_tokens_list</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">ps_idx</span><span class="p">,</span> <span class="n">query_points</span><span class="o">=</span><span class="n">query_points_tensor</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span>
                 <span class="p">)</span>
@@ -742,22 +749,22 @@
             <span class="n">conf_score</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;frames_folder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames_root</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;frames_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames_path</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;camera_parameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;extrinsic&quot;</span><span class="p">:</span> <span class="n">extrinsic</span><span class="p">,</span> <span class="s2">&quot;intrinsic&quot;</span><span class="p">:</span> <span class="n">intrinsic</span><span class="p">}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;depth_maps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;depth_map&quot;</span><span class="p">:</span> <span class="n">depth_map</span><span class="p">,</span> <span class="s2">&quot;depth_conf&quot;</span><span class="p">:</span> <span class="n">depth_conf</span><span class="p">}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;point_maps_from_projection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;point_map&quot;</span><span class="p">:</span> <span class="n">point_map</span><span class="p">,</span>
-            <span class="s2">&quot;point_conf&quot;</span><span class="p">:</span> <span class="n">point_conf</span><span class="p">,</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"frames_folder"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames_root</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"frames_path"</span><span class="p">]</span> <span class="o">=</span> <span class="n">frames_path</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"camera_parameters"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"extrinsic"</span><span class="p">:</span> <span class="n">extrinsic</span><span class="p">,</span> <span class="s2">"intrinsic"</span><span class="p">:</span> <span class="n">intrinsic</span><span class="p">}</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"depth_maps"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"depth_map"</span><span class="p">:</span> <span class="n">depth_map</span><span class="p">,</span> <span class="s2">"depth_conf"</span><span class="p">:</span> <span class="n">depth_conf</span><span class="p">}</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"point_maps_from_projection"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"point_map"</span><span class="p">:</span> <span class="n">point_map</span><span class="p">,</span>
+            <span class="s2">"point_conf"</span><span class="p">:</span> <span class="n">point_conf</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;point_maps_from_unprojection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;point_maps_from_unprojection&quot;</span><span class="p">:</span> <span class="n">point_maps_from_unprojection</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"point_maps_from_unprojection"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"point_maps_from_unprojection"</span><span class="p">:</span> <span class="n">point_maps_from_unprojection</span>
         <span class="p">}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;point_tracks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;query_points&quot;</span><span class="p">:</span> <span class="n">query_points</span><span class="p">,</span>
-            <span class="s2">&quot;track_list&quot;</span><span class="p">:</span> <span class="n">track_list</span><span class="p">,</span>
-            <span class="s2">&quot;vis_score&quot;</span><span class="p">:</span> <span class="n">vis_score</span><span class="p">,</span>
-            <span class="s2">&quot;conf_score&quot;</span><span class="p">:</span> <span class="n">conf_score</span><span class="p">,</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"point_tracks"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"query_points"</span><span class="p">:</span> <span class="n">query_points</span><span class="p">,</span>
+            <span class="s2">"track_list"</span><span class="p">:</span> <span class="n">track_list</span><span class="p">,</span>
+            <span class="s2">"vis_score"</span><span class="p">:</span> <span class="n">vis_score</span><span class="p">,</span>
+            <span class="s2">"conf_score"</span><span class="p">:</span> <span class="n">conf_score</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="n">sample</span></div>

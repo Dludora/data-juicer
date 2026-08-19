@@ -527,16 +527,16 @@
 <div class="viewcode-block" id="find_root_verb_and_its_dobj">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.find_root_verb_and_its_dobj">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_root_verb_and_its_dobj</span><span class="p">(</span><span class="n">tree_root</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find the verb and its object closest to the root.</span>
 
 <span class="sd">    :param tree_root: the root of lexical tree</span>
 <span class="sd">    :return: valid verb and its object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># first check if the current node and its children satisfy the condition</span>
-    <span class="k">if</span> <span class="n">tree_root</span><span class="o">.</span><span class="n">pos_</span> <span class="o">==</span> <span class="s2">&quot;VERB&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">tree_root</span><span class="o">.</span><span class="n">pos_</span> <span class="o">==</span> <span class="s2">"VERB"</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">tree_root</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">dep_</span> <span class="o">==</span> <span class="s2">&quot;dobj&quot;</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">pos_</span> <span class="o">==</span> <span class="s2">&quot;NOUN&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">dep_</span> <span class="o">==</span> <span class="s2">"dobj"</span> <span class="ow">and</span> <span class="n">child</span><span class="o">.</span><span class="n">pos_</span> <span class="o">==</span> <span class="s2">"NOUN"</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">(</span>
                     <span class="n">tree_root</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tree_root</span><span class="o">.</span><span class="n">lemma_</span><span class="p">)</span> <span class="k">else</span> <span class="n">tree_root</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
                     <span class="n">child</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">lemma_</span><span class="p">)</span> <span class="k">else</span> <span class="n">child</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
@@ -555,18 +555,18 @@
 <div class="viewcode-block" id="find_root_verb_and_its_dobj_in_string">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.find_root_verb_and_its_dobj_in_string">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">find_root_verb_and_its_dobj_in_string</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">first_sent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find the verb and its object closest to the root of lexical tree of input</span>
 <span class="sd">    string.</span>
 
 <span class="sd">    :param nlp: the diversity model to analyze the diversity strings</span>
 <span class="sd">    :param s: the string to be analyzed</span>
 <span class="sd">    :param first_sent: whether to analyze the first sentence in the</span>
-<span class="sd">        input string only. If it&#39;s true, return the analysis result of</span>
-<span class="sd">        the first sentence no matter it&#39;s valid or not. If it&#39;s false,</span>
+<span class="sd">        input string only. If it's true, return the analysis result of</span>
+<span class="sd">        the first sentence no matter it's valid or not. If it's false,</span>
 <span class="sd">        return the first valid result over all sentences</span>
 <span class="sd">    :return: valid verb and its object of this string</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">sents</span><span class="p">:</span>
         <span class="n">verb</span><span class="p">,</span> <span class="n">noun</span> <span class="o">=</span> <span class="n">find_root_verb_and_its_dobj</span><span class="p">(</span><span class="n">sent</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
@@ -579,7 +579,7 @@
 <div class="viewcode-block" id="get_diversity">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.get_diversity">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_diversity</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">top_k_verbs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">top_k_nouns</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given the lexical tree analysis result, return the diversity results.</span>
 
 <span class="sd">    :param dataset: lexical tree analysis result</span>
@@ -588,26 +588,26 @@
 <span class="sd">        for each verb group</span>
 <span class="sd">    :param kwargs: extra args</span>
 <span class="sd">    :return: the diversity results</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">phrases</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;find valid verb-noun structure </span><span class="se">\</span>
-<span class="s2">                </span><span class="si">{</span><span class="n">phrases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">"find valid verb-noun structure </span><span class="se">\</span>
+<span class="s2">                </span><span class="si">{</span><span class="n">phrases</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
     <span class="p">)</span>
-    <span class="n">top_verbs</span> <span class="o">=</span> <span class="n">phrases</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;verb&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">top_k_verbs</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">top_verbs</span> <span class="o">=</span> <span class="n">phrases</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"verb"</span><span class="p">])</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">top_k_verbs</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
 
-    <span class="n">df</span> <span class="o">=</span> <span class="n">phrases</span><span class="p">[</span><span class="n">phrases</span><span class="p">[</span><span class="s2">&quot;verb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">top_verbs</span><span class="p">[</span><span class="s2">&quot;verb&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())]</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">phrases</span><span class="p">[</span><span class="n">phrases</span><span class="p">[</span><span class="s2">"verb"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">top_verbs</span><span class="p">[</span><span class="s2">"verb"</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())]</span>
     <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;verb&quot;</span><span class="p">,</span> <span class="s2">&quot;noun&quot;</span><span class="p">])</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"verb"</span><span class="p">,</span> <span class="s2">"noun"</span><span class="p">])</span>
         <span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;count&quot;</span><span class="p">})</span>
-        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">"count"</span><span class="p">})</span>
+        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s2">"count"</span><span class="p">],</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="p">)</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;verb&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">top_k_nouns</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"verb"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"count"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">top_k_nouns</span><span class="p">))</span>
         <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
@@ -617,16 +617,16 @@
 <div class="viewcode-block" id="DiversityAnalysis">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.DiversityAnalysis">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiversityAnalysis</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply diversity analysis for each sample and get an overall analysis</span>
-<span class="sd">    result.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Apply diversity analysis for each sample and get an overall analysis</span>
+<span class="sd">    result."""</span>
 
 <div class="viewcode-block" id="DiversityAnalysis.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.DiversityAnalysis.__init__">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="s2">&quot;en&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialization method :param dataset: the dataset to be analyzed</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="s2">"en"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialization method :param dataset: the dataset to be analyzed</span>
 <span class="sd">        :param output_path: path to store the analysis results :param</span>
 <span class="sd">        lang_or_model: the diversity model or a specific language used to load</span>
-<span class="sd">        the diversity model.&quot;&quot;&quot;</span>
+<span class="sd">        the diversity model."""</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span>
@@ -637,20 +637,20 @@
 
 <div class="viewcode-block" id="DiversityAnalysis.compute">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.DiversityAnalysis.compute">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="s2">"text"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Apply lexical tree analysis on each sample.</span>
 
 <span class="sd">        :param lang_or_model: the diversity model or a specific language</span>
 <span class="sd">            used to load the diversity model</span>
 <span class="sd">        :param column_name: the name of column to be analyzed</span>
 <span class="sd">        :return: the analysis result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># load diversity model</span>
-        <span class="n">spacy</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;spacy&quot;</span><span class="p">)</span>
+        <span class="n">spacy</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"spacy"</span><span class="p">)</span>
         <span class="n">lang_or_model</span> <span class="o">=</span> <span class="n">lang_or_model</span> <span class="k">if</span> <span class="n">lang_or_model</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang_or_model</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lang_or_model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="s2">&quot;spacy&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang_or_model</span><span class="p">)</span>
+            <span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="s2">"spacy"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang_or_model</span><span class="p">)</span>
             <span class="n">diversity_model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="n">model_key</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">diversity_model</span> <span class="o">=</span> <span class="n">lang_or_model</span>
@@ -663,7 +663,7 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="n">verb</span><span class="p">,</span> <span class="n">noun</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;verb&quot;</span><span class="p">:</span> <span class="n">verb</span><span class="p">,</span> <span class="s2">&quot;noun&quot;</span><span class="p">:</span> <span class="n">noun</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"verb"</span><span class="p">:</span> <span class="n">verb</span><span class="p">,</span> <span class="s2">"noun"</span><span class="p">:</span> <span class="n">noun</span><span class="p">}</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">find_verb_noun</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span></div>
@@ -671,26 +671,26 @@
 
 <div class="viewcode-block" id="DiversityAnalysis.analyze">
 <a class="viewcode-back" href="../../../api/data_juicer.analysis.diversity_analysis.html#data_juicer.analysis.DiversityAnalysis.analyze">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">postproc_func</span><span class="o">=</span><span class="n">get_diversity</span><span class="p">,</span> <span class="o">**</span><span class="n">postproc_kwarg</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang_or_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">postproc_func</span><span class="o">=</span><span class="n">get_diversity</span><span class="p">,</span> <span class="o">**</span><span class="n">postproc_kwarg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Apply diversity analysis on the whole dataset.</span>
 
 <span class="sd">        :param lang_or_model: the diversity model or a specific language</span>
 <span class="sd">            used to load the diversity model</span>
 <span class="sd">        :param column_name: the name of column to be analyzed</span>
 <span class="sd">        :param postproc_func: function to analyze diversity. In default,</span>
-<span class="sd">            it&#39;s function get_diversity</span>
+<span class="sd">            it's function get_diversity</span>
 <span class="sd">        :param postproc_kwarg: arguments of the postproc_func</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># get the lexical tree analysis result</span>
         <span class="n">raw_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">lang_or_model</span><span class="o">=</span><span class="n">lang_or_model</span><span class="p">,</span> <span class="n">column_name</span><span class="o">=</span><span class="n">column_name</span><span class="p">)</span>
         <span class="c1"># get the result of diversity analysis</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">postproc_func</span><span class="p">(</span><span class="n">raw_df</span><span class="p">,</span> <span class="o">**</span><span class="n">postproc_kwarg</span><span class="p">)</span>
 
         <span class="c1"># export to result report file</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;diversity.csv&quot;</span><span class="p">))</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;diversity.md&quot;</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"diversity.csv"</span><span class="p">))</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"diversity.md"</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">df</span></div>
 </div>

@@ -512,12 +512,12 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.job.snapshot</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Processing Snapshot Utility for DataJuicer</span>
 
 <span class="sd">This module analyzes the current state of processing based on events.jsonl and DAG structure</span>
-<span class="sd">to provide a comprehensive snapshot of what&#39;s done, what&#39;s not, and checkpointing status.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">to provide a comprehensive snapshot of what's done, what's not, and checkpointing status.</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -533,13 +533,13 @@
 <div class="viewcode-block" id="ProcessingStatus">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProcessingStatus</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Processing status enumeration.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Processing status enumeration."""</span>
 
-    <span class="n">NOT_STARTED</span> <span class="o">=</span> <span class="s2">&quot;not_started&quot;</span>
-    <span class="n">IN_PROGRESS</span> <span class="o">=</span> <span class="s2">&quot;in_progress&quot;</span>
-    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="s2">&quot;completed&quot;</span>
-    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">&quot;failed&quot;</span>
-    <span class="n">CHECKPOINTED</span> <span class="o">=</span> <span class="s2">&quot;checkpointed&quot;</span></div>
+    <span class="n">NOT_STARTED</span> <span class="o">=</span> <span class="s2">"not_started"</span>
+    <span class="n">IN_PROGRESS</span> <span class="o">=</span> <span class="s2">"in_progress"</span>
+    <span class="n">COMPLETED</span> <span class="o">=</span> <span class="s2">"completed"</span>
+    <span class="n">FAILED</span> <span class="o">=</span> <span class="s2">"failed"</span>
+    <span class="n">CHECKPOINTED</span> <span class="o">=</span> <span class="s2">"checkpointed"</span></div>
 
 
 
@@ -547,7 +547,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.OperationStatus">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">OperationStatus</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Status of a single operation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Status of a single operation."""</span>
 
     <span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">operation_idx</span><span class="p">:</span> <span class="nb">int</span>
@@ -566,7 +566,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.PartitionStatus">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PartitionStatus</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Status of a single partition.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Status of a single partition."""</span>
 
     <span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">ProcessingStatus</span>
@@ -582,7 +582,7 @@
     <span class="n">error_message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize mutable fields after dataclass creation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize mutable fields after dataclass creation."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed_operations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">completed_operations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed_operations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -596,7 +596,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.JobSnapshot">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobSnapshot</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Complete snapshot of job processing status.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Complete snapshot of job processing status."""</span>
 
     <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">job_start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -624,141 +624,141 @@
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProcessingSnapshotAnalyzer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyzer for processing snapshots.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Analyzer for processing snapshots."""</span>
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the analyzer with work directory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the analyzer with work directory."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_latest_events_file</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">&quot;dag_execution_plan.json&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">&quot;job_summary.json&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">"dag_execution_plan.json"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">"job_summary.json"</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_latest_events_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the latest events file in the work directory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Find the latest events file in the work directory."""</span>
         <span class="c1"># Look for events files with timestamp pattern (events_*.jsonl)</span>
-        <span class="n">events_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;events_*.jsonl&quot;</span><span class="p">))</span>
+        <span class="n">events_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"events_*.jsonl"</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">events_files</span><span class="p">:</span>
             <span class="c1"># Sort by modification time and return the latest</span>
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">events_files</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span>
 
         <span class="c1"># Fallback to old naming convention for backward compatibility</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">&quot;events.jsonl&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span> <span class="o">/</span> <span class="s2">"events.jsonl"</span>
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.load_events">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.load_events">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load events from events.jsonl file.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Load events from events.jsonl file."""</span>
         <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="si">}</span><span class="s2"> events from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">events</span><span class="p">)</span><span class="si">}</span><span class="s2"> events from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load events: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to load events: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Events file not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Events file not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">events_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">events</span></div>
 
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.load_dag_plan">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.load_dag_plan">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_dag_plan</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load DAG execution plan.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Load DAG execution plan."""</span>
         <span class="n">dag_plan</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">dag_plan</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded DAG plan from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded DAG plan from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load DAG plan: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to load DAG plan: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DAG file not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DAG file not found: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dag_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dag_plan</span></div>
 
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.load_job_summary">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.load_job_summary">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_job_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load job summary if available.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Load job summary if available."""</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">summary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded job summary from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded job summary from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_summary_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load job summary: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to load job summary: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">summary</span></div>
 
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.analyze_events">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.analyze_events">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PartitionStatus</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OperationStatus</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze events to determine processing status.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Analyze events to determine processing status."""</span>
         <span class="n">partition_statuses</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">operation_statuses</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1"># Track job-level events</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
-            <span class="n">event_type</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_type&quot;</span><span class="p">)</span>
-            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+            <span class="n">event_type</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_type"</span><span class="p">)</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;job_start&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"job_start"</span><span class="p">:</span>
                 <span class="c1"># Extract checkpoint strategy from metadata</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
                 <span class="c1"># Note: checkpoint_strategy is extracted but not used in this method</span>
-                <span class="c1"># It&#39;s used in generate_snapshot method</span>
+                <span class="c1"># It's used in generate_snapshot method</span>
                 <span class="k">pass</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;job_complete&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"job_complete"</span><span class="p">:</span>
                 <span class="c1"># Note: job_end_time is extracted but not used in this method</span>
-                <span class="c1"># It&#39;s used in generate_snapshot method</span>
+                <span class="c1"># It's used in generate_snapshot method</span>
                 <span class="k">pass</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;partition_creation_start&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"partition_creation_start"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">PartitionStatus</span><span class="p">(</span>
                         <span class="n">partition_id</span><span class="o">=</span><span class="n">partition_id</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">NOT_STARTED</span>
                     <span class="p">)</span>
                 <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">creation_start_time</span> <span class="o">=</span> <span class="n">timestamp</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;partition_creation_complete&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"partition_creation_complete"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">creation_end_time</span> <span class="o">=</span> <span class="n">timestamp</span>
-                    <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
-                    <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">sample_count</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sample_count&quot;</span><span class="p">)</span>
+                    <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">sample_count</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sample_count"</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;partition_start&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"partition_start"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">processing_start_time</span> <span class="o">=</span> <span class="n">timestamp</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">IN_PROGRESS</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;partition_complete&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"partition_complete"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">processing_end_time</span> <span class="o">=</span> <span class="n">timestamp</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;partition_failed&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"partition_failed"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span>
-                    <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_message&quot;</span><span class="p">)</span>
+                    <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;op_start&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
-                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_idx&quot;</span><span class="p">)</span>
-                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">)</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"op_start"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
+                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_idx"</span><span class="p">)</span>
+                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span>
 
                 <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">OperationStatus</span><span class="p">(</span>
                     <span class="n">operation_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span>
@@ -771,11 +771,11 @@
                 <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                     <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">current_operation</span> <span class="o">=</span> <span class="n">op_name</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;op_complete&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
-                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_idx&quot;</span><span class="p">)</span>
-                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">)</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"op_complete"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
+                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_idx"</span><span class="p">)</span>
+                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span>
 
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">operation_statuses</span><span class="p">:</span>
                     <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">timestamp</span>
@@ -783,34 +783,34 @@
                     <span class="k">if</span> <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
                         <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">start_time</span>
 
-                    <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
-                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">input_rows</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;input_rows&quot;</span><span class="p">)</span>
-                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">output_rows</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output_rows&quot;</span><span class="p">)</span>
+                    <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">input_rows</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"input_rows"</span><span class="p">)</span>
+                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">output_rows</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"output_rows"</span><span class="p">)</span>
 
                     <span class="c1"># Update partition status</span>
                     <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                         <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">completed_operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;op_failed&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
-                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_idx&quot;</span><span class="p">)</span>
-                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">)</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"op_failed"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
+                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_idx"</span><span class="p">)</span>
+                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span>
 
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">operation_statuses</span><span class="p">:</span>
                     <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span>
-                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_message&quot;</span><span class="p">)</span>
+                    <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">error_message</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">)</span>
 
                     <span class="c1"># Update partition status</span>
                     <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="p">:</span>
                         <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">failed_operations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op_name</span><span class="p">)</span>
                         <span class="n">partition_statuses</span><span class="p">[</span><span class="n">partition_id</span><span class="p">]</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span>
 
-            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">&quot;checkpoint_save&quot;</span><span class="p">:</span>
-                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;partition_id&quot;</span><span class="p">)</span>
-                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_idx&quot;</span><span class="p">)</span>
-                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_name&quot;</span><span class="p">)</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="s2">"checkpoint_save"</span><span class="p">:</span>
+                <span class="n">partition_id</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"partition_id"</span><span class="p">)</span>
+                <span class="n">op_idx</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_idx"</span><span class="p">)</span>
+                <span class="n">op_name</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_name"</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"p</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">_op</span><span class="si">{</span><span class="n">op_idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span>
 
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">operation_statuses</span><span class="p">:</span>
                     <span class="n">operation_statuses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">checkpoint_time</span> <span class="o">=</span> <span class="n">timestamp</span>
@@ -828,7 +828,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">determine_overall_status</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">partition_statuses</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PartitionStatus</span><span class="p">],</span> <span class="n">operation_statuses</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OperationStatus</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProcessingStatus</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine overall job status.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Determine overall job status."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">partition_statuses</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">NOT_STARTED</span>
 
@@ -851,7 +851,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_statistics</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">partition_statuses</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">PartitionStatus</span><span class="p">],</span> <span class="n">operation_statuses</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">OperationStatus</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate processing statistics.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate processing statistics."""</span>
         <span class="n">total_partitions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">partition_statuses</span><span class="p">)</span>
         <span class="n">completed_partitions</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">)</span>
         <span class="n">failed_partitions</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">partition_statuses</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">)</span>
@@ -865,22 +865,22 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;total_partitions&quot;</span><span class="p">:</span> <span class="n">total_partitions</span><span class="p">,</span>
-            <span class="s2">&quot;completed_partitions&quot;</span><span class="p">:</span> <span class="n">completed_partitions</span><span class="p">,</span>
-            <span class="s2">&quot;failed_partitions&quot;</span><span class="p">:</span> <span class="n">failed_partitions</span><span class="p">,</span>
-            <span class="s2">&quot;in_progress_partitions&quot;</span><span class="p">:</span> <span class="n">in_progress_partitions</span><span class="p">,</span>
-            <span class="s2">&quot;total_operations&quot;</span><span class="p">:</span> <span class="n">total_operations</span><span class="p">,</span>
-            <span class="s2">&quot;completed_operations&quot;</span><span class="p">:</span> <span class="n">completed_operations</span><span class="p">,</span>
-            <span class="s2">&quot;failed_operations&quot;</span><span class="p">:</span> <span class="n">failed_operations</span><span class="p">,</span>
-            <span class="s2">&quot;checkpointed_operations&quot;</span><span class="p">:</span> <span class="n">checkpointed_operations</span><span class="p">,</span>
+            <span class="s2">"total_partitions"</span><span class="p">:</span> <span class="n">total_partitions</span><span class="p">,</span>
+            <span class="s2">"completed_partitions"</span><span class="p">:</span> <span class="n">completed_partitions</span><span class="p">,</span>
+            <span class="s2">"failed_partitions"</span><span class="p">:</span> <span class="n">failed_partitions</span><span class="p">,</span>
+            <span class="s2">"in_progress_partitions"</span><span class="p">:</span> <span class="n">in_progress_partitions</span><span class="p">,</span>
+            <span class="s2">"total_operations"</span><span class="p">:</span> <span class="n">total_operations</span><span class="p">,</span>
+            <span class="s2">"completed_operations"</span><span class="p">:</span> <span class="n">completed_operations</span><span class="p">,</span>
+            <span class="s2">"failed_operations"</span><span class="p">:</span> <span class="n">failed_operations</span><span class="p">,</span>
+            <span class="s2">"checkpointed_operations"</span><span class="p">:</span> <span class="n">checkpointed_operations</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.generate_snapshot">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.generate_snapshot">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobSnapshot</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a complete processing snapshot.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generating processing snapshot for work directory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Generate a complete processing snapshot."""</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Generating processing snapshot for work directory: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># Load data</span>
         <span class="n">events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_events</span><span class="p">()</span>
@@ -906,16 +906,16 @@
 
         <span class="k">if</span> <span class="n">job_summary</span><span class="p">:</span>
             <span class="c1"># Use job summary timing if available (more accurate)</span>
-            <span class="n">job_start_time</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start_time&quot;</span><span class="p">)</span>
-            <span class="n">job_end_time</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;end_time&quot;</span><span class="p">)</span>
-            <span class="n">total_duration</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;duration&quot;</span><span class="p">)</span>
+            <span class="n">job_start_time</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"start_time"</span><span class="p">)</span>
+            <span class="n">job_end_time</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"end_time"</span><span class="p">)</span>
+            <span class="n">total_duration</span> <span class="o">=</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"duration"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Fall back to event-based timing</span>
             <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;job_start&quot;</span><span class="p">:</span>
-                    <span class="n">job_start_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;job_complete&quot;</span><span class="p">:</span>
-                    <span class="n">job_end_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"job_start"</span><span class="p">:</span>
+                    <span class="n">job_start_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"job_complete"</span><span class="p">:</span>
+                    <span class="n">job_end_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">job_start_time</span> <span class="ow">and</span> <span class="n">job_end_time</span><span class="p">:</span>
                 <span class="n">total_duration</span> <span class="o">=</span> <span class="n">job_end_time</span> <span class="o">-</span> <span class="n">job_start_time</span>
@@ -927,11 +927,11 @@
         <span class="n">checkpoint_strategy</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">last_checkpoint_time</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;job_start&quot;</span><span class="p">:</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="n">checkpoint_strategy</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_strategy&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;checkpoint_save&quot;</span><span class="p">:</span>
-                <span class="n">last_checkpoint_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"job_start"</span><span class="p">:</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">checkpoint_strategy</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"checkpoint_strategy"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"checkpoint_save"</span><span class="p">:</span>
+                <span class="n">last_checkpoint_time</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">JobSnapshot</span><span class="p">(</span>
             <span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">,</span>
@@ -952,7 +952,7 @@
 <div class="viewcode-block" id="ProcessingSnapshotAnalyzer.to_json_dict">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.ProcessingSnapshotAnalyzer.to_json_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_json_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">JobSnapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert snapshot to JSON-serializable dictionary with comprehensive progress tracking.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert snapshot to JSON-serializable dictionary with comprehensive progress tracking."""</span>
         <span class="c1"># Load job summary for additional metadata</span>
         <span class="n">job_summary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_job_summary</span><span class="p">()</span>
 
@@ -960,46 +960,46 @@
         <span class="n">partition_progress</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">partition_id</span><span class="p">,</span> <span class="n">partition</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">partition_statuses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">partition_progress</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">partition_id</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;sample_count&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">sample_count</span><span class="p">,</span>
-                <span class="s2">&quot;creation_start_time&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">creation_start_time</span><span class="p">,</span>
-                <span class="s2">&quot;creation_end_time&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">creation_end_time</span><span class="p">,</span>
-                <span class="s2">&quot;processing_start_time&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">processing_start_time</span><span class="p">,</span>
-                <span class="s2">&quot;processing_end_time&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">processing_end_time</span><span class="p">,</span>
-                <span class="s2">&quot;current_operation&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">current_operation</span><span class="p">,</span>
-                <span class="s2">&quot;completed_operations&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">completed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;failed_operations&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">failed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;checkpointed_operations&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
-                <span class="s2">&quot;progress_percentage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition_progress</span><span class="p">(</span><span class="n">partition</span><span class="p">),</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"sample_count"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">sample_count</span><span class="p">,</span>
+                <span class="s2">"creation_start_time"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">creation_start_time</span><span class="p">,</span>
+                <span class="s2">"creation_end_time"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">creation_end_time</span><span class="p">,</span>
+                <span class="s2">"processing_start_time"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">processing_start_time</span><span class="p">,</span>
+                <span class="s2">"processing_end_time"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">processing_end_time</span><span class="p">,</span>
+                <span class="s2">"current_operation"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">current_operation</span><span class="p">,</span>
+                <span class="s2">"completed_operations"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">completed_operations</span><span class="p">,</span>
+                <span class="s2">"failed_operations"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">failed_operations</span><span class="p">,</span>
+                <span class="s2">"checkpointed_operations"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
+                <span class="s2">"error_message"</span><span class="p">:</span> <span class="n">partition</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
+                <span class="s2">"progress_percentage"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition_progress</span><span class="p">(</span><span class="n">partition</span><span class="p">),</span>
             <span class="p">}</span>
 
         <span class="c1"># Convert operation statuses to JSON format</span>
         <span class="n">operation_progress</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">op_key</span><span class="p">,</span> <span class="n">operation</span> <span class="ow">in</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">operation_statuses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">operation_progress</span><span class="p">[</span><span class="n">op_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_name</span><span class="p">,</span>
-                <span class="s2">&quot;operation_idx&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_idx</span><span class="p">,</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
-                <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
-                <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
-                <span class="s2">&quot;input_rows&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">input_rows</span><span class="p">,</span>
-                <span class="s2">&quot;output_rows&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">output_rows</span><span class="p">,</span>
-                <span class="s2">&quot;checkpoint_time&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">checkpoint_time</span><span class="p">,</span>
-                <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
-                <span class="s2">&quot;progress_percentage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_operation_progress</span><span class="p">(</span><span class="n">operation</span><span class="p">),</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_name</span><span class="p">,</span>
+                <span class="s2">"operation_idx"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_idx</span><span class="p">,</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"start_time"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
+                <span class="s2">"end_time"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
+                <span class="s2">"duration"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
+                <span class="s2">"input_rows"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">input_rows</span><span class="p">,</span>
+                <span class="s2">"output_rows"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">output_rows</span><span class="p">,</span>
+                <span class="s2">"checkpoint_time"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">checkpoint_time</span><span class="p">,</span>
+                <span class="s2">"error_message"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">error_message</span><span class="p">,</span>
+                <span class="s2">"progress_percentage"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_operation_progress</span><span class="p">(</span><span class="n">operation</span><span class="p">),</span>
             <span class="p">}</span>
 
         <span class="c1"># Extract DAG structure information</span>
         <span class="n">dag_info</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="p">:</span>
             <span class="n">dag_info</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;total_nodes&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])),</span>
-                <span class="s2">&quot;total_edges&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edges&quot;</span><span class="p">,</span> <span class="p">[])),</span>
-                <span class="s2">&quot;parallel_groups&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parallel_groups&quot;</span><span class="p">,</span> <span class="p">[])),</span>
-                <span class="s2">&quot;execution_plan&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;execution_plan&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-                <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="s2">"total_nodes"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nodes"</span><span class="p">,</span> <span class="p">[])),</span>
+                <span class="s2">"total_edges"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"edges"</span><span class="p">,</span> <span class="p">[])),</span>
+                <span class="s2">"parallel_groups"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"parallel_groups"</span><span class="p">,</span> <span class="p">[])),</span>
+                <span class="s2">"execution_plan"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"execution_plan"</span><span class="p">,</span> <span class="p">[]),</span>
+                <span class="s2">"metadata"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="p">}</span>
 
         <span class="c1"># Calculate overall progress percentages</span>
@@ -1007,74 +1007,74 @@
 
         <span class="c1"># Build job information from job summary</span>
         <span class="n">job_info</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;job_id&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
-            <span class="s2">&quot;executor_type&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;executor_type&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s2">&quot;config_file&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;config_file&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;work_dir&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;work_dir&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;resumption_command&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resumption_command&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error_message&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"job_id"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_id</span><span class="p">,</span>
+            <span class="s2">"executor_type"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"executor_type"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"status"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"status"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"config_file"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"config_file"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"work_dir"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"work_dir"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"resumption_command"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"resumption_command"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"error_message"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error_message"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;job_info&quot;</span><span class="p">:</span> <span class="n">job_info</span><span class="p">,</span>
-            <span class="s2">&quot;overall_status&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s2">&quot;overall_progress&quot;</span><span class="p">:</span> <span class="n">overall_progress</span><span class="p">,</span>
-            <span class="s2">&quot;job_start_time&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">,</span>
-            <span class="s2">&quot;job_end_time&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_end_time</span><span class="p">,</span>
-            <span class="s2">&quot;total_duration&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">,</span>
-            <span class="s2">&quot;timing&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">,</span>
-                <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_end_time</span><span class="p">,</span>
-                <span class="s2">&quot;duration_seconds&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">,</span>
-                <span class="s2">&quot;duration_formatted&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">"job_info"</span><span class="p">:</span> <span class="n">job_info</span><span class="p">,</span>
+            <span class="s2">"overall_status"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"overall_progress"</span><span class="p">:</span> <span class="n">overall_progress</span><span class="p">,</span>
+            <span class="s2">"job_start_time"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">,</span>
+            <span class="s2">"job_end_time"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_end_time</span><span class="p">,</span>
+            <span class="s2">"total_duration"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">,</span>
+            <span class="s2">"timing"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"start_time"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">,</span>
+                <span class="s2">"end_time"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_end_time</span><span class="p">,</span>
+                <span class="s2">"duration_seconds"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">,</span>
+                <span class="s2">"duration_formatted"</span><span class="p">:</span> <span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_format_duration</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">)</span> <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span> <span class="k">else</span> <span class="kc">None</span>
                 <span class="p">),</span>
-                <span class="s2">&quot;job_summary_duration&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;duration&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;timing_source&quot;</span><span class="p">:</span> <span class="s2">&quot;job_summary&quot;</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="s2">&quot;events&quot;</span><span class="p">,</span>
+                <span class="s2">"job_summary_duration"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"duration"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"timing_source"</span><span class="p">:</span> <span class="s2">"job_summary"</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="s2">"events"</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;progress_summary&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;total_partitions&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span><span class="p">,</span>
-                <span class="s2">&quot;completed_partitions&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">completed_partitions</span><span class="p">,</span>
-                <span class="s2">&quot;failed_partitions&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_partitions</span><span class="p">,</span>
-                <span class="s2">&quot;in_progress_partitions&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">in_progress_partitions</span><span class="p">,</span>
-                <span class="s2">&quot;partition_progress_percentage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition_progress_percentage</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
-                <span class="s2">&quot;total_operations&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="p">,</span>
-                <span class="s2">&quot;completed_operations&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">completed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;failed_operations&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;checkpointed_operations&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;operation_progress_percentage&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_operation_progress_percentage</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
+            <span class="s2">"progress_summary"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"total_partitions"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span><span class="p">,</span>
+                <span class="s2">"completed_partitions"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">completed_partitions</span><span class="p">,</span>
+                <span class="s2">"failed_partitions"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_partitions</span><span class="p">,</span>
+                <span class="s2">"in_progress_partitions"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">in_progress_partitions</span><span class="p">,</span>
+                <span class="s2">"partition_progress_percentage"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition_progress_percentage</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
+                <span class="s2">"total_operations"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="p">,</span>
+                <span class="s2">"completed_operations"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">completed_operations</span><span class="p">,</span>
+                <span class="s2">"failed_operations"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_operations</span><span class="p">,</span>
+                <span class="s2">"checkpointed_operations"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
+                <span class="s2">"operation_progress_percentage"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_operation_progress_percentage</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
             <span class="p">},</span>
-            <span class="s2">&quot;checkpointing&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;strategy&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpoint_strategy</span><span class="p">,</span>
-                <span class="s2">&quot;last_checkpoint_time&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">last_checkpoint_time</span><span class="p">,</span>
-                <span class="s2">&quot;checkpointed_operations_count&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
-                <span class="s2">&quot;resumable&quot;</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">resumable</span><span class="p">,</span>
-                <span class="s2">&quot;checkpoint_progress&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_checkpoint_progress</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
-                <span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"checkpointing"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"strategy"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpoint_strategy</span><span class="p">,</span>
+                <span class="s2">"last_checkpoint_time"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">last_checkpoint_time</span><span class="p">,</span>
+                <span class="s2">"checkpointed_operations_count"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="p">,</span>
+                <span class="s2">"resumable"</span><span class="p">:</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">resumable</span><span class="p">,</span>
+                <span class="s2">"checkpoint_progress"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_checkpoint_progress</span><span class="p">(</span><span class="n">snapshot</span><span class="p">),</span>
+                <span class="s2">"checkpoint_dir"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"checkpoint_dir"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;partition_progress&quot;</span><span class="p">:</span> <span class="n">partition_progress</span><span class="p">,</span>
-            <span class="s2">&quot;operation_progress&quot;</span><span class="p">:</span> <span class="n">operation_progress</span><span class="p">,</span>
-            <span class="s2">&quot;dag_structure&quot;</span><span class="p">:</span> <span class="n">dag_info</span><span class="p">,</span>
-            <span class="s2">&quot;file_paths&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;event_log_file&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_log_file&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;event_log_dir&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event_log_dir&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint_dir&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;metadata_dir&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metadata_dir&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;backed_up_config_path&quot;</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backed_up_config_path&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"partition_progress"</span><span class="p">:</span> <span class="n">partition_progress</span><span class="p">,</span>
+            <span class="s2">"operation_progress"</span><span class="p">:</span> <span class="n">operation_progress</span><span class="p">,</span>
+            <span class="s2">"dag_structure"</span><span class="p">:</span> <span class="n">dag_info</span><span class="p">,</span>
+            <span class="s2">"file_paths"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"event_log_file"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_log_file"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"event_log_dir"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"event_log_dir"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"checkpoint_dir"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"checkpoint_dir"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"metadata_dir"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"metadata_dir"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"backed_up_config_path"</span><span class="p">:</span> <span class="n">job_summary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"backed_up_config_path"</span><span class="p">)</span> <span class="k">if</span> <span class="n">job_summary</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;snapshot_generated_at&quot;</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-                <span class="s2">&quot;events_analyzed&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_events</span><span class="p">()),</span>
-                <span class="s2">&quot;dag_plan_loaded&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="p">),</span>
-                <span class="s2">&quot;job_summary_loaded&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_summary</span><span class="p">),</span>
-                <span class="s2">&quot;job_summary_used&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_summary</span><span class="p">),</span>
+            <span class="s2">"metadata"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"snapshot_generated_at"</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+                <span class="s2">"events_analyzed"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load_events</span><span class="p">()),</span>
+                <span class="s2">"dag_plan_loaded"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">dag_structure</span><span class="p">),</span>
+                <span class="s2">"job_summary_loaded"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_summary</span><span class="p">),</span>
+                <span class="s2">"job_summary_used"</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">job_summary</span><span class="p">),</span>
             <span class="p">},</span>
         <span class="p">}</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_partition_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partition</span><span class="p">:</span> <span class="n">PartitionStatus</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate progress percentage for a partition.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate progress percentage for a partition."""</span>
         <span class="k">if</span> <span class="n">partition</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">100.0</span>
         <span class="k">elif</span> <span class="n">partition</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span>
@@ -1094,7 +1094,7 @@
             <span class="k">return</span> <span class="mf">0.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_operation_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="n">OperationStatus</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate progress percentage for an operation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate progress percentage for an operation."""</span>
         <span class="k">if</span> <span class="n">operation</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">100.0</span>
         <span class="k">elif</span> <span class="n">operation</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span>
@@ -1116,7 +1116,7 @@
             <span class="k">return</span> <span class="mf">0.0</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_overall_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">JobSnapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate overall progress percentages.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate overall progress percentages."""</span>
         <span class="n">total_partitions</span> <span class="o">=</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span> <span class="ow">or</span> <span class="mi">1</span>
         <span class="n">total_operations</span> <span class="o">=</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span> <span class="ow">or</span> <span class="mi">1</span>
 
@@ -1127,27 +1127,27 @@
         <span class="n">overall_progress</span> <span class="o">=</span> <span class="p">(</span><span class="n">partition_progress</span> <span class="o">+</span> <span class="n">operation_progress</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;overall_percentage&quot;</span><span class="p">:</span> <span class="n">overall_progress</span><span class="p">,</span>
-            <span class="s2">&quot;partition_percentage&quot;</span><span class="p">:</span> <span class="n">partition_progress</span><span class="p">,</span>
-            <span class="s2">&quot;operation_percentage&quot;</span><span class="p">:</span> <span class="n">operation_progress</span><span class="p">,</span>
+            <span class="s2">"overall_percentage"</span><span class="p">:</span> <span class="n">overall_progress</span><span class="p">,</span>
+            <span class="s2">"partition_percentage"</span><span class="p">:</span> <span class="n">partition_progress</span><span class="p">,</span>
+            <span class="s2">"operation_percentage"</span><span class="p">:</span> <span class="n">operation_progress</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_partition_progress_percentage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">JobSnapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate partition progress percentage.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate partition progress percentage."""</span>
         <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">100.0</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_partitions</span> <span class="o">/</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_operation_progress_percentage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">JobSnapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate operation progress percentage.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate operation progress percentage."""</span>
         <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">100.0</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_operations</span> <span class="o">/</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_checkpoint_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snapshot</span><span class="p">:</span> <span class="n">JobSnapshot</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate checkpoint progress information.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate checkpoint progress information."""</span>
         <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;percentage&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;checkpointed_operations&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;checkpoint_coverage&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">"percentage"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"checkpointed_operations"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"checkpoint_coverage"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 
         <span class="n">checkpoint_percentage</span> <span class="o">=</span> <span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span> <span class="o">/</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
 
@@ -1157,20 +1157,20 @@
             <span class="k">if</span> <span class="n">operation</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">CHECKPOINTED</span><span class="p">:</span>
                 <span class="n">checkpointed_ops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span>
-                        <span class="s2">&quot;operation_key&quot;</span><span class="p">:</span> <span class="n">op_key</span><span class="p">,</span>
-                        <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_name</span><span class="p">,</span>
-                        <span class="s2">&quot;checkpoint_time&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">checkpoint_time</span><span class="p">,</span>
+                        <span class="s2">"operation_key"</span><span class="p">:</span> <span class="n">op_key</span><span class="p">,</span>
+                        <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">operation_name</span><span class="p">,</span>
+                        <span class="s2">"checkpoint_time"</span><span class="p">:</span> <span class="n">operation</span><span class="o">.</span><span class="n">checkpoint_time</span><span class="p">,</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;percentage&quot;</span><span class="p">:</span> <span class="n">checkpoint_percentage</span><span class="p">,</span>
-            <span class="s2">&quot;checkpointed_operations&quot;</span><span class="p">:</span> <span class="n">checkpointed_ops</span><span class="p">,</span>
-            <span class="s2">&quot;checkpoint_coverage&quot;</span><span class="p">:</span> <span class="n">checkpoint_percentage</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">,</span>
+            <span class="s2">"percentage"</span><span class="p">:</span> <span class="n">checkpoint_percentage</span><span class="p">,</span>
+            <span class="s2">"checkpointed_operations"</span><span class="p">:</span> <span class="n">checkpointed_ops</span><span class="p">,</span>
+            <span class="s2">"checkpoint_coverage"</span><span class="p">:</span> <span class="n">checkpoint_percentage</span> <span class="o">/</span> <span class="mf">100.0</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration_seconds</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format duration in human-readable format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Format duration in human-readable format."""</span>
         <span class="k">if</span> <span class="n">duration_seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -1179,18 +1179,18 @@
         <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">duration_seconds</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2">h </span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hours</span><span class="si">}</span><span class="s2">h </span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s"</span>
         <span class="k">elif</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">minutes</span><span class="si">}</span><span class="s2">m </span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">seconds</span><span class="si">}</span><span class="s2">s"</span></div>
 
 
 
 <div class="viewcode-block" id="create_snapshot">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.create_snapshot">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_snapshot</span><span class="p">(</span><span class="n">work_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">detailed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JobSnapshot</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and display a processing snapshot for a work directory.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create and display a processing snapshot for a work directory."""</span>
     <span class="n">analyzer</span> <span class="o">=</span> <span class="n">ProcessingSnapshotAnalyzer</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span>
     <span class="n">snapshot</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">generate_snapshot</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">snapshot</span></div>
@@ -1200,25 +1200,25 @@
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../../../api/data_juicer.utils.job.snapshot.html#data_juicer.utils.job.main">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main function for command-line usage.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Main function for command-line usage."""</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Generate DataJuicer processing snapshot&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Generate DataJuicer processing snapshot"</span><span class="p">,</span>
         <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">RawDescriptionHelpFormatter</span><span class="p">,</span>
-        <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+        <span class="n">epilog</span><span class="o">=</span><span class="s2">"""</span>
 <span class="s2">Examples:</span>
 <span class="s2">  python -m data_juicer.utils.job.snapshot outputs/partition-checkpoint-eventlog/20250808_230030_501c9d</span>
 <span class="s2">  python -m data_juicer.utils.job.snapshot /path/to/job/directory --human-readable</span>
-<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s2">        """</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;work_dir&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the DataJuicer work directory&quot;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--human-readable&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output in human-readable format instead of JSON&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"work_dir"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Path to the DataJuicer work directory"</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">"--human-readable"</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Output in human-readable format instead of JSON"</span><span class="p">)</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">work_dir</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: Work directory &#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">work_dir</span><span class="si">}</span><span class="s2">&#39; does not exist&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: Work directory '</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">work_dir</span><span class="si">}</span><span class="s2">' does not exist"</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -1227,53 +1227,53 @@
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">human_readable</span><span class="p">:</span>
             <span class="c1"># Human-readable output</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataJuicer Processing Snapshot - Job: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DataJuicer Processing Snapshot - Job: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">job_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"="</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
 
             <span class="c1"># Overall status</span>
             <span class="n">status_emoji</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">NOT_STARTED</span><span class="p">:</span> <span class="s2">&quot;⏳&quot;</span><span class="p">,</span>
-                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">IN_PROGRESS</span><span class="p">:</span> <span class="s2">&quot;🔄&quot;</span><span class="p">,</span>
-                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span> <span class="s2">&quot;✅&quot;</span><span class="p">,</span>
-                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span> <span class="s2">&quot;❌&quot;</span><span class="p">,</span>
-                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">CHECKPOINTED</span><span class="p">:</span> <span class="s2">&quot;💾&quot;</span><span class="p">,</span>
+                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">NOT_STARTED</span><span class="p">:</span> <span class="s2">"⏳"</span><span class="p">,</span>
+                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">IN_PROGRESS</span><span class="p">:</span> <span class="s2">"🔄"</span><span class="p">,</span>
+                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">:</span> <span class="s2">"✅"</span><span class="p">,</span>
+                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">FAILED</span><span class="p">:</span> <span class="s2">"❌"</span><span class="p">,</span>
+                <span class="n">ProcessingStatus</span><span class="o">.</span><span class="n">CHECKPOINTED</span><span class="p">:</span> <span class="s2">"💾"</span><span class="p">,</span>
             <span class="p">}</span>
 
             <span class="nb">print</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📊 Overall Status: </span><span class="si">{</span><span class="n">status_emoji</span><span class="p">[</span><span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">📊 Overall Status: </span><span class="si">{</span><span class="n">status_emoji</span><span class="p">[</span><span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">overall_status</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
             <span class="c1"># Timing information</span>
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">:</span>
                 <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">job_start_time</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;🕐 Started: </span><span class="si">{</span><span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"🕐 Started: </span><span class="si">{</span><span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⏱️  Duration: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"⏱️  Duration: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_duration</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
             <span class="c1"># Progress summary</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📈 Progress Summary:&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Partitions: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_partitions</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span><span class="si">}</span><span class="s2"> completed&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_operations</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="si">}</span><span class="s2"> completed&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">📈 Progress Summary:"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Partitions: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_partitions</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_partitions</span><span class="si">}</span><span class="s2"> completed"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">completed_operations</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">total_operations</span><span class="si">}</span><span class="s2"> completed"</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_partitions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ❌ Failed partitions: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">failed_partitions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   ❌ Failed partitions: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">failed_partitions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">failed_operations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ❌ Failed operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">failed_operations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   ❌ Failed operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">failed_operations</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   💾 Checkpointed operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   💾 Checkpointed operations: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">checkpointed_operations</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="c1"># Checkpointing information</span>
             <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">checkpoint_strategy</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">💾 Checkpointing:&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Strategy: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">checkpoint_strategy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">💾 Checkpointing:"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Strategy: </span><span class="si">{</span><span class="n">snapshot</span><span class="o">.</span><span class="n">checkpoint_strategy</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">snapshot</span><span class="o">.</span><span class="n">last_checkpoint_time</span><span class="p">:</span>
                     <span class="n">checkpoint_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">snapshot</span><span class="o">.</span><span class="n">last_checkpoint_time</span><span class="p">)</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Last checkpoint: </span><span class="si">{</span><span class="n">checkpoint_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Resumable: </span><span class="si">{</span><span class="s1">&#39;Yes&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">snapshot</span><span class="o">.</span><span class="n">resumable</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;No&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Last checkpoint: </span><span class="si">{</span><span class="n">checkpoint_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"   Resumable: </span><span class="si">{</span><span class="s1">'Yes'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">snapshot</span><span class="o">.</span><span class="n">resumable</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'No'</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># JSON output (default)</span>
             <span class="n">json_dict</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">to_json_dict</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
@@ -1282,7 +1282,7 @@
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error generating snapshot: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error generating snapshot: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
         <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
@@ -1290,7 +1290,7 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>

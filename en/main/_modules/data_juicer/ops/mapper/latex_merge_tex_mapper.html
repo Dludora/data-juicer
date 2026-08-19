@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.latex_merge_tex_mapper</span></li>
   </ul>
 </nav>
@@ -519,14 +522,14 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;latex_merge_tex_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"latex_merge_tex_mapper"</span>
 
 
 <div class="viewcode-block" id="LatexMergeTexMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.LatexMergeTexMapper">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LatexMergeTexMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts and concatenates all ``.tex`` files from a compressed</span>
+<span class="w">    </span><span class="sd">"""Extracts and concatenates all ``.tex`` files from a compressed</span>
 <span class="sd">    LaTeX project archive into a single text field.</span>
 
 <span class="sd">    Supported archive formats: ``.tar``, ``.tar.gz`` / ``.tgz``,</span>
@@ -541,20 +544,20 @@
 
 <span class="sd">    This operator is typically placed before LaTeX-processing operators</span>
 <span class="sd">    such as ``remove_comments_mapper``, ``expand_macro_mapper``, or</span>
-<span class="sd">    ``latex_figure_context_extractor_mapper``.&quot;&quot;&quot;</span>
+<span class="sd">    ``latex_figure_context_extractor_mapper``."""</span>
 
 <div class="viewcode-block" id="LatexMergeTexMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.LatexMergeTexMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">compressed_file_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;compressed_file&quot;</span><span class="p">,</span>
-        <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">compressed_file_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"compressed_file"</span><span class="p">,</span>
+        <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">,</span>
         <span class="n">max_file_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
         <span class="n">max_total_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param compressed_file_key: Field name that stores the archive</span>
@@ -572,7 +575,7 @@
 <span class="sd">            disable the check.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compressed_file_key</span> <span class="o">=</span> <span class="n">compressed_file_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="n">separator</span>
@@ -581,48 +584,48 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_extract_tex_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">archive_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of decoded ``.tex`` file contents from</span>
+<span class="w">        </span><span class="sd">"""Return a list of decoded ``.tex`` file contents from</span>
 <span class="sd">        *archive_path*.  Dispatches by file extension to the</span>
-<span class="sd">        appropriate reader.&quot;&quot;&quot;</span>
+<span class="sd">        appropriate reader."""</span>
         <span class="n">path_lower</span> <span class="o">=</span> <span class="n">archive_path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">path_lower</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.zip&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">path_lower</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".zip"</span><span class="p">):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_zip</span><span class="p">(</span><span class="n">archive_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_file_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_total_size</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">path_lower</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">&quot;.tar.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;.tgz&quot;</span><span class="p">,</span> <span class="s2">&quot;.tar&quot;</span><span class="p">)):</span>
+            <span class="k">elif</span> <span class="n">path_lower</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">".tar.gz"</span><span class="p">,</span> <span class="s2">".tgz"</span><span class="p">,</span> <span class="s2">".tar"</span><span class="p">)):</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_tar</span><span class="p">(</span><span class="n">archive_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_file_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_total_size</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Unsupported archive format: </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Supported formats: .tar, .tar.gz, .tgz, .zip&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Unsupported archive format: </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. "</span> <span class="sa">f</span><span class="s2">"Supported formats: .tar, .tar.gz, .tgz, .zip"</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="p">[]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to read archive </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to read archive </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_read_tar</span><span class="p">(</span><span class="n">archive_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_file_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_total_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">total_bytes</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">archive_path</span><span class="p">,</span> <span class="s2">&quot;r:*&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tf</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">archive_path</span><span class="p">,</span> <span class="s2">"r:*"</span><span class="p">)</span> <span class="k">as</span> <span class="n">tf</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">tf</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">member</span><span class="o">.</span><span class="n">isfile</span><span class="p">():</span>
                     <span class="k">continue</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tex&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".tex"</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">max_file_size</span> <span class="ow">and</span> <span class="n">member</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_file_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;declared size </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> bytes exceeds &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Skipping </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"declared size </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> bytes exceeds "</span>
+                        <span class="sa">f</span><span class="s2">"limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="c1"># Use declared header size to bail before reading.</span>
                 <span class="k">if</span> <span class="n">max_total_size</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_bytes</span> <span class="o">+</span> <span class="n">member</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_total_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Cumulative extracted size would exceed limit &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping remaining files.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Cumulative extracted size would exceed limit "</span>
+                        <span class="sa">f</span><span class="s2">"of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. "</span>
+                        <span class="sa">f</span><span class="s2">"Skipping remaining files."</span>
                     <span class="p">)</span>
                     <span class="k">break</span>
                 <span class="n">raw</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">extractfile</span><span class="p">(</span><span class="n">member</span><span class="p">)</span>
@@ -631,20 +634,20 @@
                 <span class="n">raw_bytes</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">max_file_size</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_file_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;actual size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes exceeds &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Skipping </span><span class="si">{</span><span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"actual size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes exceeds "</span>
+                        <span class="sa">f</span><span class="s2">"limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="n">total_bytes</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">max_total_size</span> <span class="ow">and</span> <span class="n">total_bytes</span> <span class="o">&gt;</span> <span class="n">max_total_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Cumulative extracted size </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">}</span><span class="s2"> bytes &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;exceeds limit of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. Skipping remaining files.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Cumulative extracted size </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">}</span><span class="s2"> bytes "</span>
+                        <span class="sa">f</span><span class="s2">"exceeds limit of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. Skipping remaining files."</span>
                     <span class="p">)</span>
                     <span class="k">break</span>
-                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">))</span>
+                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">contents</span>
 
     <span class="nd">@staticmethod</span>
@@ -653,41 +656,41 @@
         <span class="n">total_bytes</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">archive_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">zf</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">zf</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.tex&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".tex"</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="n">info</span> <span class="o">=</span> <span class="n">zf</span><span class="o">.</span><span class="n">getinfo</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">max_file_size</span> <span class="ow">and</span> <span class="n">info</span><span class="o">.</span><span class="n">file_size</span> <span class="o">&gt;</span> <span class="n">max_file_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;declared size </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> bytes exceeds &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Skipping </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"declared size </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">file_size</span><span class="si">}</span><span class="s2"> bytes exceeds "</span>
+                        <span class="sa">f</span><span class="s2">"limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="c1"># Use declared header size to bail before reading.</span>
                 <span class="k">if</span> <span class="n">max_total_size</span> <span class="ow">and</span> <span class="p">(</span><span class="n">total_bytes</span> <span class="o">+</span> <span class="n">info</span><span class="o">.</span><span class="n">file_size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_total_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Cumulative extracted size would exceed limit &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping remaining files.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Cumulative extracted size would exceed limit "</span>
+                        <span class="sa">f</span><span class="s2">"of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. "</span>
+                        <span class="sa">f</span><span class="s2">"Skipping remaining files."</span>
                     <span class="p">)</span>
                     <span class="k">break</span>
                 <span class="n">raw_bytes</span> <span class="o">=</span> <span class="n">zf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">max_file_size</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_file_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Skipping </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;actual size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes exceeds &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Skipping </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">: "</span>
+                        <span class="sa">f</span><span class="s2">"actual size </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes exceeds "</span>
+                        <span class="sa">f</span><span class="s2">"limit of </span><span class="si">{</span><span class="n">max_file_size</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="n">total_bytes</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">max_total_size</span> <span class="ow">and</span> <span class="n">total_bytes</span> <span class="o">&gt;</span> <span class="n">max_total_size</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Cumulative extracted size </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">}</span><span class="s2"> bytes &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;exceeds limit of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. Skipping remaining files.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Cumulative extracted size </span><span class="si">{</span><span class="n">total_bytes</span><span class="si">}</span><span class="s2"> bytes "</span>
+                        <span class="sa">f</span><span class="s2">"exceeds limit of </span><span class="si">{</span><span class="n">max_total_size</span><span class="si">}</span><span class="s2"> bytes in "</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">. Skipping remaining files."</span>
                     <span class="p">)</span>
                     <span class="k">break</span>
-                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;replace&quot;</span><span class="p">))</span>
+                <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">raw_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"replace"</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">contents</span>
 
 <div class="viewcode-block" id="LatexMergeTexMapper.process_single">
@@ -695,9 +698,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressed_file_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Compressed file key &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compressed_file_key</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;not found in sample. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Available keys: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"Compressed file key '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">compressed_file_key</span><span class="si">}</span><span class="s2">' "</span>
+                <span class="sa">f</span><span class="s2">"not found in sample. "</span>
+                <span class="sa">f</span><span class="s2">"Available keys: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
         <span class="n">path</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">compressed_file_key</span><span class="p">]</span>

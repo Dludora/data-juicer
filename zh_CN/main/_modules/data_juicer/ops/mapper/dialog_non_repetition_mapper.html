@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_non_repetition_mapper</span></li>
   </ul>
 </nav>
@@ -516,14 +519,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: new info vs prior assistant turns (1–5).</span>
+<span class="sd">"""LLM: new info vs prior assistant turns (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge-style repetition checks; DJ: same prompt window only.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/multi_turn/</span>
 <span class="sd">#responserepetitiongrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -531,7 +534,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper.dialog_quality_llm_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_DialogTurnQualityMapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;dialog_non_repetition_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"dialog_non_repetition_mapper"</span>
 
 
 <div class="viewcode-block" id="DialogNonRepetitionMapper">
@@ -539,19 +542,19 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DialogNonRepetitionMapper</span><span class="p">(</span><span class="n">_DialogTurnQualityMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;New information vs prior assistant turns in the same prompt window.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""New information vs prior assistant turns in the same prompt window."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_non_repetition</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;Compare with assistant content in **Earlier turns**: does the &quot;</span>
-            <span class="s2">&quot;**Assistant reply to score** mostly repeat prior messages without &quot;</span>
-            <span class="s2">&quot;new information?</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = near-duplicate of earlier assistant text; 5 = substantive &quot;</span>
-            <span class="s2">&quot;new facts, conclusions, or progress.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Ignore small amounts of polite boilerplate repetition.&quot;</span>
+            <span class="s2">"Compare with assistant content in **Earlier turns**: does the "</span>
+            <span class="s2">"**Assistant reply to score** mostly repeat prior messages without "</span>
+            <span class="s2">"new information?</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = near-duplicate of earlier assistant text; 5 = substantive "</span>
+            <span class="s2">"new facts, conclusions, or progress.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"Ignore small amounts of polite boilerplate repetition."</span>
         <span class="p">)</span></div>
 
 </pre></div>

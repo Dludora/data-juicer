@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.grouper.key_value_grouper</span></li>
   </ul>
 </nav>
@@ -523,28 +526,28 @@
 
 <div class="viewcode-block" id="KeyValueGrouper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.grouper.key_value_grouper.html#data_juicer.ops.grouper.KeyValueGrouper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;key_value_grouper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"key_value_grouper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">KeyValueGrouper</span><span class="p">(</span><span class="n">Grouper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Groups samples into batches based on values in specified keys.</span>
+<span class="w">    </span><span class="sd">"""Groups samples into batches based on values in specified keys.</span>
 
 <span class="sd">    This operator groups samples by the values of the given keys, which can be nested. If no</span>
 <span class="sd">    keys are provided, it defaults to using the text key. It uses a naive grouping strategy</span>
 <span class="sd">    to batch samples with identical key values. The resulting dataset is a list of batched</span>
 <span class="sd">    samples, where each batch contains samples that share the same key values. This is</span>
-<span class="sd">    useful for organizing data by specific attributes or features.&quot;&quot;&quot;</span>
+<span class="sd">    useful for organizing data by specific attributes or features."""</span>
 
 <div class="viewcode-block" id="KeyValueGrouper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.grouper.key_value_grouper.html#data_juicer.ops.grouper.KeyValueGrouper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_by_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param group_by_keys: group samples according values in the keys.</span>
-<span class="sd">            Support for nested keys such as &quot;__dj__stats__.text_len&quot;.</span>
+<span class="sd">            Support for nested keys such as "__dj__stats__.text_len".</span>
 <span class="sd">            It is [self.text_key] in default.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">group_by_keys</span> <span class="o">=</span> <span class="n">group_by_keys</span> <span class="ow">or</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span>

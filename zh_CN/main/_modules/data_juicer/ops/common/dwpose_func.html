@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.common.dwpose_func</span></li>
   </ul>
 </nav>
@@ -522,10 +525,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">)</span>
-<span class="n">onnxruntime</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;onnxruntime&quot;</span><span class="p">)</span>
-<span class="n">matplotlib</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;matplotlib&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
+<span class="n">onnxruntime</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"onnxruntime"</span><span class="p">)</span>
+<span class="n">matplotlib</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"matplotlib"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Wholebody">
@@ -534,9 +537,9 @@
 <div class="viewcode-block" id="Wholebody.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.Wholebody.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">onnx_det</span><span class="p">,</span> <span class="n">onnx_pose</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
-        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CPUExecutionProvider&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;CUDAExecutionProvider&quot;</span><span class="p">]</span>
-        <span class="c1"># onnx_det = &#39;annotator/ckpts/yolox_l.onnx&#39;</span>
-        <span class="c1"># onnx_pose = &#39;annotator/ckpts/dw-ll_ucoco_384.onnx&#39;</span>
+        <span class="n">providers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"CPUExecutionProvider"</span><span class="p">]</span> <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">"cpu"</span> <span class="k">else</span> <span class="p">[</span><span class="s2">"CUDAExecutionProvider"</span><span class="p">]</span>
+        <span class="c1"># onnx_det = 'annotator/ckpts/yolox_l.onnx'</span>
+        <span class="c1"># onnx_pose = 'annotator/ckpts/dw-ll_ucoco_384.onnx'</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">session_det</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="n">path_or_bytes</span><span class="o">=</span><span class="n">onnx_det</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_pose</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="n">path_or_bytes</span><span class="o">=</span><span class="n">onnx_pose</span><span class="p">,</span> <span class="n">providers</span><span class="o">=</span><span class="n">providers</span><span class="p">)</span></div>
@@ -566,7 +569,7 @@
 <div class="viewcode-block" id="nms">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.nms">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nms</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">nms_thr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Single class NMS implemented in Numpy.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Single class NMS implemented in Numpy."""</span>
     <span class="n">x1</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">y1</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">x2</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
@@ -599,7 +602,7 @@
 <div class="viewcode-block" id="multiclass_nms">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.multiclass_nms">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">multiclass_nms</span><span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">nms_thr</span><span class="p">,</span> <span class="n">score_thr</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiclass NMS implemented in Numpy. Class-aware version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Multiclass NMS implemented in Numpy. Class-aware version."""</span>
     <span class="n">final_dets</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">num_classes</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">cls_ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_classes</span><span class="p">):</span>
@@ -707,7 +710,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">preprocess_pose</span><span class="p">(</span>
     <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">out_bbox</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">192</span><span class="p">,</span> <span class="mi">256</span><span class="p">)</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Do preprocessing for RTMPose model inference.</span>
+<span class="w">    </span><span class="sd">"""Do preprocessing for RTMPose model inference.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        img (np.ndarray): Input image in shape.</span>
@@ -718,7 +721,7 @@
 <span class="sd">        - resized_img (np.ndarray): Preprocessed image.</span>
 <span class="sd">        - center (np.ndarray): Center of image.</span>
 <span class="sd">        - scale (np.ndarray): Scale of image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># get shape of image</span>
     <span class="n">img_shape</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">out_img</span><span class="p">,</span> <span class="n">out_center</span><span class="p">,</span> <span class="n">out_scale</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
@@ -753,7 +756,7 @@
 <div class="viewcode-block" id="inference">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.inference">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">inference</span><span class="p">(</span><span class="n">sess</span><span class="p">:</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inference RTMPose model.</span>
+<span class="w">    </span><span class="sd">"""Inference RTMPose model.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        sess (onnxruntime.InferenceSession): ONNXRuntime session.</span>
@@ -761,7 +764,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        outputs (np.ndarray): Output of RTMPose model.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">all_out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># build input</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">img</span><span class="p">)):</span>
@@ -790,7 +793,7 @@
     <span class="n">scale</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">simcc_split_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Postprocess for RTMPose model output.</span>
+<span class="w">    </span><span class="sd">"""Postprocess for RTMPose model output.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        outputs (np.ndarray): Output of RTMPose model.</span>
@@ -803,7 +806,7 @@
 <span class="sd">        tuple:</span>
 <span class="sd">        - keypoints (np.ndarray): Rescaled keypoints.</span>
 <span class="sd">        - scores (np.ndarray): Model predict scores.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">all_key</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">all_score</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outputs</span><span class="p">)):</span>
@@ -823,7 +826,7 @@
 <div class="viewcode-block" id="bbox_xyxy2cs">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.bbox_xyxy2cs">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">bbox_xyxy2cs</span><span class="p">(</span><span class="n">bbox</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">padding</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform the bbox format from (x,y,w,h) into (center, scale)</span>
+<span class="w">    </span><span class="sd">"""Transform the bbox format from (x,y,w,h) into (center, scale)</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        bbox (ndarray): Bounding box(es) in shape (4,) or (n, 4), formatted</span>
@@ -837,7 +840,7 @@
 <span class="sd">            (n, 2)</span>
 <span class="sd">        - np.ndarray[float32]: Scale (w, h) of the bbox in shape (2,) or</span>
 <span class="sd">            (n, 2)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># convert single bbox from (4, ) to (1, 4)</span>
     <span class="n">dim</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">ndim</span>
     <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -857,7 +860,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_fix_aspect_ratio</span><span class="p">(</span><span class="n">bbox_scale</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extend the scale to match the given aspect ratio.</span>
+<span class="w">    </span><span class="sd">"""Extend the scale to match the given aspect ratio.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        scale (np.ndarray): The image scale (w, h) in shape (2, )</span>
@@ -865,14 +868,14 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The reshaped image scale in (2, )</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hsplit</span><span class="p">(</span><span class="n">bbox_scale</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">bbox_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">w</span> <span class="o">&gt;</span> <span class="n">h</span> <span class="o">*</span> <span class="n">aspect_ratio</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">w</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="n">aspect_ratio</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">h</span> <span class="o">*</span> <span class="n">aspect_ratio</span><span class="p">,</span> <span class="n">h</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">bbox_scale</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_rotate_point</span><span class="p">(</span><span class="n">pt</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">angle_rad</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotate a point by an angle.</span>
+<span class="w">    </span><span class="sd">"""Rotate a point by an angle.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        pt (np.ndarray): 2D point coordinates (x, y) in shape (2, )</span>
@@ -880,14 +883,14 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: Rotated point in shape (2, )</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">sn</span><span class="p">,</span> <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span>
     <span class="n">rot_mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cs</span><span class="p">,</span> <span class="o">-</span><span class="n">sn</span><span class="p">],</span> <span class="p">[</span><span class="n">sn</span><span class="p">,</span> <span class="n">cs</span><span class="p">]])</span>
     <span class="k">return</span> <span class="n">rot_mat</span> <span class="o">@</span> <span class="n">pt</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_3rd_point</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;To calculate the affine matrix, three pairs of points are required. This</span>
+<span class="w">    </span><span class="sd">"""To calculate the affine matrix, three pairs of points are required. This</span>
 <span class="sd">    function is used to get the 3rd point, given 2D points a &amp; b.</span>
 
 <span class="sd">    The 3rd point is defined by rotating vector `a - b` by 90 degrees</span>
@@ -899,7 +902,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: The 3rd point.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">direction</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="o">-</span><span class="n">direction</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">direction</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">c</span>
@@ -915,7 +918,7 @@
     <span class="n">shift</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
     <span class="n">inv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the affine transformation matrix that can warp the bbox area</span>
+<span class="w">    </span><span class="sd">"""Calculate the affine transformation matrix that can warp the bbox area</span>
 <span class="sd">    in the input image to the output size.</span>
 
 <span class="sd">    Args:</span>
@@ -932,7 +935,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        np.ndarray: A 2x3 transformation matrix</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shift</span><span class="p">)</span>
     <span class="n">src_w</span> <span class="o">=</span> <span class="n">scale</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dst_w</span> <span class="o">=</span> <span class="n">output_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -969,7 +972,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">top_down_affine</span><span class="p">(</span>
     <span class="n">input_size</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">bbox_scale</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">bbox_center</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the bbox image as the model input by affine transform.</span>
+<span class="w">    </span><span class="sd">"""Get the bbox image as the model input by affine transform.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        input_size (dict): The input size of the model.</span>
@@ -981,7 +984,7 @@
 <span class="sd">        tuple: A tuple containing center and scale.</span>
 <span class="sd">        - np.ndarray[float32]: img after affine transform.</span>
 <span class="sd">        - np.ndarray[float32]: bbox scale after affine transform.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">input_size</span>
     <span class="n">warp_size</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
 
@@ -1004,7 +1007,7 @@
 <div class="viewcode-block" id="get_simcc_maximum">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.get_simcc_maximum">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_simcc_maximum</span><span class="p">(</span><span class="n">simcc_x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simcc_y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get maximum response location and value from simcc representations.</span>
+<span class="w">    </span><span class="sd">"""Get maximum response location and value from simcc representations.</span>
 
 <span class="sd">    Note:</span>
 <span class="sd">        instance number: N</span>
@@ -1022,7 +1025,7 @@
 <span class="sd">            (K, 2) or (N, K, 2)</span>
 <span class="sd">        - vals (np.ndarray): values of maximum heatmap responses in shape</span>
 <span class="sd">            (K,) or (N, K)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">N</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">Wx</span> <span class="o">=</span> <span class="n">simcc_x</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">simcc_x</span> <span class="o">=</span> <span class="n">simcc_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">K</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">simcc_y</span> <span class="o">=</span> <span class="n">simcc_y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">K</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -1051,7 +1054,7 @@
 <div class="viewcode-block" id="decode">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.decode">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="n">simcc_x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simcc_y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">simcc_split_ratio</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Modulate simcc distribution with Gaussian.</span>
+<span class="w">    </span><span class="sd">"""Modulate simcc distribution with Gaussian.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        simcc_x (np.ndarray[K, Wx]): model predicted simcc in x.</span>
@@ -1062,7 +1065,7 @@
 <span class="sd">        tuple: A tuple containing center and scale.</span>
 <span class="sd">        - np.ndarray[float32]: keypoints in shape (K, 2) or (n, K, 2)</span>
 <span class="sd">        - np.ndarray[float32]: scores in shape (K,) or (n, K)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">keypoints</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">get_simcc_maximum</span><span class="p">(</span><span class="n">simcc_x</span><span class="p">,</span> <span class="n">simcc_y</span><span class="p">)</span>
     <span class="n">keypoints</span> <span class="o">/=</span> <span class="n">simcc_split_ratio</span>
 
@@ -1148,7 +1151,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">transfer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">model_weights</span><span class="p">):</span>
     <span class="n">transfered_model_weights</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">weights_name</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">transfered_model_weights</span><span class="p">[</span><span class="n">weights_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_weights</span><span class="p">[</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])]</span>
+        <span class="n">transfered_model_weights</span><span class="p">[</span><span class="n">weights_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">model_weights</span><span class="p">[</span><span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])]</span>
     <span class="k">return</span> <span class="n">transfered_model_weights</span></div>
 
 
@@ -1375,11 +1378,11 @@
             <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;=</span> <span class="mi">20</span><span class="p">:</span>
                 <span class="n">detect_result</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">),</span> <span class="n">is_left</span><span class="p">])</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    return value: [[x, y, w, True if left hand else False]].</span>
 <span class="sd">    width=height since the network require squared input.</span>
 <span class="sd">    x, y is the coordinate of top left</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">detect_result</span></div>
 
 
@@ -1473,11 +1476,11 @@
 <div class="viewcode-block" id="draw_pose">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.dwpose_func.html#data_juicer.ops.common.dwpose_func.draw_pose">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">draw_pose</span><span class="p">(</span><span class="n">pose</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">):</span>
-    <span class="n">bodies</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">&quot;bodies&quot;</span><span class="p">]</span>
-    <span class="n">faces</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">&quot;faces&quot;</span><span class="p">]</span>
-    <span class="n">hands</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">&quot;hands&quot;</span><span class="p">]</span>
-    <span class="n">candidate</span> <span class="o">=</span> <span class="n">bodies</span><span class="p">[</span><span class="s2">&quot;candidate&quot;</span><span class="p">]</span>
-    <span class="n">subset</span> <span class="o">=</span> <span class="n">bodies</span><span class="p">[</span><span class="s2">&quot;subset&quot;</span><span class="p">]</span>
+    <span class="n">bodies</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">"bodies"</span><span class="p">]</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">"faces"</span><span class="p">]</span>
+    <span class="n">hands</span> <span class="o">=</span> <span class="n">pose</span><span class="p">[</span><span class="s2">"hands"</span><span class="p">]</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="n">bodies</span><span class="p">[</span><span class="s2">"candidate"</span><span class="p">]</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">bodies</span><span class="p">[</span><span class="s2">"subset"</span><span class="p">]</span>
     <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
     <span class="n">canvas</span> <span class="o">=</span> <span class="n">draw_bodypose</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">candidate</span><span class="p">,</span> <span class="n">subset</span><span class="p">)</span>

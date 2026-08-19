@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.agent_dialog_normalize_mapper</span></li>
   </ul>
 </nav>
@@ -525,73 +528,73 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;agent_dialog_normalize_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"agent_dialog_normalize_mapper"</span>
 
 <span class="c1"># Default labels for flattened dialog (override for i18n, e.g. 用户 / 助手)</span>
-<span class="n">DEFAULT_USER_LABEL</span> <span class="o">=</span> <span class="s2">&quot;User&quot;</span>
-<span class="n">DEFAULT_ASSISTANT_LABEL</span> <span class="o">=</span> <span class="s2">&quot;Assistant&quot;</span>
+<span class="n">DEFAULT_USER_LABEL</span> <span class="o">=</span> <span class="s2">"User"</span>
+<span class="n">DEFAULT_ASSISTANT_LABEL</span> <span class="o">=</span> <span class="s2">"Assistant"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_coerce_content_fragment</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn a content block&#39;s text-ish field into a single flat string (no .strip on dict).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Turn a content block's text-ish field into a single flat string (no .strip on dict)."""</span>
     <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">val</span> <span class="ow">and</span> <span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">val</span> <span class="ow">and</span> <span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_content_to_text</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract plain text from message.content.</span>
+<span class="w">    </span><span class="sd">"""Extract plain text from message.content.</span>
 <span class="sd">    Supports: str, list of {type, text} (OpenAI multimodal), list of str.</span>
 <span class="sd">    ``text`` may be nested (dict/list); Qwen-style ``thinking`` blocks are included.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">btype</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">btype</span> <span class="o">==</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
-                    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)))</span>
-                <span class="k">elif</span> <span class="n">btype</span> <span class="o">==</span> <span class="s2">&quot;input_text&quot;</span> <span class="ow">or</span> <span class="p">(</span><span class="n">btype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;thinking&quot;</span><span class="p">,</span> <span class="s2">&quot;reasoning&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;text&quot;</span> <span class="ow">in</span> <span class="n">block</span><span class="p">):</span>
-                    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)))</span>
-                <span class="k">elif</span> <span class="n">btype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;thinking&quot;</span><span class="p">,</span> <span class="s2">&quot;reasoning&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;thinking&quot;</span> <span class="ow">in</span> <span class="n">block</span> <span class="ow">or</span> <span class="s2">&quot;reasoning_content&quot;</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+                <span class="n">btype</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">btype</span> <span class="o">==</span> <span class="s2">"text"</span><span class="p">:</span>
+                    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)))</span>
+                <span class="k">elif</span> <span class="n">btype</span> <span class="o">==</span> <span class="s2">"input_text"</span> <span class="ow">or</span> <span class="p">(</span><span class="n">btype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"thinking"</span><span class="p">,</span> <span class="s2">"reasoning"</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"text"</span> <span class="ow">in</span> <span class="n">block</span><span class="p">):</span>
+                    <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)))</span>
+                <span class="k">elif</span> <span class="n">btype</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"thinking"</span><span class="p">,</span> <span class="s2">"reasoning"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">"thinking"</span> <span class="ow">in</span> <span class="n">block</span> <span class="ow">or</span> <span class="s2">"reasoning_content"</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
                     <span class="c1"># Qwen / DeepSeek / DashScope style reasoning (may omit type)</span>
                     <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                         <span class="n">_coerce_content_fragment</span><span class="p">(</span>
-                            <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thinking&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reasoning&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reasoning_content&quot;</span><span class="p">)</span>
+                            <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thinking"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reasoning"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">block</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reasoning_content"</span><span class="p">)</span>
                         <span class="p">)</span>
                     <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_coerce_content_fragment</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">content</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_tool_name_from_call</span><span class="p">(</span><span class="n">tc</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get tool/function name from one tool_call item.</span>
+<span class="w">    </span><span class="sd">"""Get tool/function name from one tool_call item.</span>
 <span class="sd">    Supports OpenAI (function.name), Anthropic (name), generic.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
-    <span class="n">fn</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;function_call&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fn</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">tc</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"function"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"function_call"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">fn</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">tc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">tc</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
     <span class="k">return</span> <span class="kc">None</span>
 
 
@@ -599,40 +602,40 @@
     <span class="n">tool_calls</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="n">max_names</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize tool_calls for history; multi-format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Summarize tool_calls for history; multi-format."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">tool_calls</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tool_calls</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">tc</span> <span class="ow">in</span> <span class="n">tool_calls</span><span class="p">:</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">_get_tool_name_from_call</span><span class="p">(</span><span class="n">tc</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
             <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">names</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="n">display</span> <span class="o">=</span> <span class="n">names</span><span class="p">[:</span><span class="n">max_names</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_names</span><span class="p">:</span>
-        <span class="n">display</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;...+</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">max_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s2">&quot;[Tool calls: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">display</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"...+</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">max_names</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"[Tool calls: "</span> <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">display</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"]"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_list_str_for_hf_meta</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ``list[str]`` with Arrow-friendly element type for HuggingFace ``datasets``.</span>
+<span class="w">    </span><span class="sd">"""Return ``list[str]`` with Arrow-friendly element type for HuggingFace ``datasets``.</span>
 
 <span class="sd">    An empty ``[]`` is often inferred as ``list&lt;null&gt;`` while non-empty lists use</span>
 <span class="sd">    ``list&lt;string&gt;``, which breaks multi-process ``map`` when rows differ; storing a</span>
 <span class="sd">    single empty string keeps dtype stable. Downstream should drop falsy entries.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-    <span class="k">return</span> <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="k">else</span> <span class="p">[</span><span class="s2">""</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_compress_head_tail</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">max_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">head_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.62</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;If ``text`` exceeds ``max_chars``, keep head + tail with an explicit middle marker.</span>
+<span class="w">    </span><span class="sd">"""If ``text`` exceeds ``max_chars``, keep head + tail with an explicit middle marker.</span>
 
 <span class="sd">    Designed for **write-back** to ``dialog_history`` / ``text`` so downstream sees the</span>
 <span class="sd">    same bounded view as prompt-side caps, while preserving error prefixes and trailing</span>
 <span class="sd">    stack/summary when possible. Middle is dropped (lossy); marker states that clearly.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">max_chars</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_chars</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
     <span class="n">head_ratio</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">0.85</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.35</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">head_ratio</span><span class="p">)))</span>
@@ -640,7 +643,7 @@
     <span class="n">budget</span> <span class="o">=</span> <span class="n">max_chars</span> <span class="o">-</span> <span class="n">marker_reserve</span>
     <span class="k">if</span> <span class="n">budget</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
         <span class="n">cut</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_chars</span> <span class="o">-</span> <span class="mi">48</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">text</span><span class="p">[:</span><span class="n">cut</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">…[truncated — agent_dialog_normalize_mapper]…&quot;</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">[:</span><span class="n">cut</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">…[truncated — agent_dialog_normalize_mapper]…"</span>
 
     <span class="n">head_n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">budget</span> <span class="o">*</span> <span class="n">head_ratio</span><span class="p">))</span>
     <span class="n">tail_n</span> <span class="o">=</span> <span class="n">budget</span> <span class="o">-</span> <span class="n">head_n</span>
@@ -651,7 +654,7 @@
     <span class="k">if</span> <span class="n">omitted</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
     <span class="n">marker</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">[··· </span><span class="si">{</span><span class="n">omitted</span><span class="si">}</span><span class="s2"> chars omitted from middle; &quot;</span> <span class="s2">&quot;head+tail preserved — agent_dialog_normalize_mapper]</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">[··· </span><span class="si">{</span><span class="n">omitted</span><span class="si">}</span><span class="s2"> chars omitted from middle; "</span> <span class="s2">"head+tail preserved — agent_dialog_normalize_mapper]</span><span class="se">\n\n</span><span class="s2">"</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">head_n</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span> <span class="o">+</span> <span class="n">tail_n</span> <span class="o">&gt;</span> <span class="n">max_chars</span><span class="p">:</span>
         <span class="n">over</span> <span class="o">=</span> <span class="n">head_n</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span> <span class="o">+</span> <span class="n">tail_n</span> <span class="o">-</span> <span class="n">max_chars</span>
@@ -665,7 +668,7 @@
     <span class="n">head_ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">compressed_ref</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply :func:`_compress_head_tail` when ``max_chars`` &gt; 0 and text is too long.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Apply :func:`_compress_head_tail` when ``max_chars`` &gt; 0 and text is too long."""</span>
     <span class="k">if</span> <span class="n">max_chars</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_chars</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
     <span class="k">if</span> <span class="n">compressed_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -674,11 +677,11 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_extract_tool_types</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Collect unique tool/function names from messages (multi-format).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Collect unique tool/function names from messages (multi-format)."""</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">tc</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_calls&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_use&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
+        <span class="k">for</span> <span class="n">tc</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tool_calls"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tool_use"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">_get_tool_name_from_call</span><span class="p">(</span><span class="n">tc</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
                 <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -690,24 +693,24 @@
 <span class="c1"># - Path: xxx/SKILL.md or xxx\SKILL.md -&gt; capture segment (ASCII identifier)</span>
 <span class="c1"># - ## header: only English identifiers (## cron), not doc headings (## 记忆).</span>
 <span class="n">_SKILL_PATTERNS</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[/</span><span class="se">\\</span><span class="s2">]([a-zA-Z][a-zA-Z0-9_]*)[/</span><span class="se">\\</span><span class="s2">]SKILL\.md&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;##\s+([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)?)\s*(?:\n|$)&quot;</span><span class="p">),</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[/</span><span class="se">\\</span><span class="s2">]([a-zA-Z][a-zA-Z0-9_]*)[/</span><span class="se">\\</span><span class="s2">]SKILL\.md"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"##\s+([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)?)\s*(?:\n|$)"</span><span class="p">),</span>
     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s2">&quot;Check\s+[</span><span class="se">\&quot;</span><span class="s2">&#39;].*?([a-zA-Z][a-zA-Z0-9_]*)/SKILL\.md&quot;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s2">"Check\s+[</span><span class="se">\"</span><span class="s2">'].*?([a-zA-Z][a-zA-Z0-9_]*)/SKILL\.md"</span><span class="p">,</span>
         <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
     <span class="p">),</span>
 <span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_extract_skill_types</span><span class="p">(</span><span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract skill names (paths + ## English headers only).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Extract skill names (paths + ## English headers only)."""</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">_content_to_text</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">))</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">_content_to_text</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">_SKILL_PATTERNS</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">pat</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">mo</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
                     <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
                     <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -724,7 +727,7 @@
     <span class="n">history_compress_head_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.62</span><span class="p">,</span>
     <span class="n">compressed_ref</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert messages to [(query, response), ...]. User/assistant only.</span>
+<span class="w">    </span><span class="sd">"""Convert messages to [(query, response), ...]. User/assistant only.</span>
 
 <span class="sd">    Agent/tool note: within one user turn, the model may emit **multiple**</span>
 <span class="sd">    ``assistant`` messages (tool calls → ``tool`` → assistant again). Earlier</span>
@@ -740,35 +743,35 @@
 <span class="sd">    When a cap applies, middle is omitted with an explicit marker</span>
 <span class="sd">    (head+tail). Set ``compressed_ref`` to a one-element list ``[False]`` to</span>
 <span class="sd">    record whether any compression ran.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">pending_system</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">ratio</span> <span class="o">=</span> <span class="n">history_compress_head_ratio</span>
 
     <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-        <span class="n">role</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">_content_to_text</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">))</span>
-        <span class="n">tool_calls</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_calls&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tool_use&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"role"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">_content_to_text</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">))</span>
+        <span class="n">tool_calls</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tool_calls"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tool_use"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;system&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"system"</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">include_system_in_first_user</span> <span class="ow">and</span> <span class="n">content</span><span class="p">:</span>
                 <span class="n">pending_system</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"user"</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">pending_system</span><span class="p">:</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pending_system</span> <span class="o">+</span> <span class="p">[</span><span class="n">content</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pending_system</span> <span class="o">+</span> <span class="p">[</span><span class="n">content</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="n">pending_system</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">_apply_char_cap</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">history_max_user_chars</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">compressed_ref</span><span class="p">)</span>
-            <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">content</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+            <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">content</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;assistant&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"assistant"</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span> <span class="ow">and</span> <span class="n">tool_calls</span><span class="p">:</span>
                 <span class="n">content</span> <span class="o">=</span> <span class="n">_tool_calls_summary</span><span class="p">(</span><span class="n">tool_calls</span><span class="p">)</span>
-            <span class="n">piece</span> <span class="o">=</span> <span class="n">content</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">piece</span> <span class="o">=</span> <span class="n">content</span> <span class="ow">or</span> <span class="s2">""</span>
             <span class="k">if</span> <span class="n">history</span><span class="p">:</span>
                 <span class="n">prev_q</span><span class="p">,</span> <span class="n">prev_r</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">prev_r</span> <span class="ow">and</span> <span class="n">piece</span><span class="p">:</span>
-                    <span class="n">new_r</span> <span class="o">=</span> <span class="n">prev_r</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">piece</span>
+                    <span class="n">new_r</span> <span class="o">=</span> <span class="n">prev_r</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">piece</span>
                 <span class="k">elif</span> <span class="n">piece</span><span class="p">:</span>
                     <span class="n">new_r</span> <span class="o">=</span> <span class="n">piece</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -787,9 +790,9 @@
                     <span class="n">ratio</span><span class="p">,</span>
                     <span class="n">compressed_ref</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">piece_capped</span><span class="p">))</span>
+                <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">""</span><span class="p">,</span> <span class="n">piece_capped</span><span class="p">))</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;tool&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"tool"</span><span class="p">:</span>
             <span class="n">body</span> <span class="o">=</span> <span class="n">_apply_char_cap</span><span class="p">(</span>
                 <span class="n">content</span><span class="p">,</span>
                 <span class="n">history_tool_result_max_chars</span><span class="p">,</span>
@@ -798,7 +801,7 @@
             <span class="p">)</span>
             <span class="c1"># Append tool result to last assistant response for context</span>
             <span class="k">if</span> <span class="n">history</span> <span class="ow">and</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="n">new_r</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[Tool result]</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">body</span>
+                <span class="n">new_r</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">[Tool result]</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">body</span>
                 <span class="n">new_r</span> <span class="o">=</span> <span class="n">_apply_char_cap</span><span class="p">(</span>
                     <span class="n">new_r</span><span class="p">,</span>
                     <span class="n">history_max_assistant_trace_chars</span><span class="p">,</span>
@@ -807,7 +810,7 @@
                 <span class="p">)</span>
                 <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_r</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">history</span><span class="p">:</span>
-                <span class="n">lone</span> <span class="o">=</span> <span class="s2">&quot;[Tool result]</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">body</span>
+                <span class="n">lone</span> <span class="o">=</span> <span class="s2">"[Tool result]</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">body</span>
                 <span class="n">lone</span> <span class="o">=</span> <span class="n">_apply_char_cap</span><span class="p">(</span>
                     <span class="n">lone</span><span class="p">,</span>
                     <span class="n">history_max_assistant_trace_chars</span><span class="p">,</span>
@@ -822,16 +825,16 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_last_user_assistant_msg_indices</span><span class="p">(</span>
     <span class="n">messages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;0-based indices in ``messages`` of the last user / assistant turns.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""0-based indices in ``messages`` of the last user / assistant turns."""</span>
     <span class="n">last_u</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">last_a</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">messages</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">continue</span>
-        <span class="n">role</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;role&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span>
+        <span class="n">role</span> <span class="o">=</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"role"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"user"</span><span class="p">:</span>
             <span class="n">last_u</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">&quot;assistant&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">role</span> <span class="o">==</span> <span class="s2">"assistant"</span><span class="p">:</span>
             <span class="n">last_a</span> <span class="o">=</span> <span class="n">i</span>
     <span class="k">return</span> <span class="n">last_u</span><span class="p">,</span> <span class="n">last_a</span>
 
@@ -850,14 +853,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_choices_to_text</span><span class="p">(</span><span class="n">choices</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract reply text from choices (OpenAI / Anthropic / generic).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Extract reply text from choices (OpenAI / Anthropic / generic)."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">choices</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">continue</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"message"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"delta"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
@@ -866,7 +869,7 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">_content_to_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">t</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">t</span>
-    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">""</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_flatten_history_to_text</span><span class="p">(</span>
@@ -874,14 +877,14 @@
     <span class="n">user_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_USER_LABEL</span><span class="p">,</span>
     <span class="n">assistant_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_ASSISTANT_LABEL</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flatten history to one text for text-based ops.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Flatten history to one text for text-based ops."""</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">history</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">q</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">user_label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">user_label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">assistant_label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">assistant_label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="AgentDialogNormalizeMapper">
@@ -889,7 +892,7 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgentDialogNormalizeMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize agent format (messages + choices) to DJ fields.</span>
+<span class="w">    </span><span class="sd">"""Normalize agent format (messages + choices) to DJ fields.</span>
 
 <span class="sd">    Outputs: text, dialog_history, query, response; optionally meta tags</span>
 <span class="sd">    agent_tool_types, agent_skill_types, agent_turn_count. When</span>
@@ -905,18 +908,18 @@
 <span class="sd">    middle-omitted marker so ``dialog_history``, flattened ``text``, and last</span>
 <span class="sd">    ``query`` / ``response`` stay aligned; ``meta.agent_dialog_history_compressed``</span>
 <span class="sd">    is set when any cap fires.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AgentDialogNormalizeMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.agent_dialog_normalize_mapper.html#data_juicer.ops.mapper.AgentDialogNormalizeMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">messages_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;messages&quot;</span><span class="p">,</span>
-        <span class="n">choices_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;choices&quot;</span><span class="p">,</span>
-        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
-        <span class="n">history_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dialog_history&quot;</span><span class="p">,</span>
-        <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span><span class="p">,</span>
-        <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;response&quot;</span><span class="p">,</span>
+        <span class="n">messages_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"messages"</span><span class="p">,</span>
+        <span class="n">choices_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"choices"</span><span class="p">,</span>
+        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">,</span>
+        <span class="n">history_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"dialog_history"</span><span class="p">,</span>
+        <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"query"</span><span class="p">,</span>
+        <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"response"</span><span class="p">,</span>
         <span class="n">extract_tool_skill_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">include_system_in_first_user</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">user_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_USER_LABEL</span><span class="p">,</span>
@@ -924,9 +927,9 @@
         <span class="n">copy_lineage_fields</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">copy_request_id</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">request_id_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;request_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;trace_id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="s2">"request_id"</span><span class="p">,</span>
+            <span class="s2">"trace_id"</span><span class="p">,</span>
+            <span class="s2">"id"</span><span class="p">,</span>
         <span class="p">],</span>
         <span class="n">history_tool_result_max_chars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
         <span class="n">history_max_assistant_trace_chars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -977,8 +980,8 @@
             <span class="n">user_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_label</span><span class="p">,</span>
             <span class="n">assistant_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assistant_label</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">last_query</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">history</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">last_response</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">history</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">last_query</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">history</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">last_response</span> <span class="o">=</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">history</span> <span class="k">else</span> <span class="s2">""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">last_response</span> <span class="ow">and</span> <span class="n">choices</span><span class="p">:</span>
             <span class="n">last_response</span> <span class="o">=</span> <span class="n">_choices_to_text</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span>
 
@@ -1009,12 +1012,12 @@
 
         <span class="c1"># Cohort fields for bad-case / A-B analysis (request_model, date bucket, latency)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy_lineage_fields</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;request_model&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_request_model</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;request_model&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_pt</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;pt&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_cost_time&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_total_cost_time_ms</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;total_cost_time&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"request_model"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_request_model</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">"request_model"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"pt"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_pt</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">"pt"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"total_cost_time"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_total_cost_time_ms</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">"total_cost_time"</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">sample</span></div>
 </div>

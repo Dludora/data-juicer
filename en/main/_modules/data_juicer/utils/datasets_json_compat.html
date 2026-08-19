@@ -512,15 +512,15 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.datasets_json_compat</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">HuggingFace ``datasets`` parses JSON/JSON lines via pandas, which may call</span>
-<span class="sd">``ujson``. UltraJSON rejects some values that CPython&#39;s ``json`` accepts,</span>
+<span class="sd">``ujson``. UltraJSON rejects some values that CPython's ``json`` accepts,</span>
 <span class="sd">notably very large integers, raising ``ValueError: Value is too big!``.</span>
 
 <span class="sd">Set environment variable ``DATA_JUICER_USE_STDLIB_JSON=1`` (or ``true`` /</span>
 <span class="sd">``yes`` / ``on``) before running ``dj-process`` (or any code path that calls</span>
 <span class="sd">``init_configs``) to force the datasets stack to use ``json.loads`` instead.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -531,18 +531,18 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
-<span class="n">_ENV_FLAG</span> <span class="o">=</span> <span class="s2">&quot;DATA_JUICER_USE_STDLIB_JSON&quot;</span>
+<span class="n">_ENV_FLAG</span> <span class="o">=</span> <span class="s2">"DATA_JUICER_USE_STDLIB_JSON"</span>
 <span class="n">_PATCHED</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_truthy_env</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;on&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">,</span> <span class="s2">"on"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="apply_stdlib_json_patch_for_datasets">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.datasets_json_compat.html#data_juicer.utils.datasets_json_compat.apply_stdlib_json_patch_for_datasets">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply_stdlib_json_patch_for_datasets</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    If ``DATA_JUICER_USE_STDLIB_JSON`` is enabled, replace</span>
 <span class="sd">    ``datasets.utils.json.ujson_loads`` with ``json.loads`` (bytes-safe).</span>
 
@@ -550,11 +550,11 @@
 <span class="sd">        We patch both ``datasets.utils.json`` and</span>
 <span class="sd">        ``datasets.packaged_modules.json.json`` because the latter imports</span>
 <span class="sd">        ``ujson_loads`` at module load time (``from ... import ujson_loads``),</span>
-<span class="sd">        which binds the function object directly. Modifying the source module&#39;s</span>
+<span class="sd">        which binds the function object directly. Modifying the source module's</span>
 <span class="sd">        attribute does not affect already-bound references.</span>
 
 <span class="sd">    :return: whether the patch was applied in this process.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">global</span> <span class="n">_PATCHED</span>
     <span class="k">if</span> <span class="n">_PATCHED</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -563,20 +563,20 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">datasets.utils.json</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ds_json</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2"> is set but `datasets` is not installed; skipping JSON patch.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2"> is set but `datasets` is not installed; skipping JSON patch."</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds_json</span><span class="p">,</span> <span class="s2">&quot;ujson_loads&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds_json</span><span class="p">,</span> <span class="s2">"ujson_loads"</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2"> is set but `datasets.utils.json` has no ujson_loads; &quot;</span>
-            <span class="s2">&quot;skipping JSON patch (your datasets version may differ).&quot;</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2"> is set but `datasets.utils.json` has no ujson_loads; "</span>
+            <span class="s2">"skipping JSON patch (your datasets version may differ)."</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_stdlib_loads</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">],</span> <span class="o">*</span><span class="n">_args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="c1"># ``json.loads`` does not accept ujson-only kwargs; ignore extras for compatibility.</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;precise_float&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"precise_float"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytearray</span><span class="p">)):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="c1"># Patch the source module</span>
@@ -587,17 +587,17 @@
     <span class="c1">#     from datasets.utils.json import ujson_loads</span>
     <span class="c1"># This binds the function object directly, so modifying ds_json.ujson_loads</span>
     <span class="c1"># does not affect the already-bound reference in that module.</span>
-    <span class="c1"># Note: we use importlib because the module name &#39;json&#39; conflicts with stdlib.</span>
+    <span class="c1"># Note: we use importlib because the module name 'json' conflicts with stdlib.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">ds_json_loader</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;datasets.packaged_modules.json.json&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds_json_loader</span><span class="p">,</span> <span class="s2">&quot;ujson_loads&quot;</span><span class="p">):</span>
+        <span class="n">ds_json_loader</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"datasets.packaged_modules.json.json"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ds_json_loader</span><span class="p">,</span> <span class="s2">"ujson_loads"</span><span class="p">):</span>
             <span class="n">ds_json_loader</span><span class="o">.</span><span class="n">ujson_loads</span> <span class="o">=</span> <span class="n">_stdlib_loads</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">pass</span>  <span class="c1"># Older datasets versions may not have this module structure</span>
 
     <span class="n">_PATCHED</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Applied datasets JSON workaround: </span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2">=1 &quot;</span> <span class="s2">&quot;(using stdlib json instead of ujson for JSONL parsing).&quot;</span>
+        <span class="sa">f</span><span class="s2">"Applied datasets JSON workaround: </span><span class="si">{</span><span class="n">_ENV_FLAG</span><span class="si">}</span><span class="s2">=1 "</span> <span class="s2">"(using stdlib json instead of ujson for JSONL parsing)."</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span></div>
 

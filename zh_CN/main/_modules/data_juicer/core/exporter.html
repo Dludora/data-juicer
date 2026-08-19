@@ -516,19 +516,21 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">HFDataset</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">HashKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sizes</span><span class="p">,</span> <span class="n">byte_size_to_size_str</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.fs_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_filesystem_for_path</span>
 
 
 <div class="viewcode-block" id="Exporter">
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Exporter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The Exporter class is used to export a dataset to files of specific</span>
-<span class="sd">    format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""The Exporter class is used to export a dataset to files of specific</span>
+<span class="sd">    format."""</span>
 
 <div class="viewcode-block" id="Exporter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.__init__">[文档]</a>
@@ -547,13 +549,13 @@
         <span class="n">encryption_key_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param export_path: the path to export datasets.</span>
 <span class="sd">        :param export_type: the format type of the exported datasets.</span>
 <span class="sd">        :param export_shard_size: the approximate size of each shard of exported</span>
-<span class="sd">            dataset. In default, it&#39;s 0, which means export the dataset</span>
+<span class="sd">            dataset. In default, it's 0, which means export the dataset</span>
 <span class="sd">            to a single file.</span>
 <span class="sd">        :param export_in_parallel: whether to export the datasets in parallel.</span>
 <span class="sd">        :param num_proc: number of process to export the dataset.</span>
@@ -566,12 +568,12 @@
 <span class="sd">        :param encrypt_before_export: whether to encrypt each exported file</span>
 <span class="sd">            in-place immediately after writing. Requires a valid Fernet key</span>
 <span class="sd">            accessible via ``encryption_key_path`` or the environment</span>
-<span class="sd">            variable ``DJ_ENCRYPTION_KEY``. S3 paths are skipped (use S3</span>
-<span class="sd">            SSE instead). Default: False.</span>
+<span class="sd">            variable ``DJ_ENCRYPTION_KEY``. Remote paths (s3://, hdfs://)</span>
+<span class="sd">            are skipped. Default: False.</span>
 <span class="sd">        :param encryption_key_path: path to a file containing the Fernet key.</span>
 <span class="sd">            Falls back to the ``DJ_ENCRYPTION_KEY`` environment variable when</span>
 <span class="sd">            ``None``. Only used when ``encrypt_before_export`` is True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span> <span class="o">=</span> <span class="n">export_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span> <span class="o">=</span> <span class="n">export_shard_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="o">=</span> <span class="n">export_in_parallel</span>
@@ -583,21 +585,21 @@
         <span class="n">support_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">support_dict</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Suffix of export path [</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">] or specified export_type [</span><span class="si">{</span><span class="n">export_type</span><span class="si">}</span><span class="s2">] is not supported &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;for now. Only support </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">support_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Suffix of export path [</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">] or specified export_type [</span><span class="si">{</span><span class="n">export_type</span><span class="si">}</span><span class="s2">] is not supported "</span>
+                <span class="sa">f</span><span class="s2">"for now. Only support </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">support_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="n">num_proc</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span> <span class="o">=</span> <span class="s2">""</span>
 
         <span class="c1"># Set up encryption for local export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="n">encrypt_before_export</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">encrypt_before_export</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="s2">"hdfs"</span><span class="p">):</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s2">&quot;encrypt_before_export is True but export_path is an S3 &quot;</span>
-                    <span class="s2">&quot;path. Local-file encryption is skipped for S3 exports. &quot;</span>
-                    <span class="s2">&quot;Use S3 server-side encryption (SSE) to protect data at rest.&quot;</span>
+                    <span class="s2">"encrypt_before_export is True but export_path is a remote "</span>
+                    <span class="sa">f</span><span class="s2">"path (</span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">). Local-file encryption is skipped. "</span>
+                    <span class="s2">"Use server-side encryption to protect data at rest."</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
@@ -607,19 +609,20 @@
 
         <span class="c1"># Check if export_path is S3 and create storage_options if needed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+        <span class="n">export_scheme</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">"s3"</span><span class="p">:</span>
             <span class="c1"># Extract AWS credentials from kwargs (if provided)</span>
             <span class="n">s3_config</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_access_key_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_secret_access_key&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_session_token&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;aws_region&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;aws_region&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s2">&quot;endpoint_url&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"aws_access_key_id"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_access_key_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"aws_access_key_id"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"aws_secret_access_key"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_secret_access_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"aws_secret_access_key"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"aws_session_token"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"aws_session_token"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"aws_region"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_region"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"aws_region"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"endpoint_url"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">s3_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"endpoint_url"</span><span class="p">)</span>
 
             <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aws_credentials</span>
 
@@ -632,28 +635,40 @@
             <span class="c1"># as it causes issues with AioSession. Region is auto-detected from S3 path.</span>
             <span class="n">storage_options</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">if</span> <span class="n">aws_access_key_id</span><span class="p">:</span>
-                <span class="n">storage_options</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
+                <span class="n">storage_options</span><span class="p">[</span><span class="s2">"key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
             <span class="k">if</span> <span class="n">aws_secret_access_key</span><span class="p">:</span>
-                <span class="n">storage_options</span><span class="p">[</span><span class="s2">&quot;secret&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
+                <span class="n">storage_options</span><span class="p">[</span><span class="s2">"secret"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
             <span class="k">if</span> <span class="n">aws_session_token</span><span class="p">:</span>
-                <span class="n">storage_options</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
-            <span class="k">if</span> <span class="s2">&quot;endpoint_url&quot;</span> <span class="ow">in</span> <span class="n">s3_config</span><span class="p">:</span>
-                <span class="n">storage_options</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span>
+                <span class="n">storage_options</span><span class="p">[</span><span class="s2">"token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
+            <span class="k">if</span> <span class="s2">"endpoint_url"</span> <span class="ow">in</span> <span class="n">s3_config</span><span class="p">:</span>
+                <span class="n">storage_options</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">s3_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span>
 
             <span class="c1"># If no credentials provided, try anonymous access for public buckets</span>
             <span class="c1"># If storage_options is empty, s3fs will use its default credential chain (e.g. IAM role).</span>
-            <span class="k">if</span> <span class="n">storage_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">storage_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;secret&quot;</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using explicit AWS credentials for S3 export&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">storage_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"key"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">storage_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"secret"</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using explicit AWS credentials for S3 export"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using default AWS credential chain for S3 export&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using default AWS credential chain for S3 export"</span><span class="p">)</span>
 
             <span class="c1"># Allow explicit anonymous access via kwargs</span>
-            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;anon&quot;</span><span class="p">):</span>
-                <span class="n">storage_options</span><span class="p">[</span><span class="s2">&quot;anon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Anonymous access for public S3 bucket enabled via config.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"anon"</span><span class="p">):</span>
+                <span class="n">storage_options</span><span class="p">[</span><span class="s2">"anon"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Anonymous access for public S3 bucket enabled via config."</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="n">storage_options</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected S3 export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. S3 storage_options configured.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected S3 export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. S3 storage_options configured."</span><span class="p">)</span>
+
+        <span class="c1"># Check if export_path is HDFS. Wrap PyArrow HadoopFileSystem via</span>
+        <span class="c1"># fsspec ArrowFSWrapper so that dataset.to_json/parquet(path)</span>
+        <span class="c1"># routes through fsspec → Arrow, unifying HDFS with the same</span>
+        <span class="c1"># storage_options path that S3 already uses.</span>
+        <span class="k">if</span> <span class="n">export_scheme</span> <span class="o">==</span> <span class="s2">"hdfs"</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">fsspec.implementations.arrow</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrowFSWrapper</span>
+
+            <span class="n">hdfs_pyarrow_fs</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">create_filesystem_for_path</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">wrapped</span> <span class="o">=</span> <span class="n">ArrowFSWrapper</span><span class="p">(</span><span class="n">hdfs_pyarrow_fs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"filesystem"</span><span class="p">:</span> <span class="n">wrapped</span><span class="p">}</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detected HDFS export path: </span><span class="si">{</span><span class="n">export_path</span><span class="si">}</span><span class="s2">. "</span> <span class="sa">f</span><span class="s2">"ArrowFSWrapper storage_options configured."</span><span class="p">)</span>
 
         <span class="c1"># get the string format of shard size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span> <span class="o">=</span> <span class="n">byte_size_to_size_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span><span class="p">)</span>
@@ -661,39 +676,39 @@
         <span class="c1"># we recommend users to set a shard size between MiB and TiB.</span>
         <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span> <span class="o">&lt;</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">MiB</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The export_shard_size [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">]&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; is less than 1MiB. If the result dataset is too &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;large, there might be too many shard files to &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;generate.&quot;</span>
+                <span class="sa">f</span><span class="s2">"The export_shard_size [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">]"</span>
+                <span class="sa">f</span><span class="s2">" is less than 1MiB. If the result dataset is too "</span>
+                <span class="sa">f</span><span class="s2">"large, there might be too many shard files to "</span>
+                <span class="sa">f</span><span class="s2">"generate."</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span> <span class="o">&gt;=</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">TiB</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The export_shard_size [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">]&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; is larger than 1TiB. It might generate large &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;single shard file and make loading and exporting &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;slower.&quot;</span>
+                <span class="sa">f</span><span class="s2">"The export_shard_size [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">]"</span>
+                <span class="sa">f</span><span class="s2">" is larger than 1TiB. It might generate large "</span>
+                <span class="sa">f</span><span class="s2">"single shard file and make loading and exporting "</span>
+                <span class="sa">f</span><span class="s2">"slower."</span>
             <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the suffix of export path and check if it&#39;s supported.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Get the suffix of export path and check if it's supported.</span>
 
-<span class="sd">        We only support [&quot;jsonl&quot;, &quot;json&quot;, &quot;parquet&quot;] for now.</span>
+<span class="sd">        We only support ["jsonl", "json", "parquet"] for now.</span>
 
 <span class="sd">        :param export_path: the path to export datasets.</span>
 <span class="sd">        :return: the suffix of export_path.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">suffix</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="sd">        """</span>
+        <span class="n">suffix</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">suffix</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_meta_stats_dicts_for_export</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        If __dj__meta__ or __dj__stats__ are stored as JSON strings (e.g. after</span>
 <span class="sd">        Arrow/Ray serialization with ensure_ascii=True), parse them back to dict</span>
 <span class="sd">        so that to_json(force_ascii=False) writes proper UTF-8 instead of \\uXXXX.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">meta_key</span> <span class="o">=</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span>
         <span class="n">stats_key</span> <span class="o">=</span> <span class="n">Fields</span><span class="o">.</span><span class="n">stats</span>
         <span class="n">columns_to_fix</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">[</span><span class="n">meta_key</span><span class="p">,</span> <span class="n">stats_key</span><span class="p">]</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">column_names</span><span class="p">]</span>
@@ -712,17 +727,17 @@
                         <span class="k">pass</span>
             <span class="k">return</span> <span class="n">out</span>
 
-        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_parse_if_string</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Preparing meta/stats for UTF-8 export&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_parse_if_string</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Preparing meta/stats for UTF-8 export"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_encrypt_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encrypt a local file in-place if encrypt_before_export is enabled.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Encrypt a local file in-place if encrypt_before_export is enabled."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">encrypt_before_export</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.encryption_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">encrypt_file</span>
 
             <span class="n">encrypt_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fernet</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_export_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="n">suffix</span><span class="p">,</span> <span class="n">export_stats</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export a dataset to specific path.</span>
 
 <span class="sd">        :param dataset: the dataset to export.</span>
@@ -730,10 +745,10 @@
 <span class="sd">        :param suffix: suffix of export path.</span>
 <span class="sd">        :param export_stats: whether to export stats of dataset.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">export_stats</span><span class="p">:</span>
             <span class="c1"># export stats of datasets into a single file.</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting computed stats into a single file...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Exporting computed stats into a single file..."</span><span class="p">)</span>
             <span class="n">export_columns</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">stats</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
                 <span class="n">export_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span>
@@ -744,11 +759,11 @@
                 <span class="c1"># If meta/stats were serialized as JSON strings (e.g. \\uXXXX),</span>
                 <span class="c1"># parse back to dict so to_json(force_ascii=False) writes UTF-8.</span>
                 <span class="n">ds_stats</span> <span class="o">=</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_ensure_meta_stats_dicts_for_export</span><span class="p">(</span><span class="n">ds_stats</span><span class="p">)</span>
-                <span class="n">stats_file</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;_stats.jsonl&quot;</span><span class="p">)</span>
-                <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="c1"># Add storage_options if available (for S3 export)</span>
+                <span class="n">stats_file</span> <span class="o">=</span> <span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"."</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s2">"_stats.jsonl"</span><span class="p">)</span>
+                <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"num_proc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
+                <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
+                    <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">"storage_options"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                 <span class="n">Exporter</span><span class="o">.</span><span class="n">to_jsonl</span><span class="p">(</span><span class="n">ds_stats</span><span class="p">,</span> <span class="n">stats_file</span><span class="p">,</span> <span class="o">**</span><span class="n">export_kwargs</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_encrypt_local_file</span><span class="p">(</span><span class="n">stats_file</span><span class="p">)</span>
 
@@ -773,11 +788,11 @@
             <span class="n">export_method</span> <span class="o">=</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_router</span><span class="p">()[</span><span class="n">suffix</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_shard_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># export the whole dataset into one single file.</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Export dataset into a single file...&quot;</span><span class="p">)</span>
-                <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
-                <span class="c1"># Add storage_options if available (for S3 export)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Export dataset into a single file..."</span><span class="p">)</span>
+                <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"num_proc"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_in_parallel</span> <span class="k">else</span> <span class="mi">1</span><span class="p">}</span>
+                <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
+                    <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">"storage_options"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                 <span class="n">export_method</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="o">**</span><span class="n">export_kwargs</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_encrypt_local_file</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -791,52 +806,68 @@
 
                 <span class="c1"># split the dataset into multiple shards</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Split the dataset to export into </span><span class="si">{</span><span class="n">num_shards</span><span class="si">}</span><span class="s2"> &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;shards. Size of each shard &lt;= &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Split the dataset to export into </span><span class="si">{</span><span class="n">num_shards</span><span class="si">}</span><span class="s2"> "</span>
+                    <span class="sa">f</span><span class="s2">"shards. Size of each shard &lt;= "</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_shard_size_str</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
                 <span class="n">shards</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">shard</span><span class="p">(</span><span class="n">num_shards</span><span class="o">=</span><span class="n">num_shards</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">contiguous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)]</span>
                 <span class="n">len_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num_shards</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">num_fmt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;%0</span><span class="si">{</span><span class="n">len_num</span><span class="si">}</span><span class="s2">d&quot;</span>
+                <span class="n">num_fmt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"%0</span><span class="si">{</span><span class="n">len_num</span><span class="si">}</span><span class="s2">d"</span>
 
                 <span class="c1"># regard the export path as a directory and set file names for</span>
                 <span class="c1"># each shard</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"s3"</span><span class="p">:</span>
                     <span class="c1"># For S3 paths, construct S3 paths for each shard</span>
-                    <span class="c1"># Extract bucket and prefix from S3 path</span>
-                    <span class="n">s3_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># Extract bucket and prefix from S3 path (strip the</span>
+                    <span class="c1"># scheme case-insensitively).</span>
+                    <span class="n">s3_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"://"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                     <span class="n">bucket</span> <span class="o">=</span> <span class="n">s3_path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">prefix</span> <span class="o">=</span> <span class="n">s3_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s3_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="n">s3_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s3_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
                     <span class="c1"># Remove extension from prefix</span>
-                    <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
-                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
+                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">prefix_base</span> <span class="o">=</span> <span class="n">prefix</span>
                     <span class="c1"># Construct shard filenames</span>
                     <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="sa">f</span><span class="s2">&quot;s3://</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"s3://</span><span class="si">{</span><span class="n">bucket</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span>
+                        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="k">elif</span> <span class="n">urlparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">scheme</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"hdfs"</span><span class="p">:</span>
+                    <span class="c1"># For HDFS paths, construct HDFS URIs for each shard</span>
+                    <span class="c1"># (same pattern as S3; strip the scheme case-insensitively).</span>
+                    <span class="n">hdfs_path_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"://"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">authority</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">prefix</span> <span class="o">=</span> <span class="n">hdfs_path_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hdfs_path_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
+                    <span class="c1"># Remove extension from prefix</span>
+                    <span class="k">if</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">prefix</span><span class="p">:</span>
+                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">prefix_base</span> <span class="o">=</span> <span class="n">prefix</span>
+                    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="sa">f</span><span class="s2">"hdfs://</span><span class="si">{</span><span class="n">authority</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">prefix_base</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span>
                         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
                     <span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># For local paths, use standard directory structure</span>
                     <span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">))</span>
-                    <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                            <span class="n">dirname</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="n">dirname</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">basename</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">index</span><span class="si">}</span><span class="s2">-of-"</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">num_fmt</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">num_shards</span><span class="si">}</span><span class="s2">"</span> <span class="sa">f</span><span class="s2">".</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">"</span>
                         <span class="p">)</span>
                         <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">)</span>
                     <span class="p">]</span>
 
                 <span class="c1"># export dataset into multiple shards using multiprocessing</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start to exporting to </span><span class="si">{</span><span class="n">num_shards</span><span class="si">}</span><span class="s2"> shards.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Start to exporting to </span><span class="si">{</span><span class="n">num_shards</span><span class="si">}</span><span class="s2"> shards."</span><span class="p">)</span>
                 <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_shards</span><span class="p">):</span>
-                    <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># Each shard export uses single process</span>
-                    <span class="c1"># Add storage_options if available (for S3 export)</span>
+                    <span class="n">export_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"num_proc"</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>  <span class="c1"># Each shard export uses single process</span>
+                    <span class="c1"># Add storage_options if available (for S3/HDFS export)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">&quot;storage_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
+                        <span class="n">export_kwargs</span><span class="p">[</span><span class="s2">"storage_options"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage_options</span>
                     <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
                         <span class="n">export_method</span><span class="p">,</span>
                         <span class="n">args</span><span class="o">=</span><span class="p">(</span>
@@ -854,21 +885,21 @@
 <div class="viewcode-block" id="Exporter.export">
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.export">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export method for a dataset.</span>
 
 <span class="sd">        :param dataset: the dataset to export.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_impl</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_stats</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Exporter.export_compute_stats">
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.export_compute_stats">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">export_compute_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export method for saving compute status in filters</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">keep_stats_in_res_ds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_stats_in_res_ds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_stats_in_res_ds</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_impl</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="p">,</span> <span class="n">export_stats</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -877,32 +908,32 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_row_to_json_serializable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a row or value to JSON-serializable form; keep Unicode as-is.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert a row or value to JSON-serializable form; keep Unicode as-is."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_row_to_json_serializable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">Exporter</span><span class="o">.</span><span class="n">_row_to_json_serializable</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">):</span>  <span class="c1"># numpy scalar</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"item"</span><span class="p">):</span>  <span class="c1"># numpy scalar</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;tolist&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"tolist"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;as_py&quot;</span><span class="p">):</span>  <span class="c1"># pyarrow scalar</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"as_py"</span><span class="p">):</span>  <span class="c1"># pyarrow scalar</span>
             <span class="k">return</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_row_to_json_serializable</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">as_py</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_write_jsonl_utf8</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="n">storage_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Write dataset to JSONL with UTF-8 text (no \\uXXXX escape).</span>
-<span class="sd">        HuggingFace&#39;s to_json(force_ascii=False) can still escape in some paths;</span>
+<span class="sd">        HuggingFace's to_json(force_ascii=False) can still escape in some paths;</span>
 <span class="sd">        we iterate and use json.dumps(ensure_ascii=False) per row.</span>
 <span class="sd">        Use HFDataset.__getitem__ to get raw batch (avoid NestedQueryDict wrapping</span>
 <span class="sd">        which fails on None in list columns e.g. response_usage).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1000</span>
         <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">export_path</span><span class="p">)),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
                 <span class="n">batch</span> <span class="o">=</span> <span class="n">HFDataset</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
@@ -911,17 +942,17 @@
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]])):</span>
                         <span class="n">row</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">batch</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
                         <span class="n">row</span> <span class="o">=</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_row_to_json_serializable</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">:</span>
                         <span class="n">row</span> <span class="o">=</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">_row_to_json_serializable</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Exporter.to_jsonl">
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.to_jsonl">[文档]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_jsonl</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export method for jsonl target files.</span>
 
 <span class="sd">        :param dataset: the dataset to export.</span>
@@ -929,11 +960,11 @@
 <span class="sd">        :param num_proc: the number of processes used to export the dataset.</span>
 <span class="sd">        :param kwargs: extra arguments.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Use custom UTF-8 writer so all text (e.g. text, meta, dialog_history)</span>
         <span class="c1"># is written as UTF-8, not \\uXXXX. HF to_json(force_ascii=False) can still</span>
         <span class="c1"># escape in batch/multiproc paths.</span>
-        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_options&quot;</span><span class="p">)</span>
+        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"storage_options"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># S3 or custom storage: fall back to HF to_json</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">force_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">storage_options</span><span class="o">=</span><span class="n">storage_options</span><span class="p">)</span>
@@ -945,7 +976,7 @@
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.to_json">[文档]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export method for json target files.</span>
 
 <span class="sd">        :param dataset: the dataset to export.</span>
@@ -953,9 +984,9 @@
 <span class="sd">        :param num_proc: the number of processes used to export the dataset.</span>
 <span class="sd">        :param kwargs: extra arguments.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Add storage_options if provided (for S3 export)</span>
-        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_options&quot;</span><span class="p">)</span>
+        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"storage_options"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span>
                 <span class="n">export_path</span><span class="p">,</span> <span class="n">force_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">storage_options</span><span class="o">=</span><span class="n">storage_options</span>
@@ -968,16 +999,16 @@
 <a class="viewcode-back" href="../../../api/data_juicer.core.exporter.html#data_juicer.core.Exporter.to_parquet">[文档]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_parquet</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">export_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Export method for parquet target files.</span>
 
 <span class="sd">        :param dataset: the dataset to export.</span>
 <span class="sd">        :param export_path: the path to store the exported dataset.</span>
 <span class="sd">        :param kwargs: extra arguments.</span>
 <span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Add storage_options if provided (for S3 export)</span>
-        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storage_options&quot;</span><span class="p">)</span>
+        <span class="n">storage_options</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"storage_options"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">storage_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="n">storage_options</span><span class="o">=</span><span class="n">storage_options</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -987,15 +1018,15 @@
     <span class="c1"># suffix to export method</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_router</span><span class="p">():</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        A router from different suffixes to corresponding export methods.</span>
 
 <span class="sd">        :return: A dict router.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;jsonl&quot;</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_jsonl</span><span class="p">,</span>
-            <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_json</span><span class="p">,</span>
-            <span class="s2">&quot;parquet&quot;</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">,</span>
+            <span class="s2">"jsonl"</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_jsonl</span><span class="p">,</span>
+            <span class="s2">"json"</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_json</span><span class="p">,</span>
+            <span class="s2">"parquet"</span><span class="p">:</span> <span class="n">Exporter</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 </pre></div>

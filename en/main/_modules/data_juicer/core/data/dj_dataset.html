@@ -545,45 +545,45 @@
 <div class="viewcode-block" id="DJDataset">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DJDataset</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base dataset of DJ&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base dataset of DJ"""</span>
 
 <div class="viewcode-block" id="DJDataset.process">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.process">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operators</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exporter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkpointer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracer</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DJDataset</span><span class="p">:</span>  <span class="c1"># TODO: add type hint</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;process a list of operators on the dataset.&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">"""process a list of operators on the dataset."""</span></div>
 
 
 <div class="viewcode-block" id="DJDataset.schema">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.schema">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Schema</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dataset schema.</span>
+<span class="w">        </span><span class="sd">"""Get dataset schema.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Schema: Dataset schema containing column names and types</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="DJDataset.get">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.get">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get k rows from the dataset.</span>
+<span class="w">        </span><span class="sd">"""Get k rows from the dataset.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            k: Number of rows to take</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Any]: A list of rows from the dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="DJDataset.get_column">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.get_column">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get values from a specific column/field, optionally limited to first k rows.</span>
+<span class="w">        </span><span class="sd">"""Get values from a specific column/field, optionally limited to first k rows.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            column: Name of the column to retrieve</span>
@@ -593,29 +593,29 @@
 <span class="sd">            List of values from the specified column</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            KeyError: If column doesn&#39;t exist in dataset</span>
+<span class="sd">            KeyError: If column doesn't exist in dataset</span>
 <span class="sd">            ValueError: If k is negative</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 
 <div class="viewcode-block" id="DJDataset.to_list">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.to_list">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the current dataset to a Python list.&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">"""Convert the current dataset to a Python list."""</span></div>
 
 
 <div class="viewcode-block" id="DJDataset.contain_column">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.contain_column">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">contain_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether the dataset contains a specific column/field.</span>
+<span class="w">        </span><span class="sd">"""Check whether the dataset contains a specific column/field.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            column: Name of the column to check</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the dataset contains the column, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span></div>
 
 
@@ -623,7 +623,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.DJDataset.count">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;return the count of the dataset&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">"""return the count of the dataset"""</span></div>
 </div>
 
 
@@ -631,13 +631,13 @@
 <div class="viewcode-block" id="wrap_func_with_nested_access">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.wrap_func_with_nested_access">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Before conducting actual function `f`, wrap its args and kargs into nested</span>
 <span class="sd">    ones.</span>
 
 <span class="sd">    :param f: function to be wrapped.</span>
 <span class="sd">    :return: wrapped function</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">wrap_nested_structure</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
         <span class="n">wrapped_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
@@ -660,12 +660,12 @@
 <div class="viewcode-block" id="nested_obj_factory">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.nested_obj_factory">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nested_obj_factory</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Use nested classes to wrap the input object.</span>
 
 <span class="sd">    :param obj: object to be nested.</span>
 <span class="sd">    :return: nested object</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">DatasetDict</span><span class="p">):</span>
@@ -685,7 +685,7 @@
 <div class="viewcode-block" id="NestedQueryDict">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedQueryDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NestedQueryDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enhanced dict for better usability.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Enhanced dict for better usability."""</span>
 
 <div class="viewcode-block" id="NestedQueryDict.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedQueryDict.__init__">[docs]</a>
@@ -711,7 +711,7 @@
 <div class="viewcode-block" id="NestedDatasetDict">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDatasetDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NestedDatasetDict</span><span class="p">(</span><span class="n">DatasetDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enhanced HuggingFace-DatasetDict for better usability and efficiency.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Enhanced HuggingFace-DatasetDict for better usability and efficiency."""</span>
 
 <div class="viewcode-block" id="NestedDatasetDict.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDatasetDict.__init__">[docs]</a>
@@ -730,12 +730,12 @@
 <div class="viewcode-block" id="NestedDatasetDict.map">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDatasetDict.map">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the map func, which is called by most common operations,</span>
-<span class="sd">        such that the processed samples can be accessed by nested manner.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Override the map func, which is called by most common operations,</span>
+<span class="sd">        such that the processed samples can be accessed by nested manner."""</span>
+        <span class="k">if</span> <span class="s2">"function"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">args</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">])</span>
+            <span class="n">args</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">"function"</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span></div>
 </div>
@@ -745,7 +745,7 @@
 <div class="viewcode-block" id="NestedDataset">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NestedDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">DJDataset</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enhanced HuggingFace-Dataset for better usability and efficiency.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Enhanced HuggingFace-Dataset for better usability and efficiency."""</span>
 
 <div class="viewcode-block" id="NestedDataset.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.__init__">[docs]</a>
@@ -773,7 +773,7 @@
 <div class="viewcode-block" id="NestedDataset.schema">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.schema">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">schema</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Schema</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get dataset schema.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get dataset schema."""</span>
         <span class="c1"># Get features dictionary from HF dataset</span>
         <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span>
 
@@ -783,9 +783,9 @@
 <div class="viewcode-block" id="NestedDataset.get">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.get">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get k rows from the dataset.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get k rows from the dataset."""</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k must be non-negative, got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"k must be non-negative, got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -797,7 +797,7 @@
 <div class="viewcode-block" id="NestedDataset.get_column">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.get_column">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get column values from HuggingFace dataset.</span>
+<span class="w">        </span><span class="sd">"""Get column values from HuggingFace dataset.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            column: Name of the column to retrieve</span>
@@ -807,15 +807,15 @@
 <span class="sd">            List of values from the specified column</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            KeyError: If column doesn&#39;t exist</span>
+<span class="sd">            KeyError: If column doesn't exist</span>
 <span class="sd">            ValueError: If k is negative</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in dataset&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Column '</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">' not found in dataset"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;k must be non-negative, got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"k must be non-negative, got </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">[]</span>
             <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
@@ -855,22 +855,22 @@
         <span class="n">enable_insight_mining</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">enable_insight_mining</span> <span class="k">if</span> <span class="n">adapter</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="c1"># record the analysis results of the original dataset</span>
         <span class="k">if</span> <span class="n">enable_insight_mining</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analyze small batch for the original dataset for &quot;</span> <span class="s2">&quot;insight mining...&quot;</span><span class="p">)</span>
-            <span class="n">adapter</span><span class="o">.</span><span class="n">analyze_small_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;0_original&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Analyze small batch for the original dataset for "</span> <span class="s2">"insight mining..."</span><span class="p">)</span>
+            <span class="n">adapter</span><span class="o">.</span><span class="n">analyze_small_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"0_original"</span><span class="p">)</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">op_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">operators</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operators</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-                <span class="n">mp_context</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;forkserver&quot;</span><span class="p">,</span> <span class="s2">&quot;spawn&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="ow">or</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="n">unforkable_operators</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="n">mp_context</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"forkserver"</span><span class="p">,</span> <span class="s2">"spawn"</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="ow">or</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="n">unforkable_operators</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
                 <span class="n">setup_mp</span><span class="p">(</span><span class="n">mp_context</span><span class="p">)</span>
 
                 <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
                 <span class="c1"># run single op</span>
                 <span class="n">run_args</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">dataset</span><span class="p">,</span>
-                    <span class="s2">&quot;exporter&quot;</span><span class="p">:</span> <span class="n">exporter</span><span class="p">,</span>
-                    <span class="s2">&quot;tracer&quot;</span><span class="p">:</span> <span class="n">tracer</span><span class="p">,</span>
+                    <span class="s2">"dataset"</span><span class="p">:</span> <span class="n">dataset</span><span class="p">,</span>
+                    <span class="s2">"exporter"</span><span class="p">:</span> <span class="n">exporter</span><span class="p">,</span>
+                    <span class="s2">"tracer"</span><span class="p">:</span> <span class="n">tracer</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">if</span> <span class="n">open_monitor</span><span class="p">:</span>
                     <span class="n">dataset</span><span class="p">,</span> <span class="n">resource_util_per_op</span> <span class="o">=</span> <span class="n">Monitor</span><span class="o">.</span><span class="n">monitor_func</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">run</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">run_args</span><span class="p">)</span>
@@ -883,35 +883,35 @@
                     <span class="n">resource_util_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resource_util_per_op</span><span class="p">)</span>
                 <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">op_num</span><span class="si">}</span><span class="s2">] OP [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] Done in &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s. Left </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">op_num</span><span class="si">}</span><span class="s2">] OP [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] Done in "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s. Left </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples."</span>
                 <span class="p">)</span>
 
                 <span class="c1"># record the analysis results of the current dataset</span>
                 <span class="k">if</span> <span class="n">enable_insight_mining</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Analyze small batch for the current dataset after &quot;</span> <span class="sa">f</span><span class="s2">&quot;OP [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] for insight mining...&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Analyze small batch for the current dataset after "</span> <span class="sa">f</span><span class="s2">"OP [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">] for insight mining..."</span>
                     <span class="p">)</span>
-                    <span class="n">adapter</span><span class="o">.</span><span class="n">analyze_small_batch</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">adapter</span><span class="o">.</span><span class="n">analyze_small_batch</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred during Op [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">].&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">"An error occurred during Op [</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">]."</span><span class="p">)</span>
             <span class="k">raise</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">checkpointer</span> <span class="ow">and</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Writing checkpoint of dataset processed by &quot;</span> <span class="s2">&quot;last op...&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Writing checkpoint of dataset processed by "</span> <span class="s2">"last op..."</span><span class="p">)</span>
                 <span class="n">dataset</span><span class="o">.</span><span class="n">cleanup_cache_files</span><span class="p">()</span>
                 <span class="n">checkpointer</span><span class="o">.</span><span class="n">save_ckpt</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
             <span class="c1"># make summarization on the monitor results</span>
             <span class="k">if</span> <span class="n">work_dir</span> <span class="ow">and</span> <span class="n">open_monitor</span><span class="p">:</span>
                 <span class="c1"># get the analyzed version</span>
                 <span class="n">resource_util_list</span> <span class="o">=</span> <span class="n">Monitor</span><span class="o">.</span><span class="n">analyze_resource_util_list</span><span class="p">(</span><span class="n">resource_util_list</span><span class="p">)</span>
-                <span class="n">monitor_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">&quot;monitor&quot;</span><span class="p">)</span>
+                <span class="n">monitor_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">"monitor"</span><span class="p">)</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">monitor_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">monitor_dir</span><span class="p">,</span> <span class="s2">&quot;monitor.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">monitor_dir</span><span class="p">,</span> <span class="s2">"monitor.json"</span><span class="p">),</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
                     <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">resource_util_list</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
                 <span class="n">Monitor</span><span class="o">.</span><span class="n">draw_resource_util_graph</span><span class="p">(</span><span class="n">resource_util_list</span><span class="p">,</span> <span class="n">monitor_dir</span><span class="p">)</span>
             <span class="c1"># make summarization on the insight mining results</span>
             <span class="k">if</span> <span class="n">work_dir</span> <span class="ow">and</span> <span class="n">enable_insight_mining</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Insight mining for each OP...&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Insight mining for each OP..."</span><span class="p">)</span>
                 <span class="n">adapter</span><span class="o">.</span><span class="n">insight_mining</span><span class="p">()</span>
             <span class="c1"># make summarization on the error/warning logs</span>
             <span class="k">if</span> <span class="n">work_dir</span><span class="p">:</span>
@@ -919,7 +919,7 @@
                     <span class="n">make_log_summarization</span><span class="p">()</span>
                 <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa: E722</span>
                     <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error occurred when making log summarization&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error occurred when making log summarization"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span></div>
 
 
@@ -941,38 +941,38 @@
                 <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">called_func</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="ow">or</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">"function"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="ow">or</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">])</span>
-            <span class="n">called_func</span> <span class="o">=</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;function&quot;</span><span class="p">]</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span> <span class="o">=</span> <span class="n">wrap_func_with_nested_access</span><span class="p">(</span><span class="n">kargs</span><span class="p">[</span><span class="s2">"function"</span><span class="p">])</span>
+            <span class="n">called_func</span> <span class="o">=</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"function"</span><span class="p">]</span>
 
         <span class="c1"># For wrapped function, try to get its unwrapped (bound) method</span>
-        <span class="k">while</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">called_func</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">called_func</span><span class="p">,</span> <span class="s2">&quot;__wrapped__&quot;</span><span class="p">):</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">called_func</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">called_func</span><span class="p">,</span> <span class="s2">"__wrapped__"</span><span class="p">):</span>
             <span class="n">called_func</span> <span class="o">=</span> <span class="n">called_func</span><span class="o">.</span><span class="n">__wrapped__</span>
 
         <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">called_func</span><span class="p">):</span>
             <span class="c1"># batched is required for fault-tolerant or batched OP</span>
-            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">&quot;is_batched_op&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">is_batched_op</span><span class="p">():</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;batched&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;batch_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;batch_size&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">&quot;turbo&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;batched&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;batch_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">"is_batched_op"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">is_batched_op</span><span class="p">():</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"batched"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"batch_size"</span><span class="p">]</span> <span class="o">=</span> <span class="n">kargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"batch_size"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">"turbo"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"batched"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"batch_size"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;batched&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"batched"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># rank is required for cuda model loading for map</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="ow">not</span> <span class="n">is_filter</span>
-                <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">&quot;use_cuda&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="s2">"use_cuda"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
                 <span class="ow">and</span> <span class="n">called_func</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span>
             <span class="p">):</span>
-                <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;with_rank&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">kargs</span><span class="p">[</span><span class="s2">"with_rank"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">if</span> <span class="s2">&quot;new_fingerprint&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="ow">or</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;new_fingerprint&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"new_fingerprint"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="ow">or</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"new_fingerprint"</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_fingerprint</span> <span class="o">=</span> <span class="n">generate_fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
-            <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;new_fingerprint&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_fingerprint</span>
+            <span class="n">kargs</span><span class="p">[</span><span class="s2">"new_fingerprint"</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_fingerprint</span>
 
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kargs</span></div>
 
@@ -980,18 +980,18 @@
 <div class="viewcode-block" id="NestedDataset.map">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.map">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the map func, which is called by most common operations,</span>
-<span class="sd">        such that the processed samples can be accessed by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the map func, which is called by most common operations,</span>
+<span class="sd">        such that the processed samples can be accessed by nested manner."""</span>
 
         <span class="n">args</span><span class="p">,</span> <span class="n">kargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span><span class="p">:</span>
-            <span class="n">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;new_fingerprint&quot;</span><span class="p">],</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;num_proc&quot;</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"new_fingerprint"</span><span class="p">],</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"num_proc"</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="n">new_ds</span> <span class="o">=</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span><span class="p">:</span>
-            <span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;num_proc&quot;</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"num_proc"</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_to_cleanup_caches</span><span class="p">:</span>
             <span class="n">new_ds</span><span class="o">.</span><span class="n">cleanup_cache_files</span><span class="p">()</span>
@@ -1002,8 +1002,8 @@
 <div class="viewcode-block" id="NestedDataset.filter">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.filter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the filter func, which is called by most common operations,</span>
-<span class="sd">        such that the processed samples can be accessed by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the filter func, which is called by most common operations,</span>
+<span class="sd">        such that the processed samples can be accessed by nested manner."""</span>
         <span class="n">args</span><span class="p">,</span> <span class="n">kargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kargs</span><span class="p">,</span> <span class="n">is_filter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># For filter, it involves a map and a filter operations, so the final</span>
@@ -1012,7 +1012,7 @@
         <span class="c1"># files</span>
         <span class="k">if</span> <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span><span class="p">:</span>
             <span class="n">decompress</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;new_fingerprint&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fingerprint</span><span class="p">],</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;num_proc&quot;</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="n">kargs</span><span class="p">[</span><span class="s2">"new_fingerprint"</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fingerprint</span><span class="p">],</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"num_proc"</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span>
             <span class="p">)</span>
 
         <span class="c1"># Turn off the compression due to it invokes map actually in the filter</span>
@@ -1027,7 +1027,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">need_to_cleanup_caches</span> <span class="o">=</span> <span class="n">prev_state</span>
 
         <span class="k">if</span> <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span><span class="p">:</span>
-            <span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">&quot;num_proc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;num_proc&quot;</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_ds</span><span class="p">,</span> <span class="n">kargs</span><span class="p">[</span><span class="s2">"num_proc"</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"num_proc"</span> <span class="ow">in</span> <span class="n">kargs</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_to_cleanup_caches</span><span class="p">:</span>
             <span class="n">new_ds</span><span class="o">.</span><span class="n">cleanup_cache_files</span><span class="p">()</span>
@@ -1038,8 +1038,8 @@
 <div class="viewcode-block" id="NestedDataset.select">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.select">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the select func, such that selected samples can be accessed</span>
-<span class="sd">        by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the select func, such that selected samples can be accessed</span>
+<span class="sd">        by nested manner."""</span>
         <span class="k">return</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
@@ -1053,9 +1053,9 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.from_dict">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the from_dict func, which is called by most from_xx</span>
+<span class="w">        </span><span class="sd">"""Override the from_dict func, which is called by most from_xx</span>
 <span class="sd">        constructors, such that the constructed dataset object is</span>
-<span class="sd">        NestedDataset.&quot;&quot;&quot;</span>
+<span class="sd">        NestedDataset."""</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
@@ -1063,41 +1063,41 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.from_list">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the from_dict func, which is called by most from_xx</span>
+<span class="w">        </span><span class="sd">"""Override the from_dict func, which is called by most from_xx</span>
 <span class="sd">        constructors, such that the constructed dataset object is</span>
-<span class="sd">        NestedDataset.&quot;&quot;&quot;</span>
+<span class="sd">        NestedDataset."""</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="NestedDataset.add_column">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.add_column">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the add column func, such that the processed samples</span>
-<span class="sd">        can be accessed by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the add column func, such that the processed samples</span>
+<span class="sd">        can be accessed by nested manner."""</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="NestedDataset.select_columns">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.select_columns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">select_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the select columns func, such that the processed samples</span>
-<span class="sd">        can be accessed by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the select columns func, such that the processed samples</span>
+<span class="sd">        can be accessed by nested manner."""</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">select_columns</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="NestedDataset.remove_columns">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.remove_columns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the remove columns func, such that the processed samples</span>
-<span class="sd">        can be accessed by nested manner.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the remove columns func, such that the processed samples</span>
+<span class="sd">        can be accessed by nested manner."""</span>
         <span class="k">return</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="NestedDataset.cleanup_cache_files">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.NestedDataset.cleanup_cache_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_cache_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the cleanup_cache_files func, clear raw and compressed</span>
-<span class="sd">        cache files.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Override the cleanup_cache_files func, clear raw and compressed</span>
+<span class="sd">        cache files."""</span>
         <span class="n">cleanup_compressed_cache_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">cleanup_cache_files</span><span class="p">()</span></div>
 
@@ -1114,23 +1114,23 @@
 <div class="viewcode-block" id="nested_query">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.nested_query">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">nested_query</span><span class="p">(</span><span class="n">root_obj</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">NestedDatasetDict</span><span class="p">,</span> <span class="n">NestedDataset</span><span class="p">,</span> <span class="n">NestedQueryDict</span><span class="p">],</span> <span class="n">key</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find item from a given object, by first checking flatten layer, then</span>
 <span class="sd">    checking nested layers.</span>
 
 <span class="sd">    :param root_obj: the object</span>
-<span class="sd">    :param key: the stored item to be queried, e.g., &quot;meta&quot; or</span>
-<span class="sd">        &quot;meta.date&quot;</span>
+<span class="sd">    :param key: the stored item to be queried, e.g., "meta" or</span>
+<span class="sd">        "meta.date"</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subkeys</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">subkeys</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
 
     <span class="n">tmp</span> <span class="o">=</span> <span class="n">root_obj</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">subkeys</span><span class="p">)):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">key_to_query</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">subkeys</span><span class="p">)])</span>
+            <span class="n">key_to_query</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">subkeys</span><span class="p">)])</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="p">(</span><span class="n">NestedQueryDict</span><span class="p">,</span> <span class="n">NestedDataset</span><span class="p">,</span> <span class="n">NestedDatasetDict</span><span class="p">)):</span>
-                <span class="c1"># access field using base_class&#39;s func to avoid endless loop</span>
+                <span class="c1"># access field using base_class's func to avoid endless loop</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">tmp</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key_to_query</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="c1"># NestedDataset may return multiple rows as list</span>
@@ -1141,20 +1141,20 @@
             <span class="k">if</span> <span class="n">res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">res</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">outer_get_error</span><span class="p">:</span>
-            <span class="n">exist_in_dict</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">tmp</span>
-            <span class="n">exist_in_dataset</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">Dataset</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">features</span>
+            <span class="n">exist_in_dict</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">tmp</span>
+            <span class="n">exist_in_dataset</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="n">Dataset</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">features</span>
             <span class="k">if</span> <span class="n">exist_in_dict</span> <span class="ow">or</span> <span class="n">exist_in_dataset</span><span class="p">:</span>
                 <span class="c1"># dive into next level</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])])</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">nested_obj_factory</span><span class="p">(</span><span class="n">tmp</span><span class="p">[</span><span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subkeys</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Local import to avoid logger being serialized in multiprocessing</span>
                 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;cannot find item given key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> in dataset=&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">root_obj</span><span class="si">}</span><span class="s2">. For the final caught outer-exception,&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;type is: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">outer_get_error</span><span class="p">)</span><span class="si">}</span><span class="s2">, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;info is: </span><span class="si">{</span><span class="n">outer_get_error</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"cannot find item given key=</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> in dataset="</span>
+                    <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">root_obj</span><span class="si">}</span><span class="s2">. For the final caught outer-exception,"</span>
+                    <span class="sa">f</span><span class="s2">"type is: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">outer_get_error</span><span class="p">)</span><span class="si">}</span><span class="s2">, "</span>
+                    <span class="sa">f</span><span class="s2">"info is: </span><span class="si">{</span><span class="n">outer_get_error</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
@@ -1165,13 +1165,13 @@
 <div class="viewcode-block" id="add_same_content_to_new_column">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.data.dj_dataset.html#data_juicer.core.add_same_content_to_new_column">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_same_content_to_new_column</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">new_column_name</span><span class="p">,</span> <span class="n">initial_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A helper function to speed up add_column function. Apply map on this</span>
 <span class="sd">    function in parallel instead of using add_column.</span>
 <span class="sd">    :param sample: a single sample to add this new column/field.</span>
 <span class="sd">    :param new_column_name: the name of this new column/field.</span>
 <span class="sd">    :param initial_value: the initial value of this new column/field.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">sample</span><span class="p">[</span><span class="n">new_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">initial_value</span>
     <span class="k">return</span> <span class="n">sample</span></div>
 

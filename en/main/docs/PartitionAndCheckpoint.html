@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Data Tracing" href="Tracing.html" />
-    <link rel="prev" title="Job Management" href="JobManagement.html" />
+    <link rel="prev" title="Operator Plugins" href="OperatorPlugins.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -612,6 +617,8 @@
 ├── events_{timestamp}.jsonl      # Machine-readable event log
 ├── dag_execution_plan.json       # DAG execution plan
 ├── checkpoints/                  # Checkpoint data
+│   ├── partitioning_info.json    # Saved row boundaries and partition hashes
+│   └── checkpoint_op_*.parquet/  # Per-operation partition checkpoints
 ├── partitions/                   # Input partitions
 ├── logs/                         # Human-readable logs
 └── metadata/                     # Job metadata
@@ -626,7 +633,8 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ray_partitioned</span>
 
 <span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span><span class="w">  </span><span class="c1"># Resource-aware driver concurrency</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">    </span><span class="c1"># Target partition size (128, 256, 512, or 1024)</span>
 <span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">             </span><span class="c1"># Fallback if auto-analysis fails</span>
 <span class="w">  </span><span class="nt">max_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">       </span><span class="c1"># Fallback max size</span>
@@ -634,10 +642,17 @@
 </div>
 <p><strong>Manual mode</strong> - specify exact partition count:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;manual&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"manual"</span>
 <span class="w">  </span><span class="nt">num_of_partitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">max_concurrent_partitions:</span> <span class="pre">&quot;auto&quot;</span></code> is the default. It is resolved after
+operator resource planning: GPU pipelines use the tightest CPU/GPU worker
+capacity reported by the Ray cluster, while CPU-only pipelines use a
+conservative outer-pipeline cap of 4. The actual concurrency is also bounded by
+the partition count and any explicit global actor <code class="docutils literal notranslate"><span class="pre">num_proc</span></code> budget. Set a
+positive integer to override the automatic limit.</p>
 </section>
 <section id="checkpointing">
 <h3>Checkpointing<a class="headerlink" href="#checkpointing" title="Link to this heading">#</a></h3>
@@ -650,14 +665,27 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedding_mapper</span>
 </pre></div>
 </div>
+<p>When checkpointing is enabled, the initial run saves
+<code class="docutils literal notranslate"><span class="pre">checkpoints/partitioning_info.json</span></code>. For every logical partition, this file
+records:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_row</span></code> (inclusive) and <code class="docutils literal notranslate"><span class="pre">end_row</span></code> (exclusive) in the ordered input;</p></li>
+<li><p>the partition row count;</p></li>
+<li><p>a stable hash of the complete partition contents;</p></li>
+<li><p>the partition hash algorithm used by the writer.</p></li>
+</ul>
+<p>These values allow an explicit resume to recreate the original logical
+partitions even when Ray produces a different physical block layout in the new
+process. Complete partition hashes are sensitive to row order, independent of
+Ray batch boundaries, and validated before any checkpoint is reused.</p>
 </section>
 <section id="intermediate-storage">
 <h3>Intermediate Storage<a class="headerlink" href="#intermediate-storage" title="Link to this heading">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">intermediate_storage</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;parquet&quot;</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
-<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;snappy&quot;</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">"parquet"</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
+<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">"snappy"</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
 <span class="w">  </span><span class="nt">preserve_intermediate_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;keep_all&quot;</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
+<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">"keep_all"</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
 </pre></div>
 </div>
 </section>
@@ -672,14 +700,50 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="c1"># Manual partition mode</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--partition.mode<span class="w"> </span>manual<span class="w"> </span>--partition.num_of_partitions<span class="w"> </span><span class="m">4</span>
 
-<span class="c1"># With custom job ID</span>
+<span class="c1"># Optional: start a new job with a custom job ID</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p>When checkpointing is enabled, a new <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> job prints a resume
+token:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resume token: 20260805_115141_81270d. Rerun the original command with
+--resume 20260805_115141_81270d to resume this job.
 </pre></div>
 </div>
 </section>
 <section id="resuming-jobs">
 <h3>Resuming Jobs<a class="headerlink" href="#resuming-jobs" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use the token printed by the initial run. Keep the input and recipe unchanged.</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>20260805_115141_81270d
+
+<span class="c1"># A custom ID from the initial run can be used in the same way.</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--resume</span></code> is supported only by the <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> executor. It performs a
+strict resume in the following order:</p>
+<ol class="arabic simple">
+<li><p>locate the original work and checkpoint directories;</p></li>
+<li><p>verify that the current configuration matches the original run;</p></li>
+<li><p>load the saved partition count, row boundaries, and content hashes;</p></li>
+<li><p>recreate the original partitions with the saved row boundaries;</p></li>
+<li><p>validate every complete partition hash;</p></li>
+<li><p>load completed checkpoints and process only the unfinished work.</p></li>
+</ol>
+<p>If metadata is missing, row boundaries are invalid, the input has changed, or
+a content hash does not match, explicit resume stops with an error and leaves
+the existing checkpoints unchanged.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--job_id</span></code> remains available for custom job naming and backward compatibility.
+For fault-tolerant continuation, prefer <code class="docutils literal notranslate"><span class="pre">--resume</span></code>: the legacy <code class="docutils literal notranslate"><span class="pre">--job_id</span></code>
+resumption path keeps its previous behavior and may clear mismatched
+checkpoints before starting fresh. Metadata created by an older Data-Juicer
+version can still be read, but it does not contain the row boundaries and full
+content hashes required by explicit resume; <code class="docutils literal notranslate"><span class="pre">--resume</span></code> therefore rejects it
+without deleting its checkpoints.</p>
+<p>If both arguments are supplied, their values must be identical:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job_id<span class="w"> </span>my_experiment_001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resume<span class="w"> </span>my_experiment_001
 </pre></div>
 </div>
 </section>
@@ -761,7 +825,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.mo
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.monitor</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_job_progress</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -779,7 +843,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.stopper</span><span class="w"> </span><span class="kn">import</span> <span class="n">stop_job</span>
 
-<span class="n">stop_job</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">stop_job</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -789,7 +853,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 
 <span class="n">running_jobs</span> <span class="o">=</span> <span class="n">list_running_jobs</span><span class="p">()</span>
 
-<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">)</span>
 <span class="n">summary</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_job_summary</span><span class="p">()</span>
 <span class="n">events</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_event_logs</span><span class="p">()</span>
 </pre></div>
@@ -925,8 +989,13 @@ disabled         | 0s        | Re-run everything
 <p><strong>Job resumption fails:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/job_summary.json
 ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/
+cat<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/partitioning_info.json
 </pre></div>
 </div>
+<p>Use the resume token printed by the original run and rerun the same recipe with
+<code class="docutils literal notranslate"><span class="pre">--resume</span></code>. Check the error log for configuration mismatch, missing partition
+metadata, invalid row boundaries, or partition content hash mismatch. Explicit
+resume does not delete checkpoints when validation fails.</p>
 <p><strong>Check Ray status:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>status
 </pre></div>
@@ -950,12 +1019,12 @@ tail<span class="w"> </span>-f<span class="w"> </span>./outputs/<span class="o">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="JobManagement.html"
+       href="OperatorPlugins.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Job Management</p>
+        <p class="prev-next-title">Operator Plugins</p>
       </div>
     </a>
     <a class="right-next"

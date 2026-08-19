@@ -518,20 +518,20 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">disable_caching</span><span class="p">,</span> <span class="n">enable_caching</span><span class="p">,</span> <span class="n">is_caching_enabled</span>
 
 <span class="c1"># Default cache location</span>
-<span class="n">DEFAULT_CACHE_HOME</span> <span class="o">=</span> <span class="s2">&quot;~/.cache&quot;</span>
-<span class="n">CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;CACHE_HOME&quot;</span><span class="p">,</span> <span class="n">DEFAULT_CACHE_HOME</span><span class="p">)</span>
+<span class="n">DEFAULT_CACHE_HOME</span> <span class="o">=</span> <span class="s2">"~/.cache"</span>
+<span class="n">CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CACHE_HOME"</span><span class="p">,</span> <span class="n">DEFAULT_CACHE_HOME</span><span class="p">)</span>
 
 <span class="c1"># Default data_juicer cache location</span>
-<span class="n">DEFAULT_DATA_JUICER_CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CACHE_HOME</span><span class="p">,</span> <span class="s2">&quot;data_juicer&quot;</span><span class="p">)</span>
-<span class="n">DATA_JUICER_CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DATA_JUICER_CACHE_HOME&quot;</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_CACHE_HOME</span><span class="p">))</span>
+<span class="n">DEFAULT_DATA_JUICER_CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">CACHE_HOME</span><span class="p">,</span> <span class="s2">"data_juicer"</span><span class="p">)</span>
+<span class="n">DATA_JUICER_CACHE_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DATA_JUICER_CACHE_HOME"</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_CACHE_HOME</span><span class="p">))</span>
 
 <span class="c1"># Default assets cache location</span>
-<span class="n">DEFAULT_DATA_JUICER_ASSETS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_CACHE_HOME</span><span class="p">,</span> <span class="s2">&quot;assets&quot;</span><span class="p">)</span>
-<span class="n">DATA_JUICER_ASSETS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DATA_JUICER_ASSETS_CACHE&quot;</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_ASSETS_CACHE</span><span class="p">)</span>
+<span class="n">DEFAULT_DATA_JUICER_ASSETS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_CACHE_HOME</span><span class="p">,</span> <span class="s2">"assets"</span><span class="p">)</span>
+<span class="n">DATA_JUICER_ASSETS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DATA_JUICER_ASSETS_CACHE"</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_ASSETS_CACHE</span><span class="p">)</span>
 <span class="c1"># Default models cache location</span>
-<span class="n">DEFAULT_DATA_JUICER_MODELS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_CACHE_HOME</span><span class="p">,</span> <span class="s2">&quot;models&quot;</span><span class="p">)</span>
-<span class="n">DATA_JUICER_MODELS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DATA_JUICER_MODELS_CACHE&quot;</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_MODELS_CACHE</span><span class="p">)</span>
-<span class="n">DATA_JUICER_EXTERNAL_MODELS_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DATA_JUICER_EXTERNAL_MODELS_HOME&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">DEFAULT_DATA_JUICER_MODELS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_JUICER_CACHE_HOME</span><span class="p">,</span> <span class="s2">"models"</span><span class="p">)</span>
+<span class="n">DATA_JUICER_MODELS_CACHE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DATA_JUICER_MODELS_CACHE"</span><span class="p">,</span> <span class="n">DEFAULT_DATA_JUICER_MODELS_CACHE</span><span class="p">)</span>
+<span class="n">DATA_JUICER_EXTERNAL_MODELS_HOME</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DATA_JUICER_EXTERNAL_MODELS_HOME"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 <span class="n">CACHE_COMPRESS</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -539,7 +539,7 @@
 <div class="viewcode-block" id="DatasetCacheControl">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.cache_utils.html#data_juicer.utils.cache_utils.DatasetCacheControl">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DatasetCacheControl</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define a range that change the cache state temporarily.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Define a range that change the cache state temporarily."""</span>
 
 <div class="viewcode-block" id="DatasetCacheControl.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.cache_utils.html#data_juicer.utils.cache_utils.DatasetCacheControl.__init__">[docs]</a>
@@ -548,9 +548,9 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Record the original cache state and turn it to the target state.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_state</span> <span class="o">=</span> <span class="n">is_caching_enabled</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on</span><span class="p">:</span>
             <span class="n">enable_caching</span><span class="p">()</span>
@@ -558,9 +558,9 @@
             <span class="n">disable_caching</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Restore the original cache state.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_state</span><span class="p">:</span>
             <span class="n">enable_caching</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -571,10 +571,10 @@
 <div class="viewcode-block" id="dataset_cache_control">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.cache_utils.html#data_juicer.utils.cache_utils.dataset_cache_control">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">dataset_cache_control</span><span class="p">(</span><span class="n">on</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A more easy-to-use decorator for functions that need to control the cache</span>
 <span class="sd">    state temporarily.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">dataset_cache_decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>

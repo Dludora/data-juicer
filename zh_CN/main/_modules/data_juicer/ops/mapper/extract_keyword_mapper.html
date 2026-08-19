@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.extract_keyword_mapper</span></li>
   </ul>
 </nav>
@@ -528,7 +531,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_text_by_punctuation</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;extract_keyword_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"extract_keyword_mapper"</span>
 
 
 <span class="c1"># TODO: LLM-based inference.</span>
@@ -537,7 +540,7 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractKeywordMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate keywords for the text.</span>
+<span class="w">    </span><span class="sd">"""Generate keywords for the text.</span>
 
 <span class="sd">    This operator uses a specified API model to generate high-level keywords that summarize</span>
 <span class="sd">    the main concepts, themes, or topics of the input text. The generated keywords are</span>
@@ -545,16 +548,16 @@
 <span class="sd">    the API call up to `try_num` times in case of errors. If `drop_text` is set to True, the</span>
 <span class="sd">    original text is removed from the sample after processing. The operator uses a default</span>
 <span class="sd">    prompt template and completion delimiter, which can be customized. The output is parsed</span>
-<span class="sd">    using a regular expression to extract the keywords.&quot;&quot;&quot;</span>
+<span class="sd">    using a regular expression to extract the keywords."""</span>
 
     <span class="c1"># This prompt is modified from light RAG</span>
     <span class="c1"># https://github.com/HKUDS/LightRAG</span>
-    <span class="n">DEFAULT_PROMPT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;-Goal-</span>
+    <span class="n">DEFAULT_PROMPT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"""-Goal-</span>
 <span class="s2">Given a text document that is potentially relevant to this activity and a list of entity types, identify all entities of those types from the text and all relationships among the identified entities.</span>
 
 <span class="s2">-Steps-</span>
 <span class="s2">1. Identify high-level key words that summarize the main concepts, themes, or topics of the entire text. These should capture the overarching ideas present in the document.</span>
-<span class="s2">Format the content-level key words as (&quot;content_keywords&quot; &lt;high_level_keywords&gt;)</span>
+<span class="s2">Format the content-level key words as ("content_keywords" &lt;high_level_keywords&gt;)</span>
 
 <span class="s2">3. Return output in the language of the given text.</span>
 
@@ -567,17 +570,17 @@
 
 <span class="s2">Text:</span>
 <span class="s2">```</span>
-<span class="s2">while Alex clenched his jaw, the buzz of frustration dull against the backdrop of Taylor&#39;s authoritarian certainty. It was this competitive undercurrent that kept him alert, the sense that his and Jordan&#39;s shared commitment to discovery was an unspoken rebellion against Cruz&#39;s narrowing vision of control and order.</span>
+<span class="s2">while Alex clenched his jaw, the buzz of frustration dull against the backdrop of Taylor's authoritarian certainty. It was this competitive undercurrent that kept him alert, the sense that his and Jordan's shared commitment to discovery was an unspoken rebellion against Cruz's narrowing vision of control and order.</span>
 
-<span class="s2">Then Taylor did something unexpected. They paused beside Jordan and, for a moment, observed the device with something akin to reverence. “If this tech can be understood...&quot; Taylor said, their voice quieter, &quot;It could change the game for us. For all of us.”</span>
+<span class="s2">Then Taylor did something unexpected. They paused beside Jordan and, for a moment, observed the device with something akin to reverence. “If this tech can be understood..." Taylor said, their voice quieter, "It could change the game for us. For all of us.”</span>
 
-<span class="s2">The underlying dismissal earlier seemed to falter, replaced by a glimpse of reluctant respect for the gravity of what lay in their hands. Jordan looked up, and for a fleeting heartbeat, their eyes locked with Taylor&#39;s, a wordless clash of wills softening into an uneasy truce.</span>
+<span class="s2">The underlying dismissal earlier seemed to falter, replaced by a glimpse of reluctant respect for the gravity of what lay in their hands. Jordan looked up, and for a fleeting heartbeat, their eyes locked with Taylor's, a wordless clash of wills softening into an uneasy truce.</span>
 
 <span class="s2">It was a small transformation, barely perceptible, but one that Alex noted with an inward nod. They had all been brought here by different paths</span>
 <span class="s2">```</span>
 <span class="s2">################</span>
 <span class="s2">Output:</span>
-<span class="s2">(&quot;content_keywords&quot; &quot;power dynamics, ideological conflict, discovery, rebellion&quot;)</span><span class="si">{completion_delimiter}</span>
+<span class="s2">("content_keywords" "power dynamics, ideological conflict, discovery, rebellion")</span><span class="si">{completion_delimiter}</span>
 <span class="s2">#############################</span>
 <span class="s2">Example 2:</span>
 
@@ -591,26 +594,26 @@
 <span class="s2">```</span>
 <span class="s2">#############</span>
 <span class="s2">Output:</span>
-<span class="s2">(&quot;content_keywords&quot; &quot;任务演变, 决策制定, 积极参与, 宇宙意义&quot;)</span><span class="si">{completion_delimiter}</span>
+<span class="s2">("content_keywords" "任务演变, 决策制定, 积极参与, 宇宙意义")</span><span class="si">{completion_delimiter}</span>
 <span class="s2">#############################</span>
 <span class="s2">Example 3:</span>
 
 <span class="s2">Entity_types: [person, role, technology, organization, event, location, concept]</span>
 <span class="s2">Text:</span>
 <span class="s2">```</span>
-<span class="s2">their voice slicing through the buzz of activity. &quot;Control may be an illusion when facing an intelligence that literally writes its own rules,&quot; they stated stoically, casting a watchful eye over the flurry of data.</span>
+<span class="s2">their voice slicing through the buzz of activity. "Control may be an illusion when facing an intelligence that literally writes its own rules," they stated stoically, casting a watchful eye over the flurry of data.</span>
 
-<span class="s2">&quot;It&#39;s like it&#39;s learning to communicate,&quot; offered Sam Rivera from a nearby interface, their youthful energy boding a mix of awe and anxiety. &quot;This gives talking to strangers&#39; a whole new meaning.&quot;</span>
+<span class="s2">"It's like it's learning to communicate," offered Sam Rivera from a nearby interface, their youthful energy boding a mix of awe and anxiety. "This gives talking to strangers' a whole new meaning."</span>
 
-<span class="s2">Alex surveyed his team—each face a study in concentration, determination, and not a small measure of trepidation. &quot;This might well be our first contact,&quot; he acknowledged, &quot;And we need to be ready for whatever answers back.&quot;</span>
+<span class="s2">Alex surveyed his team—each face a study in concentration, determination, and not a small measure of trepidation. "This might well be our first contact," he acknowledged, "And we need to be ready for whatever answers back."</span>
 
-<span class="s2">Together, they stood on the edge of the unknown, forging humanity&#39;s response to a message from the heavens. The ensuing silence was palpable—a collective introspection about their role in this grand cosmic play, one that could rewrite human history.</span>
+<span class="s2">Together, they stood on the edge of the unknown, forging humanity's response to a message from the heavens. The ensuing silence was palpable—a collective introspection about their role in this grand cosmic play, one that could rewrite human history.</span>
 
 <span class="s2">The encrypted dialogue continued to unfold, its intricate patterns showing an almost uncanny anticipation</span>
 <span class="s2">```</span>
 <span class="s2">#############</span>
 <span class="s2">Output:</span>
-<span class="s2">(&quot;content_keywords&quot; &quot;first contact, control, communication, cosmic significance&quot;)</span><span class="si">{completion_delimiter}</span>
+<span class="s2">("content_keywords" "first contact, control, communication, cosmic significance")</span><span class="si">{completion_delimiter}</span>
 <span class="s2">-Real Data-</span>
 <span class="s2">######################</span>
 <span class="s2">Text:</span>
@@ -619,16 +622,16 @@
 <span class="s2">```</span>
 <span class="s2">######################</span>
 <span class="s2">Output:</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">"""</span>
 
-    <span class="n">DEFAULT_COMPLETION_DELIMITER</span> <span class="o">=</span> <span class="s2">&quot;&lt;|COMPLETE|&gt;&quot;</span>
-    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\(&quot;content_keywords&quot;(.*?)\)&#39;</span>
+    <span class="n">DEFAULT_COMPLETION_DELIMITER</span> <span class="o">=</span> <span class="s2">"&lt;|COMPLETE|&gt;"</span>
+    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'\("content_keywords"(.*?)\)'</span>
 
 <div class="viewcode-block" id="ExtractKeywordMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractKeywordMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">keyword_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">keyword</span><span class="p">,</span>
         <span class="n">api_endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -642,14 +645,14 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param api_model: API model name.</span>
 <span class="sd">        :param keyword_key: The key name to store the keywords in the meta</span>
-<span class="sd">            field. It&#39;s &quot;keyword&quot; in default.</span>
+<span class="sd">            field. It's "keyword" in default.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param prompt_template: The template of input prompt.</span>
 <span class="sd">        :param completion_delimiter: To mark the end of the output.</span>
 <span class="sd">        :param output_pattern: Regular expression for parsing keywords.</span>
@@ -658,9 +661,9 @@
 <span class="sd">        :param drop_text: If drop the text in the output.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">keyword_key</span> <span class="o">=</span> <span class="n">keyword_key</span>
@@ -671,7 +674,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">try_num</span> <span class="o">=</span> <span class="n">try_num</span>
@@ -695,7 +698,7 @@
 <div class="viewcode-block" id="ExtractKeywordMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractKeywordMapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keyword_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -704,7 +707,7 @@
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">completion_delimiter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">completion_delimiter</span><span class="p">,</span> <span class="n">input_text</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
 
         <span class="n">keywords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
@@ -715,7 +718,7 @@
                     <span class="n">keywords</span> <span class="o">=</span> <span class="n">results</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">keyword_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">keywords</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_text</span><span class="p">:</span>

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.image_mmpose_mapper</span></li>
   </ul>
 </nav>
@@ -525,14 +528,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_mmpose_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_mmpose_mapper"</span>
 
 
 <div class="viewcode-block" id="ImageMMPoseMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageMMPoseMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageMMPoseMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to perform human keypoint detection inference using MMPose models.</span>
+<span class="w">    </span><span class="sd">"""Mapper to perform human keypoint detection inference using MMPose models.</span>
 <span class="sd">    It requires three essential components for model initialization:</span>
 <span class="sd">    - deploy_cfg (str): Path to the deployment configuration file (defines inference settings)</span>
 <span class="sd">    - model_cfg (str): Path to the model configuration file (specifies model architecture)</span>
@@ -542,9 +545,9 @@
 <span class="sd">    For detailed configuration requirements and usage examples, refer to:</span>
 <span class="sd">    https://github.com/open-mmlab/mmdeploy/blob/main/docs/en/04-supported-codebases/mmpose.md</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="ImageMMPoseMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageMMPoseMapper.__init__">[文档]</a>
@@ -558,7 +561,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param deploy_cfg: MMPose deployment config file.</span>
 <span class="sd">        :param model_cfg: MMPose model config file.</span>
@@ -567,7 +570,7 @@
 <span class="sd">        :param visualization_dir: Directory to save visualization results.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_install_required_packages</span><span class="p">()</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -583,7 +586,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">visualization_dir</span> <span class="o">=</span> <span class="n">visualization_dir</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="s2">&quot;mmlab&quot;</span><span class="p">,</span>
+            <span class="s2">"mmlab"</span><span class="p">,</span>
             <span class="n">model_cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_cfg</span><span class="p">,</span>
             <span class="n">deploy_cfg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">deploy_cfg</span><span class="p">,</span>
             <span class="n">model_files</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_files</span><span class="p">,</span>
@@ -592,78 +595,78 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_install_required_packages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;mim&quot;</span><span class="p">)</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"mim"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Installing openmim...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Installing openmim..."</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;openmim&quot;</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"openmim"</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Failed to install openmim, please refer to the documentation at &quot;</span>
-                    <span class="s2">&quot;https://github.com/open-mmlab/mim/blob/main/docs/en/installation.md for installation instructions.&quot;</span>
+                    <span class="s2">"Failed to install openmim, please refer to the documentation at "</span>
+                    <span class="s2">"https://github.com/open-mmlab/mim/blob/main/docs/en/installation.md for installation instructions."</span>
                 <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;mmpose&quot;</span><span class="p">)</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"mmpose"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Installing mmpose...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Installing mmpose..."</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;chumpy&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-build-isolation&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-deps&quot;</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"chumpy"</span><span class="p">,</span> <span class="s2">"--no-build-isolation"</span><span class="p">,</span> <span class="s2">"--no-deps"</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;mim&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;mmpose&quot;</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"mim"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"mmpose"</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Failed to install mmpose, please refer to the documentation at &quot;</span>
-                    <span class="s2">&quot;https://mmpose.readthedocs.io/en/latest/installation.html for installation instructions.&quot;</span>
+                    <span class="s2">"Failed to install mmpose, please refer to the documentation at "</span>
+                    <span class="s2">"https://mmpose.readthedocs.io/en/latest/installation.html for installation instructions."</span>
                 <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;mmdet&quot;</span><span class="p">)</span>
+            <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">"mmdet"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Installing mmdet using mim...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Installing mmdet using mim..."</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;mim&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;mmdet==3.2.0&quot;</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"mim"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"mmdet==3.2.0"</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Failed to install mmdet, please refer to the documentation at &quot;</span>
-                    <span class="s2">&quot;https://mmdetection.readthedocs.io/en/latest/get_started.html#installation for installation instructions.&quot;</span>
+                    <span class="s2">"Failed to install mmdet, please refer to the documentation at "</span>
+                    <span class="s2">"https://mmdetection.readthedocs.io/en/latest/get_started.html#installation for installation instructions."</span>
                 <span class="p">)</span>
 
 <div class="viewcode-block" id="ImageMMPoseMapper.parse_and_filter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageMMPoseMapper.parse_and_filter">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_and_filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_sample</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract elements necessary to represent a prediction into a</span>
+<span class="w">        </span><span class="sd">"""Extract elements necessary to represent a prediction into a</span>
 <span class="sd">        dictionary.</span>
 
-<span class="sd">        It&#39;s better to contain only basic data elements such as strings and</span>
-<span class="sd">        numbers in order to guarantee it&#39;s json-serializable.</span>
+<span class="sd">        It's better to contain only basic data elements such as strings and</span>
+<span class="sd">        numbers in order to guarantee it's json-serializable.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data_sample (:obj:`PoseDataSample`): Predictions of the model.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: Prediction results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">mmpose.structures</span><span class="w"> </span><span class="kn">import</span> <span class="n">PoseDataSample</span>
 
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_sample</span><span class="p">,</span> <span class="n">PoseDataSample</span><span class="p">)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;keypoints&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;keypoint_scores&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;bboxes&quot;</span><span class="p">:</span> <span class="p">[],</span>
-            <span class="s2">&quot;bbox_scores&quot;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">"keypoints"</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">"keypoint_scores"</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">"bboxes"</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s2">"bbox_scores"</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="s2">&quot;pred_instances&quot;</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;keypoints&quot;</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;keypoints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">keypoints</span>
-            <span class="k">if</span> <span class="s2">&quot;keypoint_scores&quot;</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;keypoint_scores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">keypoint_scores</span>
-            <span class="k">if</span> <span class="s2">&quot;bboxes&quot;</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;bboxes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">bboxes</span>
-            <span class="k">if</span> <span class="s2">&quot;bbox_scores&quot;</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;bbox_scores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">bbox_scores</span>
+        <span class="k">if</span> <span class="s2">"pred_instances"</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"keypoints"</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"keypoints"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">keypoints</span>
+            <span class="k">if</span> <span class="s2">"keypoint_scores"</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"keypoint_scores"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">keypoint_scores</span>
+            <span class="k">if</span> <span class="s2">"bboxes"</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"bboxes"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">bboxes</span>
+            <span class="k">if</span> <span class="s2">"bbox_scores"</span> <span class="ow">in</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="s2">"bbox_scores"</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_sample</span><span class="o">.</span><span class="n">pred_instances</span><span class="o">.</span><span class="n">bbox_scores</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
 
@@ -672,14 +675,14 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageMMPoseMapper.visualize_results">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">visualize_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
         <span class="n">model</span><span class="o">.</span><span class="n">task_processor</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span>
-            <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window_name</span><span class="o">=</span><span class="s2">&quot;visualize&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="o">=</span><span class="n">output_file</span>
+            <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window_name</span><span class="o">=</span><span class="s2">"visualize"</span><span class="p">,</span> <span class="n">output_file</span><span class="o">=</span><span class="n">output_file</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImageMMPoseMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageMMPoseMapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pose_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -688,13 +691,13 @@
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">mmpose.apis.inference</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataset_meta_from_config</span>
 
-        <span class="n">dataset_meta</span> <span class="o">=</span> <span class="n">dataset_meta_from_config</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">task_processor</span><span class="o">.</span><span class="n">model_cfg</span><span class="p">,</span> <span class="n">dataset_mode</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
-        <span class="n">keypoint_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset_meta</span><span class="p">[</span><span class="s2">&quot;keypoint_id2name&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dataset_meta</span><span class="p">[</span><span class="s2">&quot;num_keypoints&quot;</span><span class="p">])]</span>
+        <span class="n">dataset_meta</span> <span class="o">=</span> <span class="n">dataset_meta_from_config</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">task_processor</span><span class="o">.</span><span class="n">model_cfg</span><span class="p">,</span> <span class="n">dataset_mode</span><span class="o">=</span><span class="s2">"test"</span><span class="p">)</span>
+        <span class="n">keypoint_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">dataset_meta</span><span class="p">[</span><span class="s2">"keypoint_id2name"</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dataset_meta</span><span class="p">[</span><span class="s2">"num_keypoints"</span><span class="p">])]</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">images</span><span class="p">]</span>
         <span class="n">pose_info</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_and_filter</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">pinfo</span> <span class="ow">in</span> <span class="n">pose_info</span><span class="p">:</span>
-            <span class="n">pinfo</span><span class="p">[</span><span class="s2">&quot;keypoint_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keypoint_names</span>
+            <span class="n">pinfo</span><span class="p">[</span><span class="s2">"keypoint_names"</span><span class="p">]</span> <span class="o">=</span> <span class="n">keypoint_names</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">pose_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">pose_info</span>
 
@@ -702,7 +705,7 @@
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visualization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">img</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
                 <span class="n">img_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">img</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">visualization_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s2">.png&quot;</span>
+                <span class="n">output_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">visualization_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">img_name</span><span class="si">}</span><span class="s2">.png"</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">visualize_results</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">output_file</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">sample</span></div>

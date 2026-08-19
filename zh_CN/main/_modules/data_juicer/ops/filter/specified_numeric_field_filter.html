@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.specified_numeric_field_filter</span></li>
   </ul>
 </nav>
@@ -533,14 +536,14 @@
 
 
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;specified_numeric_field_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"specified_numeric_field_filter"</span>
 
 
 <div class="viewcode-block" id="SpecifiedNumericFieldFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.SpecifiedNumericFieldFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpecifiedNumericFieldFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter samples based on a specified numeric field value.</span>
+<span class="w">    </span><span class="sd">"""Filter samples based on a specified numeric field value.</span>
 
 <span class="sd">    This operator filters out samples if the numeric value in the specified field is not</span>
 <span class="sd">    within the given range. The field can be multi-level, with keys separated by dots. The</span>
@@ -549,22 +552,22 @@
 <span class="sd">    ensures that the field exists in the sample and that its value is numeric before</span>
 <span class="sd">    performing the comparison.</span>
 
-<span class="sd">    - Uses the &#39;min_value&#39; and &#39;max_value&#39; to define the acceptable range.</span>
+<span class="sd">    - Uses the 'min_value' and 'max_value' to define the acceptable range.</span>
 <span class="sd">    - Supports multi-level fields using dot-separated keys.</span>
-<span class="sd">    - Returns False for non-numeric or out-of-range values, filtering the sample.&quot;&quot;&quot;</span>
+<span class="sd">    - Returns False for non-numeric or out-of-range values, filtering the sample."""</span>
 
 <div class="viewcode-block" id="SpecifiedNumericFieldFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.SpecifiedNumericFieldFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">min_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="n">max_value</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param field_key: Filter based on the specified numeric value</span>
 <span class="sd">            corresponding to the target key. The target key</span>
 <span class="sd">            corresponding to multi-level field information need to be</span>
-<span class="sd">            separated by &#39;.&#39;.</span>
+<span class="sd">            separated by '.'.</span>
 <span class="sd">        :param min_value: The min filter value in SpecifiedNumericField</span>
 <span class="sd">            op, samples will be filtered if their specified numeric</span>
 <span class="sd">            field value is below this parameter.</span>
@@ -573,7 +576,7 @@
 <span class="sd">            field value exceeds this parameter.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="o">=</span> <span class="n">field_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span> <span class="o">=</span> <span class="n">min_value</span>
@@ -585,8 +588,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="c1"># get the value from the original field</span>
         <span class="n">field_value</span> <span class="o">=</span> <span class="n">sample</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">field_value</span> <span class="o">=</span> <span class="n">field_value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="c1"># copy it into the stats field</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>

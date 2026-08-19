@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -575,10 +576,16 @@
 <li class="toctree-l2"><a class="reference internal" href="text_chunk_mapper.html">text_chunk_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="text_tagging_by_prompt_mapper.html">text_tagging_by_prompt_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vggt_mapper.html">vggt_mapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="video_camera_calibration_static_deepcalib_mapper.html">video_camera_calibration_static_deepcalib_mapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="video_camera_calibration_static_moge_mapper.html">video_camera_calibration_static_moge_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_active_speaker_detect_mapper.html">video_active_speaker_detect_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_audio_ASR_mapper.html">video_audio_ASR_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_audio_detect_age_gender_mapper.html">video_audio_detect_age_gender_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_audio_speech_emotion_mapper.html">video_audio_speech_emotion_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_camera_calibration_deepcalib_mapper.html">video_camera_calibration_deepcalib_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_camera_calibration_moge_mapper.html">video_camera_calibration_moge_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_captioning_face_attribute_emotion_mapper.html">video_captioning_face_attribute_emotion_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_captioning_from_audio_mapper.html">video_captioning_from_audio_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_captioning_from_frames_mapper.html">video_captioning_from_frames_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_captioning_from_human_tracks_mapper.html">video_captioning_from_human_tracks_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_captioning_from_summarizer_mapper.html">video_captioning_from_summarizer_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_captioning_from_video_mapper.html">video_captioning_from_video_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_captioning_from_vlm_mapper.html">video_captioning_from_vlm_mapper</a></li>
@@ -587,6 +594,8 @@
 <li class="toctree-l2"><a class="reference internal" href="video_face_blur_mapper.html">video_face_blur_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_ffmpeg_wrapped_mapper.html">video_ffmpeg_wrapped_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_hand_reconstruction_mapper.html">video_hand_reconstruction_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_human_tracks_extraction_mapper.html">video_human_tracks_extraction_mapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_human_tracks_face_demographic_mapper.html">video_human_tracks_face_demographic_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_object_segmenting_mapper.html">video_object_segmenting_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_remove_watermark_mapper.html">video_remove_watermark_mapper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_resize_aspect_ratio_mapper.html">video_resize_aspect_ratio_mapper</a></li>
@@ -617,7 +626,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -637,6 +649,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -767,7 +780,7 @@
 </section>
 <section id="test-replace-email">
 <h3>test_replace_email<a class="headerlink" href="#test-replace-email" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CleanEmailMapper</span><span class="p">(</span><span class="n">repl</span><span class="o">=</span><span class="s1">&#39;&lt;EMAIL&gt;&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CleanEmailMapper</span><span class="p">(</span><span class="n">repl</span><span class="o">=</span><span class="s1">'&lt;EMAIL&gt;'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="id1">

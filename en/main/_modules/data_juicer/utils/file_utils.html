@@ -532,6 +532,38 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_PREFIX</span><span class="p">,</span> <span class="n">Fields</span>
 
 
+<div class="viewcode-block" id="load_numpy">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.load_numpy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Load a numpy array that may be stored inline or as a .npy file path.</span>
+
+<span class="sd">    :param value: Either a numpy ndarray (returned as-is) or a string</span>
+<span class="sd">        path to a ``.npy`` file.</span>
+<span class="sd">    :returns: numpy ndarray</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># Fallback: convert lists / other array-like to ndarray</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_numpy_list">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.load_numpy_list">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_numpy_list</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Load a list of numpy fields (each may be an array or a path).</span>
+
+<span class="sd">    :param values: list of numpy arrays or string paths to .npy files.</span>
+<span class="sd">    :returns: list of numpy ndarrays</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">load_numpy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span></div>
+
+
+
 <div class="viewcode-block" id="Sizes">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.Sizes">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Sizes</span><span class="p">:</span>
@@ -547,15 +579,15 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">byte_size_to_size_str</span><span class="p">(</span><span class="n">byte_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
     <span class="c1"># get the string format of shard size</span>
     <span class="k">if</span> <span class="n">byte_size</span> <span class="o">//</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">TiB</span><span class="p">:</span>
-        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> TiB&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">TiB</span><span class="p">)</span>
+        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%.2f</span><span class="s2"> TiB"</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">TiB</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">byte_size</span> <span class="o">//</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">GiB</span><span class="p">:</span>
-        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> GiB&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">GiB</span><span class="p">)</span>
+        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%.2f</span><span class="s2"> GiB"</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">GiB</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">byte_size</span> <span class="o">//</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">MiB</span><span class="p">:</span>
-        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> MiB&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">MiB</span><span class="p">)</span>
+        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%.2f</span><span class="s2"> MiB"</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">MiB</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">byte_size</span> <span class="o">//</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">KiB</span><span class="p">:</span>
-        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> KiB&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">KiB</span><span class="p">)</span>
+        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%.2f</span><span class="s2"> KiB"</span> <span class="o">%</span> <span class="p">(</span><span class="n">byte_size</span> <span class="o">/</span> <span class="n">Sizes</span><span class="o">.</span><span class="n">KiB</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> Bytes&quot;</span> <span class="o">%</span> <span class="n">byte_size</span>
+        <span class="n">size_str</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%.2f</span><span class="s2"> Bytes"</span> <span class="o">%</span> <span class="n">byte_size</span>
     <span class="k">return</span> <span class="n">size_str</span></div>
 
 
@@ -566,7 +598,7 @@
     <span class="n">logfile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">skip_existing_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncGenerator</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a file in online and iterative manner</span>
+<span class="w">    </span><span class="sd">"""Read a file in online and iterative manner</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        logfile_path (`str`):</span>
@@ -576,12 +608,12 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        One line string of the file content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># in most unix file systems, the read operation is safe</span>
-    <span class="c1"># for a file being target file of another &quot;write process&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">logfile</span><span class="p">:</span>
+    <span class="c1"># for a file being target file of another "write process"</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">logfile_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"ignore"</span><span class="p">)</span> <span class="k">as</span> <span class="n">logfile</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">skip_existing_content</span><span class="p">:</span>
-            <span class="c1"># move to the file&#39;s end, similar to `tail -f`</span>
+            <span class="c1"># move to the file's end, similar to `tail -f`</span>
             <span class="n">logfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -599,14 +631,14 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">find_files_with_suffix</span><span class="p">(</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">suffixes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Traverse a path to find all files with the specified suffixes.</span>
 
 <span class="sd">    :param path: path (str/Path): source path</span>
-<span class="sd">    :param suffixes: specified file suffixes, &#39;.txt&#39; or [&#39;.txt&#39;, &#39;.md&#39;]</span>
+<span class="sd">    :param suffixes: specified file suffixes, '.txt' or ['.txt', '.md']</span>
 <span class="sd">        etc</span>
 <span class="sd">    :return: list of all files with the specified suffixes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">file_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -616,12 +648,12 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffixes</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">suffixes</span><span class="p">]</span>
 
-    <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suffixes</span><span class="p">]</span>
+    <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">suffixes</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">searched_files</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+        <span class="n">searched_files</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">searched_files</span> <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()]</span>
 
     <span class="n">extractor</span> <span class="o">=</span> <span class="n">Extractor</span>
@@ -635,15 +667,15 @@
             <span class="c1"># hard code</span>
             <span class="c1"># only support zstd-format file now,</span>
             <span class="c1"># and use the last 2 sub-suffixes as the final suffix</span>
-            <span class="c1"># just like &#39;.jsonl.zst&#39;</span>
+            <span class="c1"># just like '.jsonl.zst'</span>
             <span class="n">file_suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">suffixes</span><span class="p">]</span>
-            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_suffixes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_suffixes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
         <span class="k">elif</span> <span class="n">GzipExtractor</span><span class="o">.</span><span class="n">is_extractable</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
             <span class="c1"># support gzip-format file</span>
             <span class="c1"># and use the last 2 sub-suffixes as the final suffix</span>
-            <span class="c1"># just like &#39;.jsonl.gz&#39;</span>
+            <span class="c1"># just like '.jsonl.gz'</span>
             <span class="n">file_suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">suffixes</span><span class="p">]</span>
-            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_suffixes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_suffixes</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">suffixes</span> <span class="ow">or</span> <span class="p">(</span><span class="n">suffix</span> <span class="ow">in</span> <span class="n">suffixes</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_dict</span><span class="p">:</span>
@@ -657,21 +689,25 @@
 <div class="viewcode-block" id="is_remote_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.is_remote_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_remote_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the path is a remote path.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">,</span> <span class="s2">&quot;s3://&quot;</span><span class="p">,</span> <span class="s2">&quot;gs://&quot;</span><span class="p">,</span> <span class="s2">&quot;hdfs://&quot;</span><span class="p">))</span></div>
+<span class="w">    </span><span class="sd">"""Check if the path is a remote path.</span>
+
+<span class="sd">    The scheme check is case-insensitive, consistent with RFC 3986</span>
+<span class="sd">    (URI schemes are case-insensitive) and urlparse semantics.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"http://"</span><span class="p">,</span> <span class="s2">"https://"</span><span class="p">,</span> <span class="s2">"s3://"</span><span class="p">,</span> <span class="s2">"gs://"</span><span class="p">,</span> <span class="s2">"hdfs://"</span><span class="p">))</span></div>
 
 
 
 <div class="viewcode-block" id="is_absolute_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.is_absolute_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_absolute_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Check whether input path is a absolute path.</span>
 
 <span class="sd">    :param path: input path</span>
 <span class="sd">    :return: True means input path is absolute path, False means input</span>
 <span class="sd">        path is a relative path.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">is_remote_path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
@@ -682,20 +718,20 @@
 <div class="viewcode-block" id="add_suffix_to_filename">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.add_suffix_to_filename">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_suffix_to_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Add a suffix to the filename. Only regard the content after the last dot</span>
 <span class="sd">    as the file extension.</span>
 <span class="sd">    E.g.</span>
-<span class="sd">    1. abc.jpg + &quot;_resized&quot; --&gt; abc_resized.jpg</span>
-<span class="sd">    2. edf.xyz.csv + &quot;_processed&quot; --&gt; edf.xyz_processed.csv</span>
-<span class="sd">    3. /path/to/file.json + &quot;_suf&quot; --&gt; /path/to/file_suf.json</span>
-<span class="sd">    4. ds.tar.gz + &quot;_whoops&quot; --&gt; ds.tar_whoops.gz (maybe unexpected)</span>
+<span class="sd">    1. abc.jpg + "_resized" --&gt; abc_resized.jpg</span>
+<span class="sd">    2. edf.xyz.csv + "_processed" --&gt; edf.xyz_processed.csv</span>
+<span class="sd">    3. /path/to/file.json + "_suf" --&gt; /path/to/file_suf.json</span>
+<span class="sd">    4. ds.tar.gz + "_whoops" --&gt; ds.tar_whoops.gz (maybe unexpected)</span>
 
 <span class="sd">    :param filename: input filename</span>
 <span class="sd">    :param suffix: suffix string to be added</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">suffix</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s2">"</span>
     <span class="k">return</span> <span class="n">new_name</span></div>
 
 
@@ -703,11 +739,11 @@
 <div class="viewcode-block" id="create_directory_if_not_exists">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.create_directory_if_not_exists">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_directory_if_not_exists</span><span class="p">(</span><span class="n">directory_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    create a directory if not exists, this function is process safe</span>
 
 <span class="sd">    :param directory_path: directory path to be create</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">directory_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">directory_path</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">directory_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -721,12 +757,12 @@
 <div class="viewcode-block" id="transfer_data_dir">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.transfer_data_dir">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">transfer_data_dir</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="n">op_name</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Transfer the original multimodal data dir to a new dir to store the newly</span>
 <span class="sd">    generated multimodal data. The pattern is</span>
 <span class="sd">    `{original_dir}/__dj__produced_data__/{op_name}`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">new_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Fields</span><span class="o">.</span><span class="n">multimodal_data_output_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">new_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">Fields</span><span class="o">.</span><span class="n">multimodal_data_output_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">create_directory_if_not_exists</span><span class="p">(</span><span class="n">new_dir</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">new_dir</span></div>
 
@@ -735,15 +771,15 @@
 <div class="viewcode-block" id="transfer_filename">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.transfer_filename">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">transfer_filename</span><span class="p">(</span><span class="n">original_filepath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">op_kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    According to the op and hashing its parameters &#39;op_kwargs&#39; addition</span>
-<span class="sd">    to the process id and current time as the &#39;hash_val&#39;, map the</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    According to the op and hashing its parameters 'op_kwargs' addition</span>
+<span class="sd">    to the process id and current time as the 'hash_val', map the</span>
 <span class="sd">    original_filepath to another unique file path. E.g.</span>
 
-<span class="sd">    When `save_dir` is provided: &#39;/save_dir/path/to/data/&#39;</span>
+<span class="sd">    When `save_dir` is provided: '/save_dir/path/to/data/'</span>
 <span class="sd">        /path/to/abc.jpg --&gt;</span>
 <span class="sd">            /save_dir/path/to/data/abc__dj_hash_#{hash_val}#.jpg</span>
-<span class="sd">    When environment variable `DJ_PRODUCED_DATA_DIR` is provided: &#39;/environment/path/to/data/&#39;</span>
+<span class="sd">    When environment variable `DJ_PRODUCED_DATA_DIR` is provided: '/environment/path/to/data/'</span>
 <span class="sd">        /path/to/abc.jpg --&gt;</span>
 <span class="sd">            /environment/path/to/data/{op_name}/abc__dj_hash_#{hash_val}#.jpg</span>
 <span class="sd">    When neither `save_dir` nor `DJ_PRODUCED_DATA_DIR` is provided:</span>
@@ -762,19 +798,19 @@
 <span class="sd">            abc__dj_hash_#{hash_val2}#.jpg</span>
 
 <span class="sd">    Priority: `save_dir` &gt; `DJ_PRODUCED_DATA_DIR` &gt; original data directory (default)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># check if it&#39;s valid local path, if it&#39;s not, regard it as a remote path/url and return None</span>
+<span class="sd">    """</span>
+    <span class="c1"># check if it's valid local path, if it's not, regard it as a remote path/url and return None</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">original_filepath</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">original_filepath</span>
 
     <span class="k">if</span> <span class="n">save_dir</span><span class="p">:</span>
         <span class="n">new_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">produced_data_dir</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;DJ_PRODUCED_DATA_DIR&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">produced_data_dir</span> <span class="o">:=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"DJ_PRODUCED_DATA_DIR"</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">new_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">produced_data_dir</span><span class="p">),</span> <span class="n">op_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># produce the directory</span>
         <span class="n">original_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">original_filepath</span><span class="p">)</span>
-        <span class="n">dir_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">Fields</span><span class="o">.</span><span class="n">multimodal_data_output_dir</span><span class="si">}</span><span class="s2">/&quot;</span>
+        <span class="n">dir_token</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/</span><span class="si">{</span><span class="n">Fields</span><span class="o">.</span><span class="n">multimodal_data_output_dir</span><span class="si">}</span><span class="s2">/"</span>
         <span class="k">if</span> <span class="n">dir_token</span> <span class="ow">in</span> <span class="n">original_dir</span><span class="p">:</span>
             <span class="n">original_dir</span> <span class="o">=</span> <span class="n">original_dir</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dir_token</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">new_dir</span> <span class="o">=</span> <span class="n">transfer_data_dir</span><span class="p">(</span><span class="n">original_dir</span><span class="p">,</span> <span class="n">op_name</span><span class="p">)</span>
@@ -783,26 +819,26 @@
 
     <span class="c1"># produce the unique hash code</span>
     <span class="n">unique_parameters</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">op_kwargs</span><span class="p">)</span>
-    <span class="n">unique_parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DEFAULT_PREFIX</span><span class="si">}</span><span class="s2">pid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
-    <span class="n">unique_parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DEFAULT_PREFIX</span><span class="si">}</span><span class="s2">timestamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
+    <span class="n">unique_parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">DEFAULT_PREFIX</span><span class="si">}</span><span class="s2">pid"</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+    <span class="n">unique_parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">DEFAULT_PREFIX</span><span class="si">}</span><span class="s2">timestamp"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">))</span>
     <span class="n">unique_hash</span> <span class="o">=</span> <span class="n">dict_to_hash</span><span class="p">(</span><span class="n">unique_parameters</span><span class="p">)</span>
 
     <span class="c1"># if the input data is produced by data-juicer, replace the hash code</span>
     <span class="c1"># else append hash value to filename</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_hash_value</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">new_hash_value</span><span class="p">):</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;__dj_hash_#(.*?)#&quot;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"__dj_hash_#(.*?)#"</span>
 
         <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="c1"># draw the string produced by data-juicer</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[:</span> <span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
 
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">__dj_hash_#</span><span class="si">{</span><span class="n">new_hash_value</span><span class="si">}</span><span class="s2">#&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">__dj_hash_#</span><span class="si">{</span><span class="n">new_hash_value</span><span class="si">}</span><span class="s2">#"</span>
 
     <span class="n">original_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">original_filepath</span><span class="p">)</span>
     <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">original_filename</span><span class="p">)</span>
     <span class="n">new_name</span> <span class="o">=</span> <span class="n">add_hash_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">unique_hash</span><span class="p">)</span>
-    <span class="n">new_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_name</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">new_filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">new_name</span><span class="si">}{</span><span class="n">ext</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">new_filepath</span></div>
 
@@ -811,10 +847,10 @@
 <div class="viewcode-block" id="copy_data">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.copy_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">copy_data</span><span class="p">(</span><span class="n">from_dir</span><span class="p">,</span> <span class="n">to_dir</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Copy data from from_dir/data_path to to_dir/data_path.</span>
 <span class="sd">    Return True if success.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">from_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">from_dir</span><span class="p">,</span> <span class="n">data_path</span><span class="p">)</span>
     <span class="n">to_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to_dir</span><span class="p">,</span> <span class="n">data_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">from_path</span><span class="p">):</span>
@@ -843,27 +879,27 @@
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">output_file_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">keep_filename_column</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">output_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+    <span class="n">output_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"jsonl"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function processes a DataFrame and writes it to disk</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df: A DataFrame.</span>
 <span class="sd">        output_file_dir: The output file path.</span>
-<span class="sd">        keep_filename_column: Whether to keep or drop the &quot;filename&quot; column, if it exists.</span>
-<span class="sd">        output_type=&quot;jsonl&quot;: The type of output file to write.</span>
+<span class="sd">        keep_filename_column: Whether to keep or drop the "filename" column, if it exists.</span>
+<span class="sd">        output_type="jsonl": The type of output file to write.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        If the DataFrame is non-empty, return a Series containing a single element, True.</span>
 <span class="sd">        If the DataFrame is empty, return a Series containing a single element, False.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-    <span class="k">assert</span> <span class="s2">&quot;filename&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">assert</span> <span class="s2">"filename"</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">empty_partition</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Empty partition found&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"Empty partition found"</span><span class="p">)</span>
         <span class="n">empty_partition</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># if is_cudf_type(df):</span>
@@ -880,26 +916,26 @@
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
             <span class="n">out_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">filename</span> <span class="o">==</span> <span class="n">filename</span><span class="p">]</span> <span class="k">if</span> <span class="n">num_files</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">df</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_filename_column</span><span class="p">:</span>
-                <span class="n">out_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">out_df</span> <span class="o">=</span> <span class="n">out_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"filename"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span>
             <span class="n">output_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_file_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;jsonl&quot;</span><span class="p">:</span>
-                <span class="n">output_file_path</span> <span class="o">=</span> <span class="n">output_file_path</span> <span class="o">+</span> <span class="s2">&quot;.jsonl&quot;</span>
+            <span class="k">if</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">"jsonl"</span><span class="p">:</span>
+                <span class="n">output_file_path</span> <span class="o">=</span> <span class="n">output_file_path</span> <span class="o">+</span> <span class="s2">".jsonl"</span>
                 <span class="n">out_df</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span>
                     <span class="n">output_file_path</span><span class="p">,</span>
-                    <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;records&quot;</span><span class="p">,</span>
+                    <span class="n">orient</span><span class="o">=</span><span class="s2">"records"</span><span class="p">,</span>
                     <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">force_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
 
-            <span class="k">elif</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;parquet&quot;</span><span class="p">:</span>
-                <span class="n">output_file_path</span> <span class="o">=</span> <span class="n">output_file_path</span> <span class="o">+</span> <span class="s2">&quot;.parquet&quot;</span>
+            <span class="k">elif</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">"parquet"</span><span class="p">:</span>
+                <span class="n">output_file_path</span> <span class="o">=</span> <span class="n">output_file_path</span> <span class="o">+</span> <span class="s2">".parquet"</span>
                 <span class="n">out_df</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">output_file_path</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown output type: </span><span class="si">{</span><span class="n">output_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown output type: </span><span class="si">{</span><span class="n">output_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">success_ser</span></div>
 
@@ -909,19 +945,19 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.read_single_partition">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">read_single_partition</span><span class="p">(</span>
     <span class="n">files</span><span class="p">,</span>
-    <span class="n">filetype</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+    <span class="n">filetype</span><span class="o">=</span><span class="s2">"jsonl"</span><span class="p">,</span>
     <span class="n">add_filename</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">input_meta</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function reads a file with cuDF, sorts the columns of the DataFrame</span>
-<span class="sd">    and adds a &quot;filename&quot; column.</span>
+<span class="sd">    and adds a "filename" column.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        files: The path to the jsonl files to read.</span>
-<span class="sd">        add_filename: Whether to add a &quot;filename&quot; column to the DataFrame.</span>
+<span class="sd">        add_filename: Whether to add a "filename" column to the DataFrame.</span>
 <span class="sd">        input_meta: A dictionary or a string formatted as a dictionary, which outlines</span>
 <span class="sd">            the field names and their respective data types within the JSONL input file.</span>
 <span class="sd">        columns: If not None, only these columns will be read from the file.</span>
@@ -930,24 +966,24 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        A pandas DataFrame.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
-    <span class="k">if</span> <span class="n">input_meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">filetype</span> <span class="o">!=</span> <span class="s2">&quot;jsonl&quot;</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;input_meta is only valid for JSONL files and&quot;</span> <span class="s2">&quot;will be ignored for other file formats..&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
+    <span class="k">if</span> <span class="n">input_meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">filetype</span> <span class="o">!=</span> <span class="s2">"jsonl"</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"input_meta is only valid for JSONL files and"</span> <span class="s2">"will be ignored for other file formats.."</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">]:</span>
-        <span class="n">read_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;lines&quot;</span><span class="p">:</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;jsonl&quot;</span><span class="p">}</span>
-        <span class="n">read_kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"jsonl"</span><span class="p">,</span> <span class="s2">"json"</span><span class="p">]:</span>
+        <span class="n">read_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"lines"</span><span class="p">:</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">"jsonl"</span><span class="p">}</span>
+        <span class="n">read_kwargs</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">read_f</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span>
 
         <span class="k">if</span> <span class="n">input_meta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">read_kwargs</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">input_meta</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_meta</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">input_meta</span>
+            <span class="n">read_kwargs</span><span class="p">[</span><span class="s2">"dtype"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">input_meta</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_meta</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">input_meta</span>
 
-    <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">&quot;parquet&quot;</span><span class="p">:</span>
-        <span class="n">read_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="n">columns</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">filetype</span> <span class="o">==</span> <span class="s2">"parquet"</span><span class="p">:</span>
+        <span class="n">read_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"columns"</span><span class="p">:</span> <span class="n">columns</span><span class="p">}</span>
         <span class="n">read_f</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Could not read data, please check file type&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Could not read data, please check file type"</span><span class="p">)</span>
 
     <span class="n">read_files_one_at_a_time</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">read_files_one_at_a_time</span><span class="p">:</span>
@@ -956,15 +992,15 @@
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">read_f</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">**</span><span class="n">read_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">add_filename</span><span class="p">:</span>
-                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">"filename"</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
             <span class="n">df_ls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">concat_f</span><span class="p">(</span><span class="n">df_ls</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">read_f</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="o">**</span><span class="n">read_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">add_filename</span> <span class="ow">and</span> <span class="s2">&quot;filename&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
-            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filetype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"jsonl"</span><span class="p">,</span> <span class="s2">"json"</span><span class="p">]</span> <span class="ow">and</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">add_filename</span> <span class="ow">and</span> <span class="s2">"filename"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+            <span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"filename"</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
 
     <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)]</span>
@@ -975,7 +1011,7 @@
 <div class="viewcode-block" id="get_all_files_paths_under">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.file_utils.html#data_juicer.utils.file_utils.get_all_files_paths_under">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_all_files_paths_under</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">recurse_subdirectories</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This function returns a list of all the files under a specified directory.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        root: The path to the directory to read.</span>
@@ -983,7 +1019,7 @@
 <span class="sd">                              Please note that this can be slow for large</span>
 <span class="sd">                              number of files.</span>
 <span class="sd">        followlinks: Whether to follow symbolic links.</span>
-<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="sd">    """</span>  <span class="c1"># noqa: E501</span>
     <span class="k">if</span> <span class="n">recurse_subdirectories</span><span class="p">:</span>
         <span class="n">file_ls</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">followlinks</span><span class="o">=</span><span class="n">followlinks</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -999,7 +1035,7 @@
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span>
     <span class="n">session</span><span class="p">:</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">return_content</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Download a file from a given URL and save it to a specified directory.</span>
 <span class="sd">    :param url: The URL of the file to download.</span>
 <span class="sd">    :param save_path: The path where the downloaded file will be saved.</span>
@@ -1008,16 +1044,16 @@
 <span class="sd">    :param kwargs: The keyword arguments to pass to the HTTP request.</span>
 
 <span class="sd">    :return: The response object from the HTTP request.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
         <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientTimeout</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">timeout</span><span class="p">),</span> <span class="n">raise_for_status</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
 
-        <span class="k">assert</span> <span class="n">save_path</span> <span class="ow">or</span> <span class="n">return_content</span><span class="p">,</span> <span class="s2">&quot;save_path or return_content must be set.&quot;</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">save_path</span> <span class="ow">or</span> <span class="n">return_content</span><span class="p">,</span> <span class="s2">"save_path or return_content must be set."</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">""</span>
 
         <span class="k">if</span> <span class="n">save_path</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">while</span> <span class="n">chunk</span> <span class="o">:=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">read</span><span class="p">():</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
                     <span class="n">content</span> <span class="o">+=</span> <span class="n">chunk</span>

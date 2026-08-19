@@ -753,7 +753,7 @@ otherwise, only the processor is returned.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_hawor_model">
-<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_hawor_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hawor_model_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hawor_config_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mano_right_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_hawor_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_hawor_model" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_hawor_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hawor_model_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hawor_config_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mano_right_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mano_left_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_hawor_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_hawor_model" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -1041,6 +1041,55 @@ It is used to load a mmdeploy model and run inference on given images.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_SenseVoiceSmall_model">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_SenseVoiceSmall_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pretrained_model_name_or_path</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_SenseVoiceSmall_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_SenseVoiceSmall_model" title="Link to this definition">#</a></dt>
+<dd><p>Prepare and load light sharegpt4video.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_name</strong> – input model name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_light_asd_model">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_light_asd_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pretrained_model_name_or_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weight/finetuning_TalkSet.model'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_light_asd_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_light_asd_model" title="Link to this definition">#</a></dt>
+<dd><p>Prepare and load light asd model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_name</strong> – input model name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_YOLOv8_human_model">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_YOLOv8_human_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pretrained_model_name_or_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./thirdparty/humanvbench_models/YOLOv8_human/weights/best.pt'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_YOLOv8_human_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_YOLOv8_human_model" title="Link to this definition">#</a></dt>
+<dd><p>Prepare and load light YOLOv8_human.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_name</strong> – input model name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_face_detect_S3FD_model">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_face_detect_S3FD_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_face_detect_S3FD_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_face_detect_S3FD_model" title="Link to this definition">#</a></dt>
+<dd><p>Prepare and load light asd model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>model_name</strong> – input model name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_wav2vec2_age_gender_model">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_wav2vec2_age_gender_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pretrained_model_name_or_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'audeering/wav2vec2-large-robust-24-ft-age-gender'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_wav2vec2_age_gender_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_wav2vec2_age_gender_model" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="data_juicer.utils.model_utils.prepare_model">
 <span class="sig-prename descclassname"><span class="pre">data_juicer.utils.model_utils.</span></span><span class="sig-name descname"><span class="pre">prepare_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_type</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/model_utils.html#prepare_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.utils.model_utils.prepare_model" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1136,6 +1185,11 @@ It is used to load a mmdeploy model and run inference on given images.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_mmlab_model"><code class="docutils literal notranslate"><span class="pre">prepare_mmlab_model()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_qwen_vl_inputs_for_vllm"><code class="docutils literal notranslate"><span class="pre">prepare_qwen_vl_inputs_for_vllm()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_sam_3d_body_model"><code class="docutils literal notranslate"><span class="pre">prepare_sam_3d_body_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_SenseVoiceSmall_model"><code class="docutils literal notranslate"><span class="pre">prepare_SenseVoiceSmall_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_light_asd_model"><code class="docutils literal notranslate"><span class="pre">prepare_light_asd_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_YOLOv8_human_model"><code class="docutils literal notranslate"><span class="pre">prepare_YOLOv8_human_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_face_detect_S3FD_model"><code class="docutils literal notranslate"><span class="pre">prepare_face_detect_S3FD_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_wav2vec2_age_gender_model"><code class="docutils literal notranslate"><span class="pre">prepare_wav2vec2_age_gender_model()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.prepare_model"><code class="docutils literal notranslate"><span class="pre">prepare_model()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.get_model"><code class="docutils literal notranslate"><span class="pre">get_model()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.model_utils.free_models"><code class="docutils literal notranslate"><span class="pre">free_models()</span></code></a></li>

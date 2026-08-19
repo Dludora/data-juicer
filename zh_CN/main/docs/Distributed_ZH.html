@@ -485,6 +485,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -665,10 +670,59 @@
 </section>
 </section>
 <section id="id8">
-<h2>快速开始<a class="headerlink" href="#id8" title="链接到此标题。">#</a></h2>
+<h2>分布式数据分析<a class="headerlink" href="#id8" title="链接到此标题。">#</a></h2>
+<p>除了分布式数据处理外，Data-Juicer 还通过 <a class="reference external" href="https://github.com/Dludora/data-juicer/blob/main/data_juicer/core/ray_analyzer.py">RayAnalyzer</a> 支持分布式数据分析，它是本地 <code class="docutils literal notranslate"><span class="pre">Analyzer</span></code> 的分布式版本。</p>
+<section id="id9">
+<h3>工作原理<a class="headerlink" href="#id9" title="链接到此标题。">#</a></h3>
+<p>RayAnalyzer 使用与本地 Analyzer 相同的 <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> 命令行入口。当配置文件中 <code class="docutils literal notranslate"><span class="pre">executor_type</span></code> 设置为 <code class="docutils literal notranslate"><span class="pre">ray</span></code> 时，<code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> 会自动调度到 <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>。工作流程如下：</p>
+<ol class="arabic simple">
+<li><p><strong>加载数据</strong> — 通过 Ray 的分布式数据加载能力（支持 JSON、CSV、Parquet）。</p></li>
+<li><p><strong>计算统计信息</strong> — 通过 Ray <code class="docutils literal notranslate"><span class="pre">map_batches</span></code> 分布式执行每个 Filter 的 <code class="docutils literal notranslate"><span class="pre">compute_stats</span></code> 函数，与本地模式使用相同的统计计算逻辑。</p></li>
+<li><p><strong>聚合总体统计</strong> — 使用 Ray 原生聚合算子（<code class="docutils literal notranslate"><span class="pre">Mean</span></code>、<code class="docutils literal notranslate"><span class="pre">Std</span></code>、<code class="docutils literal notranslate"><span class="pre">Min</span></code>、<code class="docutils literal notranslate"><span class="pre">Max</span></code>）计算总体统计信息，无需 pandas 物化，适用于任意规模的数据集。</p></li>
+<li><p><strong>导出</strong> — 通过 <code class="docutils literal notranslate"><span class="pre">RayExporter</span></code> 将带有统计列的数据集导出到磁盘。</p></li>
+</ol>
+</section>
+<section id="analyzer">
+<h3>与本地 Analyzer 的差异<a class="headerlink" href="#analyzer" title="链接到此标题。">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>特性</p></th>
+<th class="head"><p>本地 Analyzer</p></th>
+<th class="head"><p>RayAnalyzer</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>总体统计（count/mean/std/min/max）</p></td>
+<td><p>支持</p></td>
+<td><p>支持</p></td>
+</tr>
+<tr class="row-odd"><td><p>逐列分布图表</p></td>
+<td><p>支持</p></td>
+<td><p>不支持</p></td>
+</tr>
+<tr class="row-even"><td><p>相关性分析</p></td>
+<td><p>支持</p></td>
+<td><p>不支持</p></td>
+</tr>
+<tr class="row-odd"><td><p>分位数</p></td>
+<td><p>支持</p></td>
+<td><p>不支持</p></td>
+</tr>
+<tr class="row-even"><td><p>可扩展性</p></td>
+<td><p>单机</p></td>
+<td><p>分布式（Ray 集群）</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>RayAnalyzer 专注于在大规模数据上计算总体统计信息。如果需要详细的可视化和相关性分析，建议对采样子集使用本地 Analyzer。</p>
+</section>
+</section>
+<section id="id10">
+<h2>快速开始<a class="headerlink" href="#id10" title="链接到此标题。">#</a></h2>
 <p>在开始前，你应该安装 Data-Juicer 以及它的 <code class="docutils literal notranslate"><span class="pre">dist</span></code> 依赖需求：</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span>.<span class="w">  </span><span class="c1"># 安装 Data-Juicer 的最小依赖需求</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dist]&quot;</span><span class="w">  </span><span class="c1"># 包括 Ray 以及其他分布式相关的依赖库</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-v<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dist]"</span><span class="w">  </span><span class="c1"># 包括 Ray 以及其他分布式相关的依赖库</span>
 </pre></div>
 </div>
 <p>然后启动一个 Ray 集群（参考 <a class="reference external" href="https://docs.ray.io/en/latest/ray-core/starting-ray.html">Ray 文档</a> ）：</p>
@@ -676,7 +730,7 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 ray<span class="w"> </span>start<span class="w"> </span>--head
 
 <span class="c1"># （可选）在其他节点或机器上连接集群</span>
-ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">&#39;{head_ip}:6379&#39;</span>
+ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o">=</span><span class="s1">'{head_ip}:6379'</span>
 </pre></div>
 </div>
 <p>我们在目录 <code class="docutils literal notranslate"><span class="pre">demos/process_on_ray/</span></code> 中准备了简单的例子，包括 2 个配置文件和 2 个测试数据集。</p>
@@ -697,11 +751,11 @@ ray<span class="w"> </span>start<span class="w"> </span>--address<span class="o"
 <h3>运行 Ray 模式样例<a class="headerlink" href="#ray" title="链接到此标题。">#</a></h3>
 <p>在配置文件 <code class="docutils literal notranslate"><span class="pre">demo.yaml</span></code> 中，我们将执行器类型设置为 &quot;ray&quot; 并且指定了自动的 Ray 地址。</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
-<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./demos/process_on_ray/data/demo-dataset.jsonl&#39;</span>
-<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo/demo-processed&#39;</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./demos/process_on_ray/data/demo-dataset.jsonl'</span>
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo/demo-processed'</span>
 
-<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ray&#39;</span><span class="w">  </span><span class="c1"># 将执行器类型设置为 &quot;ray&quot;</span>
-<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="w">  </span><span class="c1"># 设置为自动 Ray 地址</span>
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">'ray'</span><span class="w">  </span><span class="c1"># 将执行器类型设置为 "ray"</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">'auto'</span><span class="w">  </span><span class="c1"># 设置为自动 Ray 地址</span>
 <span class="nn">...</span>
 </pre></div>
 </div>
@@ -715,21 +769,21 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 </div>
 <p>Data-Juicer 会使用示例配置文件处理示例数据集，并将结果数据集导出到配置文件中 <code class="docutils literal notranslate"><span class="pre">export_path</span></code> 参数指定的目录中。</p>
 </section>
-<section id="id9">
-<h3>运行分布式去重样例<a class="headerlink" href="#id9" title="链接到此标题。">#</a></h3>
+<section id="id11">
+<h3>运行分布式去重样例<a class="headerlink" href="#id11" title="链接到此标题。">#</a></h3>
 <p>在配置文件 <code class="docutils literal notranslate"><span class="pre">dedup.yaml</span></code> 中，我们将执行器类型设置为 &quot;ray&quot; 并且指定了自动的 Ray 地址。我们使用了 MinHash 去重算子专门的分布式版本来对数据集去重。</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;demo-dedup&#39;</span>
-<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./demos/process_on_ray/data/&#39;</span>
-<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;./outputs/demo-dedup/demo-ray-bts-dedup-processed&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-dedup'</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./demos/process_on_ray/data/'</span>
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo-dedup/demo-ray-bts-dedup-processed'</span>
 
-<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ray&#39;</span><span class="w">  </span><span class="c1"># 将执行器类型设置为 &quot;ray&quot;</span>
-<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;auto&#39;</span><span class="w">  </span><span class="c1"># 设置为自动 Ray 地址</span>
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">'ray'</span><span class="w">  </span><span class="c1"># 将执行器类型设置为 "ray"</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">'auto'</span><span class="w">  </span><span class="c1"># 设置为自动 Ray 地址</span>
 
 <span class="c1"># process schedule</span>
 <span class="c1"># a list of several process operators with their arguments</span>
 <span class="nt">process</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ray_bts_minhash_deduplicator</span><span class="p">:</span><span class="w">  </span><span class="c1"># minhash 去重算子的分布式版本</span>
-<span class="w">      </span><span class="nt">tokenization</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;character&#39;</span>
+<span class="w">      </span><span class="nt">tokenization</span><span class="p">:</span><span class="w"> </span><span class="s">'character'</span>
 </pre></div>
 </div>
 <p>运行该实例来对数据集去重：</p>
@@ -741,6 +795,40 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 </pre></div>
 </div>
 <p>Data-Juicer 会使用示例配置文件对示例数据集去重，并将结果数据集导出到配置文件中 <code class="docutils literal notranslate"><span class="pre">export_path</span></code> 参数指定的目录中。</p>
+</section>
+<section id="id12">
+<h3>运行 Ray 分析样例<a class="headerlink" href="#id12" title="链接到此标题。">#</a></h3>
+<p>在 <a class="reference external" href="https://github.com/Dludora/data-juicer/blob/main/demos/analyze_simple/ray_analyzer.yaml"><code class="docutils literal notranslate"><span class="pre">demos/analyze_simple/ray_analyzer.yaml</span></code></a> 配置文件中，我们将执行器类型设置为 &quot;ray&quot; 来使用分布式的 <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>。</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="s">'demo-ray-analyzer'</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./demos/data/demo-dataset.jsonl'</span>
+
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="s">'ray'</span><span class="w">  </span><span class="c1"># 将执行器类型设置为 "ray"</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="s">'auto'</span><span class="w">  </span><span class="c1"># 设置为自动 Ray 地址</span>
+
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">'./outputs/demo-ray-analyzer'</span>
+
+<span class="nt">process</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">text_length_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">min_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">max_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">words_num_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">lang</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">en</span>
+<span class="w">      </span><span class="nt">min_num</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">max_num</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alphanumeric_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">min_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span>
+<span class="w">      </span><span class="nt">max_ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
+</pre></div>
+</div>
+<p>运行该示例来分析数据集：</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># 从源码运行分析工具</span>
+python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
+
+<span class="c1"># 使用命令行工具</span>
+dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code> 会计算所有数值统计列的总体统计信息（count、mean、std、min、max）并打印结果。带有计算好的统计列的数据集将导出到 <code class="docutils literal notranslate"><span class="pre">export_path</span></code> 指定的路径。</p>
 </section>
 </section>
 </section>
@@ -805,9 +893,15 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">大规模数据集分布式去重</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">快速开始</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">分布式数据分析</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">工作原理</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analyzer">与本地 Analyzer 的差异</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">快速开始</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ray">运行 Ray 模式样例</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">运行分布式去重样例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">运行分布式去重样例</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">运行 Ray 分析样例</a></li>
 </ul>
 </li>
 </ul>

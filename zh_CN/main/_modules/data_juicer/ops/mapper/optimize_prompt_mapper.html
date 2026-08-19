@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.optimize_prompt_mapper</span></li>
   </ul>
 </nav>
@@ -531,17 +534,17 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;optimize_prompt_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"optimize_prompt_mapper"</span>
 
 
 <div class="viewcode-block" id="OptimizePromptMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.OptimizePromptMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">OptimizePromptMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize prompts based on existing ones in the same batch.</span>
+<span class="w">    </span><span class="sd">"""Optimize prompts based on existing ones in the same batch.</span>
 
 <span class="sd">    This operator uses the existing prompts and newly optimized prompts as examples to</span>
 <span class="sd">    generate better prompts. It supports using a Hugging Face model or an API for text</span>
@@ -555,29 +558,29 @@
 <span class="sd">    - Can keep or replace original samples with generated ones.</span>
 <span class="sd">    - Retries up to a specified number of times if the generated prompt is empty.</span>
 <span class="sd">    - Operates in batch mode and can use vLLM for acceleration on CUDA.</span>
-<span class="sd">    - References: https://doc.agentscope.io/v0/en/build_tutorial/prompt_optimization.html&quot;&quot;&quot;</span>
+<span class="sd">    - References: https://doc.agentscope.io/v0/en/build_tutorial/prompt_optimization.html"""</span>
 
     <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;请你仔细观察多个示例提示词，按照你的理解，总结出相应规矩，然后写出一个新的更好的提示词，以让模型更好地完成指定任务。&quot;</span>
-        <span class="s2">&quot;注意，新生成的【提示词】需要满足如下要求：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;1. 生成的【提示词】不能与输入的【提示词】完全一致，但是需要保持格式类似。</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;2. 生成的【提示词】相比于输入的【提示词】不能有很大的变化，更多应该是关键词、核心参数等方面的微调。</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;3. 生成时只需生成带有【提示词】前缀的提示词，不需生成其他任何额外信息。</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">"请你仔细观察多个示例提示词，按照你的理解，总结出相应规矩，然后写出一个新的更好的提示词，以让模型更好地完成指定任务。"</span>
+        <span class="s2">"注意，新生成的【提示词】需要满足如下要求：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"1. 生成的【提示词】不能与输入的【提示词】完全一致，但是需要保持格式类似。</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"2. 生成的【提示词】相比于输入的【提示词】不能有很大的变化，更多应该是关键词、核心参数等方面的微调。</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"3. 生成时只需生成带有【提示词】前缀的提示词，不需生成其他任何额外信息。</span><span class="se">\n</span><span class="s2">"</span>
     <span class="p">)</span>
 
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_EXAMPLE_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">如下是一条示例数据：</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_PROMPT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;【提示词】</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;【提示词】(.*?)(?=【|$)&quot;</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{}</span><span class="s2">"</span>
+    <span class="n">DEFAULT_EXAMPLE_TEMPLATE</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">如下是一条示例数据：</span><span class="se">\n</span><span class="si">{}</span><span class="s2">"</span>
+    <span class="n">DEFAULT_PROMPT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"【提示词】</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"【提示词】(.*?)(?=【|$)"</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="OptimizePromptMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.OptimizePromptMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-7B-Instruct&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-7B-Instruct"</span><span class="p">,</span>
         <span class="n">gen_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="n">max_example_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="n">keep_original_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -596,7 +599,7 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface model name.</span>
@@ -604,23 +607,23 @@
 <span class="sd">        :param max_example_num: Maximum number of example prompts to include as</span>
 <span class="sd">            context when generating new optimized prompts.</span>
 <span class="sd">        :param keep_original_sample: whether to keep the original sample. If</span>
-<span class="sd">            it&#39;s set to False, there will be only generated texts in the final</span>
-<span class="sd">            datasets and the original texts will be removed. It&#39;s True in</span>
+<span class="sd">            it's set to False, there will be only generated texts in the final</span>
+<span class="sd">            datasets and the original texts will be removed. It's True in</span>
 <span class="sd">            default.</span>
 <span class="sd">        :param retry_num: how many times to retry to generate the prompt if the</span>
-<span class="sd">            parsed generated prompt is empty. It&#39;s 3 in default.</span>
+<span class="sd">            parsed generated prompt is empty. It's 3 in default.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param system_prompt: System prompt for guiding the generation task.</span>
 <span class="sd">        :param input_template: Template for building the input prompt. It must</span>
-<span class="sd">            include one placeholder &#39;{}&#39;, which will be replaced by</span>
+<span class="sd">            include one placeholder '{}', which will be replaced by</span>
 <span class="sd">            `example_num` formatted examples defined by `example_template`.</span>
 <span class="sd">        :param example_template: Template for formatting one prompt example. It</span>
-<span class="sd">            must include one placeholder &#39;{}&#39;, which will be replaced by one</span>
+<span class="sd">            must include one placeholder '{}', which will be replaced by one</span>
 <span class="sd">            formatted prompt.</span>
 <span class="sd">        :param prompt_template: Template for formatting a single prompt</span>
-<span class="sd">            within each example. Must include two placeholders &#39;{}&#39; for the</span>
+<span class="sd">            within each example. Must include two placeholders '{}' for the</span>
 <span class="sd">            question and answer.</span>
 <span class="sd">        :param output_pattern: Regular expression pattern to extract questions</span>
 <span class="sd">            and answers from model response.</span>
@@ -629,9 +632,9 @@
 <span class="sd">            local llm.</span>
 <span class="sd">        :param model_params: Parameters for initializing the model.</span>
 <span class="sd">        :param sampling_params: Sampling parameters for text generation.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">gen_num</span> <span class="o">=</span> <span class="n">gen_num</span>
@@ -659,12 +662,12 @@
                 <span class="c1"># cannot initialize vllm replicas on different GPUs</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vllm&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"vllm"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">vllm</span><span class="o">.</span><span class="n">SamplingParams</span><span class="p">(</span><span class="o">**</span><span class="n">sampling_params</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">is_hf_model</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">return_pipe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">model_params</span><span class="p">,</span>
@@ -674,7 +677,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
                 <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -685,7 +688,7 @@
 <div class="viewcode-block" id="OptimizePromptMapper.build_input">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.OptimizePromptMapper.build_input">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt_examples</span><span class="p">):</span>
-        <span class="n">formatted_examples</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">formatted_examples</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">example_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prompt_examples</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formatted_examples</span><span class="p">)</span>
@@ -696,7 +699,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.OptimizePromptMapper.parse_output">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">raw_output</span><span class="p">)</span>
-        <span class="n">output_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">output_prompt</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_pattern</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">output_prompt</span> <span class="o">=</span> <span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -707,7 +710,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.OptimizePromptMapper.generate_one_prompt">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_one_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">input_prompt_samples</span><span class="p">):</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_input</span><span class="p">(</span><span class="n">input_prompt_samples</span><span class="p">)</span>
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
 
         <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -717,18 +720,18 @@
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_hf_model</span><span class="p">:</span>
                 <span class="c1"># model is pipe</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">return_full_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;generated_text&quot;</span><span class="p">]</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"generated_text"</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
 
             <span class="n">output_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">output_prompt</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output_prompt</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
                 <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">cnt</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retry_num</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Retry to generate the prompt failed!&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Retry to generate the prompt failed!"</span><span class="p">)</span>
                     <span class="k">break</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Parse model response error! No data generated &quot;</span> <span class="sa">f</span><span class="s2">&quot;for the current example! Retry for </span><span class="si">{</span><span class="n">cnt</span><span class="si">}</span><span class="s2"> time.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Parse model response error! No data generated "</span> <span class="sa">f</span><span class="s2">"for the current example! Retry for </span><span class="si">{</span><span class="n">cnt</span><span class="si">}</span><span class="s2"> time."</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">break</span>

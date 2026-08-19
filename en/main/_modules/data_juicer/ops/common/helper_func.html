@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.common.helper_func</span></li>
   </ul>
 </nav>
@@ -526,7 +529,7 @@
 <div class="viewcode-block" id="UnionFind.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.UnionFind.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialization method.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialization method."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
 
 
@@ -553,7 +556,7 @@
 <div class="viewcode-block" id="strip">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.strip">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">strip</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">strip_characters</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Way faster than document.strip(strip_characters) since strip_characters is</span>
 <span class="sd">    now a set instead of a str, and it contains a lot of elements (all the</span>
 <span class="sd">    emojis).</span>
@@ -561,7 +564,7 @@
 <span class="sd">    :param document: document to be processed</span>
 <span class="sd">    :param strip_characters: characters used for stripping document</span>
 <span class="sd">    :return: stripped document</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">document</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">document</span>
     <span class="n">beg_ind</span> <span class="o">=</span> <span class="mi">0</span>
@@ -584,16 +587,16 @@
 <div class="viewcode-block" id="split_on_whitespace">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.split_on_whitespace">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">split_on_whitespace</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">new_line</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tab</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This method also removes concatenated spaces.</span>
 
 <span class="sd">    :param document: document to be split</span>
-<span class="sd">    :param new_line: whether to split document with &#39;\\\\n&#39;</span>
-<span class="sd">    :param tag: whether to split document with &#39;\\\\t&#39;</span>
+<span class="sd">    :param new_line: whether to split document with '\\\\n'</span>
+<span class="sd">    :param tag: whether to split document with '\\\\t'</span>
 <span class="sd">    :return: word list obtained after splitting document</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">new_line</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">tab</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">]</span>
-    <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="s2">" "</span><span class="p">]</span> <span class="o">+</span> <span class="n">new_line</span> <span class="o">*</span> <span class="p">[</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">]</span> <span class="o">+</span> <span class="n">tab</span> <span class="o">*</span> <span class="p">[</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">]</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="s2">"|"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
     <span class="n">split_document</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="n">document</span><span class="p">)</span>
     <span class="n">split_document</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">split_document</span> <span class="k">if</span> <span class="n">word</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">split_document</span></div>
@@ -603,16 +606,16 @@
 <div class="viewcode-block" id="split_on_newline_tab_whitespace">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.split_on_newline_tab_whitespace">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">split_on_newline_tab_whitespace</span><span class="p">(</span><span class="n">document</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This method is used to split the document into different levels of sub-</span>
 <span class="sd">    sentences.</span>
 
-<span class="sd">    First split on &quot;\\\\n&quot;, then on &quot;\\\\t&quot;, then on &quot; &quot;.</span>
+<span class="sd">    First split on "\\\\n", then on "\\\\t", then on " ".</span>
 <span class="sd">    :param document: document to be split</span>
 <span class="sd">    :return: sentence list obtained after splitting document</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sentences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
+<span class="sd">    """</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
     <span class="n">sentences</span> <span class="o">=</span> <span class="p">[[</span><span class="n">split_on_whitespace</span><span class="p">(</span><span class="n">subsentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">subsentence</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">]</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">sentences</span></div>
 
@@ -621,19 +624,19 @@
 <div class="viewcode-block" id="merge_on_whitespace_tab_newline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.merge_on_whitespace_tab_newline">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">merge_on_whitespace_tab_newline</span><span class="p">(</span><span class="n">sentences</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This method is used to merge different levels of sub-sentences into one</span>
 <span class="sd">    document. Invert the method split_on_newline_tab_whitespace. Removes</span>
 <span class="sd">    concatenated separators.</span>
 
 <span class="sd">    :param sentences: sentence list to be merged</span>
 <span class="sd">    :return: document obtained after merging sub-sentences</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subsentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">subsentence</span> <span class="ow">in</span> <span class="n">sentence</span> <span class="k">if</span> <span class="n">subsentence</span><span class="p">]</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
-    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span> <span class="k">if</span> <span class="n">sentence</span><span class="p">]</span>
+<span class="sd">    """</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subsentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">subsentence</span> <span class="ow">in</span> <span class="n">sentence</span> <span class="k">if</span> <span class="n">subsentence</span><span class="p">]</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">]</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span> <span class="k">if</span> <span class="n">sentence</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">sentences</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">document</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">document</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">document</span></div>
 
 
@@ -641,7 +644,7 @@
 <div class="viewcode-block" id="words_augmentation">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.words_augmentation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">words_augmentation</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">join_char</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Augment words, especially for Chinese (without a space between words) and</span>
 <span class="sd">    Vietnamese (with a space between syllables).</span>
 
@@ -649,7 +652,7 @@
 <span class="sd">    :param group_size: the size of word groups that need to be merged</span>
 <span class="sd">    :param join_char: characters to be added between word group</span>
 <span class="sd">    :return: word list after augment</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">augmentation</span> <span class="o">=</span> <span class="p">[</span><span class="n">join_char</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">group_size</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">-</span> <span class="n">group_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">augmentation</span></div>
 
@@ -663,17 +666,17 @@
     <span class="n">new_line</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">tab</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get words from a document. Useful to compute ratios, like the</span>
 <span class="sd">    stopwords ratio.</span>
 
 <span class="sd">    :param document: document that need to split words.</span>
 <span class="sd">    :param token_func: function of tokenizer, if specified, the function</span>
 <span class="sd">     will be used for split document into different tokens.</span>
-<span class="sd">    :param new_line: whether to use &#39;\\\\n&#39; to split words.</span>
-<span class="sd">    :param tab: whether to use &#39;\\\\t&#39; to split words.</span>
+<span class="sd">    :param new_line: whether to use '\\\\n' to split words.</span>
+<span class="sd">    :param tab: whether to use '\\\\t' to split words.</span>
 <span class="sd">    :return: word list obtained from document</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">token_func</span><span class="p">:</span>
         <span class="n">words</span> <span class="o">=</span> <span class="n">token_func</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -685,9 +688,9 @@
 <div class="viewcode-block" id="words_refinement">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.words_refinement">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">words_refinement</span><span class="p">(</span>
-    <span class="n">words</span><span class="p">,</span> <span class="n">lower_case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">strip_chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_words_aug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">words_aug_group_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">words_aug_join_char</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+    <span class="n">words</span><span class="p">,</span> <span class="n">lower_case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">strip_chars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_words_aug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">words_aug_group_sizes</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">words_aug_join_char</span><span class="o">=</span><span class="s2">""</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Refine split words. Non reversible since the document is split on</span>
 <span class="sd">    multiple characters, words are stripped of special characters and</span>
 <span class="sd">    characters are converted to lower case.</span>
@@ -701,7 +704,7 @@
 <span class="sd">    :param words_aug_join_char: characters to be added between word</span>
 <span class="sd">        group</span>
 <span class="sd">    :return: refined words or word list</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">lower_case</span><span class="p">:</span>
         <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">]</span>
@@ -721,34 +724,34 @@
 <div class="viewcode-block" id="get_sentences_from_document">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.get_sentences_from_document">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_sentences_from_document</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">model_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get sentences from a document.</span>
 
 <span class="sd">    :param document: document that need to split sentences</span>
 <span class="sd">    :param model_func: function of sentence model, if specified, the</span>
 <span class="sd">        function will be used for splitting document into different</span>
 <span class="sd">        sentences.</span>
-<span class="sd">    :return: document with the sentences separated by &#39;\\\\n&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    :return: document with the sentences separated by '\\\\n'</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">model_func</span><span class="p">:</span>
         <span class="n">sentences</span> <span class="o">=</span> <span class="n">model_func</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sentences</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
-    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="split_text_by_punctuation">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.helper_func.html#data_juicer.ops.common.split_text_by_punctuation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">split_text_by_punctuation</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Split text by any zh and en punctuation</span>
 
 <span class="sd">    :param text: text to be split.</span>
 <span class="sd">    :return: sub texts split by any zh and en punctuation</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># any zh and en punctuation</span>
-    <span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;[\u3000-\u303f\uff00-\uffef]|[!&quot;#$%&amp;</span><span class="se">\&#39;</span><span class="s1">()*+,-./:;&lt;=&gt;?@[</span><span class="se">\\</span><span class="s1">\]^_`{|}~]&#39;</span>  <span class="c1"># noqa: E501</span>
+    <span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'[\u3000-\u303f\uff00-\uffef]|[!"#$%&amp;</span><span class="se">\'</span><span class="s1">()*+,-./:;&lt;=&gt;?@[</span><span class="se">\\</span><span class="s1">\]^_`{|}~]'</span>  <span class="c1"># noqa: E501</span>
 
     <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">punctuation_pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">result</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>

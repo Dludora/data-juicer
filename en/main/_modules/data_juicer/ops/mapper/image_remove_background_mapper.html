@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.image_remove_background_mapper</span></li>
   </ul>
 </nav>
@@ -523,10 +526,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">rembg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;rembg&quot;</span><span class="p">)</span>
-<span class="n">onnxruntime</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;onnxruntime&quot;</span><span class="p">)</span>
+<span class="n">rembg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"rembg"</span><span class="p">)</span>
+<span class="n">onnxruntime</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"onnxruntime"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_remove_background_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_remove_background_mapper"</span>
 
 
 <div class="viewcode-block" id="ImageRemoveBackgroundMapper">
@@ -534,7 +537,7 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageRemoveBackgroundMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to remove the background of images.</span>
+<span class="w">    </span><span class="sd">"""Mapper to remove the background of images.</span>
 
 <span class="sd">    This operator processes each image in the sample, removing its background. It uses the</span>
 <span class="sd">    `rembg` library to perform the background removal. If `alpha_matting` is enabled, it</span>
@@ -543,7 +546,7 @@
 <span class="sd">    background color for the cutout image. The processed images are stored in the directory</span>
 <span class="sd">    specified by `save_dir`, or in the same directory as the input files if `save_dir` is</span>
 <span class="sd">    not provided. The `source_file` field in the sample is updated to reflect the new file</span>
-<span class="sd">    paths.&quot;&quot;&quot;</span>
+<span class="sd">    paths."""</span>
 
 <div class="viewcode-block" id="ImageRemoveBackgroundMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageRemoveBackgroundMapper.__init__">[docs]</a>
@@ -558,7 +561,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param alpha_matting: (bool, optional)</span>
@@ -577,11 +580,11 @@
 <span class="sd">        *args (Optional[Any]): Additional positional arguments.</span>
 <span class="sd">        **kwargs (Optional[Any]): Additional keyword arguments.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_dir&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"save_dir"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_matting</span> <span class="o">=</span> <span class="n">alpha_matting</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_matting_foreground_threshold</span> <span class="o">=</span> <span class="n">alpha_matting_foreground_threshold</span>
@@ -615,7 +618,7 @@
             <span class="n">remove_image_key</span> <span class="o">=</span> <span class="n">transfer_filename</span><span class="p">(</span><span class="n">image_key</span><span class="p">,</span> <span class="n">OP_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">remove_image_key</span> <span class="o">!=</span> <span class="n">image_key</span><span class="p">:</span>
                 <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">remove_image_key</span><span class="p">)</span>
-                <span class="n">remove_image_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.png&quot;</span>
+                <span class="n">remove_image_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.png"</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">remove_image_key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">remove_image_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
                     <span class="n">rembg_image</span> <span class="o">=</span> <span class="n">rembg</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span>
                         <span class="n">images</span><span class="p">[</span><span class="n">image_key</span><span class="p">],</span>
@@ -625,7 +628,7 @@
                         <span class="n">alpha_matting_erode_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha_matting_erode_size</span><span class="p">,</span>
                         <span class="n">bgcolor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">,</span>
                     <span class="p">)</span>
-                    <span class="n">rembg_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">remove_image_key</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;PNG&quot;</span><span class="p">)</span>
+                    <span class="n">rembg_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">remove_image_key</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"PNG"</span><span class="p">)</span>
                     <span class="n">images</span><span class="p">[</span><span class="n">remove_image_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">rembg_image</span>
                     <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
                         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">][</span><span class="n">remove_image_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">rembg_image</span>

@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../docs/Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs/Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs/JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs/Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -593,23 +598,18 @@
                   
   <section id="demos">
 <h1>Demos<a class="headerlink" href="#demos" title="Link to this heading">#</a></h1>
-<p>This folder contains some demos, which allow users to easily experience the basic functions and tools of Data-Juicer.</p>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">app.py</span></code> in the subdirectory of <code class="docutils literal notranslate"><span class="pre">demos</span></code> to run the demos.</p>
+<p>This folder contains both interactive demos for experiencing Data-Juicer and
+functional examples that demonstrate specific features and workflows.</p>
+<p>Sample datasets used by the demos and examples are available in the <code class="docutils literal notranslate"><span class="pre">data</span></code>
+subdirectory.</p>
+<section id="interactive-demos">
+<h2>Interactive Demos<a class="headerlink" href="#interactive-demos" title="Link to this heading">#</a></h2>
+<p>Run an interactive demo with its <code class="docutils literal notranslate"><span class="pre">app.py</span></code>:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;subdir_of_demos&gt;
 streamlit<span class="w"> </span>run<span class="w"> </span>app.py
 </pre></div>
 </div>
-</section>
-<section id="available-demos">
-<h2>Available Demos<a class="headerlink" href="#available-demos" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Data (<code class="docutils literal notranslate"><span class="pre">data</span></code>)</p>
-<ul>
-<li><p>This folder contains some sample datasets.</p></li>
-</ul>
-</li>
 <li><p>Overview scan (<code class="docutils literal notranslate"><span class="pre">overview_scan</span></code>)</p>
 <ul>
 <li><p>This demo introduces the basic concepts and functions of Data-Juicer, such as features, configuration, operators, and so on.</p></li>
@@ -665,9 +665,21 @@ streamlit<span class="w"> </span>run<span class="w"> </span>app.py
 <li><p>This demo selects and mixes samples from multiple datasets and exports them into a new dataset.</p></li>
 </ul>
 </li>
+</ul>
+</section>
+<section id="functional-examples">
+<h2>Functional Examples<a class="headerlink" href="#functional-examples" title="Link to this heading">#</a></h2>
+<p>Follow the instructions in the corresponding subdirectory to run these
+examples.</p>
+<ul class="simple">
 <li><p>Partition and checkpoint (<code class="docutils literal notranslate"><span class="pre">partition_and_checkpoint</span></code>)</p>
 <ul>
 <li><p>This demo showcases distributed processing with partitioning, checkpointing, and event logging. It demonstrates the new job management features including resource-aware partitioning, comprehensive event logging, and the processing snapshot utility for monitoring job progress.</p></li>
+</ul>
+</li>
+<li><p>Elastic sharding (<code class="docutils literal notranslate"><span class="pre">elastic_sharding</span></code>)</p>
+<ul>
+<li><p>This demo pre-splits a JSONL dataset, launches any number of DLC workers with one command, dynamically claims shards through a shared POSIX filesystem, and processes each claimed shard with node-local Ray. It includes CPU-only and mixed CPU/GPU recipes.</p></li>
 </ul>
 </li>
 </ul>
@@ -721,8 +733,8 @@ streamlit<span class="w"> </span>run<span class="w"> </span>app.py
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-demos">Available Demos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-demos">Interactive Demos</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functional-examples">Functional Examples</a></li>
 </ul>
   </nav></div>
 

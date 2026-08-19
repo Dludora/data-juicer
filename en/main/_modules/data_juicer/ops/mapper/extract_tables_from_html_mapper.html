@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.extract_tables_from_html_mapper</span></li>
   </ul>
 </nav>
@@ -518,7 +521,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;extract_tables_from_html_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"extract_tables_from_html_mapper"</span>
 
 
 <div class="viewcode-block" id="ExtractTablesFromHtmlMapper">
@@ -526,14 +529,14 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractTablesFromHtmlMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts tables from HTML content and stores them in a specified field.</span>
+<span class="w">    </span><span class="sd">"""Extracts tables from HTML content and stores them in a specified field.</span>
 
 <span class="sd">    This operator processes HTML content to extract tables. It can either retain or remove</span>
 <span class="sd">    HTML tags based on the `retain_html_tags` parameter. If `retain_html_tags` is False, it</span>
 <span class="sd">    can also include or exclude table headers based on the `include_header` parameter. The</span>
-<span class="sd">    extracted tables are stored in the `tables_field_name` field within the sample&#39;s</span>
+<span class="sd">    extracted tables are stored in the `tables_field_name` field within the sample's</span>
 <span class="sd">    metadata. If no tables are found, an empty list is stored. If the tables have already</span>
-<span class="sd">    been extracted, the operator will not reprocess the sample.&quot;&quot;&quot;</span>
+<span class="sd">    been extracted, the operator will not reprocess the sample."""</span>
 
 <div class="viewcode-block" id="ExtractTablesFromHtmlMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractTablesFromHtmlMapper.__init__">[docs]</a>
@@ -545,7 +548,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param tables_field_name: Field name to store the extracted tables.</span>
 <span class="sd">        :param retain_html_tags: If True, retains HTML tags in the tables;</span>
@@ -555,7 +558,7 @@
 <span class="sd">                This parameter is effective</span>
 <span class="sd">                            only when `retain_html_tags` is False</span>
 <span class="sd">                and applies solely to the extracted table content.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tables_field_name</span> <span class="o">=</span> <span class="n">tables_field_name</span>
@@ -566,13 +569,13 @@
 <div class="viewcode-block" id="ExtractTablesFromHtmlMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractTablesFromHtmlMapper.process_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tables_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="c1"># parse the HTML content using BeautifulSoup</span>
-        <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">],</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
-        <span class="n">tables</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">)</span>
+        <span class="n">soup</span> <span class="o">=</span> <span class="n">bs4</span><span class="o">.</span><span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">],</span> <span class="s2">"html.parser"</span><span class="p">)</span>
+        <span class="n">tables</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"table"</span><span class="p">)</span>
 
         <span class="c1"># if no tables are found, return an empty list</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">tables</span><span class="p">:</span>
@@ -588,15 +591,15 @@
         <span class="n">extracted_tables</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">:</span>
             <span class="n">extracted_rows</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">&quot;tr&quot;</span><span class="p">):</span>
-                <span class="n">is_header_row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s2">"tr"</span><span class="p">):</span>
+                <span class="n">is_header_row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"th"</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
                 <span class="c1"># skip rows based on the include_header flag</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_header</span> <span class="ow">and</span> <span class="n">is_header_row</span><span class="p">:</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># extract text content from cells</span>
-                <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">find_all</span><span class="p">([</span><span class="s2">&quot;td&quot;</span><span class="p">,</span> <span class="s2">&quot;th&quot;</span><span class="p">],</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+                <span class="n">row_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">strip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">find_all</span><span class="p">([</span><span class="s2">"td"</span><span class="p">,</span> <span class="s2">"th"</span><span class="p">],</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
                 <span class="k">if</span> <span class="n">row_data</span><span class="p">:</span>
                     <span class="n">extracted_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_data</span><span class="p">)</span>
 

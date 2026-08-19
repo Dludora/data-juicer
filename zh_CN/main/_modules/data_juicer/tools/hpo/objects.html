@@ -523,40 +523,40 @@
 <div class="viewcode-block" id="get_hpo_objective">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.hpo.objects.html#data_juicer.tools.hpo.objects.get_hpo_objective">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_hpo_objective</span><span class="p">(</span><span class="n">obj_name</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">obj_name</span> <span class="o">==</span> <span class="s2">&quot;quality_score&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">obj_name</span> <span class="o">==</span> <span class="s2">"quality_score"</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">obj_quality_score</span>
-    <span class="c1"># elif obj_name == &quot;model_loss&quot;:</span>
+    <span class="c1"># elif obj_name == "model_loss":</span>
     <span class="c1">#     return obj_model_loss</span>
-    <span class="c1"># elif obj_name == &quot;downstream_task&quot;:</span>
+    <span class="c1"># elif obj_name == "downstream_task":</span>
     <span class="c1">#     return obj_downstream_task</span>
-    <span class="c1"># elif obj_name == &quot;synergy_metric&quot;:</span>
+    <span class="c1"># elif obj_name == "synergy_metric":</span>
     <span class="c1">#     return obj_synergy_metric</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported objective type in HPO: </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2">. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Please implement it first.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unsupported objective type in HPO: </span><span class="si">{</span><span class="n">obj_name</span><span class="si">}</span><span class="s2">. "</span> <span class="sa">f</span><span class="s2">"Please implement it first."</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="obj_quality_score">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.hpo.objects.html#data_juicer.tools.hpo.objects.obj_quality_score">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">obj_quality_score</span><span class="p">(</span><span class="n">dj_cfg</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">        HPO loop:  cfg --&gt; data --&gt; data score --&gt; cfg --&gt; data --&gt; ...</span>
 
 <span class="sd">    :param dj_cfg: specified data recipe (as a search point)</span>
 <span class="sd">    :return: a data score, after</span>
 <span class="sd">        1. processing data according to the dj_cfg;</span>
 <span class="sd">        2. applying a quality classifier</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">if</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">==</span> <span class="s2">"default"</span><span class="p">:</span>
         <span class="n">executor</span> <span class="o">=</span> <span class="n">DefaultExecutor</span><span class="p">(</span><span class="n">dj_cfg</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">==</span> <span class="s2">&quot;ray&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span> <span class="o">==</span> <span class="s2">"ray"</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.executor.ray_executor</span><span class="w"> </span><span class="kn">import</span> <span class="n">RayExecutor</span>
 
         <span class="n">executor</span> <span class="o">=</span> <span class="n">RayExecutor</span><span class="p">(</span><span class="n">dj_cfg</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;unsupported executor_type: </span><span class="si">{</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected in [`default`, `ray`]&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"unsupported executor_type: </span><span class="si">{</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">executor_type</span><span class="si">}</span><span class="s2">, "</span> <span class="sa">f</span><span class="s2">"expected in [`default`, `ray`]"</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
@@ -568,7 +568,7 @@
     <span class="c1"># [--keep_method &lt;keep_method&gt;] \</span>
     <span class="c1"># [--text_key &lt;text_key&gt;] \</span>
 
-    <span class="n">tmp_res_export_path</span> <span class="o">=</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">export_path</span> <span class="o">+</span> <span class="s2">&quot;.tmp_hpo.jsonl&quot;</span>
+    <span class="n">tmp_res_export_path</span> <span class="o">=</span> <span class="n">dj_cfg</span><span class="o">.</span><span class="n">export_path</span> <span class="o">+</span> <span class="s2">".tmp_hpo.jsonl"</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp_res_export_path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tmp_res_export_path</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_res_export_path</span><span class="p">)</span>
@@ -578,7 +578,7 @@
     <span class="n">overall_quality_stats</span> <span class="o">=</span> <span class="n">predict_score</span><span class="p">(</span><span class="n">dj_cfg</span><span class="o">.</span><span class="n">export_path</span><span class="p">,</span> <span class="n">tmp_res_export_path</span><span class="p">,</span> <span class="n">overall_stats</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># by default, using the mean quality score of processed data as final score</span>
-    <span class="k">return</span> <span class="n">overall_quality_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">overall_quality_stats</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s2">"mean"</span><span class="p">]</span></div>
 
 </pre></div>
 

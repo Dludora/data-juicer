@@ -531,17 +531,17 @@
 <div class="viewcode-block" id="FileLock">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.FileLock">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileLock</span><span class="p">(</span><span class="n">HF_FileLock</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    File lock for compression or decompression, and</span>
 <span class="sd">    remove lock file automatically.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_release</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_release</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># logger.debug(f&#39;Remove {self.lock_file}&#39;)</span>
+            <span class="c1"># logger.debug(f'Remove {self.lock_file}')</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lock_file</span><span class="p">)</span>
-        <span class="c1"># The file is already deleted and that&#39;s what we want.</span>
+        <span class="c1"># The file is already deleted and that's what we want.</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">return</span> <span class="kc">None</span></div>
@@ -551,9 +551,9 @@
 <div class="viewcode-block" id="Extractor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.Extractor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Extractor</span><span class="p">(</span><span class="n">HF_Extractor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extract content from a compressed file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="Extractor.extract">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.Extractor.extract">[docs]</a>
@@ -564,17 +564,17 @@
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">extractor_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Extract content from a compressed file.</span>
 
 <span class="sd">        :param input_path: path to compressed file.</span>
 <span class="sd">        :param output_path: path to uncompressed file.</span>
 <span class="sd">        :param extractor_format: extraction format,</span>
 <span class="sd">            see supported algorithm in `Extractor` of huggingface dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Prevent parallel extractions</span>
-        <span class="n">lock_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">))</span>
+        <span class="n">lock_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">".lock"</span><span class="p">))</span>
         <span class="k">with</span> <span class="n">FileLock</span><span class="p">(</span><span class="n">lock_path</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">extractor</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">extractors</span><span class="p">[</span><span class="n">extractor_format</span><span class="p">]</span>
@@ -586,21 +586,21 @@
 <div class="viewcode-block" id="BaseCompressor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.BaseCompressor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseCompressor</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Base class that compresses a file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BaseCompressor.compress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.BaseCompressor.compress">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="o">...</span></div>
 </div>
 
@@ -609,25 +609,25 @@
 <div class="viewcode-block" id="ZstdCompressor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.ZstdCompressor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ZstdCompressor</span><span class="p">(</span><span class="n">BaseCompressor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class compresses a file using the `zstd` algorithm.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="ZstdCompressor.compress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.ZstdCompressor.compress">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="kn">import</span><span class="w"> </span><span class="nn">zstandard</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">zstd</span>
 
         <span class="n">cctx</span> <span class="o">=</span> <span class="n">zstd</span><span class="o">.</span><span class="n">ZstdCompressor</span><span class="p">()</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifh</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofh</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">ifh</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">ofh</span><span class="p">:</span>
             <span class="n">cctx</span><span class="o">.</span><span class="n">copy_stream</span><span class="p">(</span><span class="n">ifh</span><span class="p">,</span> <span class="n">ofh</span><span class="p">)</span></div>
 </div>
 
@@ -636,24 +636,24 @@
 <div class="viewcode-block" id="Lz4Compressor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.Lz4Compressor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Lz4Compressor</span><span class="p">(</span><span class="n">BaseCompressor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class compresses a file using the `lz4` algorithm.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="Lz4Compressor.compress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.Lz4Compressor.compress">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress a input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">lz4.frame</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">compressed_file</span><span class="p">)</span></div>
 </div>
 
@@ -662,24 +662,24 @@
 <div class="viewcode-block" id="GzipCompressor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.GzipCompressor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GzipCompressor</span><span class="p">(</span><span class="n">BaseCompressor</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class compresses a file using the `gzip` algorithm.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="GzipCompressor.compress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.GzipCompressor.compress">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_file</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed_file</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">compressed_file</span><span class="p">)</span></div>
 </div>
 
@@ -688,19 +688,19 @@
 <div class="viewcode-block" id="Compressor">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.Compressor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Compressor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class that contains multiple compressors.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">compressors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseCompressor</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;gzip&quot;</span><span class="p">:</span> <span class="n">GzipCompressor</span><span class="p">,</span>
-        <span class="c1"># &quot;zip&quot;: ZipCompressor,</span>
-        <span class="c1"># &quot;xz&quot;: XzCompressor,</span>
-        <span class="c1"># &quot;rar&quot;: RarCompressor,</span>
-        <span class="s2">&quot;zstd&quot;</span><span class="p">:</span> <span class="n">ZstdCompressor</span><span class="p">,</span>
-        <span class="c1"># &quot;bz2&quot;: Bzip2Compressor,</span>
-        <span class="c1"># &quot;7z&quot;: SevenZipCompressor,</span>
-        <span class="s2">&quot;lz4&quot;</span><span class="p">:</span> <span class="n">Lz4Compressor</span><span class="p">,</span>
+        <span class="s2">"gzip"</span><span class="p">:</span> <span class="n">GzipCompressor</span><span class="p">,</span>
+        <span class="c1"># "zip": ZipCompressor,</span>
+        <span class="c1"># "xz": XzCompressor,</span>
+        <span class="c1"># "rar": RarCompressor,</span>
+        <span class="s2">"zstd"</span><span class="p">:</span> <span class="n">ZstdCompressor</span><span class="p">,</span>
+        <span class="c1"># "bz2": Bzip2Compressor,</span>
+        <span class="c1"># "7z": SevenZipCompressor,</span>
+        <span class="s2">"lz4"</span><span class="p">:</span> <span class="n">Lz4Compressor</span><span class="p">,</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="Compressor.compress">
@@ -712,19 +712,19 @@
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">compressor_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
 <span class="sd">        :param compressor_format: compression format,</span>
 <span class="sd">            see supported algorithm in `compressors`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">assert</span> <span class="n">compressor_format</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compressors</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Prevent parallel extractions</span>
-        <span class="n">lock_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.lock&quot;</span><span class="p">))</span>
+        <span class="n">lock_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">".lock"</span><span class="p">))</span>
         <span class="k">with</span> <span class="n">FileLock</span><span class="p">(</span><span class="n">lock_path</span><span class="p">):</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">compressor</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">compressors</span><span class="p">[</span><span class="n">compressor_format</span><span class="p">]</span>
@@ -736,20 +736,20 @@
 <div class="viewcode-block" id="CompressManager">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CompressManager">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CompressManager</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class is used to compress or decompress a input file</span>
 <span class="sd">    using compression format algorithms.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="CompressManager.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CompressManager.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressor_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zstd&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressor_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"zstd"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param compressor_format: compression format algorithms,</span>
 <span class="sd">            default `zstd`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">assert</span> <span class="n">compressor_format</span> <span class="ow">in</span> <span class="n">Compressor</span><span class="o">.</span><span class="n">compressors</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compressor_format</span> <span class="o">=</span> <span class="n">compressor_format</span>
@@ -764,12 +764,12 @@
         <span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to uncompressed file.</span>
 <span class="sd">        :param output_path: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compressor</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressor_format</span><span class="p">)</span></div>
 
 
@@ -780,12 +780,12 @@
         <span class="n">input_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">output_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Decompress input file and save to output file.</span>
 
 <span class="sd">        :param input_path: path to compressed file.</span>
 <span class="sd">        :param output_path: path to uncompressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressor_format</span><span class="p">)</span></div>
 </div>
 
@@ -794,59 +794,59 @@
 <div class="viewcode-block" id="CacheCompressManager">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CacheCompressManager</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    This class is used to compress or decompress huggingface cache files</span>
 <span class="sd">    using compression format algorithms.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="CacheCompressManager.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressor_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;zstd&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compressor_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"zstd"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param compressor_format: compression format algorithms,</span>
 <span class="sd">            default `zstd`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compressor_format</span> <span class="o">=</span> <span class="n">compressor_format</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">compressor_extension</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">compressor_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compressor_extension</span> <span class="o">=</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">compressor_format</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compress_manager</span> <span class="o">=</span> <span class="n">CompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="n">compressor_format</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;_\d</span><span class="si">{5}</span><span class="s2">_of_&quot;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"_\d</span><span class="si">{5}</span><span class="s2">_of_"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_raw_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get a uncompressed file name from a compressed file.</span>
 <span class="sd">        :param filename: path to compressed file.</span>
 <span class="sd">        :return: path to uncompressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">assert</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compressor_format</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)[:</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compressor_extension</span><span class="p">)]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_compressed_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get a compressed file name from a uncompressed file.</span>
 <span class="sd">        :param filename: path to uncompressed file.</span>
 <span class="sd">        :return: path to compressed file.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">compressor_extension</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cache_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get dataset cache directory.</span>
 <span class="sd">        :param ds: input dataset.</span>
 <span class="sd">        :return: dataset cache directory.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">current_cache_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">cache_file</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">current_cache_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">cache_file</span><span class="p">[</span><span class="s2">"filename"</span><span class="p">])</span> <span class="k">for</span> <span class="n">cache_file</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">current_cache_files</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="n">cache_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">current_cache_files</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">cache_directory</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cache_file_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">cache_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fingerprints</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;.arrow&quot;</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">cache_directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fingerprints</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s2">".arrow"</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get all cache files in the dataset cache directory with fingerprints,</span>
 <span class="sd">        which ends with specified extension.</span>
 
@@ -856,11 +856,11 @@
 <span class="sd">            `cache-` and ends with specified extension.</span>
 <span class="sd">        :param extension: extension of cache files, default `.arrow`</span>
 <span class="sd">        :return: list of file names</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">cache_directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">fingerprints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
+            <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fingerprints</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">fingerprints</span> <span class="o">=</span> <span class="p">[</span><span class="n">fingerprints</span><span class="p">]</span>
 
@@ -868,14 +868,14 @@
         <span class="n">f_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">f_name</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">fingerprint</span> <span class="ow">in</span> <span class="n">fingerprints</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">f_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cache-</span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">f_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">"cache-</span><span class="si">{</span><span class="n">fingerprint</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">extension</span><span class="p">):</span>
                     <span class="n">f_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_names</span>
 
 <div class="viewcode-block" id="CacheCompressManager.compress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager.compress">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prev_ds</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">this_ds</span><span class="p">:</span> <span class="n">Dataset</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compress cache files with fingerprint in dataset cache directory.</span>
 
 <span class="sd">        :param prev_ds: previous dataset whose cache files need to be</span>
@@ -883,13 +883,13 @@
 <span class="sd">        :param this_ds: Current dataset that is computed from the previous</span>
 <span class="sd">            dataset. There might be overlaps between cache files of them, so we</span>
 <span class="sd">            must not compress cache files that will be used again in the</span>
-<span class="sd">            current dataset. If it&#39;s None, it means all cache files of previous</span>
+<span class="sd">            current dataset. If it's None, it means all cache files of previous</span>
 <span class="sd">            dataset should be compressed.</span>
 <span class="sd">        :param num_proc: number of processes to compress cache files.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># remove cache files from the list of cache files to be compressed</span>
-        <span class="n">prev_cache_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">prev_ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span>
-        <span class="n">this_cache_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">this_ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span> <span class="k">if</span> <span class="n">this_ds</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">prev_cache_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">"filename"</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">prev_ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span>
+        <span class="n">this_cache_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">"filename"</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">this_ds</span><span class="o">.</span><span class="n">cache_files</span><span class="p">]</span> <span class="k">if</span> <span class="n">this_ds</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">caches_to_compress</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">prev_cache_names</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">this_cache_names</span><span class="p">))</span>
 
         <span class="n">files_to_remove</span> <span class="o">=</span> <span class="p">[]</span>
@@ -899,7 +899,7 @@
         <span class="k">for</span> <span class="n">full_name</span> <span class="ow">in</span> <span class="n">caches_to_compress</span><span class="p">:</span>
             <span class="c1"># ignore the cache file of the original dataset and only consider</span>
             <span class="c1"># the cache files of following OPs</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;cache-&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"cache-"</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="c1"># If there are no specified cache files, just skip</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_name</span><span class="p">):</span>
@@ -909,7 +909,7 @@
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">compress_filename</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">formatted_cache_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_printed</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compressing cache file to </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Compressing cache file to </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">num_proc</span> <span class="ow">and</span> <span class="n">num_proc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">compress_manager</span><span class="o">.</span><span class="n">compress</span><span class="p">,</span>
@@ -922,7 +922,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">compress_manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">compress_filename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">formatted_cache_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_printed</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found compressed cache file </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found compressed cache file </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">files_printed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">formatted_cache_name</span><span class="p">)</span>
             <span class="n">files_to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">num_proc</span> <span class="ow">and</span> <span class="n">num_proc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -931,14 +931,14 @@
 
         <span class="c1"># clean up raw cache file</span>
         <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">files_to_remove</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Removing cache file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Removing cache file </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CacheCompressManager.decompress">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager.decompress">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">decompress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">fingerprints</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Decompress compressed cache files with fingerprint in</span>
 <span class="sd">        dataset cache directory.</span>
 
@@ -947,7 +947,7 @@
 <span class="sd">            accepted. If `None`, we will find all cache files which starts with</span>
 <span class="sd">            `cache-` and ends with compression format.</span>
 <span class="sd">        :param num_proc: number of processes to decompress cache files.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cache_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cache_directory</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cache_directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -966,7 +966,7 @@
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">raw_filename</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">formatted_cache_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_printed</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decompressing cache file to &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decompressing cache file to "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="n">files_printed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">formatted_cache_name</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">num_proc</span> <span class="ow">and</span> <span class="n">num_proc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span>
@@ -980,7 +980,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">compress_manager</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">raw_filename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">formatted_cache_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_printed</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found uncompressed cache files &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found uncompressed cache files "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">num_proc</span> <span class="ow">and</span> <span class="n">num_proc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span></div>
@@ -989,26 +989,26 @@
 <div class="viewcode-block" id="CacheCompressManager.format_cache_file_name">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager.format_cache_file_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">format_cache_file_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_file_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Use `*` to replace the sub rank in a cache file name.</span>
 <span class="sd">        :param cache_file_name: a cache file name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cache_file_name</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cache_file_name</span>
 
-        <span class="n">cache_file_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;_*_of_&quot;</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">cache_file_name</span><span class="p">)</span>
+        <span class="n">cache_file_name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">"_*_of_"</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">cache_file_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cache_file_name</span></div>
 
 
 <div class="viewcode-block" id="CacheCompressManager.cleanup_cache_files">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CacheCompressManager.cleanup_cache_files">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_cache_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Clean up all compressed cache files in dataset cache directory,</span>
 <span class="sd">        which starts with `cache-` and ends with compression format</span>
 <span class="sd">        :param ds: input dataset.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">cache_directory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cache_directory</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cache_directory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -1018,7 +1018,7 @@
             <span class="n">full_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cache_directory</span><span class="p">,</span> <span class="n">f_name</span><span class="p">))</span>
             <span class="n">formatted_cache_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format_cache_file_name</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">formatted_cache_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">files_printed</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Clean up cache file </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Clean up cache file </span><span class="si">{</span><span class="n">formatted_cache_name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">files_printed</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">formatted_cache_name</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">full_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_names</span><span class="p">)</span></div>
@@ -1029,21 +1029,21 @@
 <div class="viewcode-block" id="CompressionOff">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.compress.html#data_juicer.utils.compress.CompressionOff">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CompressionOff</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define a range that turn off the cache compression temporarily.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Define a range that turn off the cache compression temporarily."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Record the original cache compression method and turn it off.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache_utils</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">original_cache_compress</span> <span class="o">=</span> <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span>
         <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Restore the original cache compression method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">cache_utils</span>
 
         <span class="n">cache_utils</span><span class="o">.</span><span class="n">CACHE_COMPRESS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_cache_compress</span></div>

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.remove_long_words_mapper</span></li>
   </ul>
 </nav>
@@ -530,23 +533,23 @@
 
 <div class="viewcode-block" id="RemoveLongWordsMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveLongWordsMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;remove_long_words_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"remove_long_words_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveLongWordsMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to remove long words within a specific range.</span>
+<span class="w">    </span><span class="sd">"""Mapper to remove long words within a specific range.</span>
 
 <span class="sd">    This operator filters out words in the text that are either shorter than the specified</span>
 <span class="sd">    minimum length or longer than the specified maximum length. Words are first checked with</span>
 <span class="sd">    their original length, and if they do not meet the criteria, they are stripped of</span>
 <span class="sd">    special characters and re-evaluated. The key metric used is the character-based length</span>
 <span class="sd">    of each word. The processed text retains only the words that fall within the defined</span>
-<span class="sd">    length range. This operator processes text in batches for efficiency.&quot;&quot;&quot;</span>
+<span class="sd">    length range. This operator processes text in batches for efficiency."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RemoveLongWordsMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveLongWordsMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_len: The min mapper word length in this op, words</span>
@@ -555,7 +558,7 @@
 <span class="sd">            will be filtered if their length exceeds this parameter.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_len</span> <span class="o">=</span> <span class="n">min_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span></div>
@@ -567,7 +570,7 @@
         <span class="n">word_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_len</span> <span class="o">&lt;=</span> <span class="n">word_len</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="c1"># Only strip when word is too long; if too short, stripping won&#39;t help</span>
+        <span class="c1"># Only strip when word is too long; if too short, stripping won't help</span>
         <span class="k">if</span> <span class="n">word_len</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_len</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">strip</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">SPECIAL_CHARACTERS</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span>
         <span class="k">return</span> <span class="kc">False</span></div>

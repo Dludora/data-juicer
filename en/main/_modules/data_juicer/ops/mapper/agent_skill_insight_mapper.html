@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.agent_skill_insight_mapper</span></li>
   </ul>
 </nav>
@@ -532,7 +535,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;agent_skill_insight_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"agent_skill_insight_mapper"</span>
 
 
 <div class="viewcode-block" id="AgentSkillInsightMapper">
@@ -540,21 +543,21 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgentSkillInsightMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summarize agent_tool_types and agent_skill_types into insights via LLM.</span>
+<span class="w">    </span><span class="sd">"""Summarize agent_tool_types and agent_skill_types into insights via LLM.</span>
 
 <span class="sd">    Reads ``meta[agent_tool_types]`` and ``meta[agent_skill_types]`` (from</span>
 <span class="sd">    ``agent_dialog_normalize_mapper``), calls the API for 3–5 **concrete**</span>
 <span class="sd">    capability phrases (about 10 Chinese characters or ~4–8 English words</span>
-<span class="sd">    each; avoid vague &#39;read/write / processing&#39;), and stores them in</span>
+<span class="sd">    each; avoid vague 'read/write / processing'), and stores them in</span>
 <span class="sd">    ``meta[agent_skill_insights]``. Run after normalize. Override</span>
 <span class="sd">    ``system_prompt`` for locale-specific label style.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AgentSkillInsightMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.agent_skill_insight_mapper.html#data_juicer.ops.mapper.AgentSkillInsightMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">tool_types_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_tool_types</span><span class="p">,</span>
         <span class="n">skill_types_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_skill_types</span><span class="p">,</span>
@@ -565,7 +568,7 @@
         <span class="n">try_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">model_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="n">preferred_output_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">preferred_output_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -581,7 +584,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">try_num</span> <span class="o">=</span> <span class="n">try_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span>
             <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
             <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -611,15 +614,15 @@
             <span class="n">meta</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">insights_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="n">tools_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span>
-        <span class="n">skills_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span>
-        <span class="n">user_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Tools: </span><span class="si">{</span><span class="n">tools_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">Skills: </span><span class="si">{</span><span class="n">skills_str</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">tools_str</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span>
+        <span class="n">skills_str</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">skills</span><span class="p">[:</span><span class="mi">30</span><span class="p">])</span>
+        <span class="n">user_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Tools: </span><span class="si">{</span><span class="n">tools_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">Skills: </span><span class="si">{</span><span class="n">skills_str</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">user_content</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">user_content</span><span class="p">},</span>
         <span class="p">]</span>
-        <span class="n">raw</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">client</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
@@ -627,13 +630,13 @@
                 <span class="k">if</span> <span class="n">raw</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;agent_skill_insight_mapper: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"agent_skill_insight_mapper: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">meta</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">insights_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">return</span> <span class="n">sample</span>
         <span class="c1"># Split on common separators (LLMs often use Chinese commas /顿号).</span>
-        <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[,，、;；]+&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[,，、;；]+"</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
         <span class="n">meta</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">insights_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">sample</span></div>

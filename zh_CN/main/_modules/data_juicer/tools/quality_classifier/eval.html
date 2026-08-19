@@ -521,19 +521,19 @@
 <span class="c1">#</span>
 <span class="c1"># This tool needs several arguments:</span>
 <span class="c1">#   - positive_datasets: the paths to the positive datasets. It could be a</span>
-<span class="c1">#       string for a single dataset, e.g. &#39;pos.parquet&#39;, or a list of strings</span>
-<span class="c1">#       for several datasets, e.g. &#39;[&quot;pos1.parquet&quot;, &quot;pos2.parquet&quot;]&#39;.</span>
+<span class="c1">#       string for a single dataset, e.g. 'pos.parquet', or a list of strings</span>
+<span class="c1">#       for several datasets, e.g. '["pos1.parquet", "pos2.parquet"]'.</span>
 <span class="c1">#   - negative_datasets: the paths to the negative datasets. It could be a</span>
-<span class="c1">#       string for a single dataset, e.g. &#39;neg.parquet&#39;, or a list of strings</span>
-<span class="c1">#       for several datasets, e.g. &#39;[&quot;neg1.parquet&quot;, &quot;neg2.parquet&quot;]&#39;.</span>
-<span class="c1">#   - model: quality classifier name to apply. It&#39;s &quot;gpt3&quot; in default. You can</span>
-<span class="c1">#       use one of [&quot;gpt3&quot;, &quot;chinese&quot;, &quot;code&quot;] we provided, or you can set it</span>
+<span class="c1">#       string for a single dataset, e.g. 'neg.parquet', or a list of strings</span>
+<span class="c1">#       for several datasets, e.g. '["neg1.parquet", "neg2.parquet"]'.</span>
+<span class="c1">#   - model: quality classifier name to apply. It's "gpt3" in default. You can</span>
+<span class="c1">#       use one of ["gpt3", "chinese", "code"] we provided, or you can set it</span>
 <span class="c1">#       to the path to your own model trained using the train.py tool.</span>
-<span class="c1">#   - tokenizer: what tokenizer to use to tokenize texts. It&#39;s None in default,</span>
+<span class="c1">#   - tokenizer: what tokenizer to use to tokenize texts. It's None in default,</span>
 <span class="c1">#       which means using the standard Tokenizer of PySpark. You can use one of</span>
-<span class="c1">#       [&quot;zh.sp.model&quot;, &quot;code.sp.model&quot;] we provided, or you can set it to the</span>
+<span class="c1">#       ["zh.sp.model", "code.sp.model"] we provided, or you can set it to the</span>
 <span class="c1">#       path to your own sentencepiece model.</span>
-<span class="c1">#   - text_key: the field key name to hold texts to be classified. It&#39;s &quot;text&quot;</span>
+<span class="c1">#   - text_key: the field key name to hold texts to be classified. It's "text"</span>
 <span class="c1">#       in default.</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">fire</span>
@@ -549,28 +549,28 @@
 <div class="viewcode-block" id="main">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.eval.html#data_juicer.tools.quality_classifier.eval.main">[文档]</a>
 <span class="nd">@logger</span><span class="o">.</span><span class="n">catch</span><span class="p">(</span><span class="n">reraise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">positive_datasets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">negative_datasets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;my_quality_model&quot;</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">positive_datasets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">negative_datasets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">"my_quality_model"</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Evaluate a trained quality classifier using specific positive/negative</span>
 <span class="sd">    datasets</span>
 <span class="sd">    :param positive_datasets: the paths to the positive datasets. It could be a</span>
-<span class="sd">        string for a single dataset, e.g. &#39;pos.parquet&#39;, or a list of strings</span>
-<span class="sd">        for multiple datasets, e.g. &#39;[&quot;pos1.parquet&quot;, &quot;pos2.parquet&quot;]&#39;</span>
+<span class="sd">        string for a single dataset, e.g. 'pos.parquet', or a list of strings</span>
+<span class="sd">        for multiple datasets, e.g. '["pos1.parquet", "pos2.parquet"]'</span>
 <span class="sd">    :param negative_datasets: the paths to the negative datasets. It could be a</span>
-<span class="sd">        string for a single dataset, e.g. &#39;neg.parquet&#39;, or a list of strings</span>
-<span class="sd">        for multiple datasets, e.g. &#39;[&quot;neg1.parquet&quot;, &quot;neg2.parquet&quot;]&#39;</span>
-<span class="sd">    :param model: quality classifier name to apply. It&#39;s &quot;my_quality_model&quot; in</span>
-<span class="sd">        default. You can use one of [&quot;gpt3&quot;, &quot;chinese&quot;, &quot;code&quot;] we provided, or</span>
+<span class="sd">        string for a single dataset, e.g. 'neg.parquet', or a list of strings</span>
+<span class="sd">        for multiple datasets, e.g. '["neg1.parquet", "neg2.parquet"]'</span>
+<span class="sd">    :param model: quality classifier name to apply. It's "my_quality_model" in</span>
+<span class="sd">        default. You can use one of ["gpt3", "chinese", "code"] we provided, or</span>
 <span class="sd">        you can set it to the path to your own model trained using the train.py</span>
 <span class="sd">        tool</span>
-<span class="sd">    :param tokenizer: what tokenizer to use to tokenize texts. It&#39;s None in</span>
+<span class="sd">    :param tokenizer: what tokenizer to use to tokenize texts. It's None in</span>
 <span class="sd">        default, which means using the standard Tokenizer of PySpark. You can</span>
-<span class="sd">        use one of [&quot;zh.sp.model&quot;, &quot;code.sp.model&quot;] we provided, or you can set</span>
+<span class="sd">        use one of ["zh.sp.model", "code.sp.model"] we provided, or you can set</span>
 <span class="sd">        it to the path to your own sentencepiece model</span>
-<span class="sd">    :param text_key: the field key name to hold texts to be classified. It&#39;s</span>
-<span class="sd">        &quot;text&quot; in default</span>
+<span class="sd">    :param text_key: the field key name to hold texts to be classified. It's</span>
+<span class="sd">        "text" in default</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># convert a single dataset to a dataset list</span>
     <span class="k">if</span> <span class="n">positive_datasets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">positive_datasets</span> <span class="o">=</span> <span class="p">[]</span>
@@ -596,16 +596,16 @@
     <span class="k">elif</span> <span class="n">neg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">neg</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Empty dataset.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Empty dataset."</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># start evaluation</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of samples: </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of samples: </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">eval</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span></div>
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">fire</span><span class="o">.</span><span class="n">Fire</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 

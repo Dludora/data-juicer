@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.remove_table_text_mapper</span></li>
   </ul>
 </nav>
@@ -521,15 +524,15 @@
 
 <div class="viewcode-block" id="RemoveTableTextMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveTableTextMapper">[docs]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;remove_table_text_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"remove_table_text_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveTableTextMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to remove table texts from text samples.</span>
+<span class="w">    </span><span class="sd">"""Mapper to remove table texts from text samples.</span>
 
 <span class="sd">    This operator uses regular expressions to identify and remove tables from the text. It</span>
 <span class="sd">    targets tables with a specified range of columns, defined by the minimum and maximum</span>
 <span class="sd">    number of columns. The operator iterates over each sample, applying the regex pattern to</span>
 <span class="sd">    remove tables that match the column criteria. The processed text, with tables removed,</span>
-<span class="sd">    is then stored back in the sample. This operation is batched for efficiency.&quot;&quot;&quot;</span>
+<span class="sd">    is then stored back in the sample. This operation is batched for efficiency."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -542,18 +545,18 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_col: The min number of columns of table to remove.</span>
 <span class="sd">        :param max_col: The max number of columns of table to remove.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_col</span> <span class="o">=</span> <span class="n">min_col</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_col</span> <span class="o">=</span> <span class="n">max_col</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;=\n)((\S+?)([ |\t](\S+?)){</span><span class="si">%d</span><span class="s2">}\n+){2,}&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"(?&lt;=\n)((\S+?)([ |\t](\S+?)){</span><span class="si">%d</span><span class="s2">}\n+){2,}"</span></div>
 
 
 <div class="viewcode-block" id="RemoveTableTextMapper.process_batched">
@@ -562,7 +565,7 @@
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]):</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">min_col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_col</span><span class="p">):</span>
                 <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
             <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
 

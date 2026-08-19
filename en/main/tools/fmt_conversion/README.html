@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="current nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -598,35 +603,35 @@ These tools can convert raw datasets into a unified intermediate format required
 <p>An overview of DJ format is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="o">//</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">core</span> <span class="n">contents</span><span class="p">:</span> <span class="n">texts</span><span class="p">,</span> <span class="n">dialogs</span><span class="p">,</span> <span class="o">...</span>
-  <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;xxx&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;xxx&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="s2">&quot;xxx&quot;</span><span class="p">,</span>
+  <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"xxx"</span><span class="p">,</span>
+  <span class="s2">"query"</span><span class="p">:</span> <span class="s2">"xxx"</span><span class="p">,</span>
+  <span class="s2">"response"</span><span class="p">:</span> <span class="s2">"xxx"</span><span class="p">,</span>
   <span class="o">......</span>
   <span class="o">//</span> <span class="o">&lt;&lt;&lt;</span> <span class="n">core</span> <span class="n">contents</span>
 
   <span class="o">//</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">extra</span> <span class="n">data</span> <span class="n">contents</span><span class="p">:</span> <span class="n">multimodal</span> <span class="n">data</span> <span class="n">paths</span><span class="p">,</span> <span class="o">...</span>
-  <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/image/of/antarctica_snowfield&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path/to/the/image/of/antarctica_map&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path/to/the/image/of/europe_map&quot;</span>
+  <span class="s2">"images"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/image/of/antarctica_snowfield"</span><span class="p">,</span>
+    <span class="s2">"path/to/the/image/of/antarctica_map"</span><span class="p">,</span>
+    <span class="s2">"path/to/the/image/of/europe_map"</span>
   <span class="p">],</span>
-  <span class="s2">&quot;audios&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/audio/of/sound_of_waves_in_Antarctic_Ocean&quot;</span>
+  <span class="s2">"audios"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/audio/of/sound_of_waves_in_Antarctic_Ocean"</span>
   <span class="p">],</span>
-  <span class="s2">&quot;videos&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/video/of/remote_sensing_view_of_antarctica&quot;</span>
+  <span class="s2">"videos"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/video/of/remote_sensing_view_of_antarctica"</span>
   <span class="p">],</span>
   <span class="o">//</span> <span class="o">&lt;&lt;&lt;</span> <span class="n">extra</span> <span class="n">data</span> <span class="n">contents</span>
 
   <span class="o">//</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">meta</span> <span class="n">infos</span> <span class="ow">and</span> <span class="n">stats</span><span class="p">,</span> <span class="n">which</span> <span class="n">could</span> <span class="n">be</span> <span class="n">primitive</span> <span class="ow">or</span> <span class="n">produced</span> <span class="n">by</span> <span class="n">Data</span><span class="o">-</span><span class="n">Juicer</span>
-  <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;src&quot;</span><span class="p">:</span> <span class="s2">&quot;customized&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;xxx&quot;</span>
+  <span class="s2">"meta"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"src"</span><span class="p">:</span> <span class="s2">"customized"</span><span class="p">,</span>
+    <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.1"</span><span class="p">,</span>
+    <span class="s2">"author"</span><span class="p">:</span> <span class="s2">"xxx"</span>
   <span class="p">},</span>
-  <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;image_widths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">224</span><span class="p">,</span> <span class="mi">336</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span>
+  <span class="s2">"stats"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"lang"</span><span class="p">:</span> <span class="s2">"en"</span><span class="p">,</span>
+    <span class="s2">"image_widths"</span><span class="p">:</span> <span class="p">[</span><span class="mi">224</span><span class="p">,</span> <span class="mi">336</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span>
     <span class="o">...</span>
   <span class="p">},</span>
   <span class="o">//</span> <span class="o">&lt;&lt;&lt;</span> <span class="n">meta</span> <span class="n">infos</span> <span class="ow">and</span> <span class="n">stats</span>

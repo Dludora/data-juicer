@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.llm_difficulty_score_filter</span></li>
   </ul>
 </nav>
@@ -518,17 +521,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_difficulty_score_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_difficulty_score_filter"</span>
 
 
 <div class="viewcode-block" id="LLMDifficultyScoreFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_difficulty_score_filter.html#data_juicer.ops.filter.LLMDifficultyScoreFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMDifficultyScoreFilter</span><span class="p">(</span><span class="n">LLMAnalysisFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with high difficulty scores estimated by an LLM.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with high difficulty scores estimated by an LLM.</span>
 
 <span class="sd">    This operator uses a Hugging Face LLM to evaluate the difficulty of each sample. The LLM</span>
 <span class="sd">    analyzes the sample across multiple dimensions, including linguistic complexity,</span>
@@ -536,11 +539,11 @@
 <span class="sd">    scored on a 1-5 scale, with 5 being the highest difficulty. The final difficulty score</span>
 <span class="sd">    is computed as the average of these dimension scores. Samples are kept if their</span>
 <span class="sd">    difficulty score falls within the specified range (min_score to max_score). The key</span>
-<span class="sd">    metric &#39;llm_difficulty_score&#39; is stored in the sample&#39;s stats, along with detailed</span>
-<span class="sd">    records and flags.&quot;&quot;&quot;</span>
+<span class="sd">    metric 'llm_difficulty_score' is stored in the sample's stats, along with detailed</span>
+<span class="sd">    records and flags."""</span>
 
     <span class="c1"># avoid leading whitespace</span>
-    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">You are an expert pedagogical evaluator for LLM training data. Analyze each data sample through multiple difficulty lenses and provide calibrated scores with detailed reasoning. Follow these guidelines:</span>
 
 <span class="s2">1. Evaluation Dimensions</span>
@@ -554,15 +557,15 @@
 <span class="s2">2. Output Format</span>
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;linguistic_complexity&quot;: ,</span>
-<span class="s2">    &quot;conceptual_depth&quot;: ,</span>
-<span class="s2">    &quot;prior_knowledge&quot;: ,</span>
-<span class="s2">    &quot;step_complexity&quot;: ,</span>
-<span class="s2">    &quot;ambiguity&quot;:</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "linguistic_complexity": ,</span>
+<span class="s2">    "conceptual_depth": ,</span>
+<span class="s2">    "prior_knowledge": ,</span>
+<span class="s2">    "step_complexity": ,</span>
+<span class="s2">    "ambiguity":</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;multistep_reasoning&quot;, &quot;cultural_context&quot;, ...],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;Technical analysis of challenge sources&quot;</span>
+<span class="s2">  "flags": ["multistep_reasoning", "cultural_context", ...],</span>
+<span class="s2">  "rationale": "Technical analysis of challenge sources"</span>
 <span class="s2">}</span>
 <span class="s2">3. Special Instructions</span>
 <span class="s2">- Differentiate intrinsic vs. extrinsic difficulty factors</span>
@@ -576,29 +579,29 @@
 
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;linguistic_complexity&quot;: 3,</span>
-<span class="s2">    &quot;conceptual_depth&quot;: 5,</span>
-<span class="s2">    &quot;prior_knowledge&quot;: 4,</span>
-<span class="s2">    &quot;step_complexity&quot;: 4,</span>
-<span class="s2">    &quot;ambiguity&quot;: 5</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "linguistic_complexity": 3,</span>
+<span class="s2">    "conceptual_depth": 5,</span>
+<span class="s2">    "prior_knowledge": 4,</span>
+<span class="s2">    "step_complexity": 4,</span>
+<span class="s2">    "ambiguity": 5</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;nonlinear_reasoning&quot;, &quot;semantic_ambiguity&quot;],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;High conceptual difficulty due to multi-layered metaphor interpretation requiring philosophy background. Moderate linguistic complexity offset by implicit cultural references.&quot;</span>
+<span class="s2">  "flags": ["nonlinear_reasoning", "semantic_ambiguity"],</span>
+<span class="s2">  "rationale": "High conceptual difficulty due to multi-layered metaphor interpretation requiring philosophy background. Moderate linguistic complexity offset by implicit cultural references."</span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="s2">"""</span>  <span class="c1"># noqa: E501</span>
     <span class="n">DEFAULT_DIM_REQUIRED_KEYS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;linguistic_complexity&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;conceptual_depth&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;prior_knowledge&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;step_complexity&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;ambiguity&quot;</span><span class="p">,</span>
+        <span class="s2">"linguistic_complexity"</span><span class="p">,</span>
+        <span class="s2">"conceptual_depth"</span><span class="p">,</span>
+        <span class="s2">"prior_knowledge"</span><span class="p">,</span>
+        <span class="s2">"step_complexity"</span><span class="p">,</span>
+        <span class="s2">"ambiguity"</span><span class="p">,</span>
     <span class="p">]</span>
 
 <div class="viewcode-block" id="LLMDifficultyScoreFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_difficulty_score_filter.html#data_juicer.ops.filter.LLMDifficultyScoreFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_score</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

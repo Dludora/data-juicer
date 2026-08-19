@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="current nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -626,32 +631,32 @@
 <li><p>不同于纯文本样本，对于多模态样本来说，为其他模态计算的stats可能为针对多模态数据列表的一个stats列表（如例子中的image_widths）。</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;__dj__image&gt; Antarctica is Earth&#39;s southernmost and least-populated continent. &lt;|__dj__eoc|&gt; &quot;</span>
-          <span class="s2">&quot;&lt;__dj__video&gt; &lt;__dj__audio&gt; Situated almost entirely south of the Antarctic Circle and surrounded by the &quot;</span>
-          <span class="s2">&quot;Southern Ocean (also known as the Antarctic Ocean), it contains the geographic South Pole. &lt;|__dj__eoc|&gt; &quot;</span>
-          <span class="s2">&quot;Antarctica is the fifth-largest continent, being about 40</span><span class="si">% la</span><span class="s2">rger than Europe, &quot;</span>
-          <span class="s2">&quot;and has an area of 14,200,000 km2 (5,500,000 sq mi). &lt;__dj__image&gt; &lt;__dj__image&gt; &lt;|__dj__eoc|&gt; &quot;</span>
-          <span class="s2">&quot;Most of Antarctica is covered by the Antarctic ice sheet, &quot;</span>
-          <span class="s2">&quot;with an average thickness of 1.9 km (1.2 mi). &lt;|__dj__eoc|&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/image/of/antarctica_snowfield&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path/to/the/image/of/antarctica_map&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path/to/the/image/of/europe_map&quot;</span>
+  <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"&lt;__dj__image&gt; Antarctica is Earth's southernmost and least-populated continent. &lt;|__dj__eoc|&gt; "</span>
+          <span class="s2">"&lt;__dj__video&gt; &lt;__dj__audio&gt; Situated almost entirely south of the Antarctic Circle and surrounded by the "</span>
+          <span class="s2">"Southern Ocean (also known as the Antarctic Ocean), it contains the geographic South Pole. &lt;|__dj__eoc|&gt; "</span>
+          <span class="s2">"Antarctica is the fifth-largest continent, being about 40</span><span class="si">% la</span><span class="s2">rger than Europe, "</span>
+          <span class="s2">"and has an area of 14,200,000 km2 (5,500,000 sq mi). &lt;__dj__image&gt; &lt;__dj__image&gt; &lt;|__dj__eoc|&gt; "</span>
+          <span class="s2">"Most of Antarctica is covered by the Antarctic ice sheet, "</span>
+          <span class="s2">"with an average thickness of 1.9 km (1.2 mi). &lt;|__dj__eoc|&gt;"</span><span class="p">,</span>
+  <span class="s2">"images"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/image/of/antarctica_snowfield"</span><span class="p">,</span>
+    <span class="s2">"path/to/the/image/of/antarctica_map"</span><span class="p">,</span>
+    <span class="s2">"path/to/the/image/of/europe_map"</span>
   <span class="p">],</span>
-  <span class="s2">&quot;audios&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/audio/of/sound_of_waves_in_Antarctic_Ocean&quot;</span>
+  <span class="s2">"audios"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/audio/of/sound_of_waves_in_Antarctic_Ocean"</span>
   <span class="p">],</span>
-  <span class="s2">&quot;videos&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">&quot;path/to/the/video/of/remote_sensing_view_of_antarctica&quot;</span>
+  <span class="s2">"videos"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"path/to/the/video/of/remote_sensing_view_of_antarctica"</span>
   <span class="p">],</span>
-  <span class="s2">&quot;meta&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;src&quot;</span><span class="p">:</span> <span class="s2">&quot;customized&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;xxx&quot;</span>
+  <span class="s2">"meta"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"src"</span><span class="p">:</span> <span class="s2">"customized"</span><span class="p">,</span>
+    <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"0.1"</span><span class="p">,</span>
+    <span class="s2">"author"</span><span class="p">:</span> <span class="s2">"xxx"</span>
   <span class="p">},</span>
-  <span class="s2">&quot;stats&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;lang&quot;</span><span class="p">:</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;image_widths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">224</span><span class="p">,</span> <span class="mi">336</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span>
+  <span class="s2">"stats"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"lang"</span><span class="p">:</span> <span class="s2">"en"</span><span class="p">,</span>
+    <span class="s2">"image_widths"</span><span class="p">:</span> <span class="p">[</span><span class="mi">224</span><span class="p">,</span> <span class="mi">336</span><span class="p">,</span> <span class="mi">512</span><span class="p">],</span>
     <span class="o">...</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -753,17 +758,17 @@ python<span class="w"> </span>tools/fmt_conversion/multimodal/source_format_to_d
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="err">#</span><span class="w"> </span><span class="err">原始对话</span>
 <span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="s2">&quot;human&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;sentry self hosted api 504&quot;</span>
+<span class="w">        </span><span class="nt">"from"</span><span class="p">:</span><span class="s2">"human"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"sentry self hosted api 504"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="s2">&quot;gpt&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="s2">&quot;A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\nSlow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n\nServer overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n\nLarge dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n\nAPI endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\nCheck your network connection and ensure that it is stable.\n\nVerify that the server hosting the API is not overloaded with requests.\n\nOptimize the query to retrieve only the necessary data.\n\nTry using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n2. Verify that the server hosting the API is not overloaded with requests.\n3. Optimize the query to retrieve only the necessary data.\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;markdown&quot;</span><span class="p">:{</span>
-<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;answer-markdown&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="s2">&quot;A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n\n2. Verify that the server hosting the API is not overloaded with requests.\n\n3. Optimize the query to retrieve only the necessary data.\n\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance.&quot;</span>
+<span class="w">        </span><span class="nt">"from"</span><span class="p">:</span><span class="s2">"gpt"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="s2">"A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\nSlow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n\nServer overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n\nLarge dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n\nAPI endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\nCheck your network connection and ensure that it is stable.\n\nVerify that the server hosting the API is not overloaded with requests.\n\nOptimize the query to retrieve only the necessary data.\n\nTry using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n2. Verify that the server hosting the API is not overloaded with requests.\n3. Optimize the query to retrieve only the necessary data.\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"markdown"</span><span class="p">:{</span>
+<span class="w">            </span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"answer-markdown"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"index"</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"answer"</span><span class="p">:</span><span class="s2">"A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n\n2. Verify that the server hosting the API is not overloaded with requests.\n\n3. Optimize the query to retrieve only the necessary data.\n\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance."</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">]</span>
@@ -771,12 +776,12 @@ python<span class="w"> </span>tools/fmt_conversion/multimodal/source_format_to_d
 <span class="err">#</span><span class="w"> </span><span class="err">转换后的对话</span>
 <span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="s2">&quot;human&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;sentry self hosted api 504&quot;</span>
+<span class="w">        </span><span class="nt">"from"</span><span class="p">:</span><span class="s2">"human"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"sentry self hosted api 504"</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;from&quot;</span><span class="p">:</span><span class="s2">&quot;gpt&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n2. Verify that the server hosting the API is not overloaded with requests.\n3. Optimize the query to retrieve only the necessary data.\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance.&quot;</span>
+<span class="w">        </span><span class="nt">"from"</span><span class="p">:</span><span class="s2">"gpt"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"A 504 error when using the Sentry self-hosted API typically indicates that the API request timed out. This means that the server hosting the API did not receive a response from the client within the expected time frame.\n\nHere are a few possible reasons for a 504 error when using the Sentry self-hosted API:\n\n1. Slow network connection: The API request may be taking longer than expected due to a slow network connection. Check your network connection and try again.\n2. Server overload: The server hosting the API may be overloaded with requests. Try again later when the server load has decreased.\n3. Large dataset: If you are trying to retrieve a large amount of data, the API request may take longer than expected. Try breaking up the request into smaller chunks or optimizing the query to retrieve only the necessary data.\n4. API endpoint issues: There may be issues with the specific API endpoint you are using. Try using a different endpoint or contact the Sentry support team for assistance.\n\nTo resolve a 504 error when using the Sentry self-hosted API, try the following:\n\n1. Check your network connection and ensure that it is stable.\n2. Verify that the server hosting the API is not overloaded with requests.\n3. Optimize the query to retrieve only the necessary data.\n4. Try using a different API endpoint.\n\nIf the issue persists, contact the Sentry support team for assistance."</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -792,33 +797,33 @@ python<span class="w"> </span>tools/fmt_conversion/multimodal/source_format_to_d
 <h4>类WavCaps格式<a class="headerlink" href="#wavcaps" title="链接到此标题。">#</a></h4>
 <p><a class="reference external" href="https://github.com/XinhaoMei/WavCaps#dataset">WavCaps</a> 数据集由 <a class="reference external" href="https://freesound.org/">FreeSound</a>，<a class="reference external" href="https://sound-effects.bbcrewind.co.uk/">BBC Sound Effects</a>，<a class="reference external" href="https://soundbible.com/">SoundBible</a>，<a class="reference external" href="https://research.google.com/audioset/download_strong.html">AudioSet Strongly-labelled Subset</a> 四个子数据集组成，每个数据集里都有不同的字段。例如SoundBible里包含了‘description’字段，而该字段在AudioSet里并不存在。为了保证不同子数据集在转换后能够正常合并，在wavcaps_to_dj阶段使用了所有子数据集字段的并集，并在dj_to_wavcaps阶段完整保留了所有字段。</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="err">#</span><span class="w"> </span><span class="err">原始数据集</span>
-<span class="p">{</span><span class="w"> </span><span class="nt">&quot;num_captions_per_audio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Airplane Landing Airport&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Large commercial airplane landing at an airport runway.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daniel Simion&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;href&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2219-Airplane-Landing-Airport.html&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;caption&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An airplane is landing.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2219&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.1424375</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;audio&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wav_path&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;download_link&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://soundbible.com/grab.php?id=2219&amp;type=wav&quot;</span><span class="p">}]</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">"num_captions_per_audio"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Airplane Landing Airport"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Large commercial airplane landing at an airport runway."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Daniel Simion"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2219-Airplane-Landing-Airport.html"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"caption"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An airplane is landing."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2219"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">14.1424375</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"audio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"wav_path"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"download_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://soundbible.com/grab.php?id=2219&amp;type=wav"</span><span class="p">}]</span>
 <span class="p">}</span>
 
 <span class="err">#</span><span class="w"> </span><span class="err">转换后数据集</span>
-<span class="p">{</span><span class="w"> </span><span class="nt">&quot;num_captions_per_audio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
-<span class="w">        </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Airplane Landing Airport&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Large commercial airplane landing at an airport runway.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daniel Simion&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;href&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2219-Airplane-Landing-Airport.html&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;caption&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;An airplane is landing.&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2219&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">14.1424375</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;audio&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;wav_path&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;download_link&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://soundbible.com/grab.php?id=2219&amp;type=wav&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span><span class="p">}]</span>
+<span class="p">{</span><span class="w"> </span><span class="nt">"num_captions_per_audio"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Airplane Landing Airport"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Large commercial airplane landing at an airport runway."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Daniel Simion"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2219-Airplane-Landing-Airport.html"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"caption"</span><span class="p">:</span><span class="w"> </span><span class="s2">"An airplane is landing."</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2219"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"duration"</span><span class="p">:</span><span class="w"> </span><span class="mf">14.1424375</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"audio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"wav_path"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"download_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://soundbible.com/grab.php?id=2219&amp;type=wav"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"category"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"> </span><span class="p">}]</span>
 <span class="p">}</span>
 </pre></div>
 </div>

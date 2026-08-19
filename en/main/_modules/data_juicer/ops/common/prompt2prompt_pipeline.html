@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.common.prompt2prompt_pipeline</span></li>
   </ul>
 </nav>
@@ -519,8 +522,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">diffusers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;diffusers&quot;</span><span class="p">)</span>
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">diffusers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"diffusers"</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
 
 <span class="c1"># Copied from diffusers.pipelines.stable_diffusion.</span>
@@ -528,18 +531,18 @@
 <div class="viewcode-block" id="rescale_noise_cfg">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.rescale_noise_cfg">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rescale_noise_cfg</span><span class="p">(</span><span class="n">noise_cfg</span><span class="p">,</span> <span class="n">noise_pred_text</span><span class="p">,</span> <span class="n">guidance_rescale</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Rescale `noise_cfg` according to `guidance_rescale`. Based on</span>
 <span class="sd">    findings of [Common Diffusion Noise Schedules and</span>
 <span class="sd">    Sample Steps are Flawed](https://arxiv.org/pdf/2305.08891.pdf).</span>
 <span class="sd">     See Section 3.4</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">std_text</span> <span class="o">=</span> <span class="n">noise_pred_text</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">noise_pred_text</span><span class="o">.</span><span class="n">ndim</span><span class="p">)),</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">std_cfg</span> <span class="o">=</span> <span class="n">noise_cfg</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">noise_cfg</span><span class="o">.</span><span class="n">ndim</span><span class="p">)),</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># rescale the results from guidance (fixes overexposure)</span>
     <span class="n">noise_pred_rescaled</span> <span class="o">=</span> <span class="n">noise_cfg</span> <span class="o">*</span> <span class="p">(</span><span class="n">std_text</span> <span class="o">/</span> <span class="n">std_cfg</span><span class="p">)</span>
     <span class="c1"># mix with the original results from guidance by factor guidance_rescale</span>
-    <span class="c1">#  to avoid &quot;plain looking&quot; images</span>
+    <span class="c1">#  to avoid "plain looking" images</span>
     <span class="n">noise_cfg</span> <span class="o">=</span> <span class="n">guidance_rescale</span> <span class="o">*</span> <span class="n">noise_pred_rescaled</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">guidance_rescale</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise_cfg</span>
     <span class="k">return</span> <span class="n">noise_cfg</span></div>
 
@@ -549,7 +552,7 @@
 <div class="viewcode-block" id="Prompt2PromptPipeline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.Prompt2PromptPipeline">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Prompt2PromptPipeline</span><span class="p">(</span><span class="n">diffusers</span><span class="o">.</span><span class="n">pipelines</span><span class="o">.</span><span class="n">stable_diffusion_xl</span><span class="o">.</span><span class="n">StableDiffusionXLPipeline</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">    Args:</span>
 <span class="sd">    Prompt-to-Prompt-Pipeline for text-to-image generation using</span>
 <span class="sd">    Stable Diffusion. This model inherits from</span>
@@ -584,9 +587,9 @@
 <span class="sd">        feature_extractor ([`CLIPFeatureExtractor`]):</span>
 <span class="sd">            Model that extracts features from generated images to be</span>
 <span class="sd">             used as inputs for the `safety_checker`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_optional_components</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;safety_checker&quot;</span><span class="p">,</span> <span class="s2">&quot;feature_extractor&quot;</span><span class="p">]</span>
+    <span class="n">_optional_components</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"safety_checker"</span><span class="p">,</span> <span class="s2">"feature_extractor"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Prompt2PromptPipeline.check_inputs">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.Prompt2PromptPipeline.check_inputs">[docs]</a>
@@ -606,95 +609,95 @@
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">height</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">width</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`height` and `width` have to be divisible by </span><span class="se">\</span>
-<span class="s2">                    8 but are </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"`height` and `width` have to be divisible by </span><span class="se">\</span>
+<span class="s2">                    8 but are </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">width</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">callback_steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
             <span class="n">callback_steps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback_steps</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">callback_steps</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`callback_steps` has to be a positive integer </span><span class="se">\</span>
-<span class="s2">                    but is </span><span class="si">{</span><span class="n">callback_steps</span><span class="si">}</span><span class="s2"> of type&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">callback_steps</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">"`callback_steps` has to be a positive integer </span><span class="se">\</span>
+<span class="s2">                    but is </span><span class="si">{</span><span class="n">callback_steps</span><span class="si">}</span><span class="s2"> of type"</span>
+                <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">callback_steps</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot forward both `prompt`: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
-<span class="s2">                    `prompt_embeds`: </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure to&quot;</span>
-                <span class="s2">&quot; only forward one of the two.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Cannot forward both `prompt`: </span><span class="si">{</span><span class="n">prompt</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
+<span class="s2">                    `prompt_embeds`: </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure to"</span>
+                <span class="s2">" only forward one of the two."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prompt_2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot forward both `prompt_2`: </span><span class="si">{</span><span class="n">prompt_2</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
-<span class="s2">                    `prompt_embeds`: </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure to&quot;</span>
-                <span class="s2">&quot; only forward one of the two.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Cannot forward both `prompt_2`: </span><span class="si">{</span><span class="n">prompt_2</span><span class="si">}</span><span class="s2"> and </span><span class="se">\</span>
+<span class="s2">                    `prompt_embeds`: </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure to"</span>
+                <span class="s2">" only forward one of the two."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">prompt_embeds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Provide either `prompt` or `prompt_embeds`. </span><span class="se">\</span>
-<span class="s2">                    Cannot leave both `prompt` and `prompt_embeds` undefined.&quot;</span>
+                <span class="s2">"Provide either `prompt` or `prompt_embeds`. </span><span class="se">\</span>
+<span class="s2">                    Cannot leave both `prompt` and `prompt_embeds` undefined."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`prompt` has to be of type `str` or `list` </span><span class="se">\</span>
-<span class="s2">                    but is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"`prompt` has to be of type `str` or `list` </span><span class="se">\</span>
+<span class="s2">                    but is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">prompt_2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt_2</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prompt_2</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`prompt_2` has to be of type `str` or `list` </span><span class="se">\</span>
-<span class="s2">                    but is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">prompt_2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"`prompt_2` has to be of type `str` or `list` </span><span class="se">\</span>
+<span class="s2">                    but is </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">prompt_2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">negative_prompt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">negative_prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot forward both `negative_prompt`: </span><span class="se">\</span>
-<span class="s2">                    </span><span class="si">{</span><span class="n">negative_prompt</span><span class="si">}</span><span class="s2"> and `negative_prompt_embeds`:&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure </span><span class="se">\</span>
-<span class="s2">                    to only forward one of the two.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Cannot forward both `negative_prompt`: </span><span class="se">\</span>
+<span class="s2">                    </span><span class="si">{</span><span class="n">negative_prompt</span><span class="si">}</span><span class="s2"> and `negative_prompt_embeds`:"</span>
+                <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure </span><span class="se">\</span>
+<span class="s2">                    to only forward one of the two."</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">negative_prompt_2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">negative_prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Cannot forward both `negative_prompt_2`: </span><span class="se">\</span>
-<span class="s2">                    </span><span class="si">{</span><span class="n">negative_prompt_2</span><span class="si">}</span><span class="s2"> and `negative_prompt_embeds`:&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure </span><span class="se">\</span>
-<span class="s2">                    to only forward one of the two.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Cannot forward both `negative_prompt_2`: </span><span class="se">\</span>
+<span class="s2">                    </span><span class="si">{</span><span class="n">negative_prompt_2</span><span class="si">}</span><span class="s2"> and `negative_prompt_embeds`:"</span>
+                <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="si">}</span><span class="s2">. Please make sure </span><span class="se">\</span>
+<span class="s2">                    to only forward one of the two."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">negative_prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prompt_embeds</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">negative_prompt_embeds</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;`prompt_embeds` and `negative_prompt_embeds` </span><span class="se">\</span>
-<span class="s2">                        must have the same shape when passed directly, but&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; got: `prompt_embeds` </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> </span><span class="se">\</span>
-<span class="s2">                        != `negative_prompt_embeds`&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="s2">"`prompt_embeds` and `negative_prompt_embeds` </span><span class="se">\</span>
+<span class="s2">                        must have the same shape when passed directly, but"</span>
+                    <span class="sa">f</span><span class="s2">" got: `prompt_embeds` </span><span class="si">{</span><span class="n">prompt_embeds</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> </span><span class="se">\</span>
+<span class="s2">                        != `negative_prompt_embeds`"</span>
+                    <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">negative_prompt_embeds</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">."</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pooled_prompt_embeds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;If `prompt_embeds` are provided, `pooled_prompt_embeds` </span><span class="se">\</span>
+                <span class="s2">"If `prompt_embeds` are provided, `pooled_prompt_embeds` </span><span class="se">\</span>
 <span class="s2">                    also have to be passed. Make sure to generate </span><span class="se">\</span>
 <span class="s2">                        `pooled_prompt_embeds` from the same text encoder </span><span class="se">\</span>
-<span class="s2">                            that was used to generate `prompt_embeds`.&quot;</span>
+<span class="s2">                            that was used to generate `prompt_embeds`."</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">negative_prompt_embeds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">negative_pooled_prompt_embeds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;If `negative_prompt_embeds` are provided, </span><span class="se">\</span>
+                <span class="s2">"If `negative_prompt_embeds` are provided, </span><span class="se">\</span>
 <span class="s2">                    `negative_pooled_prompt_embeds` also have to be passed. </span><span class="se">\</span>
 <span class="s2">                        Make sure to generate `negative_pooled_prompt_embeds`</span><span class="se">\</span>
 <span class="s2">                             from the same text encoder that was used to </span><span class="se">\</span>
-<span class="s2">                                generate `negative_prompt_embeds`.&quot;</span>
+<span class="s2">                                generate `negative_prompt_embeds`."</span>
             <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_aggregate_and_get_attention_maps_per_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_softmax</span><span class="p">):</span>
         <span class="n">attention_maps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">controller</span><span class="o">.</span><span class="n">aggregate_attention</span><span class="p">(</span>
-            <span class="n">from_where</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;up_cross&quot;</span><span class="p">,</span> <span class="s2">&quot;down_cross&quot;</span><span class="p">,</span> <span class="s2">&quot;mid_cross&quot;</span><span class="p">),</span>
-            <span class="c1"># from_where=(&quot;up&quot;, &quot;down&quot;),</span>
-            <span class="c1"># from_where=(&quot;down&quot;,)</span>
+            <span class="n">from_where</span><span class="o">=</span><span class="p">(</span><span class="s2">"up_cross"</span><span class="p">,</span> <span class="s2">"down_cross"</span><span class="p">,</span> <span class="s2">"mid_cross"</span><span class="p">),</span>
+            <span class="c1"># from_where=("up", "down"),</span>
+            <span class="c1"># from_where=("down",)</span>
         <span class="p">)</span>
         <span class="n">attention_maps_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_attention_maps_list</span><span class="p">(</span><span class="n">attention_maps</span><span class="o">=</span><span class="n">attention_maps</span><span class="p">,</span> <span class="n">with_softmax</span><span class="o">=</span><span class="n">with_softmax</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attention_maps_list</span>
@@ -729,7 +732,7 @@
         <span class="n">negative_prompt_embeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">pooled_prompt_embeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">negative_pooled_prompt_embeds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">output_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pil&quot;</span><span class="p">,</span>
+        <span class="n">output_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"pil"</span><span class="p">,</span>
         <span class="n">return_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">callback_steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -743,7 +746,7 @@
         <span class="n">negative_target_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">attn_res</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""</span>
 <span class="sd">        Function invoked when calling the pipeline for generation.</span>
 
 <span class="sd">        Args:</span>
@@ -789,7 +792,7 @@
 <span class="sd">                with different prompts. If not provided, a latents</span>
 <span class="sd">                tensor will ge generated by sampling using the supplied</span>
 <span class="sd">                random `generator`.</span>
-<span class="sd">            output_type (`str`, *optional*, defaults to `&quot;pil&quot;`):</span>
+<span class="sd">            output_type (`str`, *optional*, defaults to `"pil"`):</span>
 <span class="sd">                The output format of the generate image. Choose between</span>
 <span class="sd">                [PIL](https://pillow.readthedocs.io/en/stable/):</span>
 <span class="sd">                `PIL.Image.Image` or `np.array`.</span>
@@ -845,9 +848,9 @@
 <span class="sd">            When returning a tuple, the first element is a list with the</span>
 <span class="sd">            generated images, and the second element is a</span>
 <span class="sd">            list of `bool`s denoting whether the corresponding generated</span>
-<span class="sd">            image likely represents &quot;not-safe-for-work&quot;</span>
+<span class="sd">            image likely represents "not-safe-for-work"</span>
 <span class="sd">            (nsfw) content, according to the `safety_checker`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># 0. Default height and width to unet</span>
         <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">sample_size</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">vae_scale_factor</span>
@@ -903,7 +906,7 @@
 
         <span class="c1"># 3. Encode input prompt</span>
         <span class="n">text_encoder_lora_scale</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">cross_attention_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"scale"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">cross_attention_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
         <span class="p">(</span>
             <span class="n">prompt_embeds</span><span class="p">,</span>
@@ -989,7 +992,7 @@
             <span class="n">num_inference_steps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">ts</span><span class="p">:</span> <span class="n">ts</span> <span class="o">&gt;=</span> <span class="n">discrete_timestep_cutoff</span><span class="p">,</span> <span class="n">timesteps</span><span class="p">)))</span>
             <span class="n">timesteps</span> <span class="o">=</span> <span class="n">timesteps</span><span class="p">[:</span><span class="n">num_inference_steps</span><span class="p">]</span>
 
-        <span class="n">added_cond_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text_embeds&quot;</span><span class="p">:</span> <span class="n">add_text_embeds</span><span class="p">,</span> <span class="s2">&quot;time_ids&quot;</span><span class="p">:</span> <span class="n">add_time_ids</span><span class="p">}</span>
+        <span class="n">added_cond_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"text_embeds"</span><span class="p">:</span> <span class="n">add_text_embeds</span><span class="p">,</span> <span class="s2">"time_ids"</span><span class="p">:</span> <span class="n">add_time_ids</span><span class="p">}</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress_bar</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">num_inference_steps</span><span class="p">)</span> <span class="k">as</span> <span class="n">progress_bar</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">timesteps</span><span class="p">):</span>
                 <span class="c1"># expand the latents if we are doing classifier free guidance</span>
@@ -1023,11 +1026,11 @@
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">timesteps</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">num_warmup_steps</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="o">.</span><span class="n">order</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
                     <span class="n">progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">%</span> <span class="n">callback_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">step_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span> <span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="n">step_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">//</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scheduler</span><span class="p">,</span> <span class="s2">"order"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                         <span class="n">callback</span><span class="p">(</span><span class="n">step_idx</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">latents</span><span class="p">)</span>
 
         <span class="c1"># 8. Post-processing</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;latent&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">"latent"</span><span class="p">:</span>
             <span class="c1"># make sure the VAE is in float32 mode, as it overflows in float16</span>
             <span class="n">needs_upcasting</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vae</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vae</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">force_upcast</span>
 
@@ -1043,7 +1046,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">image</span> <span class="o">=</span> <span class="n">latents</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">&quot;latent&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_type</span> <span class="o">==</span> <span class="s2">"latent"</span><span class="p">:</span>
             <span class="c1"># apply watermark if available</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">watermark</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">watermark</span><span class="o">.</span><span class="n">apply_watermark</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -1068,18 +1071,18 @@
         <span class="n">attn_procs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">cross_att_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">attn_processors</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="kc">None</span> <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;attn1.processor&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cross_attention_dim</span>
-            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;mid_block&quot;</span><span class="p">):</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"attn1.processor"</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cross_attention_dim</span>
+            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"mid_block"</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">block_out_channels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">&quot;mid&quot;</span>
-            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;up_blocks&quot;</span><span class="p">):</span>
-                <span class="n">block_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;up_blocks.&quot;</span><span class="p">)])</span>
+                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">"mid"</span>
+            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"up_blocks"</span><span class="p">):</span>
+                <span class="n">block_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"up_blocks."</span><span class="p">)])</span>
                 <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">block_out_channels</span><span class="p">))[</span><span class="n">block_id</span><span class="p">]</span>
-                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span>
-            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;down_blocks&quot;</span><span class="p">):</span>
-                <span class="n">block_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;down_blocks.&quot;</span><span class="p">)])</span>
+                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">"up"</span>
+            <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"down_blocks"</span><span class="p">):</span>
+                <span class="n">block_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">"down_blocks."</span><span class="p">)])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">block_out_channels</span><span class="p">[</span><span class="n">block_id</span><span class="p">]</span>
-                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">&quot;down&quot;</span>
+                <span class="n">place_in_unet</span> <span class="o">=</span> <span class="s2">"down"</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">cross_att_count</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1200,15 +1203,15 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">create_controller</span><span class="p">(</span>
     <span class="n">prompts</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">cross_attention_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">num_inference_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">attn_res</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttentionControl</span><span class="p">:</span>
-    <span class="n">edit_type</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edit_type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">local_blend_words</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;local_blend_words&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">equalizer_words</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;equalizer_words&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">equalizer_strengths</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;equalizer_strengths&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">n_cross_replace</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_cross_replace&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
-    <span class="n">n_self_replace</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n_self_replace&quot;</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">edit_type</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"edit_type"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">local_blend_words</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"local_blend_words"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">equalizer_words</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"equalizer_words"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">equalizer_strengths</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"equalizer_strengths"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">n_cross_replace</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"n_cross_replace"</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
+    <span class="n">n_self_replace</span> <span class="o">=</span> <span class="n">cross_attention_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"n_self_replace"</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">)</span>
 
     <span class="c1"># only replace</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;replace&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"replace"</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">AttentionReplace</span><span class="p">(</span>
             <span class="n">prompts</span><span class="p">,</span>
             <span class="n">num_inference_steps</span><span class="p">,</span>
@@ -1220,7 +1223,7 @@
         <span class="p">)</span>
 
     <span class="c1"># replace + localblend</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;replace&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"replace"</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lb</span> <span class="o">=</span> <span class="n">LocalBlend</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="n">local_blend_words</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">attn_res</span><span class="o">=</span><span class="n">attn_res</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AttentionReplace</span><span class="p">(</span>
             <span class="n">prompts</span><span class="p">,</span>
@@ -1234,7 +1237,7 @@
         <span class="p">)</span>
 
     <span class="c1"># only refine</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;refine&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"refine"</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">AttentionRefine</span><span class="p">(</span>
             <span class="n">prompts</span><span class="p">,</span>
             <span class="n">num_inference_steps</span><span class="p">,</span>
@@ -1246,7 +1249,7 @@
         <span class="p">)</span>
 
     <span class="c1"># refine + localblend</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;refine&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"refine"</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">lb</span> <span class="o">=</span> <span class="n">LocalBlend</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="n">local_blend_words</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">attn_res</span><span class="o">=</span><span class="n">attn_res</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AttentionRefine</span><span class="p">(</span>
             <span class="n">prompts</span><span class="p">,</span>
@@ -1260,15 +1263,15 @@
         <span class="p">)</span>
 
     <span class="c1"># only reweight</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;reweight&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"reweight"</span> <span class="ow">and</span> <span class="n">local_blend_words</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="p">(</span>
             <span class="n">equalizer_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">equalizer_strengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">),</span> <span class="s2">&quot;To use reweight edit, please specify equalizer_words </span><span class="se">\</span>
-<span class="s2">            and equalizer_strengths.&quot;</span>
+        <span class="p">),</span> <span class="s2">"To use reweight edit, please specify equalizer_words </span><span class="se">\</span>
+<span class="s2">            and equalizer_strengths."</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">equalizer_words</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
             <span class="n">equalizer_strengths</span>
-        <span class="p">),</span> <span class="s2">&quot;equalizer_words and equalizer_strengths must be of same length.&quot;</span>
+        <span class="p">),</span> <span class="s2">"equalizer_words and equalizer_strengths must be of same length."</span>
         <span class="n">equalizer</span> <span class="o">=</span> <span class="n">get_equalizer</span><span class="p">(</span><span class="n">prompts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">equalizer_words</span><span class="p">,</span> <span class="n">equalizer_strengths</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AttentionReweight</span><span class="p">(</span>
             <span class="n">prompts</span><span class="p">,</span>
@@ -1282,15 +1285,15 @@
         <span class="p">)</span>
 
     <span class="c1"># reweight and localblend</span>
-    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">&quot;reweight&quot;</span> <span class="ow">and</span> <span class="n">local_blend_words</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">edit_type</span> <span class="o">==</span> <span class="s2">"reweight"</span> <span class="ow">and</span> <span class="n">local_blend_words</span><span class="p">:</span>
         <span class="k">assert</span> <span class="p">(</span>
             <span class="n">equalizer_words</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">equalizer_strengths</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="p">),</span> <span class="s2">&quot;To use reweight edit, please specify equalizer_words </span><span class="se">\</span>
-<span class="s2">            and equalizer_strengths.&quot;</span>
+        <span class="p">),</span> <span class="s2">"To use reweight edit, please specify equalizer_words </span><span class="se">\</span>
+<span class="s2">            and equalizer_strengths."</span>
 
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">equalizer_words</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span>
             <span class="n">equalizer_strengths</span>
-        <span class="p">),</span> <span class="s2">&quot;equalizer_words and equalizer_strengths must be of same length.&quot;</span>
+        <span class="p">),</span> <span class="s2">"equalizer_words and equalizer_strengths must be of same length."</span>
         <span class="n">equalizer</span> <span class="o">=</span> <span class="n">get_equalizer</span><span class="p">(</span><span class="n">prompts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">equalizer_words</span><span class="p">,</span> <span class="n">equalizer_strengths</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">)</span>
         <span class="n">lb</span> <span class="o">=</span> <span class="n">LocalBlend</span><span class="p">(</span><span class="n">prompts</span><span class="p">,</span> <span class="n">local_blend_words</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">attn_res</span><span class="o">=</span><span class="n">attn_res</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">AttentionReweight</span><span class="p">(</span>
@@ -1306,8 +1309,8 @@
         <span class="p">)</span>
 
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Edit type </span><span class="si">{</span><span class="n">edit_type</span><span class="si">}</span><span class="s2"> not recognized. Use one of: </span><span class="se">\</span>
-<span class="s2">            replace, refine, reweight.&quot;</span>
+        <span class="sa">f</span><span class="s2">"Edit type </span><span class="si">{</span><span class="n">edit_type</span><span class="si">}</span><span class="s2"> not recognized. Use one of: </span><span class="se">\</span>
+<span class="s2">            replace, refine, reweight."</span>
     <span class="p">)</span></div>
 
 
@@ -1330,13 +1333,13 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.AttentionStore.get_empty_store">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_empty_store</span><span class="p">():</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;down_cross&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;mid_cross&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;up_cross&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;down_self&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;mid_self&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;up_self&quot;</span><span class="p">:</span> <span class="p">[]}</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"down_cross"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"mid_cross"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"up_cross"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"down_self"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"mid_self"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"up_self"</span><span class="p">:</span> <span class="p">[]}</span></div>
 
 
 <div class="viewcode-block" id="AttentionStore.forward">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.AttentionStore.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">is_cross</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">place_in_unet</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">place_in_unet</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="s1">&#39;cross&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_cross</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;self&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">place_in_unet</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="s1">'cross'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_cross</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'self'</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">attn</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">32</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>  <span class="c1"># avoid memory overhead</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step_store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attn</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">attn</span></div>
@@ -1387,8 +1390,8 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_t</span><span class="p">,</span> <span class="n">attention_store</span><span class="p">):</span>
         <span class="c1"># note that this code works on the latent level!</span>
         <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="c1"># maps = attention_store[&quot;down_cross&quot;][2:4] +</span>
-        <span class="c1"># attention_store[&quot;up_cross&quot;][:3]</span>
+        <span class="c1"># maps = attention_store["down_cross"][2:4] +</span>
+        <span class="c1"># attention_store["up_cross"][:3]</span>
         <span class="c1"># These are the numbers because we want to take layers</span>
         <span class="c1"># that are 256 x 256,</span>
         <span class="c1"># I think this can be changed to something smarter...like,</span>
@@ -1396,7 +1399,7 @@
         <span class="c1">#  * self.attn_res[1] in up and down cross.</span>
         <span class="n">maps</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">m</span>
-            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">&quot;down_cross&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">&quot;mid_cross&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">&quot;up_cross&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">"down_cross"</span><span class="p">]</span> <span class="o">+</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">"mid_cross"</span><span class="p">]</span> <span class="o">+</span> <span class="n">attention_store</span><span class="p">[</span><span class="s2">"up_cross"</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn_res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">attn_res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="p">]</span>
         <span class="n">maps</span> <span class="o">=</span> <span class="p">[</span>
@@ -1422,7 +1425,7 @@
         <span class="c1">#  zeroes out the original image and removes the difference</span>
         <span class="c1">#  between the original and each image we are generating</span>
         <span class="c1">#  (mostly just one). Then, it applies the mask on the image.</span>
-        <span class="c1">#  That is, it&#39;s only keeping the cells we want to generate.</span>
+        <span class="c1">#  That is, it's only keeping the cells we want to generate.</span>
         <span class="k">return</span> <span class="n">x_t</span>
 
 <div class="viewcode-block" id="LocalBlend.__init__">
@@ -1531,7 +1534,7 @@
 <div class="viewcode-block" id="AttentionReplace.replace_cross_attention">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.AttentionReplace.replace_cross_attention">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">replace_cross_attention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attn_base</span><span class="p">,</span> <span class="n">att_replace</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;hpw,bwn-&gt;bhpn&quot;</span><span class="p">,</span> <span class="n">attn_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">"hpw,bwn-&gt;bhpn"</span><span class="p">,</span> <span class="n">attn_base</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AttentionReplace.__init__">
@@ -1649,14 +1652,14 @@
     <span class="n">prompts</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">cross_replace_steps</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_num_words</span><span class="o">=</span><span class="mi">77</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cross_replace_steps</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="n">cross_replace_steps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;default_&quot;</span><span class="p">:</span> <span class="n">cross_replace_steps</span><span class="p">}</span>
-    <span class="k">if</span> <span class="s2">&quot;default_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cross_replace_steps</span><span class="p">:</span>
-        <span class="n">cross_replace_steps</span><span class="p">[</span><span class="s2">&quot;default_&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">cross_replace_steps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"default_"</span><span class="p">:</span> <span class="n">cross_replace_steps</span><span class="p">}</span>
+    <span class="k">if</span> <span class="s2">"default_"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cross_replace_steps</span><span class="p">:</span>
+        <span class="n">cross_replace_steps</span><span class="p">[</span><span class="s2">"default_"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
     <span class="n">alpha_time_words</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_num_words</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-        <span class="n">alpha_time_words</span> <span class="o">=</span> <span class="n">update_alpha_time_word</span><span class="p">(</span><span class="n">alpha_time_words</span><span class="p">,</span> <span class="n">cross_replace_steps</span><span class="p">[</span><span class="s2">&quot;default_&quot;</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+        <span class="n">alpha_time_words</span> <span class="o">=</span> <span class="n">update_alpha_time_word</span><span class="p">(</span><span class="n">alpha_time_words</span><span class="p">,</span> <span class="n">cross_replace_steps</span><span class="p">[</span><span class="s2">"default_"</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cross_replace_steps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;default_&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">"default_"</span><span class="p">:</span>
             <span class="n">inds</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_word_inds</span><span class="p">(</span><span class="n">prompts</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">key</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">prompts</span><span class="p">))]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inds</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1670,14 +1673,14 @@
 <div class="viewcode-block" id="get_word_inds">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.get_word_inds">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_word_inds</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">word_place</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
-    <span class="n">split_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">split_text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word_place</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">word_place</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">split_text</span><span class="p">)</span> <span class="k">if</span> <span class="n">word_place</span> <span class="o">==</span> <span class="n">word</span><span class="p">]</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">word_place</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">word_place</span> <span class="o">=</span> <span class="p">[</span><span class="n">word_place</span><span class="p">]</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">word_place</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">words_encode</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">item</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">words_encode</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">item</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">)][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">cur_len</span><span class="p">,</span> <span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words_encode</span><span class="p">)):</span>
@@ -1695,14 +1698,14 @@
 <div class="viewcode-block" id="get_replacement_mapper_">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.common.prompt2prompt_pipeline.html#data_juicer.ops.common.prompt2prompt_pipeline.get_replacement_mapper_">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_replacement_mapper_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">77</span><span class="p">):</span>
-    <span class="n">words_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
-    <span class="n">words_y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="n">words_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+    <span class="n">words_y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words_x</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">words_y</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;attention replacement edit can only be applied </span><span class="se">\</span>
-<span class="s2">                on prompts with the same length&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot; but prompt A has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_x</span><span class="p">)</span><span class="si">}</span><span class="s2"> words and prompt </span><span class="se">\</span>
-<span class="s2">                B has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_y</span><span class="p">)</span><span class="si">}</span><span class="s2"> words.&quot;</span>
+            <span class="sa">f</span><span class="s2">"attention replacement edit can only be applied </span><span class="se">\</span>
+<span class="s2">                on prompts with the same length"</span>
+            <span class="sa">f</span><span class="s2">" but prompt A has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_x</span><span class="p">)</span><span class="si">}</span><span class="s2"> words and prompt </span><span class="se">\</span>
+<span class="s2">                B has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_y</span><span class="p">)</span><span class="si">}</span><span class="s2"> words."</span>
         <span class="p">)</span>
     <span class="n">inds_replace</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words_y</span><span class="p">))</span> <span class="k">if</span> <span class="n">words_y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">words_x</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
     <span class="n">inds_source</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_word_inds</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">inds_replace</span><span class="p">]</span>
@@ -1846,13 +1849,13 @@
             <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">mapper_y_to_x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">trace_back</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">x_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+            <span class="n">x_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
             <span class="n">y_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
             <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">mapper_y_to_x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">trace_back</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">x_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-            <span class="n">y_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+            <span class="n">y_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"-"</span><span class="p">)</span>
             <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="n">trace_back</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="k">break</span>

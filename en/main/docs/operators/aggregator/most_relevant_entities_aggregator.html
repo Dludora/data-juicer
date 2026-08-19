@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -516,7 +517,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -536,6 +540,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -702,7 +707,7 @@
 <h2>📊 Effect demonstration 效果演示<a class="headerlink" href="#effect-demonstration" title="Link to this heading">#</a></h2>
 <section id="test-default-aggregator">
 <h3>test_default_aggregator<a class="headerlink" href="#test-default-aggregator" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MostRelevantEntitiesAggregator</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen2.5-72b-instruct&#39;</span><span class="p">,</span> <span class="n">entity</span><span class="o">=</span><span class="s1">&#39;李莲花&#39;</span><span class="p">,</span> <span class="n">query_entity_type</span><span class="o">=</span><span class="s1">&#39;人物&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MostRelevantEntitiesAggregator</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">'qwen3.7-max'</span><span class="p">,</span> <span class="n">entity</span><span class="o">=</span><span class="s1">'李莲花'</span><span class="p">,</span> <span class="n">query_entity_type</span><span class="o">=</span><span class="s1">'人物'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="input-data">
@@ -721,7 +726,7 @@
 </section>
 <section id="test-max-token-num">
 <h3>test_max_token_num<a class="headerlink" href="#test-max-token-num" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MostRelevantEntitiesAggregator</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">&#39;qwen2.5-72b-instruct&#39;</span><span class="p">,</span> <span class="n">entity</span><span class="o">=</span><span class="s1">&#39;李莲花&#39;</span><span class="p">,</span> <span class="n">query_entity_type</span><span class="o">=</span><span class="s1">&#39;人物&#39;</span><span class="p">,</span> <span class="n">max_token_num</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MostRelevantEntitiesAggregator</span><span class="p">(</span><span class="n">api_model</span><span class="o">=</span><span class="s1">'qwen3.7-max'</span><span class="p">,</span> <span class="n">entity</span><span class="o">=</span><span class="s1">'李莲花'</span><span class="p">,</span> <span class="n">query_entity_type</span><span class="o">=</span><span class="s1">'人物'</span><span class="p">,</span> <span class="n">max_token_num</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="id1">

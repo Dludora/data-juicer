@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.remove_comments_mapper</span></li>
   </ul>
 </nav>
@@ -526,13 +529,13 @@
 
 <div class="viewcode-block" id="RemoveCommentsMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveCommentsMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;remove_comments_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"remove_comments_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveCommentsMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes comments from documents, currently supporting only &#39;tex&#39; format.</span>
+<span class="w">    </span><span class="sd">"""Removes comments from documents, currently supporting only 'tex' format.</span>
 
 <span class="sd">    This operator removes inline and multiline comments from text samples. It supports both</span>
 <span class="sd">    inline and multiline comment removal, controlled by the `inline` and `multiline`</span>
-<span class="sd">    parameters. Currently, it is designed to work with &#39;tex&#39; documents. The operator</span>
+<span class="sd">    parameters. Currently, it is designed to work with 'tex' documents. The operator</span>
 <span class="sd">    processes each sample in the batch and applies regular expressions to remove comments.</span>
 <span class="sd">    The processed text is then updated in the original samples.</span>
 
@@ -540,17 +543,17 @@
 <span class="sd">    - Multiline comments are removed using the pattern `^%.*\n?`.</span>
 
 <span class="sd">    Important notes:</span>
-<span class="sd">    - Only &#39;tex&#39; document type is supported at present.</span>
-<span class="sd">    - The operator processes the text in place and updates the original samples.&quot;&quot;&quot;</span>
+<span class="sd">    - Only 'tex' document type is supported at present.</span>
+<span class="sd">    - The operator processes the text in place and updates the original samples."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RemoveCommentsMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveCommentsMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;tex&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">multiline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">"tex"</span><span class="p">,</span> <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">multiline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param doc_type: Type of document to remove comments.</span>
@@ -558,7 +561,7 @@
 <span class="sd">        :param multiline: Whether to remove multiline comments.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc_type</span> <span class="o">=</span> <span class="n">doc_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inline</span> <span class="o">=</span> <span class="n">inline</span>
@@ -573,10 +576,10 @@
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inline</span><span class="p">:</span>
                 <span class="c1"># remove all in comments within a line</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;[^</span><span class="se">\\</span><span class="s2">]%.+$&quot;</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">"[^</span><span class="se">\\</span><span class="s2">]%.+$"</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">""</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiline</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;(?m)^%.*\n?&quot;</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="sa">r</span><span class="s2">"(?m)^%.*\n?"</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">""</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>
 
             <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
 

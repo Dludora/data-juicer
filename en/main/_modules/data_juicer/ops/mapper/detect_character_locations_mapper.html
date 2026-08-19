@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.detect_character_locations_mapper</span></li>
   </ul>
 </nav>
@@ -530,9 +533,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">UNFORKABLE</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;detect_character_locations_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"detect_character_locations_mapper"</span>
 
-<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ultralytics&quot;</span><span class="p">)</span>
+<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ultralytics"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DetectCharacterLocationsMapper">
@@ -542,19 +545,19 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DetectCharacterLocationsMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Given an image and a list of main character names, extract the bounding boxes for each present character.</span>
+<span class="w">    </span><span class="sd">"""Given an image and a list of main character names, extract the bounding boxes for each present character.</span>
 
 <span class="sd">    Detects and extracts bounding boxes for main characters in an image, this operator uses</span>
 <span class="sd">    a YOLOE model to detect the presence of these characters. It then generates and refines</span>
 <span class="sd">    bounding boxes for each detected character using a multimodal language model and an</span>
 <span class="sd">    image-text matching filter. The final bounding boxes are stored in the metadata under</span>
-<span class="sd">    &#39;main_character_locations_list&#39;. The operator considers two bounding boxes as</span>
+<span class="sd">    'main_character_locations_list'. The operator considers two bounding boxes as</span>
 <span class="sd">    overlapping if their Intersection over Union (IoU) score exceeds a specified threshold.</span>
 <span class="sd">    Additionally, it uses a matching score threshold to determine if a cropped image region</span>
-<span class="sd">    matches the character&#39;s name. The operator utilizes a Hugging Face tokenizer and a BLIP</span>
-<span class="sd">    model for image-text matching.&quot;&quot;&quot;</span>
+<span class="sd">    matches the character's name. The operator utilizes a Hugging Face tokenizer and a BLIP</span>
+<span class="sd">    model for image-text matching."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="DetectCharacterLocationsMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.DetectCharacterLocationsMapper.__init__">[docs]</a>
@@ -562,64 +565,64 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mllm_mapper_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">image_text_matching_filter_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="n">yoloe_path</span><span class="o">=</span><span class="s2">&quot;yoloe-11l-seg.pt&quot;</span><span class="p">,</span>
+        <span class="n">yoloe_path</span><span class="o">=</span><span class="s2">"yoloe-11l-seg.pt"</span><span class="p">,</span>
         <span class="n">iou_threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
         <span class="n">matching_score_threshold</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param mllm_mapper_args: Arguments for multimodal language model mapper.</span>
 <span class="sd">            Controls the generation of captions for bounding box regions. Default empty dict</span>
 <span class="sd">            will use fixed values: max_new_tokens=256, temperature=0.2, top_p=None,</span>
-<span class="sd">            num_beams=1, hf_model=&quot;llava-hf/llava-v1.6-vicuna-7b-hf&quot;.</span>
+<span class="sd">            num_beams=1, hf_model="llava-hf/llava-v1.6-vicuna-7b-hf".</span>
 <span class="sd">        :param image_text_matching_filter_args: Arguments for image-text matching filter.</span>
 <span class="sd">            Controls the matching between cropped image regions and text descriptions.</span>
 <span class="sd">            Default empty dict will use fixed values: min_score=0.1, max_score=1.0,</span>
-<span class="sd">            hf_blip=&quot;Salesforce/blip-itm-base-coco&quot;, num_proc=1.</span>
+<span class="sd">            hf_blip="Salesforce/blip-itm-base-coco", num_proc=1.</span>
 <span class="sd">        :param yoloe_path: The path to the YOLOE model.</span>
 <span class="sd">        :param iou_threshold: We consider two bounding boxes from different models to be overlapping</span>
 <span class="sd">            when their IOU score is higher than the iou_threshold.</span>
 <span class="sd">        :param matching_score_threshold: If the matching score between the cropped image and the</span>
-<span class="sd">            character&#39;s name exceeds the matching_score_threshold, they are considered a match.</span>
+<span class="sd">            character's name exceeds the matching_score_threshold, they are considered a match.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Requires the weights for YOLOE and mobileclip_blt.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span> <span class="o">=</span> <span class="n">ultralytics</span><span class="o">.</span><span class="n">YOLO</span><span class="p">(</span><span class="n">check_model</span><span class="p">(</span><span class="n">yoloe_path</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s2">&quot;mllm_mapper&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;max_new_tokens&quot;</span><span class="p">:</span> <span class="mi">256</span><span class="p">,</span>
-            <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
-            <span class="s2">&quot;top_p&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;num_beams&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s2">&quot;hf_model&quot;</span><span class="p">:</span> <span class="s2">&quot;llava-hf/llava-v1.6-vicuna-7b-hf&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s2">"mllm_mapper"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"max_new_tokens"</span><span class="p">:</span> <span class="mi">256</span><span class="p">,</span>
+            <span class="s2">"temperature"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+            <span class="s2">"top_p"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"num_beams"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">"hf_model"</span><span class="p">:</span> <span class="s2">"llava-hf/llava-v1.6-vicuna-7b-hf"</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s2">&quot;image_text_matching_filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;min_score&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;max_score&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-            <span class="s2">&quot;hf_blip&quot;</span><span class="p">:</span> <span class="s2">&quot;Salesforce/blip-itm-base-coco&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="s2">"image_text_matching_filter"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"min_score"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">"max_score"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s2">"hf_blip"</span><span class="p">:</span> <span class="s2">"Salesforce/blip-itm-base-coco"</span><span class="p">,</span>
+            <span class="s2">"num_proc"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
         <span class="p">}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mllm_mapper_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span><span class="s2">&quot;mllm_mapper&quot;</span><span class="p">,</span> <span class="n">mllm_mapper_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mllm_mapper_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span><span class="s2">"mllm_mapper"</span><span class="p">,</span> <span class="n">mllm_mapper_args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_op_args</span><span class="p">(</span>
-            <span class="s2">&quot;image_text_matching_filter&quot;</span><span class="p">,</span> <span class="n">image_text_matching_filter_args</span>
+            <span class="s2">"image_text_matching_filter"</span><span class="p">,</span> <span class="n">image_text_matching_filter_args</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_op_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;mllm_mapper&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mllm_mapper_args</span><span class="p">},</span>
-            <span class="p">{</span><span class="s2">&quot;image_text_matching_filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"mllm_mapper"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mllm_mapper_args</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"image_text_matching_filter"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_text_matching_filter_args</span><span class="p">},</span>
         <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fused_op_list</span><span class="p">)</span>
 
         <span class="n">accelerator_methods</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">op</span><span class="o">.</span><span class="n">accelerator</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s2">&quot;cuda&quot;</span> <span class="ow">in</span> <span class="n">accelerator_methods</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+        <span class="k">if</span> <span class="s2">"cuda"</span> <span class="ow">in</span> <span class="n">accelerator_methods</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
         <span class="c1"># update num_proc with the min num_proc of all fusible filters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="n">op</span><span class="o">.</span><span class="n">runtime_np</span><span class="p">()</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="k">else</span> <span class="mi">1</span>
@@ -631,7 +634,7 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="n">op_name</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args_dict</span><span class="p">:</span>
                 <span class="n">args_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FIXED_ARGS</span><span class="p">[</span><span class="n">op_name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">args_dict</span><span class="p">[</span><span class="s2">&quot;accelerator&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span>
+        <span class="n">args_dict</span><span class="p">[</span><span class="s2">"accelerator"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator</span>
         <span class="k">return</span> <span class="n">args_dict</span>
 
 <div class="viewcode-block" id="DetectCharacterLocationsMapper.iou_cal">
@@ -663,11 +666,11 @@
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
             <span class="n">samples</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="n">now_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">now_image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">"images"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span><span class="o">.</span><span class="n">set_classes</span><span class="p">(</span>
-            <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;main_character_list&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span><span class="o">.</span><span class="n">get_text_pe</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;main_character_list&quot;</span><span class="p">])</span>
+            <span class="n">samples</span><span class="p">[</span><span class="s2">"main_character_list"</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span><span class="o">.</span><span class="n">get_text_pe</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">"main_character_list"</span><span class="p">])</span>
         <span class="p">)</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="s2">"images"</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">yoloe_bboxes</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">xyxy</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">bboxes_cls</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
@@ -678,8 +681,8 @@
                 <span class="k">continue</span>
             <span class="n">seen</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bboxes_cls</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">])</span>
             <span class="n">temp_bbox_json</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">temp_bbox_json</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;main_character_list&quot;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">bboxes_cls</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">])]</span>
-            <span class="n">temp_bbox_json</span><span class="p">[</span><span class="s2">&quot;yoloe_bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">temp_bbox_json</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s2">"main_character_list"</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">bboxes_cls</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">])]</span>
+            <span class="n">temp_bbox_json</span><span class="p">[</span><span class="s2">"yoloe_bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="nb">round</span><span class="p">(</span><span class="n">yoloe_bboxes</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span>
                 <span class="nb">round</span><span class="p">(</span><span class="n">yoloe_bboxes</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span>
                 <span class="nb">round</span><span class="p">(</span><span class="n">yoloe_bboxes</span><span class="p">[</span><span class="n">temp_bbox_idx</span><span class="p">][</span><span class="mi">2</span><span class="p">]),</span>
@@ -691,21 +694,21 @@
         <span class="k">for</span> <span class="n">temp_character</span> <span class="ow">in</span> <span class="n">valid_main_character</span><span class="p">:</span>
 
             <span class="n">prompt</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s1">&#39;Please only provide the bounding box coordinate of the region &quot;&#39;</span>
-                <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span>
-                <span class="o">+</span> <span class="s1">&#39;&quot; describes.&#39;</span>
+                <span class="s1">'Please only provide the bounding box coordinate of the region "'</span>
+                <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s1">'" describes.'</span>
             <span class="p">)</span>
-            <span class="n">mllm_sample</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">]}</span>
-            <span class="n">output_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">mllm_sample</span><span class="p">)[</span><span class="s2">&quot;text&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;ASSISTANT:&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">mllm_sample</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">prompt</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">:</span> <span class="n">samples</span><span class="p">[</span><span class="s2">"images"</span><span class="p">]}</span>
+            <span class="n">output_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">mllm_sample</span><span class="p">)[</span><span class="s2">"text"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"ASSISTANT:"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">output_text</span> <span class="o">=</span> <span class="n">output_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">output_text</span> <span class="o">=</span> <span class="n">output_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"json"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"```"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
                 <span class="n">output_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">output_text</span><span class="p">)</span>
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_data</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
                     <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">output_data</span><span class="p">)</span>
                 <span class="p">):</span>
-                    <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;llm_bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">temp_character</span><span class="p">[</span><span class="s2">"llm_bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="nb">int</span><span class="p">(</span><span class="n">output_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">now_image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
                         <span class="nb">int</span><span class="p">(</span><span class="n">output_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">now_image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
                         <span class="nb">int</span><span class="p">(</span><span class="n">output_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">now_image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
@@ -717,41 +720,41 @@
 
         <span class="n">final_filterd_character</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">temp_character_idx</span><span class="p">,</span> <span class="n">temp_character</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">final_bboxes</span><span class="p">):</span>
-            <span class="n">temp_iou</span><span class="p">,</span> <span class="n">area1</span><span class="p">,</span> <span class="n">area2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou_cal</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;yoloe_bbox&quot;</span><span class="p">],</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;llm_bbox&quot;</span><span class="p">])</span>
+            <span class="n">temp_iou</span><span class="p">,</span> <span class="n">area1</span><span class="p">,</span> <span class="n">area2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou_cal</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">"yoloe_bbox"</span><span class="p">],</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"llm_bbox"</span><span class="p">])</span>
 
             <span class="k">if</span> <span class="n">temp_iou</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">iou_threshold</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">area1</span> <span class="o">&gt;</span> <span class="n">area2</span><span class="p">:</span>
                     <span class="n">temp_json</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;yoloe_bbox&quot;</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"yoloe_bbox"</span><span class="p">]</span>
                     <span class="n">final_filterd_character</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_json</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">temp_json</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;llm_bbox&quot;</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"llm_bbox"</span><span class="p">]</span>
                     <span class="n">final_filterd_character</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_json</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">yoloe_bbox_crop_img</span> <span class="o">=</span> <span class="n">now_image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;yoloe_bbox&quot;</span><span class="p">])</span>
-                <span class="n">llm_bbox_crop_img</span> <span class="o">=</span> <span class="n">now_image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;llm_bbox&quot;</span><span class="p">])</span>
+                <span class="n">yoloe_bbox_crop_img</span> <span class="o">=</span> <span class="n">now_image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">"yoloe_bbox"</span><span class="p">])</span>
+                <span class="n">llm_bbox_crop_img</span> <span class="o">=</span> <span class="n">now_image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">temp_character</span><span class="p">[</span><span class="s2">"llm_bbox"</span><span class="p">])</span>
 
-                <span class="n">random_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;images&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">random_num</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">valid_img_name</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s2">"images"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
 
                 <span class="n">temp_image_path_yoloe</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s2">_&quot;</span> <span class="sa">f</span><span class="s2">&quot;&lt;yoloe&gt;.jpg&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s2">_"</span> <span class="sa">f</span><span class="s2">"&lt;yoloe&gt;.jpg"</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">yoloe_bbox_crop_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">temp_image_path_yoloe</span><span class="p">)</span>
 
                 <span class="n">temp_image_path_llm</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                    <span class="sa">f</span><span class="s2">&quot;cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s2">_&quot;</span> <span class="sa">f</span><span class="s2">&quot;&lt;llm&gt;.jpg&quot;</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">"cropped_images_</span><span class="si">{</span><span class="n">valid_img_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num</span><span class="si">}</span><span class="s2">_"</span> <span class="sa">f</span><span class="s2">"&lt;llm&gt;.jpg"</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="n">llm_bbox_crop_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">temp_image_path_llm</span><span class="p">)</span>
 
                 <span class="n">crop_samples</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span> <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">],</span> <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path_yoloe</span><span class="p">]},</span>
-                    <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span> <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">],</span> <span class="s2">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path_llm</span><span class="p">]},</span>
+                    <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span> <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">],</span> <span class="s2">"images"</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path_yoloe</span><span class="p">]},</span>
+                    <span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">image</span> <span class="o">+</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">],</span> <span class="s2">"images"</span><span class="p">:</span> <span class="p">[</span><span class="n">temp_image_path_llm</span><span class="p">]},</span>
                 <span class="p">]</span>
 
                 <span class="n">crop_samples</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">crop_samples</span><span class="p">)</span>
@@ -779,16 +782,16 @@
                     <span class="o">&gt;</span> <span class="n">crop_image_filtered</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_text_matching_score</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="p">):</span>
                     <span class="n">temp_json</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;yoloe_bbox&quot;</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"yoloe_bbox"</span><span class="p">]</span>
                     <span class="n">final_filterd_character</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_json</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">temp_json</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;main_character&quot;</span><span class="p">]</span>
-                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">&quot;llm_bbox&quot;</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"main_character"</span><span class="p">]</span>
+                    <span class="n">temp_json</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_character</span><span class="p">[</span><span class="s2">"llm_bbox"</span><span class="p">]</span>
                     <span class="n">final_filterd_character</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_json</span><span class="p">)</span>
 
-        <span class="n">samples</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="s2">&quot;main_character_locations_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_filterd_character</span>
+        <span class="n">samples</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="s2">"main_character_locations_list"</span><span class="p">]</span> <span class="o">=</span> <span class="n">final_filterd_character</span>
 
         <span class="k">return</span> <span class="n">samples</span></div>
 </div>

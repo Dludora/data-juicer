@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -634,53 +639,53 @@ pip<span class="w"> </span>install<span class="w"> </span>uv
 <p>组件详情请参考 <a class="reference external" href="https://github.com/Dludora/data-juicer/blob/main/pyproject.toml">pyproject.toml</a>。</p>
 <p><strong>核心 ML &amp; DL</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 通用 ML/DL 能力</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic]"</span>
 </pre></div>
 </div>
 <p>包括：PyTorch、Transformers、VLLM 等。</p>
 <p><strong>领域特定功能</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 计算机视觉</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[vision]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[vision]"</span>
 
 <span class="c1"># 自然语言处理</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[nlp]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[nlp]"</span>
 
 <span class="c1"># 音频处理</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[audio]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[audio]"</span>
 
 **附加组件**
 
 <span class="sb">```</span>bash
 <span class="c1"># 分布式计算</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[distributed]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[distributed]"</span>
 
 <span class="c1"># AI 服务和 API</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[ai_services]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[ai_services]"</span>
 
 **开发工具**
 <span class="sb">```</span>bash
 <span class="c1"># 开发和测试</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[dev]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[dev]"</span>
 </pre></div>
 </div>
 </section>
 <section id="id5">
 <h2>常见安装模式<a class="headerlink" href="#id5" title="链接到此标题。">#</a></h2>
 <p><strong>1. 文本处理设置</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp]"</span>
 </pre></div>
 </div>
 <p><strong>2. 视觉处理设置</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,vision]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,vision]"</span>
 </pre></div>
 </div>
 <p><strong>3. 完整处理流程</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp,vision,distributed]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp,vision,distributed]"</span>
 </pre></div>
 </div>
 <p><strong>4. 完整安装</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 安装所有功能（除沙盒外）</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[all]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[all]"</span>
 </pre></div>
 </div>
 </section>
@@ -693,7 +698,7 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dataj
 uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 
 <span class="c1"># 同样也可以安装指定的额外领域的依赖</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[vision]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[vision]"</span>
 </pre></div>
 </div>
 <p>**注意：**从源码安装时，建议使用 <code class="docutils literal notranslate"><span class="pre">-e</span></code> 模式打开开发模式。</p>

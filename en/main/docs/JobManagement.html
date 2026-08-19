@@ -52,7 +52,7 @@
     <link rel="icon" href="../_static/icon.png"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Partitioned Processing with Checkpointing" href="PartitionAndCheckpoint.html" />
+    <link rel="next" title="Operator Plugins" href="OperatorPlugins.html" />
     <link rel="prev" title="Dataset Export" href="Export.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export.html">Dataset Export</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -617,7 +622,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.sn
 <h2>Resource-Aware Partitioning<a class="headerlink" href="#resource-aware-partitioning" title="Link to this heading">#</a></h2>
 <p>The system automatically optimizes partition sizes based on cluster resources and data characteristics.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">  </span><span class="c1"># Target partition size (configurable)</span>
 </pre></div>
 </div>
@@ -646,8 +651,8 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.sn
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.logger_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_logger</span>
 
 <span class="n">setup_logger</span><span class="p">(</span>
-    <span class="n">save_dir</span><span class="o">=</span><span class="s2">&quot;./outputs&quot;</span><span class="p">,</span>
-    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+    <span class="n">save_dir</span><span class="o">=</span><span class="s2">"./outputs"</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">"log.txt"</span><span class="p">,</span>
     <span class="n">max_log_size_mb</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
     <span class="n">backup_count</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>
@@ -724,11 +729,11 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.sn
       </div>
     </a>
     <a class="right-next"
-       href="PartitionAndCheckpoint.html"
+       href="OperatorPlugins.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Partitioned Processing with Checkpointing</p>
+        <p class="prev-next-title">Operator Plugins</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

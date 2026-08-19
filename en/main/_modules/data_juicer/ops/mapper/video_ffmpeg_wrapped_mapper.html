@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.video_ffmpeg_wrapped_mapper</span></li>
   </ul>
 </nav>
@@ -520,22 +523,22 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;ffmpeg-python&quot;</span><span class="p">)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_ffmpeg_wrapped_mapper&quot;</span>
+<span class="n">ffmpeg</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ffmpeg"</span><span class="p">,</span> <span class="s2">"ffmpeg-python"</span><span class="p">)</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_ffmpeg_wrapped_mapper"</span>
 
 
 <div class="viewcode-block" id="VideoFFmpegWrappedMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoFFmpegWrappedMapper">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoFFmpegWrappedMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps FFmpeg video filters for processing video files in a dataset.</span>
+<span class="w">    </span><span class="sd">"""Wraps FFmpeg video filters for processing video files in a dataset.</span>
 
 <span class="sd">    This operator applies a specified FFmpeg video filter to each video file in the dataset.</span>
 <span class="sd">    It supports passing keyword arguments to the filter and global arguments to the FFmpeg</span>
 <span class="sd">    command line. The processed videos are saved in a specified directory or the same</span>
 <span class="sd">    directory as the input files. If no filter name is provided, the videos remain</span>
 <span class="sd">    unmodified. The operator updates the source file paths in the dataset to reflect any</span>
-<span class="sd">    changes.&quot;&quot;&quot;</span>
+<span class="sd">    changes."""</span>
 
 <div class="viewcode-block" id="VideoFFmpegWrappedMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoFFmpegWrappedMapper.__init__">[docs]</a>
@@ -550,7 +553,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param filter_name: ffmpeg video filter name.</span>
@@ -563,10 +566,10 @@
 <span class="sd">            This path can alternatively be defined by setting the `DJ_PRODUCED_DATA_DIR` environment variable.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_dir&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"save_dir"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_name</span> <span class="o">=</span> <span class="n">filter_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_kwargs</span> <span class="o">=</span> <span class="n">filter_kwargs</span>

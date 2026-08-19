@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.image_captioning_mapper</span></li>
   </ul>
 </nav>
@@ -535,9 +538,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">simhash</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;simhash&quot;</span><span class="p">,</span> <span class="s2">&quot;simhash-pybind&quot;</span><span class="p">)</span>
+<span class="n">simhash</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"simhash"</span><span class="p">,</span> <span class="s2">"simhash-pybind"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_captioning_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_captioning_mapper"</span>
 
 
 <div class="viewcode-block" id="ImageCaptioningMapper">
@@ -545,29 +548,29 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageCaptioningMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates image captions using a Hugging Face model and appends them to samples.</span>
+<span class="w">    </span><span class="sd">"""Generates image captions using a Hugging Face model and appends them to samples.</span>
 
 <span class="sd">    This operator generates captions for images in the input samples using a specified</span>
 <span class="sd">    Hugging Face model. It can generate multiple captions per image and apply different</span>
 <span class="sd">    strategies to retain the generated captions. The operator supports three retention</span>
-<span class="sd">    modes: &#39;random_any&#39;, &#39;similar_one_simhash&#39;, and &#39;all&#39;. In &#39;random_any&#39; mode, a random</span>
-<span class="sd">    caption is retained. In &#39;similar_one_simhash&#39; mode, the most similar caption to the</span>
-<span class="sd">    original text (based on SimHash) is retained. In &#39;all&#39; mode, all generated captions are</span>
+<span class="sd">    modes: 'random_any', 'similar_one_simhash', and 'all'. In 'random_any' mode, a random</span>
+<span class="sd">    caption is retained. In 'similar_one_simhash' mode, the most similar caption to the</span>
+<span class="sd">    original text (based on SimHash) is retained. In 'all' mode, all generated captions are</span>
 <span class="sd">    concatenated and retained. The operator can also keep or discard the original sample</span>
 <span class="sd">    based on the `keep_original_sample` parameter. If both `prompt` and `prompt_key` are</span>
-<span class="sd">    set, the `prompt_key` takes precedence.&quot;&quot;&quot;</span>
+<span class="sd">    set, the `prompt_key` takes precedence."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ImageCaptioningMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageCaptioningMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_img2seq</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Salesforce/blip2-opt-2.7b&quot;</span><span class="p">,</span>
+        <span class="n">hf_img2seq</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Salesforce/blip2-opt-2.7b"</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">caption_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">keep_candidate_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;random_any&quot;</span><span class="p">,</span>
+        <span class="n">keep_candidate_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"random_any"</span><span class="p">,</span>
         <span class="n">keep_original_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">prompt_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -575,7 +578,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_img2seq: model name on huggingface to generate caption</span>
@@ -585,12 +588,12 @@
 <span class="sd">        :param keep_candidate_mode: retain strategy for the generated</span>
 <span class="sd">            $caption_num$ candidates.</span>
 
-<span class="sd">            &#39;random_any&#39;: Retain the random one from generated captions</span>
+<span class="sd">            'random_any': Retain the random one from generated captions</span>
 
-<span class="sd">            &#39;similar_one_simhash&#39;: Retain the generated one that is most</span>
+<span class="sd">            'similar_one_simhash': Retain the generated one that is most</span>
 <span class="sd">                similar to the original caption</span>
 
-<span class="sd">            &#39;all&#39;: Retain all generated captions by concatenation</span>
+<span class="sd">            'all': Retain all generated captions by concatenation</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            This is a batched_OP, whose input and output type are</span>
@@ -598,20 +601,20 @@
 <span class="sd">            size is $b$, and denote caption_num as $M$.</span>
 <span class="sd">            The number of total samples after generation is $2Nb$ when</span>
 <span class="sd">            keep_original_sample is True and $Nb$ when keep_original_sample is</span>
-<span class="sd">            False. For &#39;random_any&#39; and &#39;similar_one_simhash&#39; mode,</span>
-<span class="sd">            it&#39;s $(1+M)Nb$ for &#39;all&#39; mode when keep_original_sample is True</span>
+<span class="sd">            False. For 'random_any' and 'similar_one_simhash' mode,</span>
+<span class="sd">            it's $(1+M)Nb$ for 'all' mode when keep_original_sample is True</span>
 <span class="sd">            and $MNb$ when keep_original_sample is False.</span>
 
 <span class="sd">        :param keep_original_sample: whether to keep the original sample. If</span>
-<span class="sd">            it&#39;s set to False, there will be only generated captions in the</span>
-<span class="sd">            final datasets and the original captions will be removed. It&#39;s True</span>
+<span class="sd">            it's set to False, there will be only generated captions in the</span>
+<span class="sd">            final datasets and the original captions will be removed. It's True</span>
 <span class="sd">            in default.</span>
 <span class="sd">        :param prompt: a string prompt to guide the generation of blip2 model</span>
-<span class="sd">            for all samples globally. It&#39;s None in default, which means no</span>
+<span class="sd">            for all samples globally. It's None in default, which means no</span>
 <span class="sd">            prompt provided.</span>
 <span class="sd">        :param prompt_key: the key name of fields in samples to store prompts</span>
-<span class="sd">            for each sample. It&#39;s used for set different prompts for different</span>
-<span class="sd">            samples. If it&#39;s none, use prompt in parameter &quot;prompt&quot;. It&#39;s None</span>
+<span class="sd">            for each sample. It's used for set different prompts for different</span>
+<span class="sd">            samples. If it's none, use prompt in parameter "prompt". It's None</span>
 <span class="sd">            in default.</span>
 <span class="sd">        :param gpu_batch_size: the batch size for GPU inference. This controls</span>
 <span class="sd">            how many images are processed together in a single GPU forward pass.</span>
@@ -619,20 +622,20 @@
 <span class="sd">            handle. Default is 8.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;16GB&quot;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"16GB"</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">keep_candidate_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;random_any&quot;</span><span class="p">,</span> <span class="s2">&quot;similar_one_simhash&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">keep_candidate_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"random_any"</span><span class="p">,</span> <span class="s2">"similar_one_simhash"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">keep_candidate_mode</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Can only be one of &quot;</span>
-                <span class="sa">f</span><span class="s1">&#39;[&quot;random_any&quot;, &quot;similar_one_simhash&quot;, &quot;all&quot;].&#39;</span>
+                <span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">keep_candidate_mode</span><span class="si">}</span><span class="s2">] is not supported. "</span>
+                <span class="sa">f</span><span class="s2">"Can only be one of "</span>
+                <span class="sa">f</span><span class="s1">'["random_any", "similar_one_simhash", "all"].'</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_img2seq</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_img2seq</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">caption_num</span> <span class="o">=</span> <span class="n">caption_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">=</span> <span class="n">keep_candidate_mode</span>
@@ -641,9 +644,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span> <span class="o">=</span> <span class="n">prompt_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gpu_batch_size</span> <span class="o">=</span> <span class="n">gpu_batch_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_args</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="k">if</span> <span class="n">keep_candidate_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;random_any&quot;</span><span class="p">,</span> <span class="s2">&quot;similar_one_simhash&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">keep_candidate_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"random_any"</span><span class="p">,</span> <span class="s2">"similar_one_simhash"</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">keep_candidate_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">keep_candidate_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"all"</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption_num</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span> <span class="o">=</span> <span class="mi">0</span>
@@ -651,16 +654,16 @@
         <span class="c1"># report a warning when both prompt and prompt_key are set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Both the parameter `prompt` and `prompt_key` are &quot;</span> <span class="s2">&quot;set. Data-Juicer will consider `prompt_key` first.&quot;</span>
+                <span class="s2">"Both the parameter `prompt` and `prompt_key` are "</span> <span class="s2">"set. Data-Juicer will consider `prompt_key` first."</span>
             <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_single_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ori_sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 
 <span class="sd">        :param ori_sample: a single data sample before applying generation</span>
 <span class="sd">        :return: batched results after generation</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># there is no image in this sample</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ori_sample</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ori_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">]:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -668,7 +671,7 @@
         <span class="c1"># the generated results</span>
         <span class="n">generated_samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ori_sample</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">generated_sample</span> <span class="ow">in</span> <span class="n">generated_samples</span><span class="p">:</span>
-            <span class="n">generated_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">generated_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span>
 
         <span class="c1"># 1. load all image(s)</span>
         <span class="n">loaded_image_keys</span> <span class="o">=</span> <span class="n">ori_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">]</span>
@@ -712,15 +715,15 @@
 
             <span class="c1"># construct prompts</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ori_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="c1"># check prompt_key is not None, and it&#39;s a str in the sample</span>
+                <span class="c1"># check prompt_key is not None, and it's a str in the sample</span>
                 <span class="n">prompt_texts</span> <span class="o">=</span> <span class="p">[</span><span class="n">ori_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">]]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_chunk</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="c1"># check prompt is not None, and it&#39;s a str</span>
+                <span class="c1"># check prompt is not None, and it's a str</span>
                 <span class="n">prompt_texts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_chunk</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">prompt_texts</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">image_chunk</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">prompt_texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">image_chunk</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">prompt_texts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caption_num</span><span class="p">):</span>
                 <span class="n">generated_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">generated_text</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -749,14 +752,14 @@
                     <span class="n">placeholders</span><span class="o">=</span><span class="n">place_holders</span><span class="p">,</span>
                     <span class="n">new_texts</span><span class="o">=</span><span class="n">new_generated_text_all_images</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                 <span class="p">)</span>
-                <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_generated_text_per_chunk</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">new_generated_text_per_chunk</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">"</span>
 
             <span class="n">offset</span> <span class="o">+=</span> <span class="n">img_count</span>
 
         <span class="k">return</span> <span class="n">generated_samples</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_reduce_captions_per_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">generated_text_candidates_single_chunk</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce multiple candidate captions to the final caption(s) for a single image.</span>
+<span class="w">        </span><span class="sd">"""Reduce multiple candidate captions to the final caption(s) for a single image.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            chunk: The text chunk containing the image placeholder.</span>
@@ -764,13 +767,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of reduced captions based on keep_candidate_mode.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">new_generated_text_per_chunk</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">&quot;random_any&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">"random_any"</span><span class="p">:</span>
             <span class="n">new_generated_text_per_chunk</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">generated_text_candidates_single_chunk</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
             <span class="n">new_generated_text_per_chunk</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generated_text_candidates_single_chunk</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">&quot;similar_one_simhash&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_candidate_mode</span> <span class="o">==</span> <span class="s2">"similar_one_simhash"</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">..deduplicator.document_simhash_deduplicator</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
                 <span class="n">DocumentSimhashDeduplicator</span><span class="p">,</span>
             <span class="p">)</span>
@@ -801,7 +804,7 @@
         <span class="n">model</span><span class="p">,</span>
         <span class="n">processor</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate captions for a batch of images using GPU batching.</span>
+<span class="w">        </span><span class="sd">"""Generate captions for a batch of images using GPU batching.</span>
 
 <span class="sd">        This method processes images in sub-batches of size gpu_batch_size to</span>
 <span class="sd">        prevent GPU memory overflow while maximizing throughput.</span>
@@ -816,7 +819,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A 2D list where result[i][j] is the j-th candidate caption for the</span>
 <span class="sd">            i-th image. Shape: [num_images, caption_num].</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">images</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
 
@@ -842,14 +845,14 @@
                         <span class="n">batch_prompts</span> <span class="o">=</span> <span class="kc">None</span>
 
                 <span class="c1"># Prepare inputs for the model</span>
-                <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">batch_prompts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">batch_images</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">batch_prompts</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
                 <span class="c1"># Generate captions</span>
                 <span class="n">generated_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">do_sample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">generated_texts</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">generated_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">batch_captions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generated_texts</span><span class="p">)</span>
 
-            <span class="c1"># Distribute this round&#39;s captions to each image</span>
+            <span class="c1"># Distribute this round's captions to each image</span>
             <span class="k">for</span> <span class="n">img_idx</span><span class="p">,</span> <span class="n">caption</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_captions</span><span class="p">):</span>
                 <span class="n">all_captions</span><span class="p">[</span><span class="n">img_idx</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caption</span><span class="p">)</span>
 
@@ -861,7 +864,7 @@
         <span class="n">image_to_sample_chunk</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
         <span class="n">reconstructed_samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Distribute generated captions back to samples and create output samples.</span>
+<span class="w">        </span><span class="sd">"""Distribute generated captions back to samples and create output samples.</span>
 
 <span class="sd">        This method takes the flat list of captions generated for all images and</span>
 <span class="sd">        distributes them back to their corresponding samples, handling the text</span>
@@ -876,7 +879,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of generated sample dictionaries with captions inserted.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">samples_after_generation</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">sample_idx</span><span class="p">,</span> <span class="n">ori_sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reconstructed_samples</span><span class="p">):</span>
@@ -891,7 +894,7 @@
             <span class="c1"># Prepare generated sample templates</span>
             <span class="n">generated_samples</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">ori_sample</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">generated_sample</span> <span class="ow">in</span> <span class="n">generated_samples</span><span class="p">:</span>
-                <span class="n">generated_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="n">generated_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span>
 
             <span class="c1"># Get all captions for images in this sample</span>
             <span class="n">sample_image_captions</span> <span class="o">=</span> <span class="p">[</span>
@@ -920,7 +923,7 @@
                 <span class="c1"># Handle chunks with no images - just preserve special tokens</span>
                 <span class="k">if</span> <span class="n">img_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_newly_generated_samples</span><span class="p">):</span>
-                        <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">text_with_only_special_tokens</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">text_with_only_special_tokens</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">"</span>
                     <span class="k">continue</span>
 
                 <span class="c1"># Reduce captions for each image in this chunk</span>
@@ -931,8 +934,8 @@
                     <span class="k">if</span> <span class="n">chunk_idx</span> <span class="ow">in</span> <span class="n">chunk_captions</span> <span class="ow">and</span> <span class="n">img_idx_in_chunk</span> <span class="ow">in</span> <span class="n">chunk_captions</span><span class="p">[</span><span class="n">chunk_idx</span><span class="p">]:</span>
                         <span class="n">image_candidate_captions</span> <span class="o">=</span> <span class="n">chunk_captions</span><span class="p">[</span><span class="n">chunk_idx</span><span class="p">][</span><span class="n">img_idx_in_chunk</span><span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># Fallback: no captions available (shouldn&#39;t happen normally)</span>
-                        <span class="n">image_candidate_captions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption_num</span>
+                        <span class="c1"># Fallback: no captions available (shouldn't happen normally)</span>
+                        <span class="n">image_candidate_captions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">""</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">caption_num</span>
 
                     <span class="c1"># Reduce captions based on mode</span>
                     <span class="n">reduced_captions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reduce_captions_per_image</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">image_candidate_captions</span><span class="p">)</span>
@@ -948,7 +951,7 @@
                         <span class="n">placeholders</span><span class="o">=</span><span class="n">placeholders</span><span class="p">,</span>
                         <span class="n">new_texts</span><span class="o">=</span><span class="n">new_generated_text_all_images</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                     <span class="p">)</span>
-                    <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_text</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="n">generated_samples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">new_text</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">"</span>
 
             <span class="c1"># Add generated samples to output</span>
             <span class="n">samples_after_generation</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generated_samples</span><span class="p">)</span>
@@ -958,7 +961,7 @@
 <div class="viewcode-block" id="ImageCaptioningMapper.process_batched">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageCaptioningMapper.process_batched">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a batch of samples with true GPU batching for caption generation.</span>
+<span class="w">        </span><span class="sd">"""Process a batch of samples with true GPU batching for caption generation.</span>
 
 <span class="sd">        This method collects all images from all samples in the batch, generates</span>
 <span class="sd">        captions for them in GPU-efficient sub-batches, and then distributes the</span>
@@ -969,8 +972,8 @@
 <span class="sd">            both list. Suppose there are $N$ input sample list with batch</span>
 <span class="sd">            size as $b$, and denote caption_num as $M$.</span>
 <span class="sd">            the number of total samples after generation is $2Nb$</span>
-<span class="sd">            for &#39;random_any&#39; and &#39;similar_one&#39; mode,</span>
-<span class="sd">            and $(1+M)Nb$ for &#39;all&#39; mode.</span>
+<span class="sd">            for 'random_any' and 'similar_one' mode,</span>
+<span class="sd">            and $(1+M)Nb$ for 'all' mode.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            samples: Dict of lists containing the batch of samples.</span>
@@ -978,8 +981,8 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict of lists containing the processed samples with generated captions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Reconstruct samples from &quot;dict of lists&quot; to &quot;list of dicts&quot;</span>
+<span class="sd">        """</span>
+        <span class="c1"># Reconstruct samples from "dict of lists" to "list of dicts"</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">])</span>
         <span class="n">reconstructed_samples</span> <span class="o">=</span> <span class="p">[{</span><span class="n">key</span><span class="p">:</span> <span class="n">samples</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)]</span>
 
@@ -1009,7 +1012,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sample_prompt</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="c1"># Process each chunk in the sample&#39;s text</span>
+            <span class="c1"># Process each chunk in the sample's text</span>
             <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">chunks</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">chunk_idx</span><span class="p">,</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chunks</span><span class="p">):</span>
@@ -1060,7 +1063,7 @@
             <span class="n">keys</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
 
-        <span class="c1"># Reconstruct samples from &quot;list of dicts&quot; to &quot;dict of lists&quot;</span>
+        <span class="c1"># Reconstruct samples from "list of dicts" to "dict of lists"</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">samples_after_generation</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">res_samples</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">samples_after_generation</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
 

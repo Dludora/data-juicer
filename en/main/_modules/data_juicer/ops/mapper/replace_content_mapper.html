@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.replace_content_mapper</span></li>
   </ul>
 </nav>
@@ -521,9 +524,9 @@
 
 <div class="viewcode-block" id="ReplaceContentMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ReplaceContentMapper">[docs]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;replace_content_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"replace_content_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReplaceContentMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replaces content in the text that matches a specific regular expression pattern with a</span>
+<span class="w">    </span><span class="sd">"""Replaces content in the text that matches a specific regular expression pattern with a</span>
 <span class="sd">    designated replacement string.</span>
 
 <span class="sd">    This operator processes text by searching for patterns defined in `pattern` and</span>
@@ -532,21 +535,21 @@
 <span class="sd">    operator supports both single and multiple patterns and replacements. The regular</span>
 <span class="sd">    expressions are compiled with the `re.DOTALL` flag to match across multiple lines. If</span>
 <span class="sd">    the length of the patterns and replacements do not match, a `ValueError` is raised. This</span>
-<span class="sd">    operation is batched, meaning it processes multiple samples at once.&quot;&quot;&quot;</span>
+<span class="sd">    operation is batched, meaning it processes multiple samples at once."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ReplaceContentMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ReplaceContentMapper.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">repl</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">repl</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param pattern: regular expression pattern(s) to search for within text</span>
 <span class="sd">        :param repl: replacement string(s), default is empty string</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repl</span> <span class="o">=</span> <span class="n">repl</span>
@@ -559,9 +562,9 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">re</span><span class="o">.</span><span class="n">Pattern</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the regular expression pattern.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Prepare the regular expression pattern."""</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;r&#39;&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+            <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"r'"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"'"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pattern</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'r"'</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pattern</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'"'</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">pattern</span> <span class="o">=</span> <span class="n">pattern</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
@@ -578,7 +581,7 @@
                     <span class="n">replacement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repl</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repl</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;pattern length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2"> &#39;&quot;</span> <span class="sa">f</span><span class="s2">&quot;must be equal to &quot;</span> <span class="sa">f</span><span class="s2">&quot;repl length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repl</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"pattern length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span><span class="si">}</span><span class="s2"> '"</span> <span class="sa">f</span><span class="s2">"must be equal to "</span> <span class="sa">f</span><span class="s2">"repl length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repl</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">replacement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">repl</span>

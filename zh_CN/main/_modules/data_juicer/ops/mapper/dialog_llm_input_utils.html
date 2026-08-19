@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_llm_input_utils</span></li>
   </ul>
 </nav>
@@ -515,7 +518,7 @@
   <h1>data_juicer.ops.mapper.dialog_llm_input_utils 源代码</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
-<span class="sd">&quot;&quot;&quot;Helpers for dialog LLM mappers (intent / topic / sentiment / intensity).&quot;&quot;&quot;</span>
+<span class="sd">"""Helpers for dialog LLM mappers (intent / topic / sentiment / intensity)."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -531,27 +534,27 @@
     <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build (user, assistant) turns for dialog LLM mappers.</span>
+<span class="w">    </span><span class="sd">"""Build (user, assistant) turns for dialog LLM mappers.</span>
 
 <span class="sd">    Does not mutate ``sample``. Merge rules match</span>
 <span class="sd">    ``dialog_quality_llm_utils._normalize_dialog_tail``: after normalize, the last</span>
 <span class="sd">    turn lives in both ``dialog_history[-1]`` and ``query``/``response``, so those</span>
 <span class="sd">    fields must not be appended again (would duplicate the final exchange; older</span>
 <span class="sd">    code that mutated ``dialog_history`` in place corrupted downstream rows).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">dialog</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">raw</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">history_key</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">turn</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">turn</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">turn</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">u0</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">turn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">turn</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">u1</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">turn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">turn</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">u0</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">turn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">turn</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">u1</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">turn</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">turn</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">dialog</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">u0</span><span class="p">,</span> <span class="n">u1</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query_key</span><span class="p">):</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">query_key</span><span class="p">]</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">qs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-        <span class="n">rs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+        <span class="n">qs</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">rs</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">dialog</span><span class="p">:</span>
             <span class="n">dialog</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">qs</span><span class="p">,</span> <span class="n">rs</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -571,20 +574,20 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">clip_text_for_dialog_prompt</span><span class="p">(</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">max_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;truncated&quot;</span><span class="p">,</span>
+    <span class="n">note</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"truncated"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Truncate long ``text`` for API prompts when ``max_chars`` &gt; 0.</span>
+<span class="w">    </span><span class="sd">"""Truncate long ``text`` for API prompts when ``max_chars`` &gt; 0.</span>
 
 <span class="sd">    Agent traces often concatenate tool outputs into ``response``; formatter</span>
-<span class="sd">    limits elsewhere do not apply to these mappers&#39; ``history_key`` payloads.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    limits elsewhere do not apply to these mappers' ``history_key`` payloads.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">max_chars</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_chars</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_chars</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">text</span>
-    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">…[</span><span class="si">{</span><span class="n">note</span><span class="si">}</span><span class="s2">]…&quot;</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">…[</span><span class="si">{</span><span class="n">note</span><span class="si">}</span><span class="s2">]…"</span>
     <span class="n">take</span> <span class="o">=</span> <span class="n">max_chars</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">take</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">suffix</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -600,14 +603,14 @@
     <span class="n">max_query_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">max_response_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="n">qs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-    <span class="n">rs</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="n">clip_text_for_dialog_prompt</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">max_query_chars</span><span class="p">,</span> <span class="s2">&quot;query truncated&quot;</span><span class="p">),</span>
+        <span class="n">clip_text_for_dialog_prompt</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">max_query_chars</span><span class="p">,</span> <span class="s2">"query truncated"</span><span class="p">),</span>
         <span class="n">clip_text_for_dialog_prompt</span><span class="p">(</span>
             <span class="n">rs</span><span class="p">,</span>
             <span class="n">max_response_chars</span><span class="p">,</span>
-            <span class="s2">&quot;response truncated&quot;</span><span class="p">,</span>
+            <span class="s2">"response truncated"</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">)</span></div>
 

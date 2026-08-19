@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="current nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -601,26 +606,26 @@
 <li><p>Swift的 Messages 格式（与LLaMA-Factory的 ShareGPT 格式几乎一致，采用了略微不同的key字段命名）：</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"messages"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span>
+      <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span>
+      <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query1&gt;&quot;</span>
+      <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+      <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;query1&gt;"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response1&gt;&quot;</span>
+      <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"assistant"</span><span class="p">,</span>
+      <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;response1&gt;"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query2&gt;&quot;</span>
+      <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+      <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;query2&gt;"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response2&gt;&quot;</span>
+      <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"assistant"</span><span class="p">,</span>
+      <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;response2&gt;"</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
@@ -630,15 +635,15 @@
 <li><p>Swift的 ShareGPT 格式：</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;conversation&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"system"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">,</span>
+  <span class="s2">"conversation"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
-      <span class="s2">&quot;human&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query1&gt;&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;assistant&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response1&gt;&quot;</span>
+      <span class="s2">"human"</span><span class="p">:</span> <span class="s2">"&lt;query1&gt;"</span><span class="p">,</span>
+      <span class="s2">"assistant"</span><span class="p">:</span> <span class="s2">"&lt;response1&gt;"</span>
     <span class="p">},</span>
     <span class="p">{</span>
-      <span class="s2">&quot;human&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query2&gt;&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;assistant&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response2&gt;&quot;</span>
+      <span class="s2">"human"</span><span class="p">:</span> <span class="s2">"&lt;query2&gt;"</span><span class="p">,</span>
+      <span class="s2">"assistant"</span><span class="p">:</span> <span class="s2">"&lt;response2&gt;"</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
@@ -648,10 +653,10 @@
 <li><p>Alpaca 格式 （在Swift和LLaMA-Factory中定义一致）：</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query-inst&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query-input&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response&gt;&quot;</span>
+  <span class="s2">"system"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">,</span>
+  <span class="s2">"instruction"</span><span class="p">:</span> <span class="s2">"&lt;query-inst&gt;"</span><span class="p">,</span>
+  <span class="s2">"input"</span><span class="p">:</span> <span class="s2">"&lt;query-input&gt;"</span><span class="p">,</span>
+  <span class="s2">"output"</span><span class="p">:</span> <span class="s2">"&lt;response&gt;"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -659,13 +664,13 @@
 <li><p>Swift的Query-Response 格式：</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query2&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response2&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"system"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">,</span>
+  <span class="s2">"query"</span><span class="p">:</span> <span class="s2">"&lt;query2&gt;"</span><span class="p">,</span>
+  <span class="s2">"response"</span><span class="p">:</span> <span class="s2">"&lt;response2&gt;"</span><span class="p">,</span>
+  <span class="s2">"history"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">[</span>
-      <span class="s2">&quot;&lt;query1&gt;&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;&lt;response1&gt;&quot;</span>
+      <span class="s2">"&lt;query1&gt;"</span><span class="p">,</span>
+      <span class="s2">"&lt;response1&gt;"</span>
     <span class="p">]</span>
   <span class="p">]</span>
 <span class="p">}</span>
@@ -677,14 +682,14 @@
 <li><p>DJ的多轮对话缺省格式（DJ post-tuning算子实现时假设基于该格式进行字段解析和处理）:</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query-inst&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query2&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response2&gt;&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[</span>
+  <span class="s2">"system"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">,</span>
+  <span class="s2">"instruction"</span><span class="p">:</span> <span class="s2">"&lt;query-inst&gt;"</span><span class="p">,</span>
+  <span class="s2">"query"</span><span class="p">:</span> <span class="s2">"&lt;query2&gt;"</span><span class="p">,</span>
+  <span class="s2">"response"</span><span class="p">:</span> <span class="s2">"&lt;response2&gt;"</span><span class="p">,</span>
+  <span class="s2">"history"</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">[</span>
-      <span class="s2">&quot;&lt;query1&gt;&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;&lt;response1&gt;&quot;</span>
+      <span class="s2">"&lt;query1&gt;"</span><span class="p">,</span>
+      <span class="s2">"&lt;response1&gt;"</span>
     <span class="p">]</span>
   <span class="p">]</span>
 <span class="p">}</span>

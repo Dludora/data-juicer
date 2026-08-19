@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.audio_nmf_snr_filter</span></li>
   </ul>
 </nav>
@@ -524,10 +527,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_AUDIOS</span>
 
-<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;librosa&quot;</span><span class="p">)</span>
-<span class="n">decompose</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;librosa.decompose&quot;</span><span class="p">)</span>
+<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"librosa"</span><span class="p">)</span>
+<span class="n">decompose</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"librosa.decompose"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;audio_nmf_snr_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"audio_nmf_snr_filter"</span>
 
 
 <span class="c1"># run NMF to decompose the signal and noise from the input audio</span>
@@ -538,7 +541,7 @@
     <span class="n">S</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">librosa</span><span class="o">.</span><span class="n">stft</span><span class="p">(</span><span class="n">audio</span><span class="p">))</span>
 
     <span class="c1"># run NMF to decompose the audio</span>
-    <span class="n">W</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">decompose</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">nmf_iter</span><span class="p">)</span>
+    <span class="n">W</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="n">decompose</span><span class="o">.</span><span class="n">decompose</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s2">"random"</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">nmf_iter</span><span class="p">)</span>
 
     <span class="c1"># get signal and noise</span>
     <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">W</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
@@ -578,17 +581,17 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_AUDIOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AudioNMFSNRFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Keep data samples whose audio Signal-to-Noise Ratios (SNRs) are within a specified</span>
+<span class="w">    </span><span class="sd">"""Keep data samples whose audio Signal-to-Noise Ratios (SNRs) are within a specified</span>
 <span class="sd">    range.</span>
 
 <span class="sd">    This operator computes the SNR of each audio in a sample using Non-negative Matrix</span>
 <span class="sd">    Factorization (NMF). It then filters the samples based on whether their SNRs fall within</span>
 <span class="sd">    the given minimum and maximum thresholds. The SNR is computed for each audio, and the</span>
-<span class="sd">    filtering strategy can be set to either &#39;any&#39; or &#39;all&#39;. In &#39;any&#39; mode, a sample is kept</span>
-<span class="sd">    if at least one of its audios meets the SNR criteria. In &#39;all&#39; mode, all audios must</span>
+<span class="sd">    filtering strategy can be set to either 'any' or 'all'. In 'any' mode, a sample is kept</span>
+<span class="sd">    if at least one of its audios meets the SNR criteria. In 'all' mode, all audios must</span>
 <span class="sd">    meet the criteria for the sample to be kept. The NMF computation uses a specified number</span>
 <span class="sd">    of iterations. If no audio is present in the sample, the SNR is recorded as an empty</span>
-<span class="sd">    array. The key metric is stored in the &#39;audio_nmf_snr&#39; field.&quot;&quot;&quot;</span>
+<span class="sd">    array. The key metric is stored in the 'audio_nmf_snr' field."""</span>
 
 <div class="viewcode-block" id="AudioNMFSNRFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.audio_nmf_snr_filter.html#data_juicer.ops.filter.AudioNMFSNRFilter.__init__">[docs]</a>
@@ -597,42 +600,42 @@
         <span class="n">min_snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">max_snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
         <span class="n">nmf_iter_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
-<span class="sd">        :param min_snr: The min audio SNR to keep samples in dB. It&#39;s 0 by</span>
+<span class="sd">        :param min_snr: The min audio SNR to keep samples in dB. It's 0 by</span>
 <span class="sd">            default.</span>
-<span class="sd">        :param max_snr: The max audio SNR to keep samples in dB. It&#39;s</span>
+<span class="sd">        :param max_snr: The max audio SNR to keep samples in dB. It's</span>
 <span class="sd">            sys.maxsize by default.</span>
-<span class="sd">        :param nmf_iter_num: The max number of iterations to run NMF. It&#39;s 500</span>
+<span class="sd">        :param nmf_iter_num: The max number of iterations to run NMF. It's 500</span>
 <span class="sd">            in default.</span>
-<span class="sd">        :param any_or_all: keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all audios. &#39;any&#39;: keep this sample if any audios meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all audios meet the</span>
+<span class="sd">        :param any_or_all: keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all audios. 'any': keep this sample if any audios meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all audios meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s2">&quot;resampy&quot;</span><span class="p">,</span> <span class="s2">&quot;samplerate==0.1.0&quot;</span><span class="p">,</span> <span class="s2">&quot;torchcodec==0.7&quot;</span><span class="p">])</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s2">"resampy"</span><span class="p">,</span> <span class="s2">"samplerate==0.1.0"</span><span class="p">,</span> <span class="s2">"torchcodec==0.7"</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">min_snr</span> <span class="o">=</span> <span class="n">min_snr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_snr</span> <span class="o">=</span> <span class="n">max_snr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nmf_iter_num</span> <span class="o">=</span> <span class="n">nmf_iter_num</span>
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span></div>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span></div>
 
 
 <div class="viewcode-block" id="AudioNMFSNRFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.audio_nmf_snr_filter.html#data_juicer.ops.filter.AudioNMFSNRFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">audio_nmf_snr</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.aggregator.nested_aggregator</span></li>
   </ul>
 </nav>
@@ -526,7 +529,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;nested_aggregator&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"nested_aggregator"</span>
 
 
 <span class="c1"># TODO: LLM-based inference.</span>
@@ -534,7 +537,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.aggregator.nested_aggregator.html#data_juicer.ops.aggregator.NestedAggregator">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NestedAggregator</span><span class="p">(</span><span class="n">Aggregator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Aggregates nested content from multiple samples into a single summary.</span>
+<span class="w">    </span><span class="sd">"""Aggregates nested content from multiple samples into a single summary.</span>
 
 <span class="sd">    This operator uses a recursive summarization approach to aggregate content from multiple</span>
 <span class="sd">    samples. It processes the input text, which is split into sub-documents, and generates a</span>
@@ -543,40 +546,40 @@
 <span class="sd">    supports retrying the API call in case of errors and allows for customization of the</span>
 <span class="sd">    summarization process through various parameters. The default system prompt and</span>
 <span class="sd">    templates are provided in Chinese, but they can be customized. The operator uses a</span>
-<span class="sd">    Hugging Face tokenizer to handle tokenization.&quot;&quot;&quot;</span>
+<span class="sd">    Hugging Face tokenizer to handle tokenization."""</span>
 
     <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;给定一些文档碎片，将这些文档整合成一个文档总结。</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;要求：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 总结的长度与文档碎片的平均长度基本一致</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 不要包含主观看法</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 注意要尽可能保留文本的专有名词</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 只输出文档总结不要输出其他内容</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 参考如下样例：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;唐僧师徒四人行至白虎岭，遇上了变化多端的白骨精。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;白骨精首次变身少女送斋，被孙悟空识破打死，唐僧责怪悟空。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;妖怪再变老妇寻女，又被悟空击毙，师傅更加不满，念紧箍咒惩罚。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;不甘心的白骨精第三次化作老公公来诱骗，依旧逃不过金睛火眼。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;最终，在观音菩萨的帮助下，真相大白，唐僧明白了自己的误解。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;文档总结：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;唐僧师徒在白虎岭三遇白骨精变化诱惑，悟空屡次识破击毙妖怪却遭误解，最终观音相助真相大白。&quot;</span>
+        <span class="s2">"给定一些文档碎片，将这些文档整合成一个文档总结。</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"要求：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 总结的长度与文档碎片的平均长度基本一致</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 不要包含主观看法</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 注意要尽可能保留文本的专有名词</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 只输出文档总结不要输出其他内容</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 参考如下样例：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"唐僧师徒四人行至白虎岭，遇上了变化多端的白骨精。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"白骨精首次变身少女送斋，被孙悟空识破打死，唐僧责怪悟空。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"妖怪再变老妇寻女，又被悟空击毙，师傅更加不满，念紧箍咒惩罚。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"不甘心的白骨精第三次化作老公公来诱骗，依旧逃不过金睛火眼。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"最终，在观音菩萨的帮助下，真相大白，唐僧明白了自己的误解。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"文档总结：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"唐僧师徒在白虎岭三遇白骨精变化诱惑，悟空屡次识破击毙妖怪却遭误解，最终观音相助真相大白。"</span>
     <span class="p">)</span>
 
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{sub_docs}</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="s2">&quot;文档总结：</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{sub_docs}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="s2">"文档总结：</span><span class="se">\n</span><span class="s2">"</span>
 
-    <span class="n">DEFAULT_SUB_DOC_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;文档碎片：</span><span class="se">\n</span><span class="si">{text}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">DEFAULT_SUB_DOC_TEMPLATE</span> <span class="o">=</span> <span class="s2">"文档碎片：</span><span class="se">\n</span><span class="si">{text}</span><span class="se">\n</span><span class="s2">"</span>
 
 <div class="viewcode-block" id="NestedAggregator.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.aggregator.nested_aggregator.html#data_juicer.ops.aggregator.NestedAggregator.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="n">input_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">event_description</span><span class="p">,</span>
         <span class="n">output_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">max_token_num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -591,18 +594,18 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param api_model: API model name.</span>
 <span class="sd">        :param input_key: The input key in the meta field of the samples.</span>
-<span class="sd">            It is &quot;event_description&quot; in default.</span>
+<span class="sd">            It is "event_description" in default.</span>
 <span class="sd">        :param output_key: The output key in the aggregation field in the</span>
 <span class="sd">            samples. It is same as the input_key in default.</span>
 <span class="sd">        :param max_token_num: The max token num of the total tokens of the</span>
 <span class="sd">            sub documents. Without limitation if it is None.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param system_prompt: The system prompt.</span>
 <span class="sd">        :param sub_doc_template: The template for input text in each sample.</span>
 <span class="sd">        :param input_template: The input template.</span>
@@ -610,9 +613,9 @@
 <span class="sd">            call error or output parsing error.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">input_key</span> <span class="o">=</span> <span class="n">input_key</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span>
@@ -625,7 +628,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span>
             <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
             <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -640,7 +643,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.aggregator.nested_aggregator.html#data_juicer.ops.aggregator.NestedAggregator.parse_output">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">if_match</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-            <span class="n">quotes</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;“&quot;</span><span class="p">,</span> <span class="s2">&quot;”&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;‘&quot;</span><span class="p">,</span> <span class="s2">&quot;’&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="s2">&quot;`&quot;</span><span class="p">)]</span>
+            <span class="n">quotes</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"'"</span><span class="p">),</span> <span class="p">(</span><span class="s1">'"'</span><span class="p">,</span> <span class="s1">'"'</span><span class="p">),</span> <span class="p">(</span><span class="s2">"“"</span><span class="p">,</span> <span class="s2">"”"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"‘"</span><span class="p">,</span> <span class="s2">"’"</span><span class="p">),</span> <span class="p">(</span><span class="s2">"`"</span><span class="p">,</span> <span class="s2">"`"</span><span class="p">)]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">text</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">in</span> <span class="n">quotes</span><span class="p">:</span>
@@ -658,7 +661,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.aggregator.nested_aggregator.html#data_juicer.ops.aggregator.NestedAggregator.recursive_summary">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">recursive_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_docs</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_docs</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_docs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sub_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">())</span>
@@ -674,9 +677,9 @@
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">docs</span> <span class="ow">in</span> <span class="n">group_docs</span><span class="p">:</span>
             <span class="n">doc_strs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sub_doc_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
-            <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sub_docs</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_strs</span><span class="p">))</span>
-            <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sub_docs</span><span class="o">=</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">doc_strs</span><span class="p">))</span>
+            <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
@@ -684,7 +687,7 @@
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="k">break</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">recursive_summary</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
 
@@ -696,7 +699,7 @@
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">meta</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The input key does not exist in the sample!&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"The input key does not exist in the sample!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="n">sub_docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_key</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]]</span>

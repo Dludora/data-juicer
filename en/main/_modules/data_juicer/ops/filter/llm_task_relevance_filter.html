@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.llm_task_relevance_filter</span></li>
   </ul>
 </nav>
@@ -522,10 +525,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_task_relevance_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_task_relevance_filter"</span>
 
 
 <div class="viewcode-block" id="LLMTaskRelevanceFilter">
@@ -533,23 +536,23 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@ATTRIBUTION_FILTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMTaskRelevanceFilter</span><span class="p">(</span><span class="n">LLMAnalysisFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with high relevance scores to validation tasks estimated by an</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with high relevance scores to validation tasks estimated by an</span>
 <span class="sd">    LLM.</span>
 
 <span class="sd">    This operator evaluates the relevance of each sample to a specified validation task</span>
 <span class="sd">    using an LLM. The LLM scores the sample on multiple dimensions, including topical</span>
 <span class="sd">    relevance, linguistic style match, task match, knowledge alignment, and potential</span>
 <span class="sd">    utility. Each dimension is scored on a 1-5 scale, with 5 being the highest. The key</span>
-<span class="sd">    metric, &#39;llm_task_relevance&#39;, is the average score across these dimensions. Samples are</span>
+<span class="sd">    metric, 'llm_task_relevance', is the average score across these dimensions. Samples are</span>
 <span class="sd">    kept if their average score meets or exceeds the specified minimum threshold. The</span>
 <span class="sd">    operator uses either an API or a Hugging Face model for evaluation. If no validation</span>
-<span class="sd">    dataset or task description is provided, the &#39;prepare_valid_feature&#39; method must be</span>
-<span class="sd">    called manually before applying the filter.&quot;&quot;&quot;</span>
+<span class="sd">    dataset or task description is provided, the 'prepare_valid_feature' method must be</span>
+<span class="sd">    called manually before applying the filter."""</span>
 
     <span class="c1"># TODO: fix dataset cast error</span>
 
     <span class="c1"># avoid leading whitespace</span>
-    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">You are a meticulous data quality assessor for LLM training. Evaluate whether each data sample is beneficial for improving model performance on a downstream task.</span>
 <span class="s2">The downstream task will be characterized by a task description or/and some validation data in the user query.</span>
 
@@ -564,15 +567,15 @@
 <span class="s2">2. Output Format</span>
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {</span>
-<span class="s2">    &quot;topical_relevance&quot;: ,</span>
-<span class="s2">    &quot;linguistic_style_match&quot;: ,</span>
-<span class="s2">    &quot;task_match&quot;: ,</span>
-<span class="s2">    &quot;knowledge_alignment&quot;: ,</span>
-<span class="s2">    &quot;potential_utility&quot;: ,</span>
+<span class="s2">  "dimension_scores": {</span>
+<span class="s2">    "topical_relevance": ,</span>
+<span class="s2">    "linguistic_style_match": ,</span>
+<span class="s2">    "task_match": ,</span>
+<span class="s2">    "knowledge_alignment": ,</span>
+<span class="s2">    "potential_utility": ,</span>
 <span class="s2">  },</span>
-<span class="s2">  &quot;flags&quot;: [&quot;topical_mismatch&quot;, &quot;task_irrelevant&quot;, ...],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;Technical analysis of the relevance&quot;,</span>
+<span class="s2">  "flags": ["topical_mismatch", "task_irrelevant", ...],</span>
+<span class="s2">  "rationale": "Technical analysis of the relevance",</span>
 <span class="s2">}</span>
 <span class="s2">3. Special Instructions</span>
 <span class="s2">- Focus on **alignment with the validation examples**, not general quality.</span>
@@ -586,25 +589,25 @@
 
 <span class="s2">json</span>
 <span class="s2">{</span>
-<span class="s2">  &quot;dimension_scores&quot;: {&quot;topical_relevance&quot;: 2, &quot;linguistic_style_match&quot;: 4, &quot;task_match&quot;: 2, &quot;knowledge_alignment&quot;: 2, &quot;potential_utility&quot;: 2},</span>
-<span class="s2">  &quot;flags&quot;: [&quot;topical_mismatch&quot;],</span>
-<span class="s2">  &quot;rationale&quot;: &quot;The text provides rich information about American history, while the validation tasks is on multistep reasoning to solve challenging math problems.&quot;</span>
+<span class="s2">  "dimension_scores": {"topical_relevance": 2, "linguistic_style_match": 4, "task_match": 2, "knowledge_alignment": 2, "potential_utility": 2},</span>
+<span class="s2">  "flags": ["topical_mismatch"],</span>
+<span class="s2">  "rationale": "The text provides rich information about American history, while the validation tasks is on multistep reasoning to solve challenging math problems."</span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="s2">"""</span>  <span class="c1"># noqa: E501</span>
 
     <span class="n">DEFAULT_DIM_REQUIRED_KEYS</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;topical_relevance&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;linguistic_style_match&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;task_match&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;knowledge_alignment&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;potential_utility&quot;</span><span class="p">,</span>
+        <span class="s2">"topical_relevance"</span><span class="p">,</span>
+        <span class="s2">"linguistic_style_match"</span><span class="p">,</span>
+        <span class="s2">"task_match"</span><span class="p">,</span>
+        <span class="s2">"knowledge_alignment"</span><span class="p">,</span>
+        <span class="s2">"potential_utility"</span><span class="p">,</span>
     <span class="p">]</span>
 
 <div class="viewcode-block" id="LLMTaskRelevanceFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_task_relevance_filter.html#data_juicer.ops.filter.LLMTaskRelevanceFilter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
         <span class="n">is_hf_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -613,7 +616,7 @@
         <span class="n">n_shot</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface model name.</span>
@@ -622,34 +625,34 @@
 <span class="sd">        :param valid_dataset: The dataset to use for validation.</span>
 <span class="sd">        :param task_desc: The description of the validation task.</span>
 <span class="sd">            If valid_dataset=None and task_desc=None,</span>
-<span class="sd">            &#39;self.prepare_valid_feature&#39; should be manually called before applying the filter.</span>
+<span class="sd">            'self.prepare_valid_feature' should be manually called before applying the filter.</span>
 <span class="sd">        :param n_shot: The number of shots in validation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="n">min_score</span><span class="p">,</span> <span class="n">is_hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">valid_dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">task_desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prepare_valid_feature</span><span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">),</span> <span class="n">task_desc</span><span class="p">,</span> <span class="n">n_shot</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;valid_dataset and task_desc are both None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
-<span class="s2">                &#39;prepare_valid_feature&#39; method should be manually called before applying the filter.&quot;</span>
+                <span class="sa">f</span><span class="s2">"valid_dataset and task_desc are both None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
+<span class="s2">                'prepare_valid_feature' method should be manually called before applying the filter."</span>
             <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">valid_feature_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;valid_info&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
+        <span class="k">return</span> <span class="s2">"valid_info"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
 
 <div class="viewcode-block" id="LLMTaskRelevanceFilter.prepare_valid_feature">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_task_relevance_filter.html#data_juicer.ops.filter.LLMTaskRelevanceFilter.prepare_valid_feature">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare_valid_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task_desc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_shot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">valid_data_block</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">valid_data_block</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_shot</span> <span class="o">=</span> <span class="n">n_shot</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
             <span class="n">sample</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s2"> are in the sample!&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s2"> are in the sample!"</span><span class="p">)</span>
             <span class="n">data_strs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="n">n_shot</span><span class="p">:</span>
@@ -659,46 +662,46 @@
                     <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_names</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sample</span>
                 <span class="p">]</span>
-                <span class="n">data_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
-                <span class="n">data_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&#39;&#39;&#39;</span><span class="se">\n</span><span class="si">{data}</span><span class="se">\n</span><span class="s2">&#39;&#39;&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_str</span><span class="p">))</span>
-            <span class="n">valid_data_block</span> <span class="o">=</span> <span class="s2">&quot;# Validation Data</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_strs</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="n">data_str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
+                <span class="n">data_strs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"'''</span><span class="se">\n</span><span class="si">{data}</span><span class="se">\n</span><span class="s2">'''"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_str</span><span class="p">))</span>
+            <span class="n">valid_data_block</span> <span class="o">=</span> <span class="s2">"# Validation Data</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_strs</span><span class="p">))</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span>
 
         <span class="k">if</span> <span class="n">task_desc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">task_desc_block</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">task_desc_block</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">task_desc_block</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;# Task Description</span><span class="se">\n</span><span class="si">{</span><span class="n">task_desc</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="n">task_desc_block</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"# Task Description</span><span class="se">\n</span><span class="si">{</span><span class="n">task_desc</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span>
 
         <span class="n">valid_txt</span> <span class="o">=</span> <span class="n">task_desc_block</span> <span class="o">+</span> <span class="n">valid_data_block</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_txt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Empty validation information, please provide validation dataset or task description.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Empty validation information, please provide validation dataset or task description."</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_txt</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_info"</span><span class="p">]</span> <span class="o">=</span> <span class="n">valid_txt</span></div>
 
 
 <div class="viewcode-block" id="LLMTaskRelevanceFilter.build_input">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_task_relevance_filter.html#data_juicer.ops.filter.LLMTaskRelevanceFilter.build_input">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s2"> are in the sample!&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Not all input keys </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="si">}</span><span class="s2"> are in the sample!"</span><span class="p">)</span>
         <span class="n">field_strs</span> <span class="o">=</span> <span class="p">[</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">field_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">field_data</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_names</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">sample</span>
         <span class="p">]</span>
-        <span class="n">data_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
+        <span class="n">data_str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_strs</span><span class="p">)</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data_str</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;valid_info&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">input_prompt</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"valid_info"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="n">input_prompt</span></div>
 
 
 <div class="viewcode-block" id="LLMTaskRelevanceFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_task_relevance_filter.html#data_juicer.ops.filter.LLMTaskRelevanceFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_task_relevance</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">&quot;Validation feature not ready yet. Call prepare_valid_feature first.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">"Validation feature not ready yet. Call prepare_valid_feature first."</span>
 
         <span class="n">score</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_llm_analysis</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
 

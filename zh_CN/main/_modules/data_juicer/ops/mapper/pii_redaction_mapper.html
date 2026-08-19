@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.pii_redaction_mapper</span></li>
   </ul>
 </nav>
@@ -525,85 +528,85 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;pii_redaction_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"pii_redaction_mapper"</span>
 
-<span class="n">PLACEHOLDER_PATH</span> <span class="o">=</span> <span class="s2">&quot;[PATH_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_EMAIL</span> <span class="o">=</span> <span class="s2">&quot;[EMAIL_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_SECRET</span> <span class="o">=</span> <span class="s2">&quot;[REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_ID</span> <span class="o">=</span> <span class="s2">&quot;[ID_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_PHONE</span> <span class="o">=</span> <span class="s2">&quot;[PHONE_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_ID_CARD</span> <span class="o">=</span> <span class="s2">&quot;[ID_CARD_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_CHANNEL_ID</span> <span class="o">=</span> <span class="s2">&quot;[CHANNEL_ID_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_URL</span> <span class="o">=</span> <span class="s2">&quot;[URL_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_IP</span> <span class="o">=</span> <span class="s2">&quot;[IP_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_JWT</span> <span class="o">=</span> <span class="s2">&quot;[JWT_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_PEM</span> <span class="o">=</span> <span class="s2">&quot;[PEM_REDACTED]&quot;</span>
-<span class="n">PLACEHOLDER_MAC</span> <span class="o">=</span> <span class="s2">&quot;[MAC_REDACTED]&quot;</span>
+<span class="n">PLACEHOLDER_PATH</span> <span class="o">=</span> <span class="s2">"[PATH_REDACTED]"</span>
+<span class="n">PLACEHOLDER_EMAIL</span> <span class="o">=</span> <span class="s2">"[EMAIL_REDACTED]"</span>
+<span class="n">PLACEHOLDER_SECRET</span> <span class="o">=</span> <span class="s2">"[REDACTED]"</span>
+<span class="n">PLACEHOLDER_ID</span> <span class="o">=</span> <span class="s2">"[ID_REDACTED]"</span>
+<span class="n">PLACEHOLDER_PHONE</span> <span class="o">=</span> <span class="s2">"[PHONE_REDACTED]"</span>
+<span class="n">PLACEHOLDER_ID_CARD</span> <span class="o">=</span> <span class="s2">"[ID_CARD_REDACTED]"</span>
+<span class="n">PLACEHOLDER_CHANNEL_ID</span> <span class="o">=</span> <span class="s2">"[CHANNEL_ID_REDACTED]"</span>
+<span class="n">PLACEHOLDER_URL</span> <span class="o">=</span> <span class="s2">"[URL_REDACTED]"</span>
+<span class="n">PLACEHOLDER_IP</span> <span class="o">=</span> <span class="s2">"[IP_REDACTED]"</span>
+<span class="n">PLACEHOLDER_JWT</span> <span class="o">=</span> <span class="s2">"[JWT_REDACTED]"</span>
+<span class="n">PLACEHOLDER_PEM</span> <span class="o">=</span> <span class="s2">"[PEM_REDACTED]"</span>
+<span class="n">PLACEHOLDER_MAC</span> <span class="o">=</span> <span class="s2">"[MAC_REDACTED]"</span>
 
 <span class="c1"># Keys that often hold paths/emails/PII; redact when found in any nested dict</span>
-<span class="n">PII_VALUE_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;arguments&quot;</span><span class="p">,</span> <span class="s2">&quot;file_paths&quot;</span><span class="p">)</span>
+<span class="n">PII_VALUE_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"file_path"</span><span class="p">,</span> <span class="s2">"path"</span><span class="p">,</span> <span class="s2">"file"</span><span class="p">,</span> <span class="s2">"arguments"</span><span class="p">,</span> <span class="s2">"file_paths"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_compile_patterns</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build regex patterns for multi-platform and common PII.&quot;&quot;&quot;</span>
-    <span class="n">ipv4</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;![0-9.])&quot;</span> <span class="sa">r</span><span class="s2">&quot;(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.)</span><span class="si">{3}</span><span class="s2">&quot;</span> <span class="sa">r</span><span class="s2">&quot;(?:25[0-5]|2[0-4]\d|[01]?\d\d?)&quot;</span> <span class="sa">r</span><span class="s2">&quot;(?![0-9])&quot;</span>
+<span class="w">    </span><span class="sd">"""Build regex patterns for multi-platform and common PII."""</span>
+    <span class="n">ipv4</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"(?&lt;![0-9.])"</span> <span class="sa">r</span><span class="s2">"(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.)</span><span class="si">{3}</span><span class="s2">"</span> <span class="sa">r</span><span class="s2">"(?:25[0-5]|2[0-4]\d|[01]?\d\d?)"</span> <span class="sa">r</span><span class="s2">"(?![0-9])"</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="c1"># Unix: /Users/..., /home/..., /tmp/..., /opt/...</span>
-        <span class="s2">&quot;path_unix&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;(^|[\s</span><span class="se">\&quot;</span><span class="s2">&#39;(\[=])(/(?:Users?|home|tmp|etc|var|opt|Applications)&quot;</span> <span class="sa">r</span><span class="s2">&quot;[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;)\]]*(?:/[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;)\]]*)*)&quot;</span>
+        <span class="s2">"path_unix"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"(^|[\s</span><span class="se">\"</span><span class="s2">'(\[=])(/(?:Users?|home|tmp|etc|var|opt|Applications)"</span> <span class="sa">r</span><span class="s2">"[^\s</span><span class="se">\"</span><span class="s2">')\]]*(?:/[^\s</span><span class="se">\"</span><span class="s2">')\]]*)*)"</span>
         <span class="p">),</span>
         <span class="c1"># Windows: C:\, D:\, \\server\share</span>
-        <span class="s2">&quot;path_win&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^|[\s</span><span class="se">\&quot;</span><span class="s2">&#39;(\[=])([A-Za-z]:</span><span class="se">\\</span><span class="s2">[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;)\]]*(?:</span><span class="se">\\</span><span class="s2">[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;)\]]*)*)&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;path_win_unc&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(^|[\s</span><span class="se">\&quot;</span><span class="s2">&#39;(\[=])(</span><span class="se">\\\\</span><span class="s2">[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;)\]]+)&quot;</span><span class="p">),</span>
+        <span class="s2">"path_win"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(^|[\s</span><span class="se">\"</span><span class="s2">'(\[=])([A-Za-z]:</span><span class="se">\\</span><span class="s2">[^\s</span><span class="se">\"</span><span class="s2">')\]]*(?:</span><span class="se">\\</span><span class="s2">[^\s</span><span class="se">\"</span><span class="s2">')\]]*)*)"</span><span class="p">),</span>
+        <span class="s2">"path_win_unc"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(^|[\s</span><span class="se">\"</span><span class="s2">'(\[=])(</span><span class="se">\\\\</span><span class="s2">[^\s</span><span class="se">\"</span><span class="s2">')\]]+)"</span><span class="p">),</span>
         <span class="c1"># Email: local@domain.tld (gwm.cn, qq.com, etc.)</span>
-        <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[a-zA-Z0-9][\w.+-]*@[\w.-]+\.(?:[a-zA-Z]{2,}|\w{2,})&quot;</span><span class="p">),</span>
-        <span class="c1"># Secret keys: key:= value or &quot;key&quot;: &quot;value&quot;</span>
-        <span class="s2">&quot;secret_kv&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;(\b(?:api[_-]?key|apikey|secret|password|passwd|token|auth|authorization&quot;</span>
-            <span class="sa">r</span><span class="s2">&quot;|credential|license[_-]?key)\s*[:=]\s*[</span><span class="se">\&quot;</span><span class="s2">&#39;]?)([^\s</span><span class="se">\&quot;</span><span class="s2">&#39;,}\]]+)&quot;</span><span class="p">,</span>
+        <span class="s2">"email"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[a-zA-Z0-9][\w.+-]*@[\w.-]+\.(?:[a-zA-Z]{2,}|\w{2,})"</span><span class="p">),</span>
+        <span class="c1"># Secret keys: key:= value or "key": "value"</span>
+        <span class="s2">"secret_kv"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"(\b(?:api[_-]?key|apikey|secret|password|passwd|token|auth|authorization"</span>
+            <span class="sa">r</span><span class="s2">"|credential|license[_-]?key)\s*[:=]\s*[</span><span class="se">\"</span><span class="s2">']?)([^\s</span><span class="se">\"</span><span class="s2">',}\]]+)"</span><span class="p">,</span>
             <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="c1"># Session/user/request IDs (session_id: 123, user_id: ou_xxx)</span>
-        <span class="s2">&quot;id_kv&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;\b(session[_-]?id|user[_-]?id|request[_-]?id|trace[_-]?id)\s*[:=]\s*[</span><span class="se">\&quot;</span><span class="s2">&#39;]?&quot;</span> <span class="sa">r</span><span class="s2">&quot;[\w.-]+&quot;</span><span class="p">,</span>
+        <span class="s2">"id_kv"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"\b(session[_-]?id|user[_-]?id|request[_-]?id|trace[_-]?id)\s*[:=]\s*[</span><span class="se">\"</span><span class="s2">']?"</span> <span class="sa">r</span><span class="s2">"[\w.-]+"</span><span class="p">,</span>
             <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="c1"># Agent channel: 当前的channel: feishu / dingtalk / email / 飞书 / 钉钉</span>
-        <span class="s2">&quot;channel_kv&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;(\bchannel\s*[:=]\s*[</span><span class="se">\&quot;</span><span class="s2">&#39;]?|当前的\s*channel\s*[:：]\s*)&quot;</span>
-            <span class="sa">r</span><span class="s2">&quot;(feishu|dingtalk|wecom|wechat_work|email|mail|飞书|钉钉|企业微信|邮箱)\b&quot;</span><span class="p">,</span>
+        <span class="s2">"channel_kv"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"(\bchannel\s*[:=]\s*[</span><span class="se">\"</span><span class="s2">']?|当前的\s*channel\s*[:：]\s*)"</span>
+            <span class="sa">r</span><span class="s2">"(feishu|dingtalk|wecom|wechat_work|email|mail|飞书|钉钉|企业微信|邮箱)\b"</span><span class="p">,</span>
             <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="c1"># 飞书 open_id (ou_ + 32 hex)</span>
-        <span class="s2">&quot;feishu_open_id&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\bou_[0-9a-f]</span><span class="si">{32}</span><span class="s2">\b&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
+        <span class="s2">"feishu_open_id"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\bou_[0-9a-f]</span><span class="si">{32}</span><span class="s2">\b"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">),</span>
         <span class="c1"># 钉钉/企业微信 等常见 open_id 格式 (字母+数字+下划线，较长)</span>
-        <span class="s2">&quot;platform_open_id&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\b(ou_|u_|uid_)[0-9a-zA-Z_-]{16,64}\b&quot;</span><span class="p">),</span>
+        <span class="s2">"platform_open_id"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b(ou_|u_|uid_)[0-9a-zA-Z_-]{16,64}\b"</span><span class="p">),</span>
         <span class="c1"># Chinese mobile (simple)</span>
-        <span class="s2">&quot;phone_cn&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\b1[3-9]\d</span><span class="si">{9}</span><span class="s2">\b&quot;</span><span class="p">),</span>
+        <span class="s2">"phone_cn"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\b1[3-9]\d</span><span class="si">{9}</span><span class="s2">\b"</span><span class="p">),</span>
         <span class="c1"># Generic phone (international, simple)</span>
-        <span class="s2">&quot;phone_intl&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\+\d{1,4}[-.\s]?\d{6,14}\b&quot;</span><span class="p">),</span>
+        <span class="s2">"phone_intl"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\+\d{1,4}[-.\s]?\d{6,14}\b"</span><span class="p">),</span>
         <span class="c1"># Chinese ID card (18 digits)</span>
-        <span class="s2">&quot;id_card_cn&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;\b[1-9]\d</span><span class="si">{5}</span><span class="s2">(?:19|20)\d</span><span class="si">{2}</span><span class="s2">(?:0[1-9]|1[0-2])&quot;</span> <span class="sa">r</span><span class="s2">&quot;(?:0[1-9]|[12]\d|3[01])\d</span><span class="si">{3}</span><span class="s2">[\dXx]\b&quot;</span>
+        <span class="s2">"id_card_cn"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"\b[1-9]\d</span><span class="si">{5}</span><span class="s2">(?:19|20)\d</span><span class="si">{2}</span><span class="s2">(?:0[1-9]|1[0-2])"</span> <span class="sa">r</span><span class="s2">"(?:0[1-9]|[12]\d|3[01])\d</span><span class="si">{3}</span><span class="s2">[\dXx]\b"</span>
         <span class="p">),</span>
         <span class="c1"># PEM / SSH keys &amp; certs (strip whole block first)</span>
-        <span class="s2">&quot;pem_block&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;-----BEGIN [A-Z0-9 -]+-----[\s\S]*?-----END [A-Z0-9 -]+-----&quot;</span><span class="p">,</span>
+        <span class="s2">"pem_block"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"-----BEGIN [A-Z0-9 -]+-----[\s\S]*?-----END [A-Z0-9 -]+-----"</span><span class="p">,</span>
             <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="c1"># Typical JWS (header often starts with eyJ = {&quot;alg&quot;...)</span>
-        <span class="s2">&quot;jwt&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;\beyJ[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+\b&quot;</span><span class="p">,</span>
+        <span class="c1"># Typical JWS (header often starts with eyJ = {"alg"...)</span>
+        <span class="s2">"jwt"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"\beyJ[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+\.[A-Za-z0-9_=-]+\b"</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="c1"># http(s) URLs (query strings may carry tokens)</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;https?://[^\s</span><span class="se">\&quot;</span><span class="s2">&#39;&lt;&gt;]+&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;ipv4&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">ipv4</span><span class="p">),</span>
+        <span class="s2">"url"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"https?://[^\s</span><span class="se">\"</span><span class="s2">'&lt;&gt;]+"</span><span class="p">),</span>
+        <span class="s2">"ipv4"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">ipv4</span><span class="p">),</span>
         <span class="c1"># Bracketed IPv6 + optional :port</span>
-        <span class="s2">&quot;ipv6&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;\[[0-9a-fA-F:.]{3,}\](?::\d{1,5})?\b&quot;</span><span class="p">,</span>
+        <span class="s2">"ipv6"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"\[[0-9a-fA-F:.]{3,}\](?::\d{1,5})?\b"</span><span class="p">,</span>
         <span class="p">),</span>
-        <span class="s2">&quot;mac&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;(?&lt;![0-9A-Fa-f:])(?:[0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">[:-])</span><span class="si">{5}</span><span class="s2">[0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">\b&quot;</span><span class="p">,</span>
+        <span class="s2">"mac"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="sa">r</span><span class="s2">"(?&lt;![0-9A-Fa-f:])(?:[0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">[:-])</span><span class="si">{5}</span><span class="s2">[0-9A-Fa-f]</span><span class="si">{2}</span><span class="s2">\b"</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">}</span>
 
@@ -612,14 +615,14 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.PiiRedactionMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PiiRedactionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Redact PII in text and optionally in messages/query/response.</span>
+<span class="w">    </span><span class="sd">"""Redact PII in text and optionally in messages/query/response.</span>
 
 <span class="sd">    Covers paths (Unix/Windows), emails, secrets, IDs, phones, agent channel</span>
 <span class="sd">    identifiers (飞书/钉钉/企业微信 open_id, channel: feishu|dingtalk|email).</span>
 <span class="sd">    Optional: PEM blocks, JWT-shaped tokens, http(s) URLs, IPv4, bracketed</span>
 <span class="sd">    IPv6, MAC addresses (see ``mask_extended_pii`` or individual flags).</span>
 <span class="sd">    Use redact_keys to apply to text, query, response, and/or messages (recursive).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="PiiRedactionMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.PiiRedactionMapper.__init__">[文档]</a>
@@ -651,9 +654,9 @@
         <span class="n">ip_replacement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PLACEHOLDER_IP</span><span class="p">,</span>
         <span class="n">mac_replacement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">PLACEHOLDER_MAC</span><span class="p">,</span>
         <span class="n">extra_patterns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">,</span>
         <span class="n">redact_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">messages_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;messages&quot;</span><span class="p">,</span>
+        <span class="n">messages_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"messages"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text_key</span><span class="o">=</span><span class="n">text_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -688,32 +691,32 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">redact_keys</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">text_key</span><span class="p">,</span>
-                <span class="s2">&quot;query&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;response&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;dialog_history&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;messages&quot;</span><span class="p">,</span>
+                <span class="s2">"query"</span><span class="p">,</span>
+                <span class="s2">"response"</span><span class="p">,</span>
+                <span class="s2">"dialog_history"</span><span class="p">,</span>
+                <span class="s2">"messages"</span><span class="p">,</span>
             <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">messages_key</span> <span class="o">=</span> <span class="n">messages_key</span>
 
         <span class="n">patterns</span> <span class="o">=</span> <span class="n">_compile_patterns</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path_unix</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;path_unix&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path_win</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;path_win&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_path_win_unc</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;path_win_unc&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_email_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_secret_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;secret_kv&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_id_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;id_kv&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;channel_kv&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_feishu_open_id</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;feishu_open_id&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_platform_open_id</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;platform_open_id&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phone_cn</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;phone_cn&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phone_intl</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;phone_intl&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_id_card_cn</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;id_card_cn&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pem_block</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;pem_block&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_jwt_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;jwt&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_url_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ipv4_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;ipv4&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ipv6_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;ipv6&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mac_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">&quot;mac&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path_unix</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"path_unix"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path_win</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"path_win"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path_win_unc</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"path_win_unc"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_email_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"email"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_secret_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"secret_kv"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"id_kv"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_channel_kv</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"channel_kv"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_feishu_open_id</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"feishu_open_id"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_platform_open_id</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"platform_open_id"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phone_cn</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"phone_cn"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_phone_intl</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"phone_intl"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id_card_cn</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"id_card_cn"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pem_block</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"pem_block"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jwt_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"jwt"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_url_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ipv4_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"ipv4"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ipv6_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"ipv6"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mac_re</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">[</span><span class="s2">"mac"</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_compiled</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">pat_str</span><span class="p">,</span> <span class="n">repl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_patterns</span><span class="p">:</span>
@@ -739,17 +742,17 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_macs</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mac_re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mac_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_paths</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_unix</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_win</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_win_unc</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_unix</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_win</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_win_unc</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_emails</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_email_re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_secrets</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">secret_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secret_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">secret_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_ids</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_channel_ids</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\1&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_channel_kv</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\1"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_platform_open_ids</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feishu_open_id</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
             <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_platform_open_id</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id_replacement</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
@@ -763,7 +766,7 @@
         <span class="k">return</span> <span class="n">text</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_redact_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively redact PII in dict/list; in-place. For str, use _redact_text.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Recursively redact PII in dict/list; in-place. For str, use _redact_text."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">PII_VALUE_KEYS</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -778,43 +781,43 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_redact_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_redact_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;In-place redact all string content inside messages (list of msg).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""In-place redact all string content inside messages (list of msg)."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">return</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">)</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+                    <span class="n">msg</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">block</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">):</span>
+                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">):</span>
                                 <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">block</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
                                     <span class="n">block</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                             <span class="n">content</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
             <span class="c1"># Redact tool_calls / tool_use (e.g. function.arguments with path/email)</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;tool_calls&quot;</span><span class="p">,</span> <span class="s2">&quot;tool_use&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"tool_calls"</span><span class="p">,</span> <span class="s2">"tool_use"</span><span class="p">):</span>
                 <span class="n">calls</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calls</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="k">for</span> <span class="n">call</span> <span class="ow">in</span> <span class="n">calls</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                         <span class="k">continue</span>
-                    <span class="n">fn</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;function_call&quot;</span><span class="p">)</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"function"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"function_call"</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                        <span class="n">args</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arguments&quot;</span><span class="p">)</span>
+                        <span class="n">args</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"arguments"</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                            <span class="n">fn</span><span class="p">[</span><span class="s2">&quot;arguments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                            <span class="n">fn</span><span class="p">[</span><span class="s2">"arguments"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
                         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_redact_value</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
                     <span class="c1"># Some formats put arguments at top level of call</span>
-                    <span class="n">args</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;arguments&quot;</span><span class="p">)</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"arguments"</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                        <span class="n">call</span><span class="p">[</span><span class="s2">&quot;arguments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                        <span class="n">call</span><span class="p">[</span><span class="s2">"arguments"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_redact_value</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
@@ -830,7 +833,7 @@
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">sample</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redact_text</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;dialog_history&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">"dialog_history"</span><span class="p">:</span>
                 <span class="n">new_history</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>

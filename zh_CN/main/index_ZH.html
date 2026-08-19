@@ -535,7 +535,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WhitespaceNormalizationMapper</span>
 
 <span class="n">ds</span> <span class="o">=</span> <span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span>
-    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Short&quot;</span><span class="p">,</span> <span class="s2">&quot;This passes the filter.&quot;</span><span class="p">,</span> <span class="s2">&quot;Text   with   spaces&quot;</span><span class="p">]</span>
+    <span class="s2">"text"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Short"</span><span class="p">,</span> <span class="s2">"This passes the filter."</span><span class="p">,</span> <span class="s2">"Text   with   spaces"</span><span class="p">]</span>
 <span class="p">})</span>
 <span class="n">res_ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">process</span><span class="p">([</span>
     <span class="n">TextLengthFilter</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
@@ -584,6 +584,47 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <section id="id6">
 <h2>📰 动态<a class="headerlink" href="#id6" title="链接到此标题。">#</a></h2>
 <details open>
+<summary>[2026-08-07] Release v1.5.5: <b>外部算子插件；HDFS I/O 与 Ray Data 优化；多节点弹性分片</b></summary>
+<ul class="simple">
+<li><p>🧩 外部算子插件 — 第三方算子现在可作为独立 pip 包分发，并通过 Python entry points 自动注册。</p></li>
+<li><p>🗄️ HDFS I/O — 新增 <code class="docutils literal notranslate"><span class="pre">hdfs://</span></code> 支持，可用于数据集加载与导出，与现有 S3 路径对齐。</p></li>
+<li><p>⚡ Ray Data 优化 — 移除会强制提前执行的急切操作，迁移至公开的 <code class="docutils literal notranslate"><span class="pre">TaskPoolStrategy</span></code>/<code class="docutils literal notranslate"><span class="pre">ActorPoolStrategy</span></code> API，并行化分区执行，保留弹性 actor pool 并发度，并使分区检查点在 block 布局变化后仍然有效。</p></li>
+<li><p>🌐 多节点弹性分片 — 新增位于 <code class="docutils literal notranslate"><span class="pre">demos/elastic_sharding/</span></code> 的可运行参考工作流，通过节点本地 Ray 执行器将大型 JSONL 数据集跨节点分片处理，支持重试与有序合并。</p></li>
+<li><p>📊 分布式 RayAnalyzer — 新增 <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>，以 Ray 原生算子计算并汇总数据集统计量，避免 pandas 物化。</p></li>
+<li><p>🧮 内存优化 — 重复度过滤器的流式 n-gram 计数与分块式 MinHash 置换降低了内存峰值（RSS 768 → 272 MiB），且结果不变。</p></li>
+<li><p>🔧 健壮性与依赖修复 — 修复 <code class="docutils literal notranslate"><span class="pre">text_chunk_mapper</span></code> 分隔符泄漏、<code class="docutils literal notranslate"><span class="pre">calibrate_response_mapper</span></code> 的 <code class="docutils literal notranslate"><span class="pre">output_pattern</span></code> 处理以及 <code class="docutils literal notranslate"><span class="pre">image_diffusion_mapper</span></code> 的空 caption 问题；为 <code class="docutils literal notranslate"><span class="pre">general_field_filter</span></code> 增加成员运算符；放宽 <code class="docutils literal notranslate"><span class="pre">numpy</span></code>/<code class="docutils literal notranslate"><span class="pre">fsspec</span></code>/<code class="docutils literal notranslate"><span class="pre">pandas</span></code> 版本约束以兼容 Python 3.13+ 与 pyarrow&gt;=17。</p></li>
+</ul>
+</details>
+<details open>
+<summary>[2026-07-17] Release v1.5.4: <b>HumanVBench 视频算子；批内阶段算子融合；健壮性修复</b></summary>
+<ul class="simple">
+<li><p>🧑‍🤝‍🧑 新算子 — 新增 9 个以人为中心的视频理解算子（人物轨迹提取、活跃说话人检测、音频 ASR、语音情绪与年龄/性别检测、人脸人口统计与属性/情绪描述、人脸占比过滤），用于构建 HumanVBench (CVPR'26) 风格的处理流水线。</p></li>
+<li><p>⚡ 批内阶段算子融合 — 新增 <code class="docutils literal notranslate"><span class="pre">FusedSequentialBatchOp</span></code>，在一个 batch 内融合连续算子，减少算子间开销，加速顺序处理。</p></li>
+<li><p>🔧 健壮性与安装修复 — 修复 Ray 去重算子的共享状态处理；修复 Ray checkpoint writer 的相对路径问题；使 <code class="docutils literal notranslate"><span class="pre">clean_html_mapper</span></code> 对 null 文本值更健壮；<code class="docutils literal notranslate"><span class="pre">ColumnWiseAnalysis</span></code> 支持处理布尔型统计列；并通过为 <code class="docutils literal notranslate"><span class="pre">decord</span></code>/<code class="docutils literal notranslate"><span class="pre">torchcodec</span></code> 添加精确的平台标记解锁 ARM64 (aarch64) 平台的安装。</p></li>
+<li><p>🧪 测试覆盖与清理 — 扩展工具函数与模型处理相关的测试，并进行若干代码清理。</p></li>
+</ul>
+</details>
+<details>
+<summary>[2026-06-26] Release v1.5.3: <b>VLA 算子升级；Ray 重分区管道；可扩展性与健壮性</b></summary>
+<ul class="simple">
+<li><p>🤖 VLA 算子升级 — 新增/重命名 10+ 个 VLA 算子（DeepCalib/DroidCalib/MoGe 相机标定、原子动作分割、手部动作计算与运动平滑、片段重组、轨迹叠加、LeRobot 导出），并提供完整的 VLA pipeline 示例。</p></li>
+<li><p>🔄 Ray 重分区管道 — 新增 'ray_repartition_pipeline'，支持 Ray 模式下的数据集级块重分区。</p></li>
+<li><p>⚡ 可扩展的 Ray Data 读取 — 将 <code class="docutils literal notranslate"><span class="pre">override_num_blocks</span></code> 贯通整个调用链，支持通过 CLI 控制 PB 级数据集的块并行度。</p></li>
+<li><p>🧪 测试覆盖扩展 — 新增 409 个测试用例，覆盖 18 个测试文件。</p></li>
+<li><p>🐳 稳定性与健壮性修复 — JSONStreamDatasource 跨批次 schema 统一、OP 环境版本解析、PartitionedRayExecutor FUSE 安全 rmtree、废弃模型名更新、num_proc 处理修复等。</p></li>
+</ul>
+</details>
+<details>
+<summary>[2026-05-29] Release v1.5.2: <b>语义化 LLM 算子；跨文档行级去重；更轻量的依赖</b></summary>
+<ul class="simple">
+<li><p>🧹 新增去重算子：DocumentLineDeduplicator 支持跨文档的行级去重，依据全局文档频率识别并移除模板文本、版权声明、导航栏等样板行。</p></li>
+<li><p>🤖 Agent 数据质量工具集：上线交互质量算子与配方（recipe），新增 bad-case HTML 报告，并增强 JSONL / HuggingFace meta 加载的健壮性。</p></li>
+<li><p>📦 更轻量、更快的安装：精简默认依赖集（Ray、音频、spaCy、av 等移至按需安装的可选依赖），显著加快安装速度。</p></li>
+<li><p>🐳 稳定性与健壮性修复：库友好的错误处理（以 raise 替代 exit(1)）、Ray 初始化与临时目录修复、清理非法 API 参数（移除无效的 max_new_tokens）、PyArrow 20+ 批量读取 JSON 修复、支持本地路径的 aesthetics 模型，以及更多性能与 Bug 修复。</p></li>
+<li><p>🧠 新增语义化 LLM 算子：引入 llm_extract_mapper、llm_condition_filter 和 llm_structured_ops，统一 llm_* 命名规范，并支持可配置的推理策略（join/agg/top-k 等能力规划中）。</p></li>
+</ul>
+</details>
+<details>
 <summary>[2026-03-17] Release v1.5.1: <b>LaTeX 算子上线；压缩格式支持；算子健壮性修复</b></summary>
 <ul class="simple">
 <li><p>📄 新增两个面向 LaTeX 的 Mapper 算子，将 data-juicer 的文档处理能力延伸至 .tex 压缩包和图片上下文的提取与处理。</p></li>
@@ -592,7 +633,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🤖 对 data-juicer-agents 的重大重构与升级已经完成：项目架构及 CLI/会话能力经过全面重新设计，以提升可维护性与可扩展性。详情请参阅 <a class="reference external" href="https://github.com/datajuicer/data-juicer-agents">date-juicer-agents</a>.</p></li>
 </ul>
 </details>
-<details open>
+<details>
 <summary>[2026-02-12] Release v1.5.0: <b>分区Ray执行器，OP级环境隔离，以及更多具身算子</b></summary>
 <ul class="simple">
 <li><p>🚀 <em>分布式执行框架升级</em> — 新增分区Ray执行器与OP级隔离环境，强化容错性、可扩展性及依赖冲突管理。</p></li>
@@ -614,31 +655,13 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🐳 <em>增强与修复</em> — 刷新 Docker 镜像、小幅性能提升、GitHub Insights 流量工作流、Ray 兼容性更新以及 Bug/文档修复。</p></li>
 </ul>
 </details>
-<details >
-<summary>[2026-01-15] Release v1.4.5: <b>20+ 新 OP、Ray vLLM 管道与 Sphinx 文档升级</b> </summary>
-<ul class="simple">
-<li><p><em>具身 AI OP</em>：添加/增强了用于视频标题生成（VLM）、视频对象分割（YOLOE+SAM2）、视频深度估计（可视化 + 点云）、人体姿态（MMPose）、图像标签（VLM）、单图像 3D 人体网格恢复（SAM 3D Body）的映射器，以及 <em>S3 上传/下载</em>。</p></li>
-<li><p><em>新管道 OP</em>：将多个 OP 组合成一个管道；引入了用于 LLM/VLM 推理的 <em>Ray + vLLM</em> 管道。</p></li>
-<li><p><em>文档升级</em>：迁移到统一的基于 <em>Sphinx</em> 的文档构建/部署工作流，具有隔离的主题/架构仓库。</p></li>
-<li><p><em>增强与修复</em>：依赖更新、改进的 Ray 去重和 S3 加载、OpenAI Responses API 支持、追踪器一致性、Docker 基础更新为 CUDA 12.6.3 + Ubuntu 24.04 + Py3.11，以及多个 Bug 修复。</p></li>
-</ul>
-</details>
-<details>
-<summary>[2025-12-01] Release v1.4.4: <b>NeurIPS'25 Spotlight、6 个新视频/多模态 OP 与 S3 I/O</b> </summary>
-<ul class="simple">
-<li><p>Data-Juicer 2.0 获得 NeurIPS'25 <strong>Spotlight</strong></p></li>
-<li><p><em>仓库拆分</em>：sandbox/recipes/agents 移至独立仓库</p></li>
-<li><p><em>S3 I/O</em> 添加到加载器/导出器</p></li>
-<li><p><em>6 个新的视频和多模态 OP</em>（角色检测、VGGT、全身姿态、手部重建）+ 文档/Ray/视频 I/O 改进和 Bug 修复</p></li>
-</ul>
-</details>
 <p>查看 <a class="reference external" href="https://github.com/datajuicer/data-juicer/releases">所有发布</a> 和 <a class="reference internal" href="docs/news_zh.html"><span class="std std-doc">动态归档</span></a></p>
 </section>
 <hr class="docutils" />
 <section id="id7">
 <h2>🔌 用户与生态系统<a class="headerlink" href="#id7" title="链接到此标题。">#</a></h2>
 <blockquote>
-<div><p>以下列表重点关注<em>面向开发者的集成和使用</em>，按<em>字母顺序</em>排列。<br />
+<div><p>以下列表重点关注<em>面向开发者的集成和使用</em>，按<em>字母顺序</em>排列。
 缺少您的项目/名称？欢迎<a class="reference external" href="https://github.com/datajuicer/data-juicer/pulls">提交 PR</a> 或<a class="reference internal" href="#id12">联系我们</a>。</p>
 </div></blockquote>
 <p>Data-Juicer 可无缝集成到您现有的技术栈，并随着社区贡献而不断发展：</p>
@@ -709,7 +732,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <hr class="docutils" />
 <section id="id14">
 <h2>📄 许可证与致谢<a class="headerlink" href="#id14" title="链接到此标题。">#</a></h2>
-<p>Data-Juicer 在 <a class="reference internal" href="#LICENSE"><span class="xref myst">Apache License 2.0</span></a> 下发布。<br />
+<p>Data-Juicer 在 <a class="reference internal" href="#LICENSE"><span class="xref myst">Apache License 2.0</span></a> 下发布。
 如果您项目中要致谢DataJuicer：请使用我们的<a class="reference external" href="https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/data_juicer/assets/DJ-Org-Logo.jpeg">Badge</a>，或文本譬如 &quot;本项目使用Data-Juicer: <a class="github reference external" href="https://github.com/datajuicer">datajuicer</a>&quot;。</p>
 </section>
 <hr class="docutils" />
@@ -739,8 +762,8 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>(TPAMI'25) <a class="reference external" href="https://arxiv.org/abs/2407.08583">The Synergy between Data and Multi-Modal Large Language Models: A Survey from Co-Development Perspective</a></p></li>
 <li><p>(NeurIPS'25) <a class="reference external" href="https://arxiv.org/abs/2502.04380">Diversity as a Reward: Fine-Tuning LLMs on a Mixture of Domain-Undetermined Data</a></p></li>
 <li><p>(NeurIPS'25) <a class="reference external" href="https://arxiv.org/abs/2503.09499">MindGYM: What Matters in Question Synthesis for Thinking-Centric Fine-Tuning?</a></p></li>
-<li><p>(Benchmark Data) <a class="reference external" href="https://arxiv.org/abs/2412.17574">HumanVBench: Exploring Human-Centric Video Understanding Capabilities of MLLMs with Synthetic Benchmark Data</a></p></li>
-<li><p>(Benchmark Data) <a class="reference external" href="https://www.arxiv.org/abs/2505.16915">DetailMaster: Can Your Text-to-Image Model Handle Long Prompts?</a></p></li>
+<li><p>(CVPR'26) <a class="reference external" href="https://arxiv.org/abs/2412.17574">HumanVBench: Exploring Human-Centric Video Understanding Capabilities of MLLMs with Synthetic Benchmark Data</a></p></li>
+<li><p>(ICML'26) <a class="reference external" href="https://www.arxiv.org/abs/2505.16915">DetailMaster: Can Your Text-to-Image Model Handle Long Prompts?</a></p></li>
 <li><p>(Data Scaling) <a class="reference external" href="https://arxiv.org/abs/2405.14908">BiMix: A Bivariate Data Mixing Law for Language Model Pretraining</a></p></li>
 </ul>
 </details>

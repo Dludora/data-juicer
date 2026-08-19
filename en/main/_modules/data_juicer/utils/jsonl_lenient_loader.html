@@ -512,13 +512,13 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.jsonl_lenient_loader</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Stream local JSONL with stdlib :func:`json.loads`, skipping bad lines.</span>
 
-<span class="sd">Used when HuggingFace&#39;s JSON builder (ujson) fails on some rows or when you</span>
+<span class="sd">Used when HuggingFace's JSON builder (ujson) fails on some rows or when you</span>
 <span class="sd">need per-line fault tolerance. Output is a normal :class:`datasets.Dataset`,</span>
 <span class="sd">so downstream operators behave the same as with the default JSONL loader.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -534,25 +534,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span>
 
 <span class="c1"># Keys produced by :func:`data_juicer.utils.file_utils.find_files_with_suffix`</span>
-<span class="n">JSONL_LENIENT_EXTENSIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;.jsonl&quot;</span><span class="p">,</span> <span class="s2">&quot;.jsonl.gz&quot;</span><span class="p">,</span> <span class="s2">&quot;.jsonl.zst&quot;</span><span class="p">})</span>
+<span class="n">JSONL_LENIENT_EXTENSIONS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">".jsonl"</span><span class="p">,</span> <span class="s2">".jsonl.gz"</span><span class="p">,</span> <span class="s2">".jsonl.zst"</span><span class="p">})</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_iter_text_lines</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jsonl.gz&quot;</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl.gz"</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">handle</span>
-    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jsonl.zst&quot;</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl.zst"</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">compressed</span><span class="p">:</span>
             <span class="n">dctx</span> <span class="o">=</span> <span class="n">zstd</span><span class="o">.</span><span class="n">ZstdDecompressor</span><span class="p">()</span>
             <span class="k">with</span> <span class="n">dctx</span><span class="o">.</span><span class="n">stream_reader</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
                 <span class="n">text_stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">(</span>
                     <span class="n">reader</span><span class="p">,</span>
-                    <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
-                    <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span>
+                    <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">yield from</span> <span class="n">text_stream</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">handle</span>
 
 
@@ -563,14 +563,14 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">add_suffix_column</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Yield one dict per valid JSON object line.</span>
 
 <span class="sd">    :param file_ext_pairs: ``(file_path, ext_key)`` where ``ext_key`` is the</span>
-<span class="sd">        suffix key from ``find_files_with_suffix`` (e.g. ``\&quot;.jsonl\&quot;``).</span>
+<span class="sd">        suffix key from ``find_files_with_suffix`` (e.g. ``\".jsonl\"``).</span>
 <span class="sd">    :param add_suffix_column: if True, set ``Fields.suffix`` to match the</span>
-<span class="sd">        default HF loader (``\&quot;.\&quot; + ext_key.strip(\&quot;.\&quot;)``).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        default HF loader (``\".\" + ext_key.strip(\".\")``).</span>
+<span class="sd">    """</span>
     <span class="c1"># Use stdlib logging inside generator for pickle compatibility with dill.</span>
     <span class="c1"># loguru Logger contains multiprocessing.Condition which cannot be pickled.</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -580,13 +580,13 @@
     <span class="n">skipped</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">ext_key</span> <span class="ow">in</span> <span class="n">file_ext_pairs</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[lenient jsonl] missing file, skip: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[lenient jsonl] missing file, skip: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">continue</span>
-        <span class="n">suffix_val</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">ext_key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">add_suffix_column</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">suffix_val</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"."</span> <span class="o">+</span> <span class="n">ext_key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"."</span><span class="p">))</span> <span class="k">if</span> <span class="n">add_suffix_column</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">line_iter</span> <span class="o">=</span> <span class="n">_iter_text_lines</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[lenient jsonl] cannot open </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[lenient jsonl] cannot open </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">for</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line_iter</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">chunk</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -596,12 +596,12 @@
                 <span class="n">obj</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">skipped</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[lenient jsonl] skip </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[lenient jsonl] skip </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">skipped</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="n">typ</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[lenient jsonl] skip </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">: &quot;</span> <span class="sa">f</span><span class="s2">&quot;expected JSON object, got </span><span class="si">{</span><span class="n">typ</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[lenient jsonl] skip </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">: "</span> <span class="sa">f</span><span class="s2">"expected JSON object, got </span><span class="si">{</span><span class="n">typ</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">suffix_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -611,7 +611,7 @@
                 <span class="k">yield</span> <span class="n">obj</span>
 
     <span class="k">if</span> <span class="n">skipped</span><span class="p">:</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[lenient jsonl] finished with </span><span class="si">{</span><span class="n">skipped</span><span class="si">}</span><span class="s2"> skipped line(s) &quot;</span> <span class="s2">&quot;(see warnings above)&quot;</span><span class="p">)</span></div>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[lenient jsonl] finished with </span><span class="si">{</span><span class="n">skipped</span><span class="si">}</span><span class="s2"> skipped line(s) "</span> <span class="s2">"(see warnings above)"</span><span class="p">)</span></div>
 
 
 
@@ -622,7 +622,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">add_suffix_column</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a :class:`datasets.Dataset` by streaming all given JSONL files.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Build a :class:`datasets.Dataset` by streaming all given JSONL files."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_gen</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span> <span class="n">add_suffix</span><span class="p">):</span>
         <span class="k">yield from</span> <span class="n">iter_lenient_jsonl_records</span><span class="p">(</span>
@@ -633,8 +633,8 @@
     <span class="k">return</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">from_generator</span><span class="p">(</span>
         <span class="n">_gen</span><span class="p">,</span>
         <span class="n">gen_kwargs</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;pairs&quot;</span><span class="p">:</span> <span class="n">file_ext_pairs</span><span class="p">,</span>
-            <span class="s2">&quot;add_suffix&quot;</span><span class="p">:</span> <span class="n">add_suffix_column</span><span class="p">,</span>
+            <span class="s2">"pairs"</span><span class="p">:</span> <span class="n">file_ext_pairs</span><span class="p">,</span>
+            <span class="s2">"add_suffix"</span><span class="p">:</span> <span class="n">add_suffix_column</span><span class="p">,</span>
         <span class="p">},</span>
     <span class="p">)</span></div>
 

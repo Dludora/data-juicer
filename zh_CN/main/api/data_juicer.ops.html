@@ -559,6 +559,28 @@ dependencies. Only available when min_common_dep_num_to_combine &gt;= 0.</p></li
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.ops.load_op_plugins">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.ops.</span></span><span class="sig-name descname"><span class="pre">load_op_plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'data_juicer.ops'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops.html#load_op_plugins"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.load_op_plugins" title="链接到此定义。">#</a></dt>
+<dd><p>Discover and import external operator plugin packages.</p>
+<p>Any installed distribution that declares an entry point under <code class="docutils literal notranslate"><span class="pre">group</span></code>
+(default <code class="docutils literal notranslate"><span class="pre">data_juicer.ops</span></code>) is imported here, which triggers the module
+level <code class="docutils literal notranslate"><span class="pre">OPERATORS.register_module(...)</span></code> calls in those packages so that
+their operators become visible in the global <code class="docutils literal notranslate"><span class="pre">OPERATORS</span></code> registry just
+like the built-in ones.</p>
+<p>A failing plugin (e.g. broken import, missing dependency) only emits a
+warning and is skipped, so a single bad plugin never breaks the whole
+pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> -- the entry point group to scan.</p>
+</dd>
+<dt class="field-even">返回<span class="colon">:</span></dt>
+<dd class="field-even"><p>the list of successfully loaded plugin entry point names.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="data_juicer.ops.Filter">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.ops.</span></span><span class="sig-name descname"><span class="pre">Filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/ops/base_op.html#Filter"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.ops.Filter" title="链接到此定义。">#</a></dt>
@@ -1195,6 +1217,7 @@ LATEST: Use the latest version of all specified dependency versions.</p></li>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.load_ops"><code class="docutils literal notranslate"><span class="pre">load_ops()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.load_op_plugins"><code class="docutils literal notranslate"><span class="pre">load_op_plugins()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.Filter"><code class="docutils literal notranslate"><span class="pre">Filter</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.Filter.__init__"><code class="docutils literal notranslate"><span class="pre">Filter.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.ops.Filter.get_keep_boolean"><code class="docutils literal notranslate"><span class="pre">Filter.get_keep_boolean()</span></code></a></li>

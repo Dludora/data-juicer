@@ -518,13 +518,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="c1"># Environment variable name for the Fernet key (base64 url-safe string)</span>
-<span class="n">_DJ_ENCRYPTION_KEY_ENV</span> <span class="o">=</span> <span class="s2">&quot;DJ_ENCRYPTION_KEY&quot;</span>
+<span class="n">_DJ_ENCRYPTION_KEY_ENV</span> <span class="o">=</span> <span class="s2">"DJ_ENCRYPTION_KEY"</span>
 
 
 <div class="viewcode-block" id="load_fernet_key">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.encryption_utils.html#data_juicer.utils.encryption_utils.load_fernet_key">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_fernet_key</span><span class="p">(</span><span class="n">key_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Load a Fernet key from a file or environment variable.</span>
 
 <span class="sd">    Priority order:</span>
@@ -537,40 +537,40 @@
 <span class="sd">    :return: a :class:`cryptography.fernet.Fernet` instance ready for</span>
 <span class="sd">        encryption / decryption.</span>
 <span class="sd">    :raises ValueError: if no key can be found or the key is invalid.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.fernet</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fernet</span>
 
     <span class="n">raw_key</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">key_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">key_path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;encryption_key_path &#39;</span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">key_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"encryption_key_path '</span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">' does not exist."</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">key_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">raw_key</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded Fernet key from file: </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded Fernet key from file: </span><span class="si">{</span><span class="n">key_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">env_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">_DJ_ENCRYPTION_KEY_ENV</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">env_key</span><span class="p">:</span>
             <span class="n">raw_key</span> <span class="o">=</span> <span class="n">env_key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded Fernet key from environment variable &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_DJ_ENCRYPTION_KEY_ENV</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded Fernet key from environment variable "</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_DJ_ENCRYPTION_KEY_ENV</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">raw_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;No encryption key found. Provide &#39;encryption_key_path&#39; in &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;config or set the environment variable </span><span class="si">{</span><span class="n">_DJ_ENCRYPTION_KEY_ENV</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="s2">"No encryption key found. Provide 'encryption_key_path' in "</span>
+            <span class="sa">f</span><span class="s2">"config or set the environment variable </span><span class="si">{</span><span class="n">_DJ_ENCRYPTION_KEY_ENV</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Fernet</span><span class="p">(</span><span class="n">raw_key</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid Fernet key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid Fernet key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
 
 <div class="viewcode-block" id="encrypt_file">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.encryption_utils.html#data_juicer.utils.encryption_utils.encrypt_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">encrypt_file</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">,</span> <span class="n">fernet</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Encrypt a file with Fernet and write the ciphertext to ``dst_path``.</span>
 
 <span class="sd">    When ``src_path == dst_path`` the file is encrypted in-place: the</span>
@@ -581,21 +581,21 @@
 <span class="sd">    :param dst_path: path where the encrypted file will be written.</span>
 <span class="sd">        May be the same as ``src_path`` for in-place encryption.</span>
 <span class="sd">    :param fernet: a :class:`cryptography.fernet.Fernet` instance.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">plaintext</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="n">ciphertext</span> <span class="o">=</span> <span class="n">fernet</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">plaintext</span><span class="p">)</span>
     <span class="c1"># Write atomically: for in-place case we overwrite after reading</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Encrypted file written to: </span><span class="si">{</span><span class="n">dst_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Encrypted file written to: </span><span class="si">{</span><span class="n">dst_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="decrypt_file_to_bytes">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.encryption_utils.html#data_juicer.utils.encryption_utils.decrypt_file_to_bytes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">decrypt_file_to_bytes</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">fernet</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Decrypt an encrypted file and return the plaintext as :class:`bytes`.</span>
 
 <span class="sd">    The plaintext is **never written to disk** — only returned in memory.</span>
@@ -605,11 +605,11 @@
 <span class="sd">    :return: decrypted plaintext as :class:`bytes`.</span>
 <span class="sd">    :raises cryptography.fernet.InvalidToken: if the file cannot be</span>
 <span class="sd">        decrypted with the provided key.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">ciphertext</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="n">plaintext</span> <span class="o">=</span> <span class="n">fernet</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decrypted file to memory: </span><span class="si">{</span><span class="n">src_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Decrypted file to memory: </span><span class="si">{</span><span class="n">src_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">plaintext</span></div>
 
 
@@ -617,7 +617,7 @@
 <div class="viewcode-block" id="get_secure_tmpdir">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.encryption_utils.html#data_juicer.utils.encryption_utils.get_secure_tmpdir">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_secure_tmpdir</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the best available temporary directory for plaintext data.</span>
+<span class="w">    </span><span class="sd">"""Return the best available temporary directory for plaintext data.</span>
 
 <span class="sd">    Priority:</span>
 <span class="sd">    1. ``/dev/shm`` — Linux in-memory tmpfs, plaintext never touches disk.</span>
@@ -626,20 +626,20 @@
 
 <span class="sd">    :return: path string to use as the ``dir`` argument of</span>
 <span class="sd">        :func:`tempfile.NamedTemporaryFile`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
-    <span class="n">shm</span> <span class="o">=</span> <span class="s2">&quot;/dev/shm&quot;</span>
+    <span class="n">shm</span> <span class="o">=</span> <span class="s2">"/dev/shm"</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">shm</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">shm</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="s2">&quot;Using /dev/shm as temporary directory for decrypted data &quot;</span>
-            <span class="s2">&quot;(in-memory filesystem — plaintext never touches disk).&quot;</span>
+            <span class="s2">"Using /dev/shm as temporary directory for decrypted data "</span>
+            <span class="s2">"(in-memory filesystem — plaintext never touches disk)."</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">shm</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;&#39;/dev/shm&#39; is not available; falling back to the system temporary &quot;</span>
-        <span class="s2">&quot;directory (</span><span class="si">%s</span><span class="s2">). Decrypted plaintext will exist briefly on disk &quot;</span>
-        <span class="s2">&quot;before being removed.&quot;</span><span class="p">,</span>
+        <span class="s2">"'/dev/shm' is not available; falling back to the system temporary "</span>
+        <span class="s2">"directory (</span><span class="si">%s</span><span class="s2">). Decrypted plaintext will exist briefly on disk "</span>
+        <span class="s2">"before being removed."</span><span class="p">,</span>
         <span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">(),</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># None → tempfile uses the system default</span></div>
@@ -649,7 +649,7 @@
 <div class="viewcode-block" id="decrypt_file_to_bytesio">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.encryption_utils.html#data_juicer.utils.encryption_utils.decrypt_file_to_bytesio">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">decrypt_file_to_bytesio</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">fernet</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Decrypt an encrypted file and return an :class:`io.BytesIO` buffer.</span>
 
 <span class="sd">    Convenience wrapper around :func:`decrypt_file_to_bytes` that wraps</span>
@@ -659,7 +659,7 @@
 <span class="sd">    :param src_path: path to the Fernet-encrypted file.</span>
 <span class="sd">    :param fernet: a :class:`cryptography.fernet.Fernet` instance.</span>
 <span class="sd">    :return: :class:`io.BytesIO` positioned at offset 0.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">decrypt_file_to_bytes</span><span class="p">(</span><span class="n">src_path</span><span class="p">,</span> <span class="n">fernet</span><span class="p">)</span>
     <span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">buf</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>  <span class="c1"># some parsers inspect .name</span>

@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.perplexity_filter</span></li>
   </ul>
 </nav>
@@ -523,7 +526,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_words_from_document</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTER_WORDS</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;perplexity_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"perplexity_filter"</span>
 
 
 <div class="viewcode-block" id="PerplexityFilter">
@@ -531,20 +534,20 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@INTER_WORDS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">PerplexityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with perplexity score in a specified range.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with perplexity score in a specified range.</span>
 
 <span class="sd">    This operator computes the perplexity of text samples using a Hugging Face tokenizer and</span>
 <span class="sd">    a KenLM language model. It keeps samples with perplexity scores within the specified</span>
 <span class="sd">    minimum and maximum values. The perplexity is calculated character-based by default. If</span>
-<span class="sd">    the perplexity is already computed, it will be reused from the &#39;perplexity&#39; field in the</span>
-<span class="sd">    sample&#39;s stats. The operator supports batched operations for efficiency.&quot;&quot;&quot;</span>
+<span class="sd">    the perplexity is already computed, it will be reused from the 'perplexity' field in the</span>
+<span class="sd">    sample's stats. The operator supports batched operations for efficiency."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="PerplexityFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.perplexity_filter.html#data_juicer.ops.filter.PerplexityFilter.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">min_ppl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_ppl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1500</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en"</span><span class="p">,</span> <span class="n">min_ppl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_ppl</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1500</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param lang: Compute perplexity for samples in which language.</span>
@@ -552,13 +555,13 @@
 <span class="sd">        :param max_ppl: The max filter perplexity in this op.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_ppl</span> <span class="o">=</span> <span class="n">min_ppl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_ppl</span> <span class="o">=</span> <span class="n">max_ppl</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">lang</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sp_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;sentencepiece&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kl_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;kenlm&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"sentencepiece"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kl_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"kenlm"</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="n">lang</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="PerplexityFilter.compute_stats_batched">
@@ -566,11 +569,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">samples_list</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span>
         <span class="n">samples_stats</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]</span>
-        <span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sp_model_key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sp_model_key</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sp_model_key</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">stat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples_stats</span><span class="p">):</span>
-            <span class="c1"># check if it&#39;s computed already</span>
+            <span class="c1"># check if it's computed already</span>
             <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">perplexity</span> <span class="ow">in</span> <span class="n">stat</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="c1"># tokenization</span>
@@ -582,7 +585,7 @@
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
                     <span class="n">samples</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">][</span><span class="n">idx</span><span class="p">][</span><span class="n">words_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
             <span class="c1"># compute perplexity</span>
             <span class="n">logits</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
             <span class="n">kenlm_model</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kl_model_key</span><span class="p">)</span>

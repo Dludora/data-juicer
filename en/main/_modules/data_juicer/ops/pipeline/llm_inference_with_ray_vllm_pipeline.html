@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.pipeline.llm_inference_with_ray_vllm_pipeline</span></li>
   </ul>
 </nav>
@@ -521,29 +524,29 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.ray_vllm_pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">RayVLLMEnginePipeline</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_ray_vllm_engine_pipeline&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_ray_vllm_engine_pipeline"</span>
 
 
 <div class="viewcode-block" id="LLMRayVLLMEnginePipeline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.llm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.LLMRayVLLMEnginePipeline">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMRayVLLMEnginePipeline</span><span class="p">(</span><span class="n">RayVLLMEnginePipeline</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Pipeline to generate response using vLLM engine on Ray.</span>
 <span class="sd">    This pipeline leverages the vLLM engine for efficient large language model inference.</span>
 <span class="sd">    More details about ray vLLM engine can be found at: https://docs.ray.io/en/latest/data/working-with-llms.html</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="LLMRayVLLMEnginePipeline.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.llm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.LLMRayVLLMEnginePipeline.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-7B-Instruct&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-7B-Instruct"</span><span class="p">,</span>
         <span class="n">is_hf_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -554,21 +557,21 @@
         <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface model name.</span>
 <span class="sd">        :param system_prompt: System prompt for guiding the optimization task.</span>
-<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., &quot;V100&quot;, &quot;A100&quot;).</span>
+<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., "V100", "A100").</span>
 <span class="sd">            Default to None, meaning that only the CPU will be used.</span>
 <span class="sd">        :param sampling_params: Sampling parameters for text generation (e.g.,</span>
-<span class="sd">            {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}).</span>
+<span class="sd">            {'temperature': 0.9, 'top_p': 0.95}).</span>
 <span class="sd">        :param engine_kwargs: The kwargs to pass to the vLLM engine.</span>
 <span class="sd">            See documentation for details: https://docs.vllm.ai/en/latest/api/vllm/engine/arg_utils/#vllm.engine.arg_utils.AsyncEngineArgs.</span>
 <span class="sd">        :param api_url: Base URL of the OpenAI API</span>
 <span class="sd">        :param api_key: API key for authentication</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">accelerator_type</span><span class="o">=</span><span class="n">accelerator_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">api_or_hf_model</span> <span class="o">=</span> <span class="n">api_or_hf_model</span>
@@ -609,21 +612,21 @@
             <span class="kn">from</span><span class="w"> </span><span class="nn">ray.data.llm</span><span class="w"> </span><span class="kn">import</span> <span class="n">HttpRequestProcessorConfig</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">:</span>
-                <span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;OPENAI_BASE_URL&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">base_url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"OPENAI_BASE_URL"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">base_url</span><span class="p">:</span>
                     <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urljoin</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="s2">&quot;chat/completions&quot;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="s2">"chat/completions"</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"OPENAI_API_KEY"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide `api_url` or set OPENAI_BASE_URL environment variable.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide `api_url` or set OPENAI_BASE_URL environment variable."</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide `api_key` or set OPENAI_API_KEY environment variable.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Please provide `api_key` or set OPENAI_API_KEY environment variable."</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">HttpRequestProcessorConfig</span><span class="p">(</span>
-                <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+                <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">api_key</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
             <span class="p">)</span></div>
 
 
@@ -632,9 +635,9 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">preprocess_fn</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">query_key</span><span class="p">]</span>
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
         <span class="k">if</span> <span class="n">system_prompt</span><span class="p">:</span>
-            <span class="n">messages</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">})</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">})</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span> <span class="n">sampling_params</span><span class="o">=</span><span class="n">sampling_params</span><span class="p">)</span></div>
 
 
@@ -642,7 +645,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.llm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.LLMRayVLLMEnginePipeline.postprocess_fn">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postprocess_fn</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ori_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;generated_text&quot;</span><span class="p">]</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">"generated_text"</span><span class="p">]</span>
         <span class="n">out_row</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ori_columns</span><span class="p">}</span>
         <span class="n">out_row</span><span class="p">[</span><span class="n">response_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span>
         <span class="k">return</span> <span class="n">out_row</span></div>
@@ -656,9 +659,9 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">query_key</span><span class="p">]</span>
 
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
         <span class="k">if</span> <span class="n">system_prompt</span><span class="p">:</span>
-            <span class="n">messages</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">})</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">})</span>
 
         <span class="n">sampling_params</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">sampling_params</span> <span class="k">else</span> <span class="n">sampling_params</span>
 
@@ -671,8 +674,8 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.llm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.LLMRayVLLMEnginePipeline.postprocess_fn_api">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postprocess_fn_api</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ori_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http_response&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;http_response&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;choices&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;http_response&quot;</span><span class="p">][</span><span class="s2">&quot;choices&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;message&quot;</span><span class="p">][</span><span class="s2">&quot;content&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"http_response"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="s2">"http_response"</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"choices"</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">"http_response"</span><span class="p">][</span><span class="s2">"choices"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"message"</span><span class="p">][</span><span class="s2">"content"</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="kc">None</span>
 

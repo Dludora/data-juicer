@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.deduplicator.document_minhash_deduplicator</span></li>
   </ul>
 </nav>
@@ -536,18 +539,19 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Deduplicator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..common.helper_func</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnionFind</span><span class="p">,</span> <span class="n">split_on_whitespace</span>
 
-<span class="n">integrate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;scipy.integrate&quot;</span><span class="p">)</span>
+<span class="n">integrate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"scipy.integrate"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;document_minhash_deduplicator&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"document_minhash_deduplicator"</span>
 
 <span class="n">MERSENNE_PRIME</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">61</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">MAX_HASH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">_MINHASH_PERMUTATION_BLOCK_BYTES</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
 
 <div class="viewcode-block" id="sha1_hash32">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.sha1_hash32">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sha1_hash32</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Directly taken from datasketch package to avoid dependency.</span>
 
 <span class="sd">    Parameters</span>
@@ -557,8 +561,8 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    int</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;I&quot;</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">"&lt;I"</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 
@@ -570,7 +574,7 @@
     <span class="n">false_positive_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
     <span class="n">false_negative_weight</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compute the optimal `MinHashLSH` parameter that minimizes the weighted sum</span>
 <span class="sd">    of probabilities of false positive and false negative, taken from</span>
 <span class="sd">    datasketch.</span>
@@ -581,10 +585,10 @@
 <span class="sd">    :param false_negative_weight: float. The weight of false negative</span>
 <span class="sd">    :return: Tuple[int, int]. The optimal `b` and `r` parameters. The number of</span>
 <span class="sd">        bands, and the number of rows per band respectively</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">false_positive_probability</span><span class="p">(</span><span class="n">th</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Source: `datasketch.lsh`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Source: `datasketch.lsh`"""</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">proba</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
@@ -593,7 +597,7 @@
         <span class="k">return</span> <span class="n">a</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">false_negative_probability</span><span class="p">(</span><span class="n">th</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Source: `datasketch.lsh`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Source: `datasketch.lsh`"""</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">proba</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">s</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span> <span class="o">**</span> <span class="nb">float</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
@@ -602,7 +606,7 @@
         <span class="k">return</span> <span class="n">a</span>
 
     <span class="c1"># object: minimize the weighted FP and FN ratio</span>
-    <span class="n">min_error</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="n">min_error</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
     <span class="n">opt</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_perm</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">max_r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_perm</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span>
@@ -621,26 +625,26 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicator">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DocumentMinhashDeduplicator</span><span class="p">(</span><span class="n">Deduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deduplicates samples at the document level using MinHash LSH.</span>
+<span class="w">    </span><span class="sd">"""Deduplicates samples at the document level using MinHash LSH.</span>
 
 <span class="sd">    This operator computes MinHash values for each sample and uses Locality-Sensitive</span>
 <span class="sd">    Hashing (LSH) to identify and remove near-duplicate documents. The Jaccard similarity</span>
 <span class="sd">    threshold determines when two documents are considered duplicates. The tokenization</span>
-<span class="sd">    method can be customized, and a Hugging Face tokenizer can be used for &#39;sentencepiece&#39;</span>
+<span class="sd">    method can be customized, and a Hugging Face tokenizer can be used for 'sentencepiece'</span>
 <span class="sd">    tokenization. The minhash values are stored as bytes and are not kept in the final</span>
 <span class="sd">    dataset. The number of bands and rows per band in LSH can be set manually or determined</span>
 <span class="sd">    by an optimal parameter computation algorithm. Important notes:</span>
-<span class="sd">    - If using &#39;punctuation&#39; tokenization with an ignore pattern, ensure the pattern does</span>
+<span class="sd">    - If using 'punctuation' tokenization with an ignore pattern, ensure the pattern does</span>
 <span class="sd">      not include punctuations.</span>
-<span class="sd">    - For &#39;sentencepiece&#39; tokenization, a tokenizer model path is required.</span>
+<span class="sd">    - For 'sentencepiece' tokenization, a tokenizer model path is required.</span>
 <span class="sd">    - The deduplication process involves clustering and filtering, and only unique samples</span>
-<span class="sd">      or the first sample in a cluster are retained.&quot;&quot;&quot;</span>
+<span class="sd">      or the first sample in a cluster are retained."""</span>
 
 <div class="viewcode-block" id="DocumentMinhashDeduplicator.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicator.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
+        <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"space"</span><span class="p">,</span>
         <span class="n">window_size</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">lowercase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">ignore_pattern</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -652,16 +656,16 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param tokenization: tokenization method for sample texts. It</span>
 <span class="sd">            should be one of [space, punctuation, character,</span>
 <span class="sd">            sentencepiece]. For English-like languages, we recommend</span>
-<span class="sd">            to use &#39;space&#39;, for Chinese-like languages, we recommend</span>
-<span class="sd">            to use &#39;character&#39;, and for multiple languages, we recommend</span>
-<span class="sd">            to use &#39;sentencepiece&#39;. If using &#39;sentencepiece&#39;, please</span>
-<span class="sd">            provided the model path in the &#39;tokenizer_model&#39; field.</span>
+<span class="sd">            to use 'space', for Chinese-like languages, we recommend</span>
+<span class="sd">            to use 'character', and for multiple languages, we recommend</span>
+<span class="sd">            to use 'sentencepiece'. If using 'sentencepiece', please</span>
+<span class="sd">            provided the model path in the 'tokenizer_model' field.</span>
 <span class="sd">        :param window_size: window size of shingling</span>
 <span class="sd">        :param lowercase: whether to convert text to lower case first</span>
 <span class="sd">        :param ignore_pattern: whether to ignore sub-strings with</span>
@@ -673,16 +677,16 @@
 <span class="sd">            two sample texts is &gt;= this threshold, they are regarded as</span>
 <span class="sd">            similar samples and this op will only keep one of them after</span>
 <span class="sd">            deduplication</span>
-<span class="sd">        :param num_bands: number of bands in LSH. Default it&#39;s None, and</span>
+<span class="sd">        :param num_bands: number of bands in LSH. Default it's None, and</span>
 <span class="sd">            it will be determined by an optimal params computation</span>
 <span class="sd">            algorithm by minimize the weighted sum of probs of False</span>
 <span class="sd">            Positives and False Negatives</span>
 <span class="sd">        :param num_rows_per_band: number of rows in each band in LSH.</span>
-<span class="sd">            Default it&#39;s None, and it will be determined by an optimal</span>
+<span class="sd">            Default it's None, and it will be determined by an optimal</span>
 <span class="sd">            params computation algorithm</span>
 <span class="sd">        :param tokenizer_model: path for the sentencepiece model, used for</span>
 <span class="sd">            sentencepiece tokenization.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># about minhash computation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">=</span> <span class="n">tokenization</span>
@@ -693,17 +697,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="p">)</span>
 
         <span class="c1"># check parameters</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;punctuation&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"punctuation"</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Be careful that tokenization with punctuations &quot;</span>
-                <span class="s2">&quot;won&#39;t work if the ignore pattern includes &quot;</span>
-                <span class="s2">&quot;punctuations.&quot;</span>
+                <span class="s2">"Be careful that tokenization with punctuations "</span>
+                <span class="s2">"won't work if the ignore pattern includes "</span>
+                <span class="s2">"punctuations."</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\p</span><span class="si">{P}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\p</span><span class="si">{P}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;sentencepiece&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"sentencepiece"</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">tokenizer_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;To use &#39;sentencepiece&#39; tokenization, &quot;</span> <span class="s2">&quot;&#39;tokenizer_model&#39; is required.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"To use 'sentencepiece' tokenization, "</span> <span class="s2">"'tokenizer_model' is required."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">prepare_sentencepiece_model</span><span class="p">(</span><span class="n">tokenizer_model</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="kc">None</span>
@@ -745,13 +749,13 @@
 <div class="viewcode-block" id="DocumentMinhashDeduplicator.compute_hash">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicator.compute_hash">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compute minhash values for the sample.</span>
 
 <span class="sd">        :param sample: input sample</span>
 <span class="sd">        :return: sample with minhash value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+<span class="sd">        """</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">HashKeys</span><span class="o">.</span><span class="n">minhash</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -760,51 +764,72 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
         <span class="c1"># get tokens for different tokenization method</span>
         <span class="n">tokens</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;character&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"character"</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;punctuation&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"punctuation"</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
+                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;space&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"space"</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="n">split_on_whitespace</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
+                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">}</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;sentencepiece&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"sentencepiece"</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">out_type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unimplemented tokenization method [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unimplemented tokenization method [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
 
         <span class="c1"># compute minhash value</span>
         <span class="n">hv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="n">sha1_hash32</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">))</span>
-        <span class="n">phv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">((</span><span class="n">hv</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span><span class="p">)</span> <span class="o">%</span> <span class="n">MERSENNE_PRIME</span><span class="p">,</span> <span class="n">MAX_HASH</span><span class="p">)</span>
-        <span class="n">hash_values</span> <span class="o">=</span> <span class="n">phv</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">phv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">((</span><span class="n">hv</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span><span class="p">)</span> <span class="o">%</span> <span class="n">MERSENNE_PRIME</span><span class="p">,</span> <span class="n">MAX_HASH</span><span class="p">)</span>
+            <span class="n">hash_values</span> <span class="o">=</span> <span class="n">phv</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bytes_per_token</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_permutation</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span><span class="o">.</span><span class="n">itemsize</span>
+            <span class="n">tokens_per_block</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">_MINHASH_PERMUTATION_BLOCK_BYTES</span> <span class="o">//</span> <span class="n">bytes_per_token</span><span class="p">)</span>
+            <span class="n">hash_values</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">hv</span><span class="p">),</span> <span class="n">tokens_per_block</span><span class="p">):</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="n">hv</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="n">tokens_per_block</span><span class="p">]</span>
+                <span class="n">phv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">block</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span><span class="p">)</span> <span class="o">%</span> <span class="n">MERSENNE_PRIME</span><span class="p">,</span>
+                    <span class="n">MAX_HASH</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">block_min</span> <span class="o">=</span> <span class="n">phv</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">hash_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hash_values</span> <span class="o">=</span> <span class="n">block_min</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">hash_values</span><span class="p">,</span> <span class="n">block_min</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">hash_values</span><span class="p">)</span>
         <span class="n">sample</span><span class="p">[</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">minhash</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bytes</span><span class="p">(</span><span class="n">hash_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hash_ranges</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reset_hash_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hash_tables</span> <span class="o">=</span> <span class="p">[</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_bands</span><span class="p">)]</span>
+
 <div class="viewcode-block" id="DocumentMinhashDeduplicator.process">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicator.process">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">show_num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        For doc-level, dataset --&gt; dataset.</span>
 
 <span class="sd">        :param dataset: input dataset</span>
 <span class="sd">        :param show_num: number of traced samples used when tracer is</span>
 <span class="sd">            open.</span>
 <span class="sd">        :return: deduplicated dataset and the sampled duplicate pairs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_hash_tables</span><span class="p">()</span>
+
         <span class="c1"># no need to deduplicate because too few samples</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="p">{}</span>
@@ -815,10 +840,10 @@
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">remove_columns</span><span class="p">([</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">minhash</span><span class="p">])</span>
 
         <span class="c1"># make clusters -- construct the minhash lookup tables of seg to ids</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start clustering for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Start clustering for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples..."</span><span class="p">)</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">10000</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
-            <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">minhashes</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">),</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iterating MinHashes of samples...&quot;</span>
+            <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">minhashes</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">),</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Iterating MinHashes of samples..."</span>
         <span class="p">):</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">minhashes</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">hs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
@@ -827,7 +852,7 @@
 
         <span class="c1"># using UnionFind set to union samples within the same clusters</span>
         <span class="n">union_find</span> <span class="o">=</span> <span class="n">UnionFind</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_tables</span><span class="p">,</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Clustering&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_tables</span><span class="p">,</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Clustering"</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">continue</span>
@@ -835,8 +860,8 @@
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cluster</span><span class="p">:</span>
                     <span class="n">union_find</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">union_find</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;clusters that includes multiple near-duplicate samples.&quot;</span>
+            <span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">union_find</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"clusters that includes multiple near-duplicate samples."</span>
         <span class="p">)</span>
 
         <span class="c1"># record the duplicate sample pairs</span>
@@ -866,7 +891,7 @@
             <span class="n">_filter_minhash_dup_helper</span><span class="p">,</span>
             <span class="n">with_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples after MinHash dedup.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples after MinHash dedup."</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">dup_pairs</span></div>
 </div>
@@ -875,32 +900,34 @@
 
 <div class="viewcode-block" id="DocumentMinhashDeduplicatorWithUid">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicatorWithUid">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">_with_uid&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">_with_uid"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DocumentMinhashDeduplicatorWithUid</span><span class="p">(</span><span class="n">DocumentMinhashDeduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A Deduplicator that performs document-level deduplication using MinHashLSH.</span>
 
 <span class="sd">    Unlike `DocumentMinhashDeduplicator`, this class requires the dataset to include an additional column named</span>
-<span class="sd">    &#39;__dj__uid&#39; of type int, with unique values for each sample. This column is essential for supporting</span>
+<span class="sd">    '__dj__uid' of type int, with unique values for each sample. This column is essential for supporting</span>
 <span class="sd">    incremental deduplication scenarios.</span>
 
 <span class="sd">    For example, consider a scenario where you have an already deduplicated dataset A and a new dataset B that</span>
 <span class="sd">    you wish to add. If you want to perform joint deduplication on both A and B while prioritizing the retention of</span>
-<span class="sd">    data from A, you can ensure that all &#39;__dj__uid&#39; values in B are greater than those in A. Then, by applying</span>
+<span class="sd">    data from A, you can ensure that all '__dj__uid' values in B are greater than those in A. Then, by applying</span>
 <span class="sd">    this deduplicator to the combined dataset, duplicates will be resolved in favor of the entries from A.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="DocumentMinhashDeduplicatorWithUid.process">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_minhash_deduplicator.html#data_juicer.ops.deduplicator.DocumentMinhashDeduplicatorWithUid.process">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">show_num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        For doc-level, dataset --&gt; dataset.</span>
 
 <span class="sd">        :param dataset: input dataset</span>
 <span class="sd">        :param show_num: number of traced samples used when tracer is</span>
 <span class="sd">            open.</span>
 <span class="sd">        :return: deduplicated dataset and the sampled duplicate pairs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_hash_tables</span><span class="p">()</span>
+
         <span class="c1"># no need to deduplicate because too few samples</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="p">{}</span>
@@ -913,10 +940,10 @@
         <span class="n">uid2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">uid</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uids</span><span class="p">)}</span>
 
         <span class="c1"># make clusters -- construct the minhash lookup tables of seg to ids</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start clustering for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Start clustering for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples..."</span><span class="p">)</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">10000</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
-            <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">minhashes</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">),</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iterating MinHashes of samples...&quot;</span>
+            <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">minhashes</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">),</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Iterating MinHashes of samples..."</span>
         <span class="p">):</span>
             <span class="n">batch</span> <span class="o">=</span> <span class="n">minhashes</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
             <span class="n">batch_uid</span> <span class="o">=</span> <span class="n">uids</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
@@ -926,7 +953,7 @@
 
         <span class="c1"># using UnionFind set to union samples within the same clusters</span>
         <span class="n">union_find</span> <span class="o">=</span> <span class="n">UnionFind</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_tables</span><span class="p">,</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Clustering&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_tables</span><span class="p">,</span> <span class="n">dynamic_ncols</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Clustering"</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">continue</span>
@@ -934,8 +961,8 @@
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cluster</span><span class="p">:</span>
                     <span class="n">union_find</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">uid</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">union_find</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;clusters that includes multiple near-duplicate samples.&quot;</span>
+            <span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">union_find</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2"> "</span>
+            <span class="sa">f</span><span class="s2">"clusters that includes multiple near-duplicate samples."</span>
         <span class="p">)</span>
 
         <span class="c1"># record the duplicate sample pairs</span>
@@ -962,7 +989,7 @@
             <span class="k">return</span> <span class="n">union_find</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span> <span class="o">==</span> <span class="n">uid</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">_filter_minhash_dup_helper</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples after MinHash dedup.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples after MinHash dedup."</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">dup_pairs</span></div>
 </div>

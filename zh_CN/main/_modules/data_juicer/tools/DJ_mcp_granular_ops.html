@@ -525,21 +525,21 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.tools.op_search</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPSearcher</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">fastmcp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;mcp.server.fastmcp&quot;</span><span class="p">,</span> <span class="s2">&quot;mcp[cli]&quot;</span><span class="p">)</span>
+<span class="n">fastmcp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"mcp.server.fastmcp"</span><span class="p">,</span> <span class="s2">"mcp[cli]"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="resolve_signature_annotations">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.DJ_mcp_granular_ops.html#data_juicer.tools.DJ_mcp_granular_ops.resolve_signature_annotations">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">resolve_signature_annotations</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">sig</span><span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Signature</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Signature</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve postponed/string annotations into real runtime types.</span>
+<span class="w">    </span><span class="sd">"""Resolve postponed/string annotations into real runtime types.</span>
 
 <span class="sd">    When a module uses ``from __future__ import annotations``, all</span>
 <span class="sd">    annotations are stored as strings. This helper calls</span>
 <span class="sd">    ``typing.get_type_hints`` on the original callable to obtain the</span>
 <span class="sd">    real type objects and rebuilds the signature with them.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">"__module__"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">globalns</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">module</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">hints</span> <span class="o">=</span> <span class="n">get_type_hints</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">globalns</span><span class="o">=</span><span class="n">globalns</span><span class="p">,</span> <span class="n">localns</span><span class="o">=</span><span class="n">globalns</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -550,7 +550,7 @@
         <span class="n">resolved_annotation</span> <span class="o">=</span> <span class="n">hints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
         <span class="n">new_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">annotation</span><span class="o">=</span><span class="n">resolved_annotation</span><span class="p">))</span>
 
-    <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">hints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;return&quot;</span><span class="p">,</span> <span class="n">sig</span><span class="o">.</span><span class="n">return_annotation</span><span class="p">)</span>
+    <span class="n">return_annotation</span> <span class="o">=</span> <span class="n">hints</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"return"</span><span class="p">,</span> <span class="n">sig</span><span class="o">.</span><span class="n">return_annotation</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sig</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="n">new_params</span><span class="p">,</span> <span class="n">return_annotation</span><span class="o">=</span><span class="n">return_annotation</span><span class="p">)</span></div>
 
 
@@ -559,12 +559,12 @@
 <div class="viewcode-block" id="process_parameter">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.DJ_mcp_granular_ops.html#data_juicer.tools.DJ_mcp_granular_ops.process_parameter">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">process_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Processes a function parameter:</span>
 <span class="sd">    - Converts jsonargparse.typing.ClosedUnitInterval to a local equivalent annotation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;float restricted to be ≥0 and ≤1&quot;</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jsonargparse.typing&quot;</span><span class="p">),</span> <span class="s2">&quot;ClosedUnitInterval&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+<span class="sd">    """</span>
+    <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"float restricted to be ≥0 and ≤1"</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"jsonargparse.typing"</span><span class="p">),</span> <span class="s2">"ClosedUnitInterval"</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">param</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">annotation</span><span class="o">=</span><span class="n">ClosedUnitInterval</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">param</span></div>
 
@@ -573,32 +573,32 @@
 <div class="viewcode-block" id="create_operator_function">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.DJ_mcp_granular_ops.html#data_juicer.tools.DJ_mcp_granular_ops.create_operator_function">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_operator_function</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">mcp</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a callable function for a Data-Juicer operator class.</span>
+<span class="w">    </span><span class="sd">"""Creates a callable function for a Data-Juicer operator class.</span>
 
 <span class="sd">    This function dynamically creates a function that can be registered as an MCP tool,</span>
-<span class="sd">    with proper signature and documentation based on the operator&#39;s __init__ method.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">raw_sig</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">&quot;sig&quot;</span><span class="p">]</span>
-    <span class="n">init_func</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;init_func&quot;</span><span class="p">)</span>
+<span class="sd">    with proper signature and documentation based on the operator's __init__ method.</span>
+<span class="sd">    """</span>
+    <span class="n">raw_sig</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">"sig"</span><span class="p">]</span>
+    <span class="n">init_func</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"init_func"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">init_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="n">resolve_signature_annotations</span><span class="p">(</span><span class="n">init_func</span><span class="p">,</span> <span class="n">raw_sig</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">sig</span> <span class="o">=</span> <span class="n">raw_sig</span>
-    <span class="n">docstring</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">]</span>
-    <span class="n">param_docstring</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">&quot;param_desc&quot;</span><span class="p">]</span>
+    <span class="n">docstring</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">"desc"</span><span class="p">]</span>
+    <span class="n">param_docstring</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">"param_desc"</span><span class="p">]</span>
 
     <span class="c1"># Create new function signature with dataset_path as first parameter</span>
     <span class="c1"># Consider adding other common parameters later, such as export_psth</span>
     <span class="n">fixed_params</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">&quot;dataset_path&quot;</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span> <span class="n">annotation</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
+        <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="s2">"dataset_path"</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span> <span class="n">annotation</span><span class="o">=</span><span class="nb">str</span><span class="p">),</span>
         <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
-            <span class="s2">&quot;export_path&quot;</span><span class="p">,</span>
+            <span class="s2">"export_path"</span><span class="p">,</span>
             <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
             <span class="n">annotation</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
-            <span class="s2">&quot;np&quot;</span><span class="p">,</span>
+            <span class="s2">"np"</span><span class="p">,</span>
             <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
             <span class="n">annotation</span><span class="o">=</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -607,10 +607,10 @@
     <span class="n">op_params</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">process_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">,</span> <span class="s2">&quot;self&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"args"</span><span class="p">,</span> <span class="s2">"kwargs"</span><span class="p">,</span> <span class="s2">"self"</span><span class="p">)</span>
     <span class="p">]</span>
     <span class="c1"># Merge all params, then reorder: required (no default) first,</span>
-    <span class="c1"># optional (with default) second, to satisfy Python&#39;s signature rule.</span>
+    <span class="c1"># optional (with default) second, to satisfy Python's signature rule.</span>
     <span class="n">all_params</span> <span class="o">=</span> <span class="n">fixed_params</span> <span class="o">+</span> <span class="n">op_params</span>
     <span class="n">required_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">]</span>
     <span class="n">optional_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">all_params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">]</span>
@@ -622,22 +622,22 @@
         <span class="n">bound_arguments</span> <span class="o">=</span> <span class="n">new_signature</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">bound_arguments</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
 
-        <span class="n">export_path</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;export_path&quot;</span><span class="p">)</span>
-        <span class="n">dataset_path</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dataset_path&quot;</span><span class="p">)</span>
-        <span class="n">np</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;np&quot;</span><span class="p">)</span>
+        <span class="n">export_path</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"export_path"</span><span class="p">)</span>
+        <span class="n">dataset_path</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"dataset_path"</span><span class="p">)</span>
+        <span class="n">np</span> <span class="o">=</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"np"</span><span class="p">)</span>
         <span class="n">args_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">bound_arguments</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
 
         <span class="n">dj_cfg</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;dataset_path&quot;</span><span class="p">:</span> <span class="n">dataset_path</span><span class="p">,</span>
-            <span class="s2">&quot;export_path&quot;</span><span class="p">:</span> <span class="n">export_path</span><span class="p">,</span>
-            <span class="s2">&quot;process&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="n">op</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">args_dict</span><span class="p">}],</span>
-            <span class="s2">&quot;np&quot;</span><span class="p">:</span> <span class="n">np</span><span class="p">,</span>
+            <span class="s2">"dataset_path"</span><span class="p">:</span> <span class="n">dataset_path</span><span class="p">,</span>
+            <span class="s2">"export_path"</span><span class="p">:</span> <span class="n">export_path</span><span class="p">,</span>
+            <span class="s2">"process"</span><span class="p">:</span> <span class="p">[{</span><span class="n">op</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]:</span> <span class="n">args_dict</span><span class="p">}],</span>
+            <span class="s2">"np"</span><span class="p">:</span> <span class="n">np</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">execute_op</span><span class="p">(</span><span class="n">dj_cfg</span><span class="p">)</span>
 
     <span class="n">func</span><span class="o">.</span><span class="n">__signature__</span> <span class="o">=</span> <span class="n">new_signature</span>
-    <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span><span class="si">{</span><span class="n">docstring</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">param_docstring</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;&quot;&quot;</span>
-    <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""</span><span class="si">{</span><span class="n">docstring</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">param_docstring</span><span class="si">}</span><span class="se">\n</span><span class="s2">"""</span>
+    <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">op</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
 
     <span class="n">decorated_func</span> <span class="o">=</span> <span class="n">mcp</span><span class="o">.</span><span class="n">tool</span><span class="p">()(</span><span class="n">func</span><span class="p">)</span>
 
@@ -647,19 +647,19 @@
 
 <div class="viewcode-block" id="create_mcp_server">
 <a class="viewcode-back" href="../../../api/data_juicer.tools.DJ_mcp_granular_ops.html#data_juicer.tools.DJ_mcp_granular_ops.create_mcp_server">[文档]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">create_mcp_server</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;8000&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_mcp_server</span><span class="p">(</span><span class="n">port</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"8000"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Creates the FastMCP server and registers the tools.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        port (str, optional): Port number. Defaults to &quot;8000&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mcp</span> <span class="o">=</span> <span class="n">fastmcp</span><span class="o">.</span><span class="n">FastMCP</span><span class="p">(</span><span class="s2">&quot;Data-Juicer Server&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
+<span class="sd">        port (str, optional): Port number. Defaults to "8000".</span>
+<span class="sd">    """</span>
+    <span class="n">mcp</span> <span class="o">=</span> <span class="n">fastmcp</span><span class="o">.</span><span class="n">FastMCP</span><span class="p">(</span><span class="s2">"Data-Juicer Server"</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">)</span>
 
     <span class="c1"># Operator Management</span>
-    <span class="n">ops_list_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DJ_OPS_LIST_PATH&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">ops_list_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"DJ_OPS_LIST_PATH"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ops_list_path</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ops_list_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ops_list_path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
             <span class="n">ops_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ops_list</span> <span class="o">=</span> <span class="kc">None</span>
@@ -674,17 +674,17 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Data-Juicer MCP Server&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Data-Juicer MCP Server"</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--port&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;8000&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Port number for the MCP server&quot;</span>
+        <span class="s2">"--port"</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">"8000"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Port number for the MCP server"</span>
     <span class="p">)</span>  <span class="c1"># changed to str for consistency</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="c1"># Server configuration</span>
     <span class="n">mcp</span> <span class="o">=</span> <span class="n">create_mcp_server</span><span class="p">(</span><span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
 
-    <span class="n">mcp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SERVER_TRANSPORT&quot;</span><span class="p">,</span> <span class="s2">&quot;sse&quot;</span><span class="p">))</span>
+    <span class="n">mcp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"SERVER_TRANSPORT"</span><span class="p">,</span> <span class="s2">"sse"</span><span class="p">))</span>
 </pre></div>
 
                 </article>

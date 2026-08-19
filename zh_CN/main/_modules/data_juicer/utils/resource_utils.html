@@ -530,9 +530,9 @@
     <span class="n">ray_gpu_count</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 <span class="n">NVSMI_REPORT</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -541,20 +541,20 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.resource_utils.html#data_juicer.utils.resource_utils.query_cuda_info">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">query_cuda_info</span><span class="p">(</span><span class="n">query_key</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">NVSMI_REPORT</span>
-    <span class="c1"># get cuda info using &quot;nvidia-smi&quot; command in MB</span>
+    <span class="c1"># get cuda info using "nvidia-smi" command in MB</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-            <span class="p">[</span><span class="s2">&quot;nvidia-smi&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;--query-gpu=</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;--format=csv,noheader,nounits&quot;</span><span class="p">]</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+            <span class="p">[</span><span class="s2">"nvidia-smi"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"--query-gpu=</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"--format=csv,noheader,nounits"</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s2">&quot;non-zero exit status 2&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">"non-zero exit status 2"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The specified query_key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">] might not be &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;supported by command nvidia-smi. Please check and &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;retry!&quot;</span>
+                <span class="sa">f</span><span class="s2">"The specified query_key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">] might not be "</span>
+                <span class="sa">f</span><span class="s2">"supported by command nvidia-smi. Please check and "</span>
+                <span class="sa">f</span><span class="s2">"retry!"</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="s2">&quot;No such file or directory&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Command nvidia-smi is not found. There might be no &quot;</span> <span class="s2">&quot;GPUs on this machine.&quot;</span>
+        <span class="k">elif</span> <span class="s2">"No such file or directory"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">"Command nvidia-smi is not found. There might be no "</span> <span class="s2">"GPUs on this machine."</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">NVSMI_REPORT</span><span class="p">:</span>
@@ -562,7 +562,7 @@
             <span class="n">NVSMI_REPORT</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">cuda_info_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
         <span class="n">cuda_info_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">cuda_info_list</span></div>
 
@@ -580,7 +580,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">query_mem_info</span><span class="p">(</span><span class="n">query_key</span><span class="p">):</span>
     <span class="n">mem</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">query_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No such query key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">] for memory info. &quot;</span> <span class="sa">f</span><span class="s2">&quot;Should be one of </span><span class="si">{</span><span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No such query key [</span><span class="si">{</span><span class="n">query_key</span><span class="si">}</span><span class="s2">] for memory info. "</span> <span class="sa">f</span><span class="s2">"Should be one of </span><span class="si">{</span><span class="n">mem</span><span class="o">.</span><span class="n">_fields</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">val</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mem</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">20</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># in MB</span>
     <span class="k">return</span> <span class="n">val</span></div>
@@ -588,7 +588,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_cuda_device_count</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">_torch_available</span> <span class="o">=</span> <span class="n">_is_package_available</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+    <span class="n">_torch_available</span> <span class="o">=</span> <span class="n">_is_package_available</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">check_and_initialize_ray</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">ray_gpu_count</span><span class="p">())</span>
@@ -597,13 +597,13 @@
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">device_count</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">&quot;nvidia-smi&quot;</span><span class="p">,</span> <span class="s2">&quot;-L&quot;</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">all_devices</span> <span class="o">=</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s2">"nvidia-smi"</span><span class="p">,</span> <span class="s2">"-L"</span><span class="p">],</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">all_devices</span> <span class="o">=</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">cuda_visible_devices</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;CUDA_VISIBLE_DEVICES&quot;</span><span class="p">)</span>
+        <span class="n">cuda_visible_devices</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"CUDA_VISIBLE_DEVICES"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cuda_visible_devices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;CUDA_VISIBLE_DEVICES is ignored when torch is unavailable. &quot;</span> <span class="s2">&quot;All detected GPUs will be used.&quot;</span>
+                <span class="s2">"CUDA_VISIBLE_DEVICES is ignored when torch is unavailable. "</span> <span class="s2">"All detected GPUs will be used."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_devices</span><span class="p">)</span>
@@ -639,7 +639,7 @@
 <div class="viewcode-block" id="available_memories">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.resource_utils.html#data_juicer.utils.resource_utils.available_memories">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">available_memories</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Available memory for each node in MB.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Available memory for each node in MB."""</span>
     <span class="k">if</span> <span class="n">check_and_initialize_ray</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ray_available_memories</span><span class="p">()</span>
 
@@ -650,12 +650,12 @@
 <div class="viewcode-block" id="available_gpu_memories">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.resource_utils.html#data_juicer.utils.resource_utils.available_gpu_memories">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">available_gpu_memories</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Available gpu memory of each gpu card for each alive node in MB.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Available gpu memory of each gpu card for each alive node in MB."""</span>
     <span class="k">if</span> <span class="n">check_and_initialize_ray</span><span class="p">(</span><span class="n">cfg</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ray_available_gpu_memories</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">query_cuda_info</span><span class="p">(</span><span class="s2">&quot;memory.free&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">query_cuda_info</span><span class="p">(</span><span class="s2">"memory.free"</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span></div>
 

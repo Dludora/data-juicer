@@ -533,6 +533,12 @@ into existing executors to provide intelligent pipeline analysis and execution t
 <dd><p>Initialize the DAG execution mixin.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.current_dag_node">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">current_dag_node</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.current_dag_node" title="Link to this definition">#</a></dt>
+<dd><p>Return the current DAG node for the calling partition thread.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.get_dag_execution_status">
 <span class="sig-name descname"><span class="pre">get_dag_execution_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/data_juicer/core/executor/dag_execution_mixin.html#DAGExecutionMixin.get_dag_execution_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.get_dag_execution_status" title="Link to this definition">#</a></dt>
@@ -620,6 +626,7 @@ maintainability and testability.</p>
     <ul class="nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.__init__"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.current_dag_node"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin.current_dag_node</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.get_dag_execution_status"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin.get_dag_execution_status()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.visualize_dag_execution_plan"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin.visualize_dag_execution_plan()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.executor.dag_execution_mixin.DAGExecutionMixin.get_dag_execution_plan_path"><code class="docutils literal notranslate"><span class="pre">DAGExecutionMixin.get_dag_execution_plan_path()</span></code></a></li>

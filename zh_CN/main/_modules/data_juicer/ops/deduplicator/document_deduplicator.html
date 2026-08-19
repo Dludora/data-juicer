@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.deduplicator.document_deduplicator</span></li>
   </ul>
 </nav>
@@ -531,23 +534,23 @@
 
 <div class="viewcode-block" id="DocumentDeduplicator">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_deduplicator.html#data_juicer.ops.deduplicator.DocumentDeduplicator">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;document_deduplicator&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"document_deduplicator"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DocumentDeduplicator</span><span class="p">(</span><span class="n">Deduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deduplicates samples at the document level using exact matching.</span>
+<span class="w">    </span><span class="sd">"""Deduplicates samples at the document level using exact matching.</span>
 
-<span class="sd">    This operator computes an MD5 hash for each sample&#39;s text. It can optionally convert the</span>
+<span class="sd">    This operator computes an MD5 hash for each sample's text. It can optionally convert the</span>
 <span class="sd">    text to lowercase and ignore non-alphabet characters, including whitespaces, digits, and</span>
 <span class="sd">    punctuation. The deduplication is based on the computed hash values, where samples with</span>
-<span class="sd">    identical hashes are considered duplicates. The `compute_hash` method adds a &#39;hash&#39; key</span>
+<span class="sd">    identical hashes are considered duplicates. The `compute_hash` method adds a 'hash' key</span>
 <span class="sd">    to each sample, storing its MD5 hash. During processing, the first occurrence of each</span>
 <span class="sd">    unique hash is kept, and subsequent duplicates are filtered out. If the `show_num`</span>
 <span class="sd">    parameter is set, the operator also returns a specified number of duplicate pairs for</span>
-<span class="sd">    inspection.&quot;&quot;&quot;</span>
+<span class="sd">    inspection."""</span>
 
 <div class="viewcode-block" id="DocumentDeduplicator.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_deduplicator.html#data_juicer.ops.deduplicator.DocumentDeduplicator.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lowercase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_non_character</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param lowercase: Whether to convert sample text to lower case</span>
@@ -555,24 +558,24 @@
 <span class="sd">            characters, including whitespaces, digits, and punctuations</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span> <span class="o">=</span> <span class="n">lowercase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_non_character_regex</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;\s+|\d+|[</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">ignore_non_character</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># noqa: W605</span>
+            <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">f</span><span class="s2">"\s+|\d+|[</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">)</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span> <span class="k">if</span> <span class="n">ignore_non_character</span> <span class="k">else</span> <span class="kc">None</span>  <span class="c1"># noqa: W605</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DocumentDeduplicator.compute_hash">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_deduplicator.html#data_juicer.ops.deduplicator.DocumentDeduplicator.compute_hash">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compute md5 hash values for the sample.</span>
 
 <span class="sd">        :param sample: input sample</span>
 <span class="sd">        :return: sample with md5 hash value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+<span class="sd">        """</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">HashKeys</span><span class="o">.</span><span class="n">hash</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -580,10 +583,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span><span class="p">:</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_non_character_regex</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_non_character_regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_non_character_regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_get_hash</span><span class="p">(</span><span class="n">txt</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_hash</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sample</span></div>
@@ -592,14 +595,14 @@
 <div class="viewcode-block" id="DocumentDeduplicator.process">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.document_deduplicator.html#data_juicer.ops.deduplicator.DocumentDeduplicator.process">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">show_num</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        For doc-level, dataset --&gt; dataset.</span>
 
 <span class="sd">        :param dataset: input dataset</span>
 <span class="sd">        :param show_num: number of traced samples used when tracer is</span>
 <span class="sd">            open.</span>
 <span class="sd">        :return: deduplicated dataset and the sampled duplicate pairs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># no need to deduplicate because too few samples</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span><span class="p">,</span> <span class="p">{}</span>

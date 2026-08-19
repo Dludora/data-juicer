@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.image_tagging_vlm_mapper</span></li>
   </ul>
 </nav>
@@ -537,10 +540,10 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_tagging_vlm_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_tagging_vlm_mapper"</span>
 
 
 <div class="viewcode-block" id="ImageTaggingVLMMapper">
@@ -548,38 +551,38 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageTaggingVLMMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to generates image tags.</span>
+<span class="w">    </span><span class="sd">"""Mapper to generates image tags.</span>
 <span class="sd">    This operator generates tags based on the content of given images.</span>
 <span class="sd">    The tags are generated using a vlm model and stored in the specified field name.</span>
 <span class="sd">    If the tags are already present in the sample, the operator skips processing.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">Generate comprehensive and specific descriptive tags for the provided image(s) following these rules:</span>
 <span class="s2">1. Tags should be concise English phrases (nouns or gerunds)</span>
 <span class="s2">2. Use lowercase and hyphenate multi-word tags</span>
 <span class="s2">3. Include objects, actions, colors, materials, styles, emotions, and context</span>
 <span class="s2">4. Prioritize prominent and distinctive elements</span>
 <span class="s2">5. Output exactly 5-10 most relevant tags</span>
-<span class="s2">6. Format strictly as: {&quot;tags&quot;: [&quot;tag1&quot;, &quot;tag2&quot;, ...]}</span>
+<span class="s2">6. Format strictly as: {"tags": ["tag1", "tag2", ...]}</span>
 
 <span class="s2">Example valid responses:</span>
-<span class="s2">{&quot;tags&quot;: [&quot;red-apple&quot;, &quot;wooden-table&quot;, &quot;natural-lighting&quot;, &quot;food-photography&quot;, &quot;fresh-fruit&quot;]}</span>
-<span class="s2">{&quot;tags&quot;: [&quot;mountain-landscape&quot;, &quot;snowy-peaks&quot;, &quot;sunset-glow&quot;, &quot;alpine-lake&quot;, &quot;conifer-forest&quot;]}</span>
-<span class="s2">&quot;&quot;&quot;</span>
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">{"tags": ["red-apple", "wooden-table", "natural-lighting", "food-photography", "fresh-fruit"]}</span>
+<span class="s2">{"tags": ["mountain-landscape", "snowy-peaks", "sunset-glow", "alpine-lake", "conifer-forest"]}</span>
+<span class="s2">"""</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">Analyze both the provided image and its associated text description (if available) to generate comprehensive tags.</span>
 <span class="s2">Text description: </span><span class="si">{text}</span>
 <span class="s2">Verify text relevance before combining with visual elements. If text is missing or irrelevant, generate tags based solely on the image.</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">"""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="ImageTaggingVLMMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageTaggingVLMMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-VL-7B-Instruct&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-VL-7B-Instruct"</span><span class="p">,</span>
         <span class="n">is_api_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">image_tags</span><span class="p">,</span>
@@ -592,26 +595,26 @@
         <span class="n">try_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API model name or HF model name.</span>
 <span class="sd">        :param is_api_model: Whether the model is an API model.</span>
 <span class="sd">            If true, use openai api to generate tags, otherwise use vllm.</span>
-<span class="sd">        :param tag_field_name: the field name to store the tags. It&#39;s</span>
-<span class="sd">            &quot;image_tags&quot; in default.</span>
+<span class="sd">        :param tag_field_name: the field name to store the tags. It's</span>
+<span class="sd">            "image_tags" in default.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param system_prompt: System prompt for the task.</span>
 <span class="sd">        :param input_template: Template for building the model input.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param try_num: The number of retry attempts when there is an API</span>
 <span class="sd">            call error or output parsing error.</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_api_model</span> <span class="o">=</span> <span class="n">is_api_model</span>
 
@@ -628,7 +631,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
                 <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -639,7 +642,7 @@
                 <span class="c1"># cannot initialize vllm replicas on different GPUs</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vllm&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"vllm"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">vllm</span><span class="o">.</span><span class="n">SamplingParams</span><span class="p">(</span><span class="o">**</span><span class="n">sampling_params</span><span class="p">)</span></div>
 
@@ -649,39 +652,39 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">parse_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_output</span><span class="p">):</span>
         <span class="n">json_str</span> <span class="o">=</span> <span class="n">raw_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;```json&quot;</span><span class="p">,</span> <span class="s2">&quot;```&quot;</span><span class="p">,</span> <span class="s2">&quot;JSON:&quot;</span><span class="p">,</span> <span class="s2">&quot;Response:&quot;</span><span class="p">]:</span>
-            <span class="n">json_str</span> <span class="o">=</span> <span class="n">json_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"```json"</span><span class="p">,</span> <span class="s2">"```"</span><span class="p">,</span> <span class="s2">"JSON:"</span><span class="p">,</span> <span class="s2">"Response:"</span><span class="p">]:</span>
+            <span class="n">json_str</span> <span class="o">=</span> <span class="n">json_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># handle single quotation situations</span>
-                <span class="n">json_str</span> <span class="o">=</span> <span class="n">json_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+                <span class="n">json_str</span> <span class="o">=</span> <span class="n">json_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s1">'"'</span><span class="p">)</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_str</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># ast as alternative option</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse model output: </span><span class="si">{</span><span class="n">raw_output</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to parse model output: </span><span class="si">{</span><span class="n">raw_output</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="k">return</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
 
         <span class="c1"># support possible variations of key names</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tags"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tag"</span><span class="p">,</span> <span class="p">[]))</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+            <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">tag</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)]</span>
 
         <span class="c1"># dedup and filter</span>
         <span class="n">valid_tags</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="c1"># normalize format: lowercase, replace spaces, limit length</span>
-                <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)[:</span><span class="mi">30</span><span class="p">]</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)[:</span><span class="mi">30</span><span class="p">]</span>
                 <span class="n">valid_tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">valid_tags</span><span class="p">))[:</span><span class="mi">10</span><span class="p">]</span></div>
@@ -690,7 +693,7 @@
 <div class="viewcode-block" id="ImageTaggingVLMMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageTaggingVLMMapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -710,21 +713,21 @@
 
         <span class="n">tags_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
-            <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+            <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span>
             <span class="n">user_content</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">},</span>
+                <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">},</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;image_url&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;image_url&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;data:image/jpeg;base64,</span><span class="si">{</span><span class="n">image_path_to_base64</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">},</span>
+                    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"image_url"</span><span class="p">,</span>
+                    <span class="s2">"image_url"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"url"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"data:image/jpeg;base64,</span><span class="si">{</span><span class="n">image_path_to_base64</span><span class="p">(</span><span class="n">img</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span>
                 <span class="p">},</span>
             <span class="p">]</span>
             <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">:</span>
-                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">})</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">})</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">user_content</span><span class="p">,</span>
+                    <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+                    <span class="s2">"content"</span><span class="p">:</span> <span class="n">user_content</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
 
@@ -735,7 +738,7 @@
                         <span class="n">output</span> <span class="o">=</span> <span class="n">client</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
                         <span class="k">break</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
@@ -743,7 +746,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error parsing output: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error parsing output: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">tags_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
 

@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_memory_consistency_mapper</span></li>
   </ul>
 </nav>
@@ -515,14 +518,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: final reply vs prior constraints/facts (1–5).</span>
+<span class="sd">"""LLM: final reply vs prior constraints/facts (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge-style context memory; DJ: single call, truncated turns.</span>
 
 <span class="sd">Reference (similar public rubric intent):</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/multi_turn/</span>
 <span class="sd">#contextmemorygrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -530,7 +533,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper.dialog_quality_llm_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_DialogTurnQualityMapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;dialog_memory_consistency_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"dialog_memory_consistency_mapper"</span>
 
 
 <div class="viewcode-block" id="DialogMemoryConsistencyMapper">
@@ -538,20 +541,20 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DialogMemoryConsistencyMapper</span><span class="p">(</span><span class="n">_DialogTurnQualityMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether the final assistant turn respects prior user constraints and facts.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Whether the final assistant turn respects prior user constraints and facts."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_memory_consistency</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;You are a dialog-quality judge. From the text only: does the &quot;</span>
-            <span class="s2">&quot;**Assistant reply to score** honor preferences, constraints, and &quot;</span>
-            <span class="s2">&quot;stated facts from earlier turns? Any clear forgetting or &quot;</span>
-            <span class="s2">&quot;self-contradiction lowers the score.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = severe violation or forgetting; 3 = mostly OK with gaps; &quot;</span>
-            <span class="s2">&quot;5 = key constraints respected.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Do not invent facts that are not supported by the transcript.&quot;</span>
+            <span class="s2">"You are a dialog-quality judge. From the text only: does the "</span>
+            <span class="s2">"**Assistant reply to score** honor preferences, constraints, and "</span>
+            <span class="s2">"stated facts from earlier turns? Any clear forgetting or "</span>
+            <span class="s2">"self-contradiction lowers the score.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = severe violation or forgetting; 3 = mostly OK with gaps; "</span>
+            <span class="s2">"5 = key constraints respected.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"Do not invent facts that are not supported by the transcript."</span>
         <span class="p">)</span></div>
 
 </pre></div>

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_proactivity_mapper</span></li>
   </ul>
 </nav>
@@ -516,14 +519,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: helpful proactivity without rambling (1–5).</span>
+<span class="sd">"""LLM: helpful proactivity without rambling (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge proactive interaction; DJ: penalize filler tangents.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/multi_turn/</span>
 <span class="sd">#proactiveinteractiongrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -531,7 +534,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper.dialog_quality_llm_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_DialogTurnQualityMapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;dialog_proactivity_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"dialog_proactivity_mapper"</span>
 
 
 <div class="viewcode-block" id="DialogProactivityMapper">
@@ -539,18 +542,18 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DialogProactivityMapper</span><span class="p">(</span><span class="n">_DialogTurnQualityMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Balance helpful initiative against rambling or filler.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Balance helpful initiative against rambling or filler."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_proactivity</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;Score whether the reply moves the dialog forward **without excess**: &quot;</span>
-            <span class="s2">&quot;sensible next steps, relevant additions, brief follow-ups.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = one-shot mechanical or fully passive; 5 = proactive yet &quot;</span>
-            <span class="s2">&quot;restrained and useful for the user&#39;s goal.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Penalize empty filler and off-topic digressions.&quot;</span>
+            <span class="s2">"Score whether the reply moves the dialog forward **without excess**: "</span>
+            <span class="s2">"sensible next steps, relevant additions, brief follow-ups.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = one-shot mechanical or fully passive; 5 = proactive yet "</span>
+            <span class="s2">"restrained and useful for the user's goal.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"Penalize empty filler and off-topic digressions."</span>
         <span class="p">)</span></div>
 
 </pre></div>

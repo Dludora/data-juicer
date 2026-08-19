@@ -512,7 +512,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.core.executor.partition_size_optimizer</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Partition Size Optimizer for DataJuicer</span>
 
 <span class="sd">This module automatically configures optimal partition sizes based on:</span>
@@ -521,7 +521,7 @@
 <span class="sd">3. Available system resources (CPU, memory, GPU)</span>
 <span class="sd">4. Processing pipeline complexity</span>
 <span class="sd">5. Ray cluster configuration</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -535,13 +535,13 @@
 <div class="viewcode-block" id="ModalityType">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ModalityType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ModalityType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supported data modalities.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Supported data modalities."""</span>
 
-    <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span>
-    <span class="n">IMAGE</span> <span class="o">=</span> <span class="s2">&quot;image&quot;</span>
-    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">&quot;audio&quot;</span>
-    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">&quot;video&quot;</span>
-    <span class="n">MULTIMODAL</span> <span class="o">=</span> <span class="s2">&quot;multimodal&quot;</span></div>
+    <span class="n">TEXT</span> <span class="o">=</span> <span class="s2">"text"</span>
+    <span class="n">IMAGE</span> <span class="o">=</span> <span class="s2">"image"</span>
+    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">"audio"</span>
+    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">"video"</span>
+    <span class="n">MULTIMODAL</span> <span class="o">=</span> <span class="s2">"multimodal"</span></div>
 
 
 
@@ -549,7 +549,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.LocalResources">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocalResources</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local system resources.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Local system resources."""</span>
 
     <span class="n">cpu_cores</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">available_memory_gb</span><span class="p">:</span> <span class="nb">float</span>
@@ -564,7 +564,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ClusterResources">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClusterResources</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ray cluster resources.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Ray cluster resources."""</span>
 
     <span class="n">num_nodes</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">total_cpu_cores</span><span class="p">:</span> <span class="nb">int</span>
@@ -579,7 +579,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.DataCharacteristics">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataCharacteristics</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Data characteristics from sampling.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Data characteristics from sampling."""</span>
 
     <span class="n">primary_modality</span><span class="p">:</span> <span class="n">ModalityType</span>
     <span class="n">modality_distribution</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ModalityType</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>
@@ -599,7 +599,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ModalityConfig">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ModalityConfig</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for a specific modality.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Configuration for a specific modality."""</span>
 
     <span class="n">modality</span><span class="p">:</span> <span class="n">ModalityType</span>
     <span class="n">default_partition_size</span><span class="p">:</span> <span class="nb">int</span>
@@ -614,13 +614,13 @@
 <div class="viewcode-block" id="ResourceDetector">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ResourceDetector">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ResourceDetector</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detect available system and cluster resources.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Detect available system and cluster resources."""</span>
 
 <div class="viewcode-block" id="ResourceDetector.detect_local_resources">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ResourceDetector.detect_local_resources">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_local_resources</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">LocalResources</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect local system resources.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Detect local system resources."""</span>
         <span class="c1"># CPU</span>
         <span class="n">cpu_cores</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(</span><span class="n">logical</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -645,10 +645,10 @@
         <span class="c1"># Disk space</span>
         <span class="n">disk_space_gb</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">disk_usage</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+            <span class="n">disk_usage</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">disk_usage</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
             <span class="n">disk_space_gb</span> <span class="o">=</span> <span class="n">disk_usage</span><span class="o">.</span><span class="n">free</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not detect disk space: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not detect disk space: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">pass</span>
 
         <span class="k">return</span> <span class="n">LocalResources</span><span class="p">(</span>
@@ -665,40 +665,27 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.ResourceDetector.detect_ray_cluster">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_ray_cluster</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClusterResources</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect Ray cluster resources.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Detect Ray cluster resources."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ray</span><span class="o">.</span><span class="n">is_initialized</span><span class="p">():</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
-            <span class="c1"># Get cluster resources</span>
-            <span class="n">cluster_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span>
-            <span class="n">available_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">available_resources</span><span class="p">()</span>
+            <span class="c1"># Single source of truth for cluster topology (real alive node</span>
+            <span class="c1"># count plus cluster-wide CPU/GPU totals).</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_cluster_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_cluster_topology</span>
 
-            <span class="c1"># Parse resources</span>
-            <span class="n">total_cpu</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">total_memory</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># Convert to GB</span>
-            <span class="n">available_cpu</span> <span class="o">=</span> <span class="n">available_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">available_memory</span> <span class="o">=</span> <span class="n">available_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
-
-            <span class="c1"># Count nodes (approximate)</span>
-            <span class="n">num_nodes</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">total_cpu</span> <span class="o">/</span> <span class="mi">8</span><span class="p">))</span>  <span class="c1"># Assume 8 cores per node</span>
-
-            <span class="c1"># GPU resources</span>
-            <span class="n">gpu_resources</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;GPU&quot;</span><span class="p">):</span>
-                    <span class="n">gpu_resources</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="n">detect_cluster_topology</span><span class="p">()</span>
 
             <span class="k">return</span> <span class="n">ClusterResources</span><span class="p">(</span>
-                <span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span>
-                <span class="n">total_cpu_cores</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">total_cpu</span><span class="p">),</span>
-                <span class="n">total_memory_gb</span><span class="o">=</span><span class="n">total_memory</span><span class="p">,</span>
-                <span class="n">available_cpu_cores</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">available_cpu</span><span class="p">),</span>
-                <span class="n">available_memory_gb</span><span class="o">=</span><span class="n">available_memory</span><span class="p">,</span>
-                <span class="n">gpu_resources</span><span class="o">=</span><span class="n">gpu_resources</span><span class="p">,</span>
+                <span class="n">num_nodes</span><span class="o">=</span><span class="n">topology</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+                <span class="n">total_cpu_cores</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">total_cpus</span><span class="p">),</span>
+                <span class="n">total_memory_gb</span><span class="o">=</span><span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">),</span>
+                <span class="n">available_cpu_cores</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">topology</span><span class="o">.</span><span class="n">available_cpus</span><span class="p">),</span>
+                <span class="n">available_memory_gb</span><span class="o">=</span><span class="n">ray</span><span class="o">.</span><span class="n">available_resources</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">3</span><span class="p">),</span>
+                <span class="n">gpu_resources</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"GPU"</span><span class="p">)},</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not detect Ray cluster resources: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not detect Ray cluster resources: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -711,7 +698,7 @@
         <span class="n">partition_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">total_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate optimal number of Ray workers based on available resources.</span>
 
 <span class="sd">        Args:</span>
@@ -722,10 +709,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Optimal number of workers</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Determine available CPU cores</span>
+<span class="sd">        """</span>
+        <span class="c1"># Determine available CPU cores. When a Ray cluster is present the</span>
+        <span class="c1"># cluster-wide capacity is authoritative: clamping it to the driver</span>
+        <span class="c1"># machine's core count would hide the real parallelism available to</span>
+        <span class="c1"># partitioned execution.</span>
         <span class="k">if</span> <span class="n">cluster_resources</span><span class="p">:</span>
-            <span class="n">available_cores</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span><span class="p">)</span>
+            <span class="n">available_cores</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">available_cores</span> <span class="o">=</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span>
 
@@ -751,18 +741,18 @@
             <span class="c1"># No workload info - use base calculation</span>
             <span class="n">optimal_workers</span> <span class="o">=</span> <span class="n">base_workers</span>
 
-        <span class="c1"># Ensure we don&#39;t exceed available cores</span>
+        <span class="c1"># Ensure we don't exceed available cores</span>
         <span class="n">optimal_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">optimal_workers</span><span class="p">,</span> <span class="n">available_cores</span><span class="p">)</span>
 
         <span class="c1"># Minimum of 1 worker, cap at available cores (no arbitrary limit)</span>
         <span class="n">optimal_workers</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">optimal_workers</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Worker count calculation:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Available CPU cores: </span><span class="si">{</span><span class="n">available_cores</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Base workers (75% of cores): </span><span class="si">{</span><span class="n">base_workers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Worker count calculation:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Available CPU cores: </span><span class="si">{</span><span class="n">available_cores</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Base workers (75% of cores): </span><span class="si">{</span><span class="n">base_workers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">partition_size</span> <span class="ow">and</span> <span class="n">total_samples</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Estimated partitions: </span><span class="si">{</span><span class="n">total_samples</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">partition_size</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Optimal workers: </span><span class="si">{</span><span class="n">optimal_workers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Estimated partitions: </span><span class="si">{</span><span class="n">total_samples</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">partition_size</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Optimal workers: </span><span class="si">{</span><span class="n">optimal_workers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">optimal_workers</span></div>
 </div>
@@ -772,20 +762,20 @@
 <div class="viewcode-block" id="PartitionSizeOptimizer">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PartitionSizeOptimizer</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Automatically optimizes partition sizes based on data characteristics and available resources.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Automatically optimizes partition sizes based on data characteristics and available resources."""</span>
 
 <div class="viewcode-block" id="PartitionSizeOptimizer.calculate_target_partition_mb">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.calculate_target_partition_mb">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_target_partition_mb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">available_memory_gb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate target partition size in MB based on available memory and config.</span>
+<span class="w">        </span><span class="sd">"""Calculate target partition size in MB based on available memory and config.</span>
 
 <span class="sd">        Uses config.partition.target_size_mb if available, otherwise falls back to</span>
 <span class="sd">        dynamic sizing based on available memory (32MB - 256MB).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Use configured target if available</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;partition&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">partition</span><span class="p">,</span> <span class="s2">&quot;target_size_mb&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"partition"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">partition</span><span class="p">,</span> <span class="s2">"target_size_mb"</span><span class="p">):</span>
             <span class="n">configured_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">partition</span><span class="o">.</span><span class="n">target_size_mb</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using configured target partition size: </span><span class="si">{</span><span class="n">configured_size</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Using configured target partition size: </span><span class="si">{</span><span class="n">configured_size</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">configured_size</span>
 
         <span class="c1"># Fall back to dynamic calculation based on available memory</span>
@@ -808,7 +798,7 @@
             <span class="n">max_partition_size_mb</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># Default 256MB per partition (configurable)</span>
             <span class="n">memory_multiplier</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
             <span class="n">complexity_multiplier</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Text data - efficient processing, low memory usage, target 256MB partitions (configurable)&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Text data - efficient processing, low memory usage, target 256MB partitions (configurable)"</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">ModalityType</span><span class="o">.</span><span class="n">IMAGE</span><span class="p">:</span> <span class="n">ModalityConfig</span><span class="p">(</span>
             <span class="n">modality</span><span class="o">=</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">IMAGE</span><span class="p">,</span>
@@ -817,7 +807,7 @@
             <span class="n">max_partition_size_mb</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># Default 256MB per partition (configurable)</span>
             <span class="n">memory_multiplier</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
             <span class="n">complexity_multiplier</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Image data - moderate memory usage, target 256MB partitions (configurable)&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Image data - moderate memory usage, target 256MB partitions (configurable)"</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">ModalityType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">:</span> <span class="n">ModalityConfig</span><span class="p">(</span>
             <span class="n">modality</span><span class="o">=</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">AUDIO</span><span class="p">,</span>
@@ -826,7 +816,7 @@
             <span class="n">max_partition_size_mb</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># Default 256MB per partition (configurable)</span>
             <span class="n">memory_multiplier</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>
             <span class="n">complexity_multiplier</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Audio data - high memory usage, target 256MB partitions (configurable)&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Audio data - high memory usage, target 256MB partitions (configurable)"</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">ModalityType</span><span class="o">.</span><span class="n">VIDEO</span><span class="p">:</span> <span class="n">ModalityConfig</span><span class="p">(</span>
             <span class="n">modality</span><span class="o">=</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">VIDEO</span><span class="p">,</span>
@@ -835,7 +825,7 @@
             <span class="n">max_partition_size_mb</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># Default 256MB per partition (configurable)</span>
             <span class="n">memory_multiplier</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
             <span class="n">complexity_multiplier</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Video data - very high memory usage, target 256MB partitions (configurable)&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Video data - very high memory usage, target 256MB partitions (configurable)"</span><span class="p">,</span>
         <span class="p">),</span>
         <span class="n">ModalityType</span><span class="o">.</span><span class="n">MULTIMODAL</span><span class="p">:</span> <span class="n">ModalityConfig</span><span class="p">(</span>
             <span class="n">modality</span><span class="o">=</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">MULTIMODAL</span><span class="p">,</span>
@@ -844,26 +834,26 @@
             <span class="n">max_partition_size_mb</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>  <span class="c1"># Default 256MB per partition (configurable)</span>
             <span class="n">memory_multiplier</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
             <span class="n">complexity_multiplier</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Multimodal data - combination of multiple modalities, target 256MB partitions (configurable)&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">"Multimodal data - combination of multiple modalities, target 256MB partitions (configurable)"</span><span class="p">,</span>
         <span class="p">),</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="PartitionSizeOptimizer.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cfg</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the optimizer with configuration.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the optimizer with configuration."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span> <span class="o">=</span> <span class="n">cfg</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;text_key&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">image_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;image_key&quot;</span><span class="p">,</span> <span class="s2">&quot;images&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">audio_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;audio_key&quot;</span><span class="p">,</span> <span class="s2">&quot;audios&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">video_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;video_key&quot;</span><span class="p">,</span> <span class="s2">&quot;videos&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"text_key"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"image_key"</span><span class="p">,</span> <span class="s2">"images"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">audio_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"audio_key"</span><span class="p">,</span> <span class="s2">"audios"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">video_key</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">"video_key"</span><span class="p">,</span> <span class="s2">"videos"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span> <span class="o">=</span> <span class="n">ResourceDetector</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="PartitionSizeOptimizer.detect_modality">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.detect_modality">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_modality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ModalityType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Detect the primary modality of a sample.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Detect the primary modality of a sample."""</span>
         <span class="n">modalities</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># Check for text</span>
@@ -895,20 +885,20 @@
 <div class="viewcode-block" id="PartitionSizeOptimizer.analyze_dataset_characteristics">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.analyze_dataset_characteristics">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze_dataset_characteristics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataCharacteristics</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze dataset characteristics to inform partition sizing.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analyzing dataset characteristics for partition optimization...&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Analyze dataset characteristics to inform partition sizing."""</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Analyzing dataset characteristics for partition optimization..."</span><span class="p">)</span>
 
         <span class="c1"># Get dataset size</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">"count"</span><span class="p">):</span>
                 <span class="n">total_samples</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;__len__&quot;</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">"__len__"</span><span class="p">):</span>
                 <span class="n">total_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">1000</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not determine dataset size, using estimate of 1000 samples&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Could not determine dataset size, using estimate of 1000 samples"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not determine dataset size: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, using estimate of 1000 samples&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not determine dataset size: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, using estimate of 1000 samples"</span><span class="p">)</span>
             <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">1000</span>
 
         <span class="c1"># Adaptive sampling: minimum 0.1% for large datasets</span>
@@ -921,18 +911,18 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Sample dataset for analysis</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">"get"</span><span class="p">):</span>
                 <span class="c1"># RayDataset with get() method</span>
                 <span class="n">samples</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sample_size</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples using get()&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;take&quot;</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples using get()"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">"take"</span><span class="p">):</span>
                 <span class="c1"># Datasets with take() method</span>
                 <span class="n">samples</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">sample_size</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples using take()&quot;</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">&quot;__getitem__&quot;</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples using take()"</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s2">"__getitem__"</span><span class="p">):</span>
                 <span class="c1"># Handle list-like datasets</span>
                 <span class="n">samples</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="p">[:</span><span class="n">sample_size</span><span class="p">])</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples from list-like dataset&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples from list-like dataset"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Fallback: try to iterate</span>
                 <span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
@@ -940,12 +930,12 @@
                     <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">sample_size</span><span class="p">:</span>
                         <span class="k">break</span>
                     <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples by iteration&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Successfully sampled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples by iteration"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not sample dataset: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, using default analysis&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not sample dataset: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">, using default analysis"</span><span class="p">)</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sampling error traceback: </span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sampling error traceback: </span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">DataCharacteristics</span><span class="p">(</span>
                 <span class="n">primary_modality</span><span class="o">=</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">,</span>
                 <span class="n">modality_distribution</span><span class="o">=</span><span class="p">{</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
@@ -1033,15 +1023,15 @@
             <span class="n">data_skew_factor</span><span class="o">=</span><span class="n">data_skew_factor</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset analysis complete:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Primary modality: </span><span class="si">{</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Modality distribution: </span><span class="si">{</span><span class="n">modality_counts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg text length: </span><span class="si">{</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> chars&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg images per sample: </span><span class="si">{</span><span class="n">avg_images_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg audio per sample: </span><span class="si">{</span><span class="n">avg_audio_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg video per sample: </span><span class="si">{</span><span class="n">avg_video_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Avg memory per sample: </span><span class="si">{</span><span class="n">avg_memory_per_sample_mb</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data skew factor: </span><span class="si">{</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dataset analysis complete:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Primary modality: </span><span class="si">{</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Modality distribution: </span><span class="si">{</span><span class="n">modality_counts</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg text length: </span><span class="si">{</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> chars"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg images per sample: </span><span class="si">{</span><span class="n">avg_images_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg audio per sample: </span><span class="si">{</span><span class="n">avg_audio_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg video per sample: </span><span class="si">{</span><span class="n">avg_video_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg memory per sample: </span><span class="si">{</span><span class="n">avg_memory_per_sample_mb</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Data skew factor: </span><span class="si">{</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">characteristics</span></div>
 
@@ -1049,16 +1039,16 @@
 <div class="viewcode-block" id="PartitionSizeOptimizer.estimate_sample_size_mb">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.estimate_sample_size_mb">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">estimate_sample_size_mb</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Measure actual memory size of a sample in MB.</span>
+<span class="w">        </span><span class="sd">"""Measure actual memory size of a sample in MB.</span>
 
 <span class="sd">        Uses deep size calculation to include all nested objects (strings, lists, etc.)</span>
 <span class="sd">        rather than just the shallow dict overhead.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deep_getsizeof</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_deep_getsizeof</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recursively calculate the deep memory size of an object.</span>
+<span class="w">        </span><span class="sd">"""Recursively calculate the deep memory size of an object.</span>
 
 <span class="sd">        This properly accounts for nested objects like strings in dicts,</span>
 <span class="sd">        lists of values, etc. Uses a seen set to avoid counting shared</span>
@@ -1070,7 +1060,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Total memory size in bytes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
         <span class="k">if</span> <span class="n">seen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1093,9 +1083,9 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="c1"># Bytes size is already included in getsizeof</span>
             <span class="k">pass</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__dict__&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"__dict__"</span><span class="p">):</span>
             <span class="n">size</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deep_getsizeof</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">"__iter__"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">size</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deep_getsizeof</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">seen</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -1106,11 +1096,11 @@
 <div class="viewcode-block" id="PartitionSizeOptimizer.analyze_processing_complexity">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.analyze_processing_complexity">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyze_processing_complexity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyze the complexity of the processing pipeline using linear scoring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Analyze the complexity of the processing pipeline using linear scoring."""</span>
         <span class="n">COMPLEXITY_WEIGHTS</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;high&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>  <span class="c1"># embedding, model, neural</span>
-            <span class="s2">&quot;medium&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>  <span class="c1"># filter, deduplicator</span>
-            <span class="s2">&quot;low&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># text cleaning</span>
+            <span class="s2">"high"</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>  <span class="c1"># embedding, model, neural</span>
+            <span class="s2">"medium"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>  <span class="c1"># filter, deduplicator</span>
+            <span class="s2">"low"</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># text cleaning</span>
         <span class="p">}</span>
 
         <span class="c1"># Count operations by complexity level</span>
@@ -1118,28 +1108,28 @@
         <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">process_pipeline</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">op_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">kw</span> <span class="ow">in</span> <span class="n">op_name</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span> <span class="s2">&quot;similarity&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;neural&quot;</span><span class="p">,</span> <span class="s2">&quot;vision&quot;</span><span class="p">,</span> <span class="s2">&quot;audio&quot;</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">kw</span> <span class="ow">in</span> <span class="n">op_name</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"embedding"</span><span class="p">,</span> <span class="s2">"similarity"</span><span class="p">,</span> <span class="s2">"model"</span><span class="p">,</span> <span class="s2">"neural"</span><span class="p">,</span> <span class="s2">"vision"</span><span class="p">,</span> <span class="s2">"audio"</span><span class="p">]):</span>
                     <span class="n">high_ops</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">kw</span> <span class="ow">in</span> <span class="n">op_name</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="s2">&quot;deduplicator&quot;</span><span class="p">,</span> <span class="s2">&quot;mapper&quot;</span><span class="p">]):</span>
+                <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">kw</span> <span class="ow">in</span> <span class="n">op_name</span> <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"filter"</span><span class="p">,</span> <span class="s2">"deduplicator"</span><span class="p">,</span> <span class="s2">"mapper"</span><span class="p">]):</span>
                     <span class="n">medium_ops</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">low_ops</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># Linear complexity scoring</span>
         <span class="n">complexity_score</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span>
-            <span class="n">high_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">]</span>
-            <span class="o">+</span> <span class="n">medium_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">&quot;medium&quot;</span><span class="p">]</span>
-            <span class="o">+</span> <span class="n">low_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">&quot;low&quot;</span><span class="p">]</span>
+            <span class="n">high_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">"high"</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">medium_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">"medium"</span><span class="p">]</span>
+            <span class="o">+</span> <span class="n">low_ops</span> <span class="o">*</span> <span class="n">COMPLEXITY_WEIGHTS</span><span class="p">[</span><span class="s2">"low"</span><span class="p">]</span>
         <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing complexity: </span><span class="si">{</span><span class="n">high_ops</span><span class="si">}</span><span class="s2"> high, </span><span class="si">{</span><span class="n">medium_ops</span><span class="si">}</span><span class="s2"> med, </span><span class="si">{</span><span class="n">low_ops</span><span class="si">}</span><span class="s2"> low = </span><span class="si">{</span><span class="n">complexity_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processing complexity: </span><span class="si">{</span><span class="n">high_ops</span><span class="si">}</span><span class="s2"> high, </span><span class="si">{</span><span class="n">medium_ops</span><span class="si">}</span><span class="s2"> med, </span><span class="si">{</span><span class="n">low_ops</span><span class="si">}</span><span class="s2"> low = </span><span class="si">{</span><span class="n">complexity_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">complexity_score</span></div>
 
 
 <div class="viewcode-block" id="PartitionSizeOptimizer.get_optimal_partition_size">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.get_optimal_partition_size">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_optimal_partition_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get optimal partition size and max size based on data characteristics and available resources.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get optimal partition size and max size based on data characteristics and available resources."""</span>
 
         <span class="c1"># Analyze dataset</span>
         <span class="n">characteristics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze_dataset_characteristics</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
@@ -1152,12 +1142,12 @@
         <span class="n">local_resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span><span class="o">.</span><span class="n">detect_local_resources</span><span class="p">()</span>
         <span class="n">cluster_resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span><span class="o">.</span><span class="n">detect_ray_cluster</span><span class="p">()</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resource analysis:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Local CPU cores: </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Local available memory: </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Resource analysis:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Local CPU cores: </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Local available memory: </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cluster_resources</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Cluster CPU cores: </span><span class="si">{</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">total_cpu_cores</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Cluster available memory: </span><span class="si">{</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Cluster CPU cores: </span><span class="si">{</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">total_cpu_cores</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Cluster available memory: </span><span class="si">{</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB"</span><span class="p">)</span>
 
         <span class="c1"># Calculate optimal partition size</span>
         <span class="n">optimal_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_resource_aware_partition_size</span><span class="p">(</span>
@@ -1169,12 +1159,12 @@
             <span class="n">characteristics</span><span class="p">,</span> <span class="n">local_resources</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="p">,</span> <span class="n">complexity_multiplier</span>
         <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal partition configuration:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Size: </span><span class="si">{</span><span class="n">optimal_size</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Max size: </span><span class="si">{</span><span class="n">optimal_max_size_mb</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Based on: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> modality&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Complexity multiplier: </span><span class="si">{</span><span class="n">complexity_multiplier</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Data skew factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Optimal partition configuration:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Size: </span><span class="si">{</span><span class="n">optimal_size</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Max size: </span><span class="si">{</span><span class="n">optimal_max_size_mb</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Based on: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> modality"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Complexity multiplier: </span><span class="si">{</span><span class="n">complexity_multiplier</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Data skew factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">optimal_size</span><span class="p">,</span> <span class="n">optimal_max_size_mb</span></div>
 
@@ -1188,12 +1178,12 @@
         <span class="n">cluster_resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClusterResources</span><span class="p">],</span>
         <span class="n">complexity_multiplier</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Calculate partition size based on data characteristics and available resources.</span>
 
 <span class="sd">        Primary goal: Target partition size based on config (default 256MB).</span>
 <span class="sd">        Secondary goals: Ensure sufficient parallelism and respect resource constraints.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="c1"># Get base configuration for the modality</span>
         <span class="n">base_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODALITY_CONFIGS</span><span class="p">[</span><span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="p">]</span>
@@ -1218,9 +1208,9 @@
         <span class="n">max_partition_memory_mb</span> <span class="o">=</span> <span class="p">(</span><span class="n">available_memory_gb</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>  <span class="c1"># Allow 4 concurrent partitions</span>
 
         <span class="k">if</span> <span class="n">target_size</span> <span class="o">*</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">&gt;</span> <span class="n">max_partition_memory_mb</span><span class="p">:</span>
-            <span class="c1"># Doesn&#39;t fit - scale down</span>
+            <span class="c1"># Doesn't fit - scale down</span>
             <span class="n">safe_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">max_partition_memory_mb</span> <span class="o">/</span> <span class="p">(</span><span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span> <span class="o">*</span> <span class="mi">2</span><span class="p">))</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Memory constraint: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">safe_size</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Memory constraint: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">safe_size</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">)</span>
             <span class="n">target_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">safe_size</span><span class="p">)</span>
 
         <span class="c1"># Step 3: Ensure sufficient parallelism for large datasets</span>
@@ -1232,8 +1222,8 @@
             <span class="c1"># Too few partitions - reduce size for better parallelism</span>
             <span class="n">parallelism_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span> <span class="o">/</span> <span class="n">min_partitions_needed</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Parallelism optimization: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">parallelism_size</span><span class="si">}</span><span class="s2"> &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;to create </span><span class="si">{</span><span class="n">min_partitions_needed</span><span class="si">}</span><span class="s2"> partitions&quot;</span>
+                <span class="sa">f</span><span class="s2">"Parallelism optimization: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">parallelism_size</span><span class="si">}</span><span class="s2"> "</span>
+                <span class="sa">f</span><span class="s2">"to create </span><span class="si">{</span><span class="n">min_partitions_needed</span><span class="si">}</span><span class="s2"> partitions"</span>
             <span class="p">)</span>
             <span class="n">target_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">parallelism_size</span><span class="p">)</span>
 
@@ -1241,15 +1231,15 @@
         <span class="k">if</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">:</span>
             <span class="c1"># High variance - use smaller partitions for better load balancing</span>
             <span class="n">skew_adjusted_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_size</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data skew adjustment: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">skew_adjusted_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Data skew adjustment: reducing partition size from </span><span class="si">{</span><span class="n">target_size</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">skew_adjusted_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">target_size</span> <span class="o">=</span> <span class="n">skew_adjusted_size</span>
 
         <span class="c1"># Step 5: Apply final bounds</span>
         <span class="n">final_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">target_size</span><span class="p">,</span> <span class="n">base_config</span><span class="o">.</span><span class="n">max_partition_size</span><span class="p">))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final partition size: </span><span class="si">{</span><span class="n">final_size</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Estimated memory per partition: </span><span class="si">{</span><span class="n">final_size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Estimated total partitions: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">final_size</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final partition size: </span><span class="si">{</span><span class="n">final_size</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Estimated memory per partition: </span><span class="si">{</span><span class="n">final_size</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Estimated total partitions: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">final_size</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">final_size</span></div>
 
@@ -1257,7 +1247,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_available_memory</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">local_resources</span><span class="p">:</span> <span class="n">LocalResources</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClusterResources</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get available memory in GB.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get available memory in GB."""</span>
         <span class="k">if</span> <span class="n">cluster_resources</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span>
@@ -1268,15 +1258,16 @@
         <span class="n">local_resources</span><span class="p">:</span> <span class="n">LocalResources</span><span class="p">,</span>
         <span class="n">cluster_resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClusterResources</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate minimum number of partitions needed for good parallelism.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate minimum number of partitions needed for good parallelism."""</span>
         <span class="c1"># Only enforce minimum partitions for large datasets (&gt;10k samples)</span>
         <span class="k">if</span> <span class="n">total_samples</span> <span class="o">&lt;=</span> <span class="mi">10000</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>  <span class="c1"># Small datasets - prioritize 64MB target over parallelism</span>
 
-        <span class="c1"># For large datasets, aim for at least 1.5x CPU cores in partitions</span>
+        <span class="c1"># For large datasets, aim for at least 1.5x CPU cores in partitions.</span>
+        <span class="c1"># Cluster-wide capacity is authoritative when a Ray cluster exists.</span>
         <span class="n">available_cores</span> <span class="o">=</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span>
         <span class="k">if</span> <span class="n">cluster_resources</span><span class="p">:</span>
-            <span class="n">available_cores</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">available_cores</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span><span class="p">)</span>
+            <span class="n">available_cores</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">available_cores</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">))</span>
 
@@ -1285,7 +1276,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_text_partition_size_simple</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">avg_text_length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">complexity_score</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">target_memory_mb</span><span class="p">:</span> <span class="nb">float</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate text partition size targeting specified memory size.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate text partition size targeting specified memory size."""</span>
         <span class="c1"># Estimate bytes per sample (conservative: 2 bytes per char + overhead)</span>
         <span class="n">bytes_per_sample</span> <span class="o">=</span> <span class="n">avg_text_length</span> <span class="o">*</span> <span class="mf">2.0</span>
         <span class="n">mb_per_sample</span> <span class="o">=</span> <span class="n">bytes_per_sample</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>
@@ -1300,10 +1291,10 @@
         <span class="n">text_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODALITY_CONFIGS</span><span class="p">[</span><span class="n">ModalityType</span><span class="o">.</span><span class="n">TEXT</span><span class="p">]</span>
         <span class="n">target_samples</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">target_samples</span><span class="p">,</span> <span class="n">text_config</span><span class="o">.</span><span class="n">max_partition_size</span><span class="p">))</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Text partition calculation:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Target: </span><span class="si">{</span><span class="n">target_memory_mb</span><span class="si">}</span><span class="s2">MB, Avg text: </span><span class="si">{</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> chars&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Estimated: </span><span class="si">{</span><span class="n">mb_per_sample</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB/sample&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Result: </span><span class="si">{</span><span class="n">target_samples</span><span class="si">}</span><span class="s2"> samples (~</span><span class="si">{</span><span class="n">target_samples</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mb_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB)&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Text partition calculation:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Target: </span><span class="si">{</span><span class="n">target_memory_mb</span><span class="si">}</span><span class="s2">MB, Avg text: </span><span class="si">{</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> chars"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Estimated: </span><span class="si">{</span><span class="n">mb_per_sample</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB/sample"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Result: </span><span class="si">{</span><span class="n">target_samples</span><span class="si">}</span><span class="s2"> samples (~</span><span class="si">{</span><span class="n">target_samples</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mb_per_sample</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> MB)"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">target_samples</span></div>
 
@@ -1317,7 +1308,7 @@
         <span class="n">cluster_resources</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClusterResources</span><span class="p">],</span>
         <span class="n">complexity_multiplier</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate optimal max partition size in MB based on available memory.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Calculate optimal max partition size in MB based on available memory."""</span>
         <span class="c1"># Calculate dynamic target based on available memory</span>
         <span class="n">available_memory_gb</span> <span class="o">=</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span>
         <span class="k">if</span> <span class="n">cluster_resources</span><span class="p">:</span>
@@ -1328,7 +1319,7 @@
         <span class="c1"># Adjust for processing complexity</span>
         <span class="n">complexity_adjusted_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">target_max_size_mb</span> <span class="o">/</span> <span class="n">complexity_multiplier</span><span class="p">)</span>
 
-        <span class="c1"># Don&#39;t exceed 25% of available memory per partition</span>
+        <span class="c1"># Don't exceed 25% of available memory per partition</span>
         <span class="n">max_size_by_memory</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">available_memory_gb</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">)</span>
 
         <span class="c1"># Apply bounds</span>
@@ -1336,11 +1327,11 @@
         <span class="n">optimal_max_size_mb</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">optimal_max_size_mb</span><span class="p">)</span>
         <span class="n">optimal_max_size_mb</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">optimal_max_size_mb</span><span class="p">)</span>  <span class="c1"># Increased max from 128MB</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max partition size calculation:&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Target size: </span><span class="si">{</span><span class="n">target_max_size_mb</span><span class="si">}</span><span class="s2"> MB (dynamic based on </span><span class="si">{</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB)&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Complexity adjusted: </span><span class="si">{</span><span class="n">complexity_adjusted_size</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Max by memory (25%): </span><span class="si">{</span><span class="n">max_size_by_memory</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Optimal max size: </span><span class="si">{</span><span class="n">optimal_max_size_mb</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Max partition size calculation:"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Target size: </span><span class="si">{</span><span class="n">target_max_size_mb</span><span class="si">}</span><span class="s2"> MB (dynamic based on </span><span class="si">{</span><span class="n">available_memory_gb</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> GB)"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Complexity adjusted: </span><span class="si">{</span><span class="n">complexity_adjusted_size</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Max by memory (25%): </span><span class="si">{</span><span class="n">max_size_by_memory</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Optimal max size: </span><span class="si">{</span><span class="n">optimal_max_size_mb</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">optimal_max_size_mb</span></div>
 
@@ -1348,13 +1339,22 @@
 <div class="viewcode-block" id="PartitionSizeOptimizer.get_partition_recommendations">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.PartitionSizeOptimizer.get_partition_recommendations">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_partition_recommendations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get comprehensive partition recommendations.&quot;&quot;&quot;</span>
-        <span class="n">optimal_size</span><span class="p">,</span> <span class="n">optimal_max_size_mb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_optimal_partition_size</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Get comprehensive partition recommendations."""</span>
+        <span class="c1"># Analyze the dataset once and reuse the characteristics for both</span>
+        <span class="c1"># sizing and worker-count calculation (avoids double sampling).</span>
         <span class="n">characteristics</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze_dataset_characteristics</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">complexity_multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">analyze_processing_complexity</span><span class="p">(</span><span class="n">process_pipeline</span><span class="p">)</span>
+        <span class="n">characteristics</span><span class="o">.</span><span class="n">processing_complexity_score</span> <span class="o">=</span> <span class="n">complexity_multiplier</span>
 
-        <span class="c1"># Detect resources</span>
         <span class="n">local_resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span><span class="o">.</span><span class="n">detect_local_resources</span><span class="p">()</span>
         <span class="n">cluster_resources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span><span class="o">.</span><span class="n">detect_ray_cluster</span><span class="p">()</span>
+
+        <span class="n">optimal_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_resource_aware_partition_size</span><span class="p">(</span>
+            <span class="n">characteristics</span><span class="p">,</span> <span class="n">local_resources</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="p">,</span> <span class="n">complexity_multiplier</span>
+        <span class="p">)</span>
+        <span class="n">optimal_max_size_mb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_optimal_max_size_mb</span><span class="p">(</span>
+            <span class="n">characteristics</span><span class="p">,</span> <span class="n">local_resources</span><span class="p">,</span> <span class="n">cluster_resources</span><span class="p">,</span> <span class="n">complexity_multiplier</span>
+        <span class="p">)</span>
 
         <span class="c1"># Calculate optimal worker count</span>
         <span class="n">optimal_workers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_detector</span><span class="o">.</span><span class="n">calculate_optimal_worker_count</span><span class="p">(</span>
@@ -1362,40 +1362,40 @@
         <span class="p">)</span>
 
         <span class="n">recommendations</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;recommended_partition_size&quot;</span><span class="p">:</span> <span class="n">optimal_size</span><span class="p">,</span>
-            <span class="s2">&quot;recommended_max_size_mb&quot;</span><span class="p">:</span> <span class="n">optimal_max_size_mb</span><span class="p">,</span>
-            <span class="s2">&quot;recommended_worker_count&quot;</span><span class="p">:</span> <span class="n">optimal_workers</span><span class="p">,</span>
-            <span class="s2">&quot;primary_modality&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s2">&quot;data_characteristics&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;avg_text_length&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_text_length</span><span class="p">,</span>
-                <span class="s2">&quot;avg_images_per_sample&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_images_per_sample</span><span class="p">,</span>
-                <span class="s2">&quot;avg_audio_per_sample&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_audio_per_sample</span><span class="p">,</span>
-                <span class="s2">&quot;avg_video_per_sample&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_video_per_sample</span><span class="p">,</span>
-                <span class="s2">&quot;memory_per_sample_mb&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="p">,</span>
-                <span class="s2">&quot;data_skew_factor&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="p">,</span>
-                <span class="s2">&quot;total_samples&quot;</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="p">,</span>
+            <span class="s2">"recommended_partition_size"</span><span class="p">:</span> <span class="n">optimal_size</span><span class="p">,</span>
+            <span class="s2">"recommended_max_size_mb"</span><span class="p">:</span> <span class="n">optimal_max_size_mb</span><span class="p">,</span>
+            <span class="s2">"recommended_worker_count"</span><span class="p">:</span> <span class="n">optimal_workers</span><span class="p">,</span>
+            <span class="s2">"primary_modality"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"data_characteristics"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"avg_text_length"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_text_length</span><span class="p">,</span>
+                <span class="s2">"avg_images_per_sample"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_images_per_sample</span><span class="p">,</span>
+                <span class="s2">"avg_audio_per_sample"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_audio_per_sample</span><span class="p">,</span>
+                <span class="s2">"avg_video_per_sample"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">avg_video_per_sample</span><span class="p">,</span>
+                <span class="s2">"memory_per_sample_mb"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="p">,</span>
+                <span class="s2">"data_skew_factor"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="p">,</span>
+                <span class="s2">"total_samples"</span><span class="p">:</span> <span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;resource_analysis&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;local_cpu_cores&quot;</span><span class="p">:</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">,</span>
-                <span class="s2">&quot;local_available_memory_gb&quot;</span><span class="p">:</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="p">,</span>
-                <span class="s2">&quot;cluster_available_cpu_cores&quot;</span><span class="p">:</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span> <span class="k">if</span> <span class="n">cluster_resources</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;cluster_available_memory_gb&quot;</span><span class="p">:</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_memory_gb</span> <span class="k">if</span> <span class="n">cluster_resources</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"resource_analysis"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"local_cpu_cores"</span><span class="p">:</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="p">,</span>
+                <span class="s2">"local_available_memory_gb"</span><span class="p">:</span> <span class="n">local_resources</span><span class="o">.</span><span class="n">available_memory_gb</span><span class="p">,</span>
+                <span class="s2">"cluster_available_cpu_cores"</span><span class="p">:</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_cpu_cores</span> <span class="k">if</span> <span class="n">cluster_resources</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"cluster_available_memory_gb"</span><span class="p">:</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">available_memory_gb</span> <span class="k">if</span> <span class="n">cluster_resources</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;reasoning&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;modality&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Based on </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> modality&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;complexity&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Processing complexity factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">processing_complexity_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;dataset_size&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Dataset size: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;text_length&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Average text length: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> characters&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;data_skew&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Data skew factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;memory_constraints&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Memory per sample: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;worker_count&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Optimal workers: </span><span class="si">{</span><span class="n">optimal_workers</span><span class="si">}</span><span class="s2"> (based on </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="si">}</span><span class="s2"> available cores)&quot;</span><span class="p">,</span>
+            <span class="s2">"reasoning"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"modality"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Based on </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">primary_modality</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> modality"</span><span class="p">,</span>
+                <span class="s2">"complexity"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Processing complexity factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">processing_complexity_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="s2">"dataset_size"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Dataset size: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">total_samples</span><span class="si">}</span><span class="s2"> samples"</span><span class="p">,</span>
+                <span class="s2">"text_length"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Average text length: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">avg_text_length</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> characters"</span><span class="p">,</span>
+                <span class="s2">"data_skew"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Data skew factor: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">data_skew_factor</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="s2">"memory_constraints"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Memory per sample: </span><span class="si">{</span><span class="n">characteristics</span><span class="o">.</span><span class="n">memory_per_sample_mb</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">,</span>
+                <span class="s2">"worker_count"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Optimal workers: </span><span class="si">{</span><span class="n">optimal_workers</span><span class="si">}</span><span class="s2"> (based on </span><span class="si">{</span><span class="n">local_resources</span><span class="o">.</span><span class="n">cpu_cores</span><span class="si">}</span><span class="s2"> available cores)"</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;modality_configs&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"modality_configs"</span><span class="p">:</span> <span class="p">{</span>
                 <span class="n">modality</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;default_size&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">default_partition_size</span><span class="p">,</span>
-                    <span class="s2">&quot;max_size&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">max_partition_size</span><span class="p">,</span>
-                    <span class="s2">&quot;max_size_mb&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">max_partition_size_mb</span><span class="p">,</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                    <span class="s2">"default_size"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">default_partition_size</span><span class="p">,</span>
+                    <span class="s2">"max_size"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">max_partition_size</span><span class="p">,</span>
+                    <span class="s2">"max_size_mb"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">max_partition_size_mb</span><span class="p">,</span>
+                    <span class="s2">"description"</span><span class="p">:</span> <span class="n">config</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
                 <span class="p">}</span>
                 <span class="k">for</span> <span class="n">modality</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODALITY_CONFIGS</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">},</span>
@@ -1409,7 +1409,7 @@
 <div class="viewcode-block" id="auto_configure_resources">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.partition_size_optimizer.html#data_juicer.core.executor.partition_size_optimizer.auto_configure_resources">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">auto_configure_resources</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Analyze dataset and return resource configuration recommendations.</span>
 
 <span class="sd">    Does NOT mutate cfg - caller should apply recommendations as needed.</span>
@@ -1421,15 +1421,15 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Dict with recommended resource configuration</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting resource optimization...&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Starting resource optimization..."</span><span class="p">)</span>
     <span class="n">optimizer</span> <span class="o">=</span> <span class="n">PartitionSizeOptimizer</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
     <span class="n">recommendations</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">get_partition_recommendations</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">process_pipeline</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resource optimization completed:&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Recommended partition.size: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">&#39;recommended_partition_size&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Recommended partition.max_size_mb: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">&#39;recommended_max_size_mb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Recommended worker count: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">&#39;recommended_worker_count&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Resource optimization completed:"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Recommended partition.size: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">'recommended_partition_size'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Recommended partition.max_size_mb: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">'recommended_max_size_mb'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Recommended worker count: </span><span class="si">{</span><span class="n">recommendations</span><span class="p">[</span><span class="s1">'recommended_worker_count'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">recommendations</span></div>
 

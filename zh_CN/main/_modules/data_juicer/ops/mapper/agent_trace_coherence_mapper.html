@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.agent_trace_coherence_mapper</span></li>
   </ul>
 </nav>
@@ -516,14 +519,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: session trace coherence on text field (1–5).</span>
+<span class="sd">"""LLM: session trace coherence on text field (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge trajectory-style eval; DJ: unified 1–5, capped excerpt.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/agent_graders/</span>
 <span class="sd">#trajectoryaccuracygrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -534,29 +537,29 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;agent_trace_coherence_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"agent_trace_coherence_mapper"</span>
 
 
 <div class="viewcode-block" id="AgentTraceCoherenceMapper">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.agent_trace_coherence_mapper.html#data_juicer.ops.mapper.AgentTraceCoherenceMapper">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.AgentTraceCoherenceMapper">[文档]</a>
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgentTraceCoherenceMapper</span><span class="p">(</span><span class="n">_DialogQualityLLMMapperBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coherence of the flattened session ``text`` (goal focus, few detours).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Coherence of the flattened session ``text`` (goal focus, few detours)."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_trace_coherence</span>
-    <span class="n">EVAL_KIND</span> <span class="o">=</span> <span class="s2">&quot;agent_trace&quot;</span>
+    <span class="n">EVAL_KIND</span> <span class="o">=</span> <span class="s2">"agent_trace"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;Treat the excerpt as one agent session trace (tool output may appear).</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;5 = tight path clearly serving the user&#39;s goal; 3 = completes task &quot;</span>
-            <span class="s2">&quot;but with redundancy or mild drift; 1 = severe off-topic churn or &quot;</span>
-            <span class="s2">&quot;failure to advance reasonable sub-goals.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;If the excerpt looks **truncated or incomplete**, prefer **4–5** &quot;</span>
-            <span class="s2">&quot;(neutral-high) unless you see **clear** incoherence; say so in &quot;</span>
-            <span class="s2">&quot;`reason`. Do not use 3 only because information is missing.&quot;</span>
+            <span class="s2">"Treat the excerpt as one agent session trace (tool output may appear).</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"5 = tight path clearly serving the user's goal; 3 = completes task "</span>
+            <span class="s2">"but with redundancy or mild drift; 1 = severe off-topic churn or "</span>
+            <span class="s2">"failure to advance reasonable sub-goals.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"If the excerpt looks **truncated or incomplete**, prefer **4–5** "</span>
+            <span class="s2">"(neutral-high) unless you see **clear** incoherence; say so in "</span>
+            <span class="s2">"`reason`. Do not use 3 only because information is missing."</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_user_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

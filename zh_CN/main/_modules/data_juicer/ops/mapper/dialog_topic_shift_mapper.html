@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_topic_shift_mapper</span></li>
   </ul>
 </nav>
@@ -516,14 +519,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: new topic vs stale thread (1–5).</span>
+<span class="sd">"""LLM: new topic vs stale thread (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge topic-shift ideas; DJ: no shift → score vs current query.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/multi_turn/</span>
 <span class="sd">#topicswitchgrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -531,7 +534,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper.dialog_quality_llm_base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_DialogTurnQualityMapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;dialog_topic_shift_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"dialog_topic_shift_mapper"</span>
 
 
 <div class="viewcode-block" id="DialogTopicShiftMapper">
@@ -539,25 +542,25 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">DialogTopicShiftMapper</span><span class="p">(</span><span class="n">_DialogTurnQualityMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Focus on new topic vs clinging to an obsolete thread.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Focus on new topic vs clinging to an obsolete thread."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_topic_shift</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;Step A: From Earlier turns vs the **Current user message**, decide &quot;</span>
-            <span class="s2">&quot;whether the user **clearly changed topic** compared to their &quot;</span>
-            <span class="s2">&quot;immediately preceding user turns.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Step B: If there is **no** clear topic shift, score **only** whether &quot;</span>
-            <span class="s2">&quot;the Assistant reply addresses the current message (3–5 if on-topic &quot;</span>
-            <span class="s2">&quot;and reasonable; 1–2 only if clearly irrelevant). Do **not** say the &quot;</span>
-            <span class="s2">&quot;assistant is &#39;stuck on an old topic&#39; unless the user actually &quot;</span>
-            <span class="s2">&quot;pivoted topics.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;If the user **did** shift topic: score whether the reply pivots to &quot;</span>
-            <span class="s2">&quot;the new ask instead of the obsolete thread.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = wrong focus when a pivot was needed, or clearly off-topic; &quot;</span>
-            <span class="s2">&quot;5 = clean pivot or tight alignment with the current ask.&quot;</span>
+            <span class="s2">"Step A: From Earlier turns vs the **Current user message**, decide "</span>
+            <span class="s2">"whether the user **clearly changed topic** compared to their "</span>
+            <span class="s2">"immediately preceding user turns.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"Step B: If there is **no** clear topic shift, score **only** whether "</span>
+            <span class="s2">"the Assistant reply addresses the current message (3–5 if on-topic "</span>
+            <span class="s2">"and reasonable; 1–2 only if clearly irrelevant). Do **not** say the "</span>
+            <span class="s2">"assistant is 'stuck on an old topic' unless the user actually "</span>
+            <span class="s2">"pivoted topics.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"If the user **did** shift topic: score whether the reply pivots to "</span>
+            <span class="s2">"the new ask instead of the obsolete thread.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = wrong focus when a pivot was needed, or clearly off-topic; "</span>
+            <span class="s2">"5 = clean pivot or tight alignment with the current ask."</span>
         <span class="p">)</span></div>
 
 </pre></div>

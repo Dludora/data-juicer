@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.video_whole_body_pose_estimation_mapper</span></li>
   </ul>
 </nav>
@@ -527,9 +530,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_whole_body_pose_estimation_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_whole_body_pose_estimation_mapper"</span>
 
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="VideoWholeBodyPoseEstimationMapper">
@@ -537,19 +540,19 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoWholeBodyPoseEstimationMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input a video containing people, and use the DWPose</span>
+<span class="w">    </span><span class="sd">"""Input a video containing people, and use the DWPose</span>
 <span class="sd">    model to extract the body, hand, feet, and face keypoints</span>
 <span class="sd">    of the human subjects in the video, i.e., 2D Whole-body</span>
-<span class="sd">    Pose Estimation.&quot;&quot;&quot;</span>
+<span class="sd">    Pose Estimation."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoWholeBodyPoseEstimationMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoWholeBodyPoseEstimationMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">onnx_det_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;yolox_l.onnx&quot;</span><span class="p">,</span>
-        <span class="n">onnx_pose_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;dw-ll_ucoco_384.onnx&quot;</span><span class="p">,</span>
+        <span class="n">onnx_det_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"yolox_l.onnx"</span><span class="p">,</span>
+        <span class="n">onnx_pose_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"dw-ll_ucoco_384.onnx"</span><span class="p">,</span>
         <span class="n">frame_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">pose_estimation_tags</span><span class="p">,</span>
@@ -559,46 +562,46 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
-<span class="sd">        :param onnx_det_model: The path to &#39;yolox_l.onnx&#39;.</span>
-<span class="sd">        :param onnx_pose_model: The path to &#39;dw-ll_ucoco_384.onnx&#39;.</span>
+<span class="sd">        :param onnx_det_model: The path to 'yolox_l.onnx'.</span>
+<span class="sd">        :param onnx_pose_model: The path to 'dw-ll_ucoco_384.onnx'.</span>
 <span class="sd">        :param frame_num: The number of frames to be extracted uniformly from</span>
-<span class="sd">            the video. If it&#39;s 1, only the middle frame will be extracted. If</span>
-<span class="sd">            it&#39;s 2, only the first and the last frames will be extracted. If</span>
-<span class="sd">            it&#39;s larger than 2, in addition to the first and the last frames,</span>
+<span class="sd">            the video. If it's 1, only the middle frame will be extracted. If</span>
+<span class="sd">            it's 2, only the first and the last frames will be extracted. If</span>
+<span class="sd">            it's larger than 2, in addition to the first and the last frames,</span>
 <span class="sd">            other frames will be extracted uniformly within the video duration.</span>
-<span class="sd">            If &quot;duration&quot; &gt; 0, frame_num is the number of frames per segment.</span>
+<span class="sd">            If "duration" &gt; 0, frame_num is the number of frames per segment.</span>
 <span class="sd">        :param duration: The duration of each segment in seconds.</span>
 <span class="sd">            If 0, frames are extracted from the entire video.</span>
 <span class="sd">            If duration &gt; 0, the video is segmented into multiple segments</span>
 <span class="sd">            based on duration, and frames are extracted from each segment.</span>
-<span class="sd">        :param tag_field_name: The field name to store the tags. It&#39;s</span>
-<span class="sd">            &quot;pose_estimation_tags&quot; in default.</span>
+<span class="sd">        :param tag_field_name: The field name to store the tags. It's</span>
+<span class="sd">            "pose_estimation_tags" in default.</span>
 <span class="sd">        :param frame_dir: Output directory to save extracted frames.</span>
 <span class="sd">        :param if_save_visualization: Whether to save visualization results.</span>
 <span class="sd">        :param save_visualization_dir: The path for saving visualization results.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;frame_sampling_method&quot;</span><span class="p">:</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;frame_num&quot;</span><span class="p">:</span> <span class="n">frame_num</span><span class="p">,</span>
-            <span class="s2">&quot;duration&quot;</span><span class="p">:</span> <span class="n">duration</span><span class="p">,</span>
-            <span class="s2">&quot;frame_dir&quot;</span><span class="p">:</span> <span class="n">frame_dir</span><span class="p">,</span>
-            <span class="s2">&quot;frame_key&quot;</span><span class="p">:</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_frames</span><span class="p">,</span>
-            <span class="s2">&quot;num_proc&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Disable multiprocessing to avoid nested process pool issue</span>
-            <span class="s2">&quot;auto_op_parallelism&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Disable auto parallelism to avoid nested process pool issue</span>
+            <span class="s2">"frame_sampling_method"</span><span class="p">:</span> <span class="s2">"uniform"</span><span class="p">,</span>
+            <span class="s2">"frame_num"</span><span class="p">:</span> <span class="n">frame_num</span><span class="p">,</span>
+            <span class="s2">"duration"</span><span class="p">:</span> <span class="n">duration</span><span class="p">,</span>
+            <span class="s2">"frame_dir"</span><span class="p">:</span> <span class="n">frame_dir</span><span class="p">,</span>
+            <span class="s2">"frame_key"</span><span class="p">:</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_frames</span><span class="p">,</span>
+            <span class="s2">"num_proc"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Disable multiprocessing to avoid nested process pool issue</span>
+            <span class="s2">"auto_op_parallelism"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Disable auto parallelism to avoid nested process pool issue</span>
         <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">([{</span><span class="s2">&quot;video_extract_frames_mapper&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span><span class="p">}])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span> <span class="o">=</span> <span class="n">load_ops</span><span class="p">([{</span><span class="s2">"video_extract_frames_mapper"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_extract_frames_mapper_args</span><span class="p">}])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;dwpose&quot;</span><span class="p">,</span> <span class="n">onnx_det_model</span><span class="o">=</span><span class="n">onnx_det_model</span><span class="p">,</span> <span class="n">onnx_pose_model</span><span class="o">=</span><span class="n">onnx_pose_model</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"dwpose"</span><span class="p">,</span> <span class="n">onnx_det_model</span><span class="o">=</span><span class="n">onnx_det_model</span><span class="p">,</span> <span class="n">onnx_pose_model</span><span class="o">=</span><span class="n">onnx_pose_model</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_num</span> <span class="o">=</span> <span class="n">frame_num</span>
@@ -613,7 +616,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoWholeBodyPoseEstimationMapper.process_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -622,7 +625,7 @@
             <span class="k">return</span> <span class="p">[]</span>
 
         <span class="c1"># load videos</span>
-        <span class="n">ds_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="s2">&quot;videos&quot;</span><span class="p">:</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]}]</span>
+        <span class="n">ds_list</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"text"</span><span class="p">:</span> <span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="s2">"videos"</span><span class="p">:</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]}]</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">data_juicer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">ds_list</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fused_ops</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
@@ -643,7 +646,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">frame_dir_for_temp_video</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">frames_root</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_pose_output&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">frames_root</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"_pose_output"</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">frame_dir_for_temp_video</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">frame_dir_for_temp_video</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -658,17 +661,17 @@
             <span class="n">bbox_results_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bbox_results</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_save_visualization</span><span class="p">:</span>
-                <span class="n">plt</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;matplotlib.pyplot&quot;</span><span class="p">)</span>
+                <span class="n">plt</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"matplotlib.pyplot"</span><span class="p">)</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">imsave</span><span class="p">(</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frame_dir_for_temp_video</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;temp_frame_pose_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_frame_id</span><span class="p">)</span><span class="si">}</span><span class="s2">.jpg&quot;</span><span class="p">),</span> <span class="n">draw_pose</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frame_dir_for_temp_video</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"temp_frame_pose_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_frame_id</span><span class="p">)</span><span class="si">}</span><span class="s2">.jpg"</span><span class="p">),</span> <span class="n">draw_pose</span>
                 <span class="p">)</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;body_keypoints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">body_keypoints</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;foot_keypoints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">foot_keypoints</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;faces_keypoints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces_keypoints</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;hands_keypoints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hands_keypoints</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;bbox_results_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bbox_results_list</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"body_keypoints"</span><span class="p">]</span> <span class="o">=</span> <span class="n">body_keypoints</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"foot_keypoints"</span><span class="p">]</span> <span class="o">=</span> <span class="n">foot_keypoints</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"faces_keypoints"</span><span class="p">]</span> <span class="o">=</span> <span class="n">faces_keypoints</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"hands_keypoints"</span><span class="p">]</span> <span class="o">=</span> <span class="n">hands_keypoints</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"bbox_results_list"</span><span class="p">]</span> <span class="o">=</span> <span class="n">bbox_results_list</span>
 
         <span class="k">return</span> <span class="n">sample</span></div>
 </div>

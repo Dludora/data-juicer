@@ -522,24 +522,24 @@
 <span class="c1">#</span>
 <span class="c1"># This tool needs several arguments:</span>
 <span class="c1">#   - positive_datasets: the paths to the positive datasets. It could be a</span>
-<span class="c1">#       string for a single dataset, e.g. &#39;pos.parquet&#39;, or a list of strings</span>
-<span class="c1">#       for several datasets, e.g. &#39;[&quot;pos1.parquet&quot;, &quot;pos2.parquet&quot;]&#39;.</span>
+<span class="c1">#       string for a single dataset, e.g. 'pos.parquet', or a list of strings</span>
+<span class="c1">#       for several datasets, e.g. '["pos1.parquet", "pos2.parquet"]'.</span>
 <span class="c1">#   - negative_datasets: the paths to the negative datasets. It could be a</span>
-<span class="c1">#       string for a single dataset, e.g. &#39;neg.parquet&#39;, or a list of strings</span>
-<span class="c1">#       for several datasets, e.g. &#39;[&quot;neg1.parquet&quot;, &quot;neg2.parquet&quot;]&#39;.</span>
-<span class="c1">#   - output_model_path: the path to store the trained quality classifier. It&#39;s</span>
-<span class="c1">#       &quot;my_quality_model&quot; in default.</span>
-<span class="c1">#   - num_training_samples: number of samples used to train the model. It&#39;s 0</span>
+<span class="c1">#       string for a single dataset, e.g. 'neg.parquet', or a list of strings</span>
+<span class="c1">#       for several datasets, e.g. '["neg1.parquet", "neg2.parquet"]'.</span>
+<span class="c1">#   - output_model_path: the path to store the trained quality classifier. It's</span>
+<span class="c1">#       "my_quality_model" in default.</span>
+<span class="c1">#   - num_training_samples: number of samples used to train the model. It's 0</span>
 <span class="c1">#       in default, which means using all samples in datasets to train.</span>
-<span class="c1">#   - train_test_split_ratio: ratio to split train and test set. It&#39;s 0.8 in</span>
+<span class="c1">#   - train_test_split_ratio: ratio to split train and test set. It's 0.8 in</span>
 <span class="c1">#       default.</span>
-<span class="c1">#   - tokenizer: what tokenizer to use to tokenize texts. It&#39;s None in default,</span>
+<span class="c1">#   - tokenizer: what tokenizer to use to tokenize texts. It's None in default,</span>
 <span class="c1">#       which means using the standard Tokenizer of PySpark. You can use one of</span>
-<span class="c1">#       [&quot;zh.sp.model&quot;, &quot;code.sp.model&quot;] we provided, or you can set it to the</span>
+<span class="c1">#       ["zh.sp.model", "code.sp.model"] we provided, or you can set it to the</span>
 <span class="c1">#       path to your own sentencepiece model.</span>
 <span class="c1">#   - evaluation: whether to evaluate the model after training using test set.</span>
-<span class="c1">#       It&#39;s True in default.</span>
-<span class="c1">#   - text_key: the field key name to hold texts to be classified. It&#39;s &quot;text&quot;</span>
+<span class="c1">#       It's True in default.</span>
+<span class="c1">#   - text_key: the field key name to hold texts to be classified. It's "text"</span>
 <span class="c1">#       in default.</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">fire</span>
@@ -560,37 +560,37 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span>
     <span class="n">positive_datasets</span><span class="p">,</span>
     <span class="n">negative_datasets</span><span class="p">,</span>
-    <span class="n">output_model_path</span><span class="o">=</span><span class="s2">&quot;my_quality_model&quot;</span><span class="p">,</span>
+    <span class="n">output_model_path</span><span class="o">=</span><span class="s2">"my_quality_model"</span><span class="p">,</span>
     <span class="n">num_training_samples</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">train_test_split_ratio</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
     <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">evaluation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+    <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Train a quality classifier using your own pos/neg datasets</span>
 <span class="sd">    :param positive_datasets: the paths to the positive datasets. It could be a</span>
-<span class="sd">        string for a single dataset, e.g. &#39;pos.parquet&#39;, or a list of strings</span>
-<span class="sd">        for several datasets, e.g. &#39;[&quot;pos1.parquet&quot;, &quot;pos2.parquet&quot;]&#39;</span>
+<span class="sd">        string for a single dataset, e.g. 'pos.parquet', or a list of strings</span>
+<span class="sd">        for several datasets, e.g. '["pos1.parquet", "pos2.parquet"]'</span>
 <span class="sd">    :param negative_datasets: the paths to the negative datasets. It could be a</span>
-<span class="sd">        string for a single dataset, e.g. &#39;neg.parquet&#39;, or a list of strings</span>
-<span class="sd">        for several datasets, e.g. &#39;[&quot;neg1.parquet&quot;, &quot;neg2.parquet&quot;]&#39;</span>
+<span class="sd">        string for a single dataset, e.g. 'neg.parquet', or a list of strings</span>
+<span class="sd">        for several datasets, e.g. '["neg1.parquet", "neg2.parquet"]'</span>
 <span class="sd">    :param output_model_path: the path to store the trained quality classifier.</span>
-<span class="sd">        It&#39;s &quot;my_quality_model&quot; in default</span>
+<span class="sd">        It's "my_quality_model" in default</span>
 <span class="sd">    :param num_training_samples: number of samples used to train the model.</span>
-<span class="sd">        It&#39;s 0 in default, which means using all samples in datasets to train</span>
-<span class="sd">    :param train_test_split_ratio: ratio to split train and test set. It&#39;s 0.8</span>
+<span class="sd">        It's 0 in default, which means using all samples in datasets to train</span>
+<span class="sd">    :param train_test_split_ratio: ratio to split train and test set. It's 0.8</span>
 <span class="sd">        in default</span>
-<span class="sd">    :param tokenizer: what tokenizer to use to tokenize texts. It&#39;s None in</span>
+<span class="sd">    :param tokenizer: what tokenizer to use to tokenize texts. It's None in</span>
 <span class="sd">        default, which means using the standard Tokenizer of PySpark. You can</span>
-<span class="sd">        use one of [&quot;zh.sp.model&quot;, &quot;code.sp.model&quot;] we provided, or you can set</span>
+<span class="sd">        use one of ["zh.sp.model", "code.sp.model"] we provided, or you can set</span>
 <span class="sd">        it to the path to your own sentencepiece model</span>
 <span class="sd">    :param evaluation: whether to evaluate the model after training using test</span>
-<span class="sd">        set. It&#39;s True in default</span>
-<span class="sd">    :param text_key: the field key name to hold texts to be classified. It&#39;s</span>
-<span class="sd">        &quot;text&quot; in default</span>
+<span class="sd">        set. It's True in default</span>
+<span class="sd">    :param text_key: the field key name to hold texts to be classified. It's</span>
+<span class="sd">        "text" in default</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># convert a single dataset to a dataset list</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">positive_datasets</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">positive_datasets</span> <span class="o">=</span> <span class="p">[</span><span class="n">positive_datasets</span><span class="p">]</span>
@@ -605,12 +605,12 @@
     <span class="n">neg</span> <span class="o">=</span> <span class="n">load_datasets</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">negative_datasets</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="n">text_key</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">only_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">neg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Empty dataset in positive/negative dataset list...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Empty dataset in positive/negative dataset list..."</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># sample a part of positive/negative samples to train</span>
     <span class="k">if</span> <span class="n">num_training_samples</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only use </span><span class="si">{</span><span class="n">num_training_samples</span><span class="si">}</span><span class="s2"> pairs samples to train.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Only use </span><span class="si">{</span><span class="n">num_training_samples</span><span class="si">}</span><span class="s2"> pairs samples to train."</span><span class="p">)</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">num_training_samples</span><span class="p">)</span>
         <span class="n">neg</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">neg</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">num_training_samples</span><span class="p">)</span>
 
@@ -618,7 +618,7 @@
     <span class="n">ds</span> <span class="o">=</span> <span class="n">pos</span><span class="o">.</span><span class="n">unionAll</span><span class="p">(</span><span class="n">neg</span><span class="p">)</span>
     <span class="c1"># split the merged dataset into training and test set</span>
     <span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="n">train_test_split_ratio</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">train_test_split_ratio</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of training samples: </span><span class="si">{</span><span class="n">train_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">, &quot;</span> <span class="sa">f</span><span class="s2">&quot;test samples: </span><span class="si">{</span><span class="n">test_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of training samples: </span><span class="si">{</span><span class="n">train_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">, "</span> <span class="sa">f</span><span class="s2">"test samples: </span><span class="si">{</span><span class="n">test_set</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># start the ML pipeline to train the classifier</span>
     <span class="n">train</span><span class="p">(</span><span class="n">output_model_path</span><span class="p">,</span> <span class="n">train_set</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
@@ -629,7 +629,7 @@
 
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">fire</span><span class="o">.</span><span class="n">Fire</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
 

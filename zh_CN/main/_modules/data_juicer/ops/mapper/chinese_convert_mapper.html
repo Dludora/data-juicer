@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.chinese_convert_mapper</span></li>
   </ul>
 </nav>
@@ -517,9 +520,9 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">opencc</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;opencc&quot;</span><span class="p">)</span>
+<span class="n">opencc</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"opencc"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;chinese_convert_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"chinese_convert_mapper"</span>
 
 <span class="n">OPENCC_CONVERTER</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -527,7 +530,7 @@
 <div class="viewcode-block" id="prepare_converter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.chinese_convert_mapper.html#data_juicer.ops.mapper.prepare_converter">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">prepare_converter</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
-    <span class="n">mode_path</span> <span class="o">=</span> <span class="n">mode</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+    <span class="n">mode_path</span> <span class="o">=</span> <span class="n">mode</span> <span class="o">+</span> <span class="s2">".json"</span>
     <span class="k">global</span> <span class="n">OPENCC_CONVERTER</span>
     <span class="k">if</span> <span class="n">OPENCC_CONVERTER</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># empty converter</span>
@@ -543,23 +546,23 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ChineseConvertMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChineseConvertMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to convert Chinese text between Traditional, Simplified, and Japanese Kanji.</span>
+<span class="w">    </span><span class="sd">"""Mapper to convert Chinese text between Traditional, Simplified, and Japanese Kanji.</span>
 
 <span class="sd">    This operator converts Chinese text based on the specified mode. It supports conversions</span>
 <span class="sd">    between Simplified Chinese, Traditional Chinese (including Taiwan and Hong Kong</span>
 <span class="sd">    variants), and Japanese Kanji. The conversion is performed using a pre-defined set of</span>
-<span class="sd">    rules. The available modes include &#39;s2t&#39; for Simplified to Traditional, &#39;t2s&#39; for</span>
-<span class="sd">    Traditional to Simplified, and other specific variants like &#39;s2tw&#39;, &#39;tw2s&#39;, &#39;s2hk&#39;,</span>
-<span class="sd">    &#39;hk2s&#39;, &#39;s2twp&#39;, &#39;tw2sp&#39;, &#39;t2tw&#39;, &#39;tw2t&#39;, &#39;hk2t&#39;, &#39;t2hk&#39;, &#39;t2jp&#39;, and &#39;jp2t&#39;. The</span>
+<span class="sd">    rules. The available modes include 's2t' for Simplified to Traditional, 't2s' for</span>
+<span class="sd">    Traditional to Simplified, and other specific variants like 's2tw', 'tw2s', 's2hk',</span>
+<span class="sd">    'hk2s', 's2twp', 'tw2sp', 't2tw', 'tw2t', 'hk2t', 't2hk', 't2jp', and 'jp2t'. The</span>
 <span class="sd">    operator processes text in batches and applies the conversion to the specified text key</span>
-<span class="sd">    in the samples.&quot;&quot;&quot;</span>
+<span class="sd">    in the samples."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="ChineseConvertMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ChineseConvertMapper.__init__">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;s2t&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"s2t"</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param mode: Choose the mode to convert Chinese:</span>
@@ -602,25 +605,25 @@
 
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">mode_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s2">&quot;s2t&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;t2s&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;s2tw&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tw2s&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;s2hk&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;hk2s&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;s2twp&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tw2sp&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;t2tw&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;tw2t&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;hk2t&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;t2hk&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;t2jp&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;jp2t&quot;</span><span class="p">,</span>
+            <span class="s2">"s2t"</span><span class="p">,</span>
+            <span class="s2">"t2s"</span><span class="p">,</span>
+            <span class="s2">"s2tw"</span><span class="p">,</span>
+            <span class="s2">"tw2s"</span><span class="p">,</span>
+            <span class="s2">"s2hk"</span><span class="p">,</span>
+            <span class="s2">"hk2s"</span><span class="p">,</span>
+            <span class="s2">"s2twp"</span><span class="p">,</span>
+            <span class="s2">"tw2sp"</span><span class="p">,</span>
+            <span class="s2">"t2tw"</span><span class="p">,</span>
+            <span class="s2">"tw2t"</span><span class="p">,</span>
+            <span class="s2">"hk2t"</span><span class="p">,</span>
+            <span class="s2">"t2hk"</span><span class="p">,</span>
+            <span class="s2">"t2jp"</span><span class="p">,</span>
+            <span class="s2">"jp2t"</span><span class="p">,</span>
         <span class="p">]</span>
-        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">mode_list</span><span class="p">,</span> <span class="s2">&quot;Please make sure mode is one of </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode_list</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">mode_list</span><span class="p">,</span> <span class="s2">"Please make sure mode is one of </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode_list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="n">prepare_converter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span></div>
 

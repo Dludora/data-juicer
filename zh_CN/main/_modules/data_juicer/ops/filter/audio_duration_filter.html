@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.audio_duration_filter</span></li>
   </ul>
 </nav>
@@ -524,9 +527,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_AUDIOS</span>
 
-<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;librosa&quot;</span><span class="p">)</span>
+<span class="n">librosa</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"librosa"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;audio_duration_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"audio_duration_filter"</span>
 
 
 <div class="viewcode-block" id="AudioDurationFilter">
@@ -534,50 +537,50 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_AUDIOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AudioDurationFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Keep data samples whose audio durations are within a specified range.</span>
+<span class="w">    </span><span class="sd">"""Keep data samples whose audio durations are within a specified range.</span>
 
 <span class="sd">    This operator filters data samples based on the duration of their audio files. It keeps</span>
 <span class="sd">    samples where the audio duration is between a minimum and maximum value, in seconds. The</span>
-<span class="sd">    operator supports two strategies for keeping samples: &#39;any&#39; (keep if any audio meets the</span>
-<span class="sd">    condition) or &#39;all&#39; (keep only if all audios meet the condition). The audio duration is</span>
+<span class="sd">    operator supports two strategies for keeping samples: 'any' (keep if any audio meets the</span>
+<span class="sd">    condition) or 'all' (keep only if all audios meet the condition). The audio duration is</span>
 <span class="sd">    computed using the `librosa` library. If the audio duration has already been computed,</span>
-<span class="sd">    it is retrieved from the sample&#39;s stats under the key &#39;audio_duration&#39;. If no audio is</span>
-<span class="sd">    present in the sample, an empty array is stored in the stats.&quot;&quot;&quot;</span>
+<span class="sd">    it is retrieved from the sample's stats under the key 'audio_duration'. If no audio is</span>
+<span class="sd">    present in the sample, an empty array is stored in the stats."""</span>
 
 <div class="viewcode-block" id="AudioDurationFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.audio_duration_filter.html#data_juicer.ops.filter.AudioDurationFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">min_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">min_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span> <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_duration: The min audio duration to keep samples in seconds.</span>
-<span class="sd">            It&#39;s 0 by default.</span>
+<span class="sd">            It's 0 by default.</span>
 <span class="sd">        :param max_duration: The max audio duration to keep samples in seconds.</span>
-<span class="sd">            It&#39;s sys.maxsize by default.</span>
-<span class="sd">        :param any_or_all: keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all audios. &#39;any&#39;: keep this sample if any audios meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all audios meet the</span>
+<span class="sd">            It's sys.maxsize by default.</span>
+<span class="sd">        :param any_or_all: keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all audios. 'any': keep this sample if any audios meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all audios meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s2">&quot;resampy&quot;</span><span class="p">,</span> <span class="s2">&quot;samplerate&quot;</span><span class="p">,</span> <span class="s2">&quot;torchcodec&quot;</span><span class="p">])</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s2">"resampy"</span><span class="p">,</span> <span class="s2">"samplerate"</span><span class="p">,</span> <span class="s2">"torchcodec"</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">min_duration</span> <span class="o">=</span> <span class="n">min_duration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_duration</span> <span class="o">=</span> <span class="n">max_duration</span>
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span></div>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span></div>
 
 
 <div class="viewcode-block" id="AudioDurationFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.audio_duration_filter.html#data_juicer.ops.filter.AudioDurationFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">audio_duration</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 

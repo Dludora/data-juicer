@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.video_split_by_duration_mapper</span></li>
   </ul>
 </nav>
@@ -514,9 +517,12 @@
                   
   <h1>data_juicer.ops.mapper.video_split_by_duration_mapper 源代码</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loguru</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_suffix_to_filename</span><span class="p">,</span> <span class="n">transfer_filename</span>
@@ -537,7 +543,7 @@
 
 
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_split_by_duration_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_split_by_duration_mapper"</span>
 
 
 <div class="viewcode-block" id="VideoSplitByDurationMapper">
@@ -545,7 +551,7 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoSplitByDurationMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Splits videos into segments based on a specified duration.</span>
+<span class="w">    </span><span class="sd">"""Splits videos into segments based on a specified duration.</span>
 
 <span class="sd">    This operator splits each video in the dataset into smaller segments, each with a fixed</span>
 <span class="sd">    duration. The last segment is discarded if its duration is less than the specified</span>
@@ -557,9 +563,9 @@
 <span class="sd">    - Splits videos into segments of a specified duration.</span>
 <span class="sd">    - Discards the last segment if it is shorter than the minimum allowed duration.</span>
 <span class="sd">    - Keeps or removes the original sample based on the `keep_original_sample` parameter.</span>
-<span class="sd">    - Saves the generated video files in the specified directory or the input file&#39;s</span>
+<span class="sd">    - Saves the generated video files in the specified directory or the input file's</span>
 <span class="sd">      directory.</span>
-<span class="sd">    - Uses the duration in seconds to determine the segment boundaries.&quot;&quot;&quot;</span>
+<span class="sd">    - Uses the duration in seconds to determine the segment boundaries."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -568,70 +574,132 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">split_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">overlap_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">min_last_split_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">keep_original_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">save_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">video_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span>
-        <span class="n">ffmpeg_extra_args</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">video_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ffmpeg"</span><span class="p">,</span>
+        <span class="n">ffmpeg_extra_args</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">output_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"path"</span><span class="p">,</span>
+        <span class="n">save_field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">legacy_split_by_text_token</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param split_duration: duration of each video split in seconds.</span>
+<span class="sd">        :param overlap_duration: overlap duration in seconds between</span>
+<span class="sd">            consecutive splits. For example, with split_duration=20 and</span>
+<span class="sd">            overlap_duration=5, clips will be [0-20, 15-35, 30-50, ...].</span>
+<span class="sd">            Must be non-negative and less than split_duration. Default: 0</span>
+<span class="sd">            (no overlap).</span>
 <span class="sd">        :param min_last_split_duration: The minimum allowable duration in</span>
 <span class="sd">            seconds for the last video split. If the duration of the last</span>
 <span class="sd">            split is less than this value, it will be discarded.</span>
 <span class="sd">        :param keep_original_sample: whether to keep the original sample. If</span>
-<span class="sd">            it&#39;s set to False, there will be only cut sample in the</span>
-<span class="sd">            final datasets and the original sample will be removed. It&#39;s True</span>
+<span class="sd">            it's set to False, there will be only cut sample in the</span>
+<span class="sd">            final datasets and the original sample will be removed. It's True</span>
 <span class="sd">            in default.</span>
 <span class="sd">        :param save_dir: The directory where generated video files will be stored.</span>
 <span class="sd">            If not specified, outputs will be saved in the same directory as their corresponding input files.</span>
 <span class="sd">            This path can alternatively be defined by setting the `DJ_PRODUCED_DATA_DIR` environment variable.</span>
 <span class="sd">        :param video_backend: video backend, can be `ffmpeg`, `av`.</span>
 <span class="sd">        :param ffmpeg_extra_args: Extra ffmpeg args for splitting video, only valid when `video_backend` is `ffmpeg`.</span>
+<span class="sd">        :param output_format: The output format of the videos.</span>
+<span class="sd">            Supported formats are: ["path", "bytes"].</span>
+<span class="sd">            If format is "path", the output is a list of lists, where each inner</span>
+<span class="sd">            list contains the path of the split videos.</span>
+<span class="sd">            If format is "bytes", the output is a list of lists, where each inner</span>
+<span class="sd">            list contains the bytes of the split videos.</span>
+<span class="sd">        :param save_field: The new field name to save generated video files path.</span>
+<span class="sd">            If not specified, will overwrite the original video field.</span>
+<span class="sd">        :param legacy_split_by_text_token: Whether to split by special tokens (e.g. &lt;__dj__video&gt;)</span>
+<span class="sd">            in the text field and read videos in order, or use the 'videos' or 'frames' field directly.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;save_dir&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"save_dir"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span> <span class="o">=</span> <span class="n">split_duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlap_duration</span> <span class="o">=</span> <span class="n">overlap_duration</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlap_duration</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"overlap_duration must be &gt;= 0, got </span><span class="si">{</span><span class="n">overlap_duration</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlap_duration</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span><span class="p">,</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"overlap_duration (</span><span class="si">{</span><span class="n">overlap_duration</span><span class="si">}</span><span class="s2">) must be less than "</span> <span class="sa">f</span><span class="s2">"split_duration (</span><span class="si">{</span><span class="n">split_duration</span><span class="si">}</span><span class="s2">)"</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_last_split_duration</span> <span class="o">=</span> <span class="n">min_last_split_duration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_original_sample</span> <span class="o">=</span> <span class="n">keep_original_sample</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_args</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="o">=</span> <span class="n">save_dir</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">=</span> <span class="n">video_backend</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;av&quot;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span> <span class="o">=</span> <span class="n">ffmpeg_extra_args</span></div>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"ffmpeg"</span><span class="p">,</span> <span class="s2">"av"</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span> <span class="o">=</span> <span class="n">ffmpeg_extra_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span> <span class="o">=</span> <span class="n">output_format</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">"path"</span><span class="p">,</span>
+            <span class="s2">"bytes"</span><span class="p">,</span>
+        <span class="p">],</span> <span class="sa">f</span><span class="s2">"output_format '</span><span class="si">{</span><span class="n">output_format</span><span class="si">}</span><span class="s2">' is not supported. Can only be one of ['path', 'bytes']."</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_field</span> <span class="o">=</span> <span class="n">save_field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">legacy_split_by_text_token</span> <span class="o">=</span> <span class="n">legacy_split_by_text_token</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">legacy_split_by_text_token</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">"`legacy_split_by_text_token` is set to true, "</span>
+                <span class="s2">"spliting the text field by special tokens "</span>
+                <span class="s2">"(e.g. &lt;__dj__video&gt;) to read videos in order. "</span>
+                <span class="s2">"This behavior will be deprecated in future versions. "</span>
+                <span class="s2">"Please set `legacy_split_by_text_token` to False, "</span>
+                <span class="s1">'and use the "videos" or "frames" field directly.'</span>
+            <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="VideoSplitByDurationMapper.split_videos_by_duration">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoSplitByDurationMapper.split_videos_by_duration">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">split_videos_by_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">video_key</span><span class="p">,</span> <span class="n">container</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">split_videos_by_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">video_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">video_duration</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">duration</span>
-        <span class="n">timestamps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">video_duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">video_duration</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">video_key</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">video_key</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># Step size: split_duration - overlap_duration</span>
+        <span class="c1"># e.g. split=20, overlap=5 → step=15 → starts=[0, 15, 30, ...]</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">overlap_duration</span>
+        <span class="n">start_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">video_duration</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">split_video_keys</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">unique_video_key</span> <span class="o">=</span> <span class="n">transfer_filename</span><span class="p">(</span><span class="n">video_key</span><span class="p">,</span> <span class="n">OP_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">==</span> <span class="s2">&quot;ffmpeg&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span><span class="p">:</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ffmpeg_extra_args&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">video_key</span><span class="p">:</span>
+            <span class="n">unique_video_key</span> <span class="o">=</span> <span class="n">transfer_filename</span><span class="p">(</span><span class="n">video_key</span><span class="p">,</span> <span class="n">OP_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unique_video_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="si">}</span><span class="s2">.mp4"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">==</span> <span class="s2">"ffmpeg"</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"ffmpeg_extra_args"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffmpeg_extra_args</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)):</span>
-            <span class="n">split_video_key</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">unique_video_key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">extract_clip</span><span class="p">(</span><span class="n">timestamps</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">timestamps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">split_video_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="n">split_video_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split_video_key</span><span class="p">)</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="k">if</span> <span class="n">video_duration</span> <span class="o">-</span> <span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_last_split_duration</span><span class="p">:</span>
-            <span class="n">split_video_key</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">unique_video_key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">start_times</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_duration</span>
 
-            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">extract_clip</span><span class="p">(</span><span class="n">timestamps</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">split_video_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-                <span class="n">split_video_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split_video_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;=</span> <span class="n">video_duration</span><span class="p">:</span>
+                <span class="c1"># Last segment: check minimum duration</span>
+                <span class="n">remaining</span> <span class="o">=</span> <span class="n">video_duration</span> <span class="o">-</span> <span class="n">start</span>
+                <span class="k">if</span> <span class="n">remaining</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_last_split_duration</span><span class="p">:</span>
+                    <span class="n">split_video_key</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">unique_video_key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">extract_clip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">split_video_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                        <span class="n">split_video_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split_video_key</span><span class="p">)</span>
+                        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">split_video_key</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">unique_video_key</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">extract_clip</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">split_video_key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    <span class="n">split_video_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split_video_key</span><span class="p">)</span>
+                    <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
         <span class="k">return</span> <span class="n">split_video_keys</span></div>
 
 
@@ -641,54 +709,85 @@
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">return</span> <span class="p">[]</span>
 
+        <span class="n">is_video_path</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]:</span>
-            <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">is_video_path</span><span class="p">:</span>
+                <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span>
 
         <span class="c1"># the split results</span>
         <span class="n">split_sample</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-        <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># load all video(s)</span>
-        <span class="n">loaded_video_keys</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span>
+        <span class="n">loaded_videos</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span>
         <span class="n">videos</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">loaded_video_key</span> <span class="ow">in</span> <span class="n">loaded_video_keys</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">loaded_video_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">video_idx</span><span class="p">,</span> <span class="n">loaded_video</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loaded_videos</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">video_idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
                 <span class="c1"># avoid loading the same videos</span>
-                <span class="n">video</span> <span class="o">=</span> <span class="n">create_video_reader</span><span class="p">(</span><span class="n">loaded_video_key</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span><span class="p">)</span>
-                <span class="n">videos</span><span class="p">[</span><span class="n">loaded_video_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">video</span>
+                <span class="n">video</span> <span class="o">=</span> <span class="n">create_video_reader</span><span class="p">(</span><span class="n">loaded_video</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span><span class="p">)</span>
+                <span class="n">videos</span><span class="p">[</span><span class="n">video_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">video</span>
 
         <span class="n">split_video_keys</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># split each video chunk by chunk</span>
-        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="p">):</span>
-            <span class="c1"># skip empty chunks or contents after the last eoc token</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-                <span class="k">continue</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">video_count</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">)</span>
-                <span class="n">place_holders</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">video_key</span> <span class="ow">in</span> <span class="n">loaded_video_keys</span><span class="p">[</span><span class="n">offset</span> <span class="p">:</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">video_count</span><span class="p">]:</span>
-                    <span class="n">video</span> <span class="o">=</span> <span class="n">videos</span><span class="p">[</span><span class="n">video_key</span><span class="p">]</span>
-                    <span class="n">new_video_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_videos_by_duration</span><span class="p">(</span><span class="n">video_key</span><span class="p">,</span> <span class="n">video</span><span class="p">)</span>
-                    <span class="n">video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                    <span class="n">split_video_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">)</span>
-                    <span class="n">place_holders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">))</span>
-                    <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">video_key</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">))</span>
 
-                <span class="c1"># insert the generated text according to given mode</span>
-                <span class="n">replacer_function</span> <span class="o">=</span> <span class="n">create_replacer</span><span class="p">(</span><span class="n">place_holders</span><span class="p">)</span>
-                <span class="n">new_split_text_per_chunk</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="n">replacer_function</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
-                <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_split_text_per_chunk</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: E501</span>
-                <span class="n">offset</span> <span class="o">+=</span> <span class="n">video_count</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">legacy_split_by_text_token</span><span class="p">:</span>
+            <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># split each video chunk by chunk</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="p">):</span>
+                <span class="c1"># skip empty chunks or contents after the last eoc token</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">video_count</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">)</span>
+                    <span class="n">place_holders</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">video_count</span><span class="p">):</span>
+                        <span class="n">video</span> <span class="o">=</span> <span class="n">videos</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">is_video_path</span><span class="p">:</span>
+                            <span class="n">video_path</span> <span class="o">=</span> <span class="n">loaded_videos</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                            <span class="n">new_video_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_videos_by_duration</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">video_path</span><span class="p">)</span>
+                            <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">video_path</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">new_video_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_videos_by_duration</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                            <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">)</span>
+                        <span class="n">video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="n">split_video_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">)</span>
+                        <span class="n">place_holders</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">))</span>
 
-        <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">split_video_keys</span>
+                    <span class="c1"># insert the generated text according to given mode</span>
+                    <span class="n">replacer_function</span> <span class="o">=</span> <span class="n">create_replacer</span><span class="p">(</span><span class="n">place_holders</span><span class="p">)</span>
+                    <span class="n">new_split_text_per_chunk</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="n">replacer_function</span><span class="p">,</span> <span class="n">chunk</span><span class="p">)</span>
+                    <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">new_split_text_per_chunk</span><span class="si">}{</span><span class="n">SpecialTokens</span><span class="o">.</span><span class="n">eoc</span><span class="si">}</span><span class="s2">"</span>  <span class="c1"># noqa: E501</span>
+                    <span class="n">offset</span> <span class="o">+=</span> <span class="n">video_count</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: handle the text field update</span>
+            <span class="k">for</span> <span class="n">video_idx</span><span class="p">,</span> <span class="n">video</span> <span class="ow">in</span> <span class="n">videos</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">is_video_path</span><span class="p">:</span>
+                    <span class="n">video_path</span> <span class="o">=</span> <span class="n">loaded_videos</span><span class="p">[</span><span class="n">video_idx</span><span class="p">]</span>
+                    <span class="n">new_video_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_videos_by_duration</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="n">video_path</span><span class="p">)</span>
+                    <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">video_path</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_video_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_videos_by_duration</span><span class="p">(</span><span class="n">video</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">split_sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">source_file</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">)</span>
+                <span class="n">video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">split_video_keys</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_video_keys</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span> <span class="o">==</span> <span class="s2">"bytes"</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.mm_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_file_byte</span>
+
+            <span class="n">split_videos</span> <span class="o">=</span> <span class="p">[</span><span class="n">load_file_byte</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">split_video_keys</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">split_videos</span> <span class="o">=</span> <span class="n">split_video_keys</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="p">:</span>
+            <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">split_videos</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">split_sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">split_videos</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">split_sample</span><span class="p">]</span>
 
 <div class="viewcode-block" id="VideoSplitByDurationMapper.process_batched">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoSplitByDurationMapper.process_batched">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
-        <span class="c1"># reconstruct samples from &quot;dict of lists&quot; to &quot;list of dicts&quot;</span>
+        <span class="c1"># reconstruct samples from "dict of lists" to "list of dicts"</span>
         <span class="n">reconstructed_samples</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">])):</span>
             <span class="n">reconstructed_samples</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">samples</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">})</span>
@@ -700,7 +799,7 @@
             <span class="n">generated_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_single_sample</span><span class="p">(</span><span class="n">ori_sample</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generated_samples</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">samples_after_split</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">generated_samples</span><span class="p">)</span>
-        <span class="c1"># reconstruct samples from &quot;list of dicts&quot; to &quot;dict of lists&quot;</span>
+        <span class="c1"># reconstruct samples from "list of dicts" to "dict of lists"</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="n">samples_after_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">res_samples</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>

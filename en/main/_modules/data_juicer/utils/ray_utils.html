@@ -522,7 +522,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.mm_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPECIAL_TOKEN_ENV_PREFIX</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 <span class="n">_RAY_NODES_INFO</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -530,7 +530,7 @@
 <div class="viewcode-block" id="is_ray_mode">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.is_ray_mode">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_ray_mode</span><span class="p">():</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">return</span> <span class="kc">False</span></div>
@@ -544,18 +544,18 @@
         <span class="k">return</span>
 
     <span class="k">if</span> <span class="n">cfg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ray_address</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No ray config provided, using default ray address &#39;auto&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">ray_address</span> <span class="o">=</span> <span class="s2">"auto"</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"No ray config provided, using default ray address 'auto'."</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ray_address</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">ray_address</span>
 
     <span class="c1"># collect ray envs</span>
-    <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)}</span>
+    <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">RAY_JOB_ENV_VAR</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">)}</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">SPECIAL_TOKEN_ENV_PREFIX</span><span class="p">):</span>
             <span class="n">env_vars</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
 
-    <span class="n">custom_operator_paths</span> <span class="o">=</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;custom_operator_paths&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">cfg</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">custom_operator_paths</span> <span class="o">=</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"custom_operator_paths"</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">cfg</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="n">ray</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
         <span class="n">ray_address</span><span class="p">,</span>
@@ -599,11 +599,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">gpus_memory</span><span class="p">,</span> <span class="n">free_gpus_memory</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
             <span class="n">nvidia_smi_output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
-                <span class="p">[</span><span class="s2">&quot;nvidia-smi&quot;</span><span class="p">,</span> <span class="s2">&quot;--query-gpu=memory.free,memory.total&quot;</span><span class="p">,</span> <span class="s2">&quot;--format=csv,noheader,nounits&quot;</span><span class="p">]</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+                <span class="p">[</span><span class="s2">"nvidia-smi"</span><span class="p">,</span> <span class="s2">"--query-gpu=memory.free,memory.total"</span><span class="p">,</span> <span class="s2">"--format=csv,noheader,nounits"</span><span class="p">]</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">):</span>
-                <span class="n">free_mem_str</span><span class="p">,</span> <span class="n">total_mem_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">nvidia_smi_output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">):</span>
+                <span class="n">free_mem_str</span><span class="p">,</span> <span class="n">total_mem_str</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">", "</span><span class="p">)</span>
                 <span class="n">free_gpus_memory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">free_mem_str</span><span class="p">))</span>
                 <span class="n">gpus_memory</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">total_mem_str</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -611,25 +611,25 @@
             <span class="n">gpus_memory</span><span class="p">,</span> <span class="n">free_gpus_memory</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;free_memory&quot;</span><span class="p">:</span> <span class="n">free_mem</span><span class="p">,</span>  <span class="c1"># MB</span>
-            <span class="s2">&quot;cpu_count&quot;</span><span class="p">:</span> <span class="n">cpu_count</span><span class="p">,</span>
-            <span class="s2">&quot;gpu_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">free_gpus_memory</span><span class="p">),</span>
-            <span class="s2">&quot;gpus_memory&quot;</span><span class="p">:</span> <span class="n">gpus_memory</span><span class="p">,</span>
-            <span class="s2">&quot;free_gpus_memory&quot;</span><span class="p">:</span> <span class="n">free_gpus_memory</span><span class="p">,</span>  <span class="c1"># MB</span>
+            <span class="s2">"free_memory"</span><span class="p">:</span> <span class="n">free_mem</span><span class="p">,</span>  <span class="c1"># MB</span>
+            <span class="s2">"cpu_count"</span><span class="p">:</span> <span class="n">cpu_count</span><span class="p">,</span>
+            <span class="s2">"gpu_count"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">free_gpus_memory</span><span class="p">),</span>
+            <span class="s2">"gpus_memory"</span><span class="p">:</span> <span class="n">gpus_memory</span><span class="p">,</span>
+            <span class="s2">"free_gpus_memory"</span><span class="p">:</span> <span class="n">free_gpus_memory</span><span class="p">,</span>  <span class="c1"># MB</span>
         <span class="p">}</span>
 
     <span class="n">initialize_ray</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
 
     <span class="n">nodes</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ray nodes:</span><span class="se">\n</span><span class="si">{</span><span class="n">nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ray nodes:</span><span class="se">\n</span><span class="si">{</span><span class="n">nodes</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-    <span class="n">alive_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;Alive&quot;</span><span class="p">]]</span>
+    <span class="n">alive_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">node</span><span class="p">[</span><span class="s2">"Alive"</span><span class="p">]]</span>
     <span class="c1"># skip head node</span>
-    <span class="n">worker_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">alive_nodes</span> <span class="k">if</span> <span class="s2">&quot;head&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;NodeManagerHostname&quot;</span><span class="p">]]</span>
+    <span class="n">worker_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">alive_nodes</span> <span class="k">if</span> <span class="s2">"head"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">"NodeManagerHostname"</span><span class="p">]]</span>
 
     <span class="n">futures</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">worker_nodes</span><span class="p">:</span>
-        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;NodeID&quot;</span><span class="p">]</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">"NodeID"</span><span class="p">]</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">ray.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">scheduling_strategies</span>
 
         <span class="n">strategy</span> <span class="o">=</span> <span class="n">scheduling_strategies</span><span class="o">.</span><span class="n">NodeAffinitySchedulingStrategy</span><span class="p">(</span><span class="n">node_id</span><span class="o">=</span><span class="n">node_id</span><span class="p">,</span> <span class="n">soft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -640,10 +640,10 @@
 
     <span class="n">_RAY_NODES_INFO</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">alive_nodes</span><span class="p">,</span> <span class="n">results</span><span class="p">)):</span>
-        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;NodeID&quot;</span><span class="p">]</span>
+        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s2">"NodeID"</span><span class="p">]</span>
         <span class="n">_RAY_NODES_INFO</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">info</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ray cluster info:</span><span class="se">\n</span><span class="si">{</span><span class="n">_RAY_NODES_INFO</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ray cluster info:</span><span class="se">\n</span><span class="si">{</span><span class="n">_RAY_NODES_INFO</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">_RAY_NODES_INFO</span></div>
 
@@ -653,7 +653,7 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.ray_cpu_count">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ray_cpu_count</span><span class="p">():</span>
     <span class="n">cluster_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span>
-    <span class="n">available_cpu</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">available_cpu</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"CPU"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">available_cpu</span></div>
 
 
@@ -662,7 +662,7 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.ray_gpu_count">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ray_gpu_count</span><span class="p">():</span>
     <span class="n">cluster_resources</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span>
-    <span class="n">available_gpu</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;GPU&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">available_gpu</span> <span class="o">=</span> <span class="n">cluster_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"GPU"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">available_gpu</span></div>
 
 
@@ -670,12 +670,12 @@
 <div class="viewcode-block" id="ray_available_memories">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.ray_available_memories">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ray_available_memories</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Available memory for each alive node in MB.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Available memory for each alive node in MB."""</span>
     <span class="n">ray_nodes_info</span> <span class="o">=</span> <span class="n">get_ray_nodes_info</span><span class="p">()</span>
 
     <span class="n">available_mems</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">nodeid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">ray_nodes_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">available_mems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;free_memory&quot;</span><span class="p">])</span>
+        <span class="n">available_mems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"free_memory"</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">available_mems</span></div>
 
@@ -684,12 +684,12 @@
 <div class="viewcode-block" id="ray_available_gpu_memories">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.ray_available_gpu_memories">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ray_available_gpu_memories</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Available gpu memory of each gpu card for each alive node in MB.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Available gpu memory of each gpu card for each alive node in MB."""</span>
     <span class="n">ray_nodes_info</span> <span class="o">=</span> <span class="n">get_ray_nodes_info</span><span class="p">()</span>
 
     <span class="n">available_gpu_mems</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">nodeid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">ray_nodes_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">available_gpu_mems</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;free_gpus_memory&quot;</span><span class="p">])</span>
+        <span class="n">available_gpu_mems</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"free_gpus_memory"</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">available_gpu_mems</span></div>
 
@@ -698,12 +698,12 @@
 <div class="viewcode-block" id="ray_gpu_memories">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.ray_utils.html#data_juicer.utils.ray_utils.ray_gpu_memories">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">ray_gpu_memories</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Total gpu memory of each gpu card for each alive node in MB.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Total gpu memory of each gpu card for each alive node in MB."""</span>
     <span class="n">ray_nodes_info</span> <span class="o">=</span> <span class="n">get_ray_nodes_info</span><span class="p">()</span>
 
     <span class="n">gpu_mems</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">nodeid</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">ray_nodes_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">gpu_mems</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;gpus_memory&quot;</span><span class="p">])</span>
+        <span class="n">gpu_mems</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s2">"gpus_memory"</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">gpu_mems</span></div>
 

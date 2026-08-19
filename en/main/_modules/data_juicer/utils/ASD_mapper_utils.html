@@ -1,0 +1,1437 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>data_juicer.utils.ASD_mapper_utils &#8212; Data Juicer</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=34d13042" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=8a448e45"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/data_juicer/utils/ASD_mapper_utils';</script>
+    <script src="../../../_static/sidebar.js?v=3fc1065c"></script>
+    <script src="../../../_static/switcher-mobile.js?v=07875724"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="icon" href="../../../_static/icon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search docs..."
+         aria-label="Search docs..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/icon.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/icon.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Data Juicer</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../../en/main/_modules/data_juicer/utils/ASD_mapper_utils.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../../zh_CN/main/_modules/data_juicer/utils/ASD_mapper_utils_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../../main/_modules/data_juicer/utils/ASD_mapper_utils.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../../en/main/_modules/data_juicer/utils/ASD_mapper_utils.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../../zh_CN/main/_modules/data_juicer/utils/ASD_mapper_utils_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../../main/_modules/data_juicer/utils/ASD_mapper_utils.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.utils.ASD_mapper_utils</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for data_juicer.utils.ASD_mapper_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
+
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
+<span class="n">mp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"moviepy"</span><span class="p">)</span>
+<span class="n">python_speech_features</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"python_speech_features"</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">scipy_interpolate</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"scipy.interpolate"</span><span class="p">,</span> <span class="s2">"scipy"</span><span class="p">)</span>
+<span class="n">wavfile</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"scipy.io.wavfile"</span><span class="p">,</span> <span class="s2">"scipy"</span><span class="p">)</span>
+<span class="n">DeepFace</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
+<span class="n">open_video</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># lazy loaded below</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_deepface</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">DeepFace</span>
+    <span class="k">if</span> <span class="n">DeepFace</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">deepface</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeepFace</span> <span class="k">as</span> <span class="n">_DeepFace</span>
+
+        <span class="n">DeepFace</span> <span class="o">=</span> <span class="n">_DeepFace</span>
+    <span class="k">return</span> <span class="n">DeepFace</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_scenedetect</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">open_video</span>
+    <span class="k">if</span> <span class="n">open_video</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scenedetect</span><span class="w"> </span><span class="kn">import</span> <span class="n">open_video</span> <span class="k">as</span> <span class="n">_open_video</span>
+
+        <span class="n">open_video</span> <span class="o">=</span> <span class="n">_open_video</span>
+    <span class="k">return</span> <span class="n">open_video</span>
+
+
+<div class="viewcode-block" id="scene_detect">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.scene_detect">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scene_detect</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">):</span>
+    <span class="c1"># CPU: Scene detection, output is the list of each shot's time duration.</span>
+    <span class="c1"># The whole video is treated as a single shot: (start, end) where</span>
+    <span class="c1"># start.frame_num == 0 and end.frame_num == total number of frames.</span>
+    <span class="c1"># Note: open_video() returns a VideoStream that is not a context manager</span>
+    <span class="c1"># in scenedetect (e.g. VideoStreamCv2 in 0.7), so we must not use `with`.</span>
+    <span class="n">_open_video</span> <span class="o">=</span> <span class="n">_ensure_scenedetect</span><span class="p">()</span>
+    <span class="n">video</span> <span class="o">=</span> <span class="n">_open_video</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">)</span>
+    <span class="n">base_timecode</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">base_timecode</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="n">base_timecode</span> <span class="o">+</span> <span class="n">video</span><span class="o">.</span><span class="n">duration</span>
+    <span class="n">sceneList</span> <span class="o">=</span> <span class="p">[(</span><span class="n">base_timecode</span><span class="p">,</span> <span class="n">duration</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">sceneList</span></div>
+
+
+
+<div class="viewcode-block" id="inference_video">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.inference_video">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">inference_video</span><span class="p">(</span><span class="n">video_array</span><span class="p">,</span> <span class="n">DET</span><span class="p">):</span>
+    <span class="c1"># from model.faceDetector.s3fd import S3FD</span>
+    <span class="c1"># GPU: Face detection, output is the list contains the face location and score in this frame</span>
+    <span class="c1"># DET = S3FD(device='cuda')</span>
+    <span class="n">dets</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">total_frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">fidx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total_frame</span><span class="p">):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">fidx</span><span class="p">]</span>
+        <span class="n">imageNumpy</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">)</span>
+        <span class="n">bboxes</span> <span class="o">=</span> <span class="n">DET</span><span class="o">.</span><span class="n">detect_faces</span><span class="p">(</span><span class="n">imageNumpy</span><span class="p">,</span> <span class="n">conf_th</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">scales</span><span class="o">=</span><span class="p">[</span><span class="mf">0.25</span><span class="p">])</span>
+        <span class="n">dets</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">:</span>
+            <span class="n">dets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">"frame"</span><span class="p">:</span> <span class="n">fidx</span><span class="p">,</span> <span class="s2">"bbox"</span><span class="p">:</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">"conf"</span><span class="p">:</span> <span class="n">bbox</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
+            <span class="p">)</span>  <span class="c1"># dets has the frames info, bbox info, conf info</span>
+        <span class="c1"># sys.stderr.write('%s-%05d; %d dets\r' % (args.videoFilePath, fidx, len(dets[-1])))</span>
+
+    <span class="k">return</span> <span class="n">dets</span></div>
+
+
+
+<div class="viewcode-block" id="get_video_array_cv2">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.get_video_array_cv2">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_video_array_cv2</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">):</span>
+    <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">videoFilePath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error: Cannot open video file </span><span class="si">{</span><span class="n">videoFilePath</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">frames_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">frames_array</span></div>
+
+
+
+<div class="viewcode-block" id="bb_intersection_over_union">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.bb_intersection_over_union">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bb_intersection_over_union</span><span class="p">(</span><span class="n">boxA</span><span class="p">,</span> <span class="n">boxB</span><span class="p">,</span> <span class="n">evalCol</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="c1"># CPU: IOU Function to calculate overlap between two image</span>
+    <span class="n">xA</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">yA</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">xB</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">yB</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">interArea</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">xB</span> <span class="o">-</span> <span class="n">xA</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">yB</span> <span class="o">-</span> <span class="n">yA</span><span class="p">)</span>
+    <span class="n">boxAArea</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxA</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">boxA</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxA</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">boxBArea</span> <span class="o">=</span> <span class="p">(</span><span class="n">boxB</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">boxB</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">boxB</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">evalCol</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">iou</span> <span class="o">=</span> <span class="n">interArea</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">boxAArea</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">iou</span> <span class="o">=</span> <span class="n">interArea</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">boxAArea</span> <span class="o">+</span> <span class="n">boxBArea</span> <span class="o">-</span> <span class="n">interArea</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">iou</span></div>
+
+
+
+<div class="viewcode-block" id="track_shot">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.track_shot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">track_shot</span><span class="p">(</span><span class="n">sceneFaces</span><span class="p">,</span> <span class="n">numFailedDet</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">minTrack</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="c1"># CPU: Face tracking</span>
+    <span class="n">iouThres</span> <span class="o">=</span> <span class="mf">0.55</span>  <span class="c1"># Minimum IOU between consecutive face detections</span>
+    <span class="n">tracks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">track</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">frameFaces</span> <span class="ow">in</span> <span class="n">sceneFaces</span><span class="p">:</span>
+            <span class="n">best_match</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">max_iou</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">frameFaces_ori</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">frameFaces</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">frameFaces_ori</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">track</span> <span class="o">==</span> <span class="p">[]:</span>
+                    <span class="n">track</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+                    <span class="n">frameFaces</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">face</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]</span> <span class="o">-</span> <span class="n">track</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">numFailedDet</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">face</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]:</span>
+                    <span class="n">iou</span> <span class="o">=</span> <span class="n">bb_intersection_over_union</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">],</span> <span class="n">track</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="n">iou</span> <span class="o">&gt;</span> <span class="n">iouThres</span> <span class="ow">and</span> <span class="n">iou</span> <span class="o">&gt;</span> <span class="n">max_iou</span><span class="p">:</span>
+                        <span class="n">best_match</span> <span class="o">=</span> <span class="n">face</span>
+                        <span class="n">max_iou</span> <span class="o">=</span> <span class="n">iou</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">best_match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">track</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_match</span><span class="p">)</span>
+                <span class="n">frameFaces</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">best_match</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">track</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">break</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">track</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">minTrack</span><span class="p">:</span>
+            <span class="n">frameNum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">f</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">track</span><span class="p">])</span>
+            <span class="n">bboxes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">"bbox"</span><span class="p">])</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">track</span><span class="p">])</span>
+            <span class="n">frameI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">frameNum</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">frameNum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">bboxesI</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">ij</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+                <span class="n">interpfn</span> <span class="o">=</span> <span class="n">scipy_interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">frameNum</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">[:,</span> <span class="n">ij</span><span class="p">])</span>
+                <span class="n">bboxesI</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interpfn</span><span class="p">(</span><span class="n">frameI</span><span class="p">))</span>
+            <span class="n">bboxesI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">bboxesI</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">tracks</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"frame"</span><span class="p">:</span> <span class="n">frameI</span><span class="p">,</span> <span class="s2">"bbox"</span><span class="p">:</span> <span class="n">bboxesI</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">tracks</span></div>
+
+
+
+<div class="viewcode-block" id="find_human_bounding_box">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.find_human_bounding_box">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_human_bounding_box</span><span class="p">(</span><span class="n">face_bbox</span><span class="p">,</span> <span class="n">human_bboxes</span><span class="p">):</span>
+    <span class="n">head_x1</span><span class="p">,</span> <span class="n">head_y1</span><span class="p">,</span> <span class="n">head_x2</span><span class="p">,</span> <span class="n">head_y2</span> <span class="o">=</span> <span class="n">face_bbox</span>
+    <span class="n">head_center_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">head_x1</span> <span class="o">+</span> <span class="n">head_x2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">candidate_bboxes</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">human_bbox</span> <span class="ow">in</span> <span class="n">human_bboxes</span><span class="p">:</span>
+        <span class="n">human_x1</span><span class="p">,</span> <span class="n">human_y1</span><span class="p">,</span> <span class="n">human_x2</span><span class="p">,</span> <span class="n">human_y2</span> <span class="o">=</span> <span class="n">human_bbox</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">human_x1</span> <span class="o">&lt;=</span> <span class="n">head_x1</span> <span class="ow">and</span> <span class="n">head_x2</span> <span class="o">&lt;=</span> <span class="n">human_x2</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">human_y1</span> <span class="o">&lt;=</span> <span class="n">head_y1</span> <span class="ow">and</span> <span class="n">head_y2</span> <span class="o">&lt;=</span> <span class="n">human_y2</span><span class="p">):</span>
+            <span class="n">candidate_bboxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">human_bbox</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">candidate_bboxes</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">()</span>
+
+    <span class="c1"># Select the human body bounding box with the smallest distance between (x1 + x2) / 2 and (x1 + x2) / 2 of face_bbox</span>
+    <span class="n">closest_bbox</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+        <span class="n">candidate_bboxes</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">bbox</span><span class="p">:</span> <span class="p">(((</span><span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">head_center_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">closest_bbox</span></div>
+
+
+
+<div class="viewcode-block" id="update_negative_ones">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.update_negative_ones">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_negative_ones</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># Find the nearest number on the left</span>
+            <span class="n">left_index</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">left_index</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="n">left_index</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">left_index</span> <span class="o">-=</span> <span class="mi">1</span>
+
+            <span class="c1"># Find the nearest number on the right</span>
+            <span class="n">right_index</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">right_index</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">values</span><span class="p">[</span><span class="n">right_index</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">right_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Update the value of -1</span>
+            <span class="k">if</span> <span class="n">left_index</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">right_index</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">left_value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">left_index</span><span class="p">]</span>
+                <span class="n">right_value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">right_index</span><span class="p">]</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_value</span> <span class="o">+</span> <span class="n">right_value</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">left_index</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">left_index</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">right_index</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">right_index</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Unable to find valid values ​​on both the left and right to update -1 at index </span><span class="si">{i}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">values</span></div>
+
+
+
+<div class="viewcode-block" id="detect_and_mark_anomalies">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.detect_and_mark_anomalies">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">detect_and_mark_anomalies</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">std_multiplier</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">window_size</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">i</span> <span class="o">+</span> <span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+
+            <span class="n">neighbors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">neighbors</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">neighbors</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+            <span class="n">positive_neighbors</span> <span class="o">=</span> <span class="n">neighbors</span><span class="p">[</span><span class="n">neighbors</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive_neighbors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">positive_neighbors</span><span class="p">)</span>
+            <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">positive_neighbors</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">std</span> <span class="o">*</span> <span class="n">std_multiplier</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="crop_video_with_facetrack">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.crop_video_with_facetrack">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crop_video_with_facetrack</span><span class="p">(</span><span class="n">video_array</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">cropFile</span><span class="p">,</span> <span class="n">audioFilePath</span><span class="p">,</span> <span class="n">is_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_empty</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">dets</span> <span class="o">=</span> <span class="n">track</span><span class="p">[</span><span class="s2">"xys_bbox"</span><span class="p">]</span>
+    <span class="c1"># CPU: crop the face clips</span>
+    <span class="n">vOut</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">cropFile</span> <span class="o">+</span> <span class="s2">"t.avi"</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">"XVID"</span><span class="p">),</span> <span class="mi">25</span><span class="p">,</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>  <span class="c1"># Write video</span>
+
+    <span class="k">for</span> <span class="n">fidx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">]):</span>
+        <span class="n">cs</span> <span class="o">=</span> <span class="mf">0.4</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="n">dets</span><span class="p">[</span><span class="s2">"s"</span><span class="p">][</span><span class="n">fidx</span><span class="p">]</span>  <span class="c1"># Detection box size</span>
+        <span class="n">bsi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cs</span><span class="p">))</span>  <span class="c1"># Pad videos by this amount</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">((</span><span class="n">bsi</span><span class="p">,</span> <span class="n">bsi</span><span class="p">),</span> <span class="p">(</span><span class="n">bsi</span><span class="p">,</span> <span class="n">bsi</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">"constant"</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+        <span class="n">my</span> <span class="o">=</span> <span class="n">dets</span><span class="p">[</span><span class="s2">"y"</span><span class="p">][</span><span class="n">fidx</span><span class="p">]</span> <span class="o">+</span> <span class="n">bsi</span>  <span class="c1"># BBox center Y</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="n">dets</span><span class="p">[</span><span class="s2">"x"</span><span class="p">][</span><span class="n">fidx</span><span class="p">]</span> <span class="o">+</span> <span class="n">bsi</span>  <span class="c1"># BBox center X</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">my</span> <span class="o">-</span> <span class="n">bs</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">my</span> <span class="o">+</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cs</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mx</span> <span class="o">-</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cs</span><span class="p">))</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">mx</span> <span class="o">+</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cs</span><span class="p">))]</span>
+        <span class="n">vOut</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)))</span>
+    <span class="n">audioTmp</span> <span class="o">=</span> <span class="n">cropFile</span> <span class="o">+</span> <span class="s2">".wav"</span>
+    <span class="n">audioStart</span> <span class="o">=</span> <span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">25</span>
+    <span class="n">audioEnd</span> <span class="o">=</span> <span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">25</span>
+    <span class="n">vOut</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">"ffmpeg -y -i </span><span class="si">%s</span><span class="s2"> -async 1 -ac 1 -vn -acodec pcm_s16le -ar 16000 -threads </span><span class="si">%d</span><span class="s2"> -ss </span><span class="si">%.3f</span><span class="s2"> -to </span><span class="si">%.3f</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> -loglevel panic"</span>
+        <span class="o">%</span> <span class="p">(</span><span class="n">audioFilePath</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">audioStart</span><span class="p">,</span> <span class="n">audioEnd</span><span class="p">,</span> <span class="n">audioTmp</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Crop audio file</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">audio</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">audioTmp</span><span class="p">)</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="s2">"ffmpeg -y -i </span><span class="si">%s</span><span class="s2">t.avi -i </span><span class="si">%s</span><span class="s2"> -threads </span><span class="si">%d</span><span class="s2"> -c:v copy -c:a copy </span><span class="si">%s</span><span class="s2">.avi -loglevel panic"</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">cropFile</span><span class="p">,</span>
+        <span class="n">audioTmp</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">,</span>
+        <span class="n">cropFile</span><span class="p">,</span>
+    <span class="p">)</span>  <span class="c1"># Combine audio and video file</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cropFile</span> <span class="o">+</span> <span class="s2">"t.avi"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="evaluate_network">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.evaluate_network">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_network</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">pycropPath</span><span class="p">):</span>
+    <span class="c1"># GPU: active speaker detection by pretrained model</span>
+    <span class="n">allScores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># durationSet = {1,2,4,6} # To make the result more reliable</span>
+    <span class="n">durationSet</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">}</span>  <span class="c1"># Use this line can get more reliable result</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)):</span>
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Load audio and video</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">audio</span> <span class="o">=</span> <span class="n">wavfile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pycropPath</span><span class="p">,</span> <span class="n">fileName</span> <span class="o">+</span> <span class="s2">".wav"</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">audio</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">allScores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">audioFeature</span> <span class="o">=</span> <span class="n">python_speech_features</span><span class="o">.</span><span class="n">mfcc</span><span class="p">(</span><span class="n">audio</span><span class="p">,</span> <span class="mi">16000</span><span class="p">,</span> <span class="n">numcep</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">winlen</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span> <span class="n">winstep</span><span class="o">=</span><span class="mf">0.010</span><span class="p">)</span>
+
+        <span class="n">video</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pycropPath</span><span class="p">,</span> <span class="n">fileName</span> <span class="o">+</span> <span class="s2">".avi"</span><span class="p">))</span>
+        <span class="n">videoFeature</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="n">video</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+            <span class="n">ret</span><span class="p">,</span> <span class="n">frames</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+                <span class="n">face</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+                <span class="n">face</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">))</span>
+                <span class="n">face</span> <span class="o">=</span> <span class="n">face</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mi">112</span> <span class="o">-</span> <span class="p">(</span><span class="mi">112</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mi">112</span> <span class="o">+</span> <span class="p">(</span><span class="mi">112</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">112</span> <span class="o">-</span> <span class="p">(</span><span class="mi">112</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="mi">112</span> <span class="o">+</span> <span class="p">(</span><span class="mi">112</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))]</span>
+                <span class="n">videoFeature</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="n">video</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="n">videoFeature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">videoFeature</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">audioFeature</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">audioFeature</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">,</span> <span class="n">videoFeature</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">audioFeature</span> <span class="o">=</span> <span class="n">audioFeature</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)),</span> <span class="p">:]</span>
+        <span class="n">videoFeature</span> <span class="o">=</span> <span class="n">videoFeature</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="mi">25</span><span class="p">)),</span> <span class="p">:,</span> <span class="p">:]</span>
+        <span class="n">allScore</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Evaluation use model</span>
+        <span class="k">for</span> <span class="n">duration</span> <span class="ow">in</span> <span class="n">durationSet</span><span class="p">:</span>
+            <span class="n">batchSize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">length</span> <span class="o">/</span> <span class="n">duration</span><span class="p">))</span>
+            <span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">batchSize</span><span class="p">):</span>
+                    <span class="n">inputA</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">audioFeature</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">100</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="p">:])</span>
+                        <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">inputV</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">videoFeature</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">25</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">duration</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
+                        <span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">embedA</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward_audio_frontend</span><span class="p">(</span><span class="n">inputA</span><span class="p">)</span>
+                    <span class="n">embedV</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward_visual_frontend</span><span class="p">(</span><span class="n">inputV</span><span class="p">)</span>
+                    <span class="n">out</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward_audio_visual_backend</span><span class="p">(</span><span class="n">embedA</span><span class="p">,</span> <span class="n">embedV</span><span class="p">)</span>
+                    <span class="n">score</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lossAV</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="n">scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+                    <span class="k">del</span> <span class="n">inputA</span>
+                    <span class="k">del</span> <span class="n">inputV</span>
+                    <span class="k">del</span> <span class="n">embedA</span>
+                    <span class="k">del</span> <span class="n">embedV</span>
+            <span class="n">allScore</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+        <span class="n">allScore</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">allScore</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">allScores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">allScore</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">allScores</span></div>
+
+
+
+<div class="viewcode-block" id="visualization">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.visualization">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">visualization</span><span class="p">(</span><span class="n">tracks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">video_array</span><span class="p">,</span> <span class="n">pyaviPath</span><span class="p">):</span>
+    <span class="c1"># CPU: visulize the result for video format</span>
+
+    <span class="n">faces</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">video_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="k">for</span> <span class="n">tidx</span><span class="p">,</span> <span class="n">track</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tracks</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="n">tidx</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">fidx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">score</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">fidx</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">fidx</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>  <span class="c1"># average smoothing</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">faces</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">"track"</span><span class="p">:</span> <span class="n">tidx</span><span class="p">,</span>
+                    <span class="s2">"score"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">),</span>
+                    <span class="s2">"s"</span><span class="p">:</span> <span class="n">track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">][</span><span class="n">fidx</span><span class="p">],</span>
+                    <span class="s2">"x"</span><span class="p">:</span> <span class="n">track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">][</span><span class="n">fidx</span><span class="p">],</span>
+                    <span class="s2">"y"</span><span class="p">:</span> <span class="n">track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">][</span><span class="n">fidx</span><span class="p">],</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+    <span class="n">firstImage</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">fw</span> <span class="o">=</span> <span class="n">firstImage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">fh</span> <span class="o">=</span> <span class="n">firstImage</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">vOut</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">"video_only.avi"</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">"XVID"</span><span class="p">),</span> <span class="mi">25</span><span class="p">,</span> <span class="p">(</span><span class="n">fw</span><span class="p">,</span> <span class="n">fh</span><span class="p">))</span>
+    <span class="n">colorDict</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">255</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">fidx</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">video_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">fidx</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">[</span><span class="n">fidx</span><span class="p">]:</span>
+            <span class="n">clr</span> <span class="o">=</span> <span class="n">colorDict</span><span class="p">[</span><span class="nb">int</span><span class="p">((</span><span class="n">face</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">))]</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"score"</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span>
+                <span class="n">image</span><span class="p">,</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">-</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">-</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">])),</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">+</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">])),</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">clr</span><span class="p">,</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">clr</span><span class="p">),</span>
+                <span class="mi">10</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span>
+                <span class="n">image</span><span class="p">,</span>
+                <span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">txt</span><span class="p">),</span>
+                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">-</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">-</span> <span class="n">face</span><span class="p">[</span><span class="s2">"s"</span><span class="p">])),</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span>
+                <span class="mf">1.5</span><span class="p">,</span>
+                <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">clr</span><span class="p">,</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">clr</span><span class="p">),</span>
+                <span class="mi">5</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">vOut</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">vOut</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="s2">"ffmpeg -y -i </span><span class="si">%s</span><span class="s2"> -i </span><span class="si">%s</span><span class="s2"> -threads </span><span class="si">%d</span><span class="s2"> -c:v copy -c:a copy </span><span class="si">%s</span><span class="s2"> -loglevel panic"</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">"video_only.avi"</span><span class="p">),</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">"audio.wav"</span><span class="p">),</span>
+        <span class="mi">10</span><span class="p">,</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pyaviPath</span><span class="p">,</span> <span class="s2">"video_out.avi"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_good_matches">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.calculate_good_matches">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_good_matches</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">ratio</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+    <span class="n">good_matches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="n">ratio</span> <span class="o">*</span> <span class="n">n</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+            <span class="n">good_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">good_matches</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="find_max_intersection_and_remaining_dicts">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.find_max_intersection_and_remaining_dicts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_max_intersection_and_remaining_dicts</span><span class="p">(</span><span class="n">dicts</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dicts</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="p">[]</span>
+
+    <span class="n">track_frames</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dicts</span><span class="p">]</span>
+
+    <span class="n">all_elements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">track_frames</span><span class="p">:</span>
+        <span class="n">all_elements</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="n">max_combination_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">all_elements</span><span class="p">:</span>
+        <span class="n">current_combination_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">current_intersection</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">elem</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">track_frames</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">:</span>
+                <span class="n">current_combination_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">current_intersection</span><span class="o">.</span><span class="n">intersection_update</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_combination_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">max_combination_indices</span><span class="p">):</span>
+            <span class="n">max_combination_indices</span> <span class="o">=</span> <span class="n">current_combination_indices</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">current_intersection</span>
+
+    <span class="n">max_combination</span> <span class="o">=</span> <span class="p">[</span><span class="n">dicts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">max_combination_indices</span><span class="p">]</span>
+    <span class="n">remaining_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dicts</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">max_combination_indices</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">max_combination</span><span class="p">,</span> <span class="n">remaining_dicts</span></div>
+
+
+
+<div class="viewcode-block" id="get_faces_array">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.get_faces_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_faces_array</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="n">cs</span> <span class="o">=</span> <span class="mf">0.4</span>
+    <span class="n">bs</span> <span class="o">=</span> <span class="n">s</span>  <span class="c1"># Detection box size</span>
+    <span class="n">bsi</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cs</span><span class="p">))</span>  <span class="c1"># Pad videos by this amount</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">frame</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">((</span><span class="n">bsi</span><span class="p">,</span> <span class="n">bsi</span><span class="p">),</span> <span class="p">(</span><span class="n">bsi</span><span class="p">,</span> <span class="n">bsi</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">"constant"</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">110</span><span class="p">))</span>
+    <span class="n">my</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bsi</span>  <span class="c1"># BBox center Y</span>
+    <span class="n">mx</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">bsi</span>  <span class="c1"># BBox center X</span>
+    <span class="n">face</span> <span class="o">=</span> <span class="n">frame</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">my</span> <span class="o">-</span> <span class="n">bs</span><span class="p">)</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">my</span> <span class="o">+</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">cs</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">mx</span> <span class="o">-</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cs</span><span class="p">))</span> <span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">mx</span> <span class="o">+</span> <span class="n">bs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cs</span><span class="p">))]</span>
+    <span class="k">return</span> <span class="n">face</span></div>
+
+
+
+<div class="viewcode-block" id="order_track_distance">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.order_track_distance">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">order_track_distance</span><span class="p">(</span><span class="n">track1</span><span class="p">,</span> <span class="n">track2</span><span class="p">,</span> <span class="n">video_array</span><span class="p">):</span>
+    <span class="c1"># Get the last face frame of track1 and the first face frame of track2</span>
+    <span class="n">track1_end_frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">track1</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="n">track1_s</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">track1_x</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">track1_y</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">track1_end_face_array</span> <span class="o">=</span> <span class="n">get_faces_array</span><span class="p">(</span><span class="n">track1_end_frame</span><span class="p">,</span> <span class="n">track1_s</span><span class="p">,</span> <span class="n">track1_x</span><span class="p">,</span> <span class="n">track1_y</span><span class="p">)</span>
+
+    <span class="n">track2_start_frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">track2</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">track2_s</span> <span class="o">=</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">track2_x</span> <span class="o">=</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">track2_y</span> <span class="o">=</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">track2_strat_face_array</span> <span class="o">=</span> <span class="n">get_faces_array</span><span class="p">(</span><span class="n">track2_start_frame</span><span class="p">,</span> <span class="n">track2_s</span><span class="p">,</span> <span class="n">track2_x</span><span class="p">,</span> <span class="n">track2_y</span><span class="p">)</span>
+
+    <span class="c1"># Calculate the area overlap ratio</span>
+    <span class="n">track1_bbox</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">track2_bbox</span> <span class="o">=</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">iou</span> <span class="o">=</span> <span class="n">bb_intersection_over_union</span><span class="p">(</span><span class="n">track1_bbox</span><span class="p">,</span> <span class="n">track2_bbox</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iou</span> <span class="o">&lt;=</span> <span class="mf">0.2</span><span class="p">:</span>
+        <span class="n">distance_iou</span> <span class="o">=</span> <span class="mi">10000</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">distance_iou</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span> <span class="o">*</span> <span class="n">iou</span><span class="p">)</span>
+
+    <span class="n">normalized_distance</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># face_id distance (with facenet)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_ensure_deepface</span><span class="p">()</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span>
+        <span class="n">track1_end_face_array</span><span class="p">,</span> <span class="n">track2_strat_face_array</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s2">"Facenet"</span><span class="p">,</span> <span class="n">detector_backend</span><span class="o">=</span><span class="s2">"skip"</span>
+    <span class="p">)</span>
+    <span class="n">facenet_distance</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">"distance"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">facenet_distance</span> <span class="o">&gt;</span> <span class="mf">0.85</span><span class="p">:</span>
+        <span class="n">facenet_distance</span> <span class="o">=</span> <span class="n">facenet_distance</span> <span class="o">+</span> <span class="mi">10000</span>
+
+    <span class="n">distance</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">distance_iou</span> <span class="o">+</span> <span class="n">normalized_distance</span> <span class="o">+</span> <span class="n">facenet_distance</span>
+
+    <span class="k">return</span> <span class="n">distance</span></div>
+
+
+
+<div class="viewcode-block" id="update_remain">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.update_remain">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_remain</span><span class="p">(</span><span class="n">remaining_dicts</span><span class="p">,</span> <span class="n">pop_item</span><span class="p">):</span>
+    <span class="n">updated_dicts</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">item</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">remaining_dicts</span>
+        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">pop_item</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pop_item</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"bbox"</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">updated_dicts</span></div>
+
+
+
+<div class="viewcode-block" id="order_merge_tracks">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.order_merge_tracks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">order_merge_tracks</span><span class="p">(</span><span class="n">track1</span><span class="p">,</span> <span class="n">track2</span><span class="p">):</span>
+    <span class="n">new_track</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"x"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"y"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"proc_track"</span><span class="p">][</span><span class="s2">"s"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x1"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x1"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y1"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y1"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x2"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x2"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"x2"</span><span class="p">]</span>
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y2"</span><span class="p">]</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y2"</span><span class="p">]</span> <span class="o">+</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"human_bbox"</span><span class="p">][</span><span class="s2">"y2"</span><span class="p">]</span>
+
+    <span class="n">new_track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">track1</span><span class="p">[</span><span class="s2">"track"</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">object1</span> <span class="o">=</span> <span class="n">track1</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">object2</span> <span class="o">=</span> <span class="n">track2</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">new_track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">object1</span><span class="p">,</span> <span class="n">object2</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">object1</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">new_track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">object1</span> <span class="o">+</span> <span class="n">object2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="p">(</span><span class="s2">"new data type"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_track</span></div>
+
+
+
+<div class="viewcode-block" id="post_merge">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.post_merge">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">post_merge</span><span class="p">(</span><span class="n">vidTracks</span><span class="p">,</span> <span class="n">video_array</span><span class="p">):</span>
+    <span class="c1"># Find the maximum overlapping tracks as the initial anchor</span>
+    <span class="n">anchor_combination</span><span class="p">,</span> <span class="n">remaining_dicts</span> <span class="o">=</span> <span class="n">find_max_intersection_and_remaining_dicts</span><span class="p">(</span><span class="n">vidTracks</span><span class="p">)</span>
+    <span class="n">end_frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">continue_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">anchor_combination</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">max_iteration</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">iteration_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">iteration_count</span> <span class="o">&lt;</span> <span class="n">max_iteration</span> <span class="ow">and</span> <span class="n">continue_flag</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">track_ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">anchor_combination</span><span class="p">)):</span>
+            <span class="n">track</span> <span class="o">=</span> <span class="n">anchor_combination</span><span class="p">[</span><span class="n">track_ind</span><span class="p">]</span>
+            <span class="c1"># Try to extend forward</span>
+            <span class="k">if</span> <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Find the candidate that is connected to it and is in the front row</span>
+                    <span class="n">possible_prior_tracks</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">checktrack</span> <span class="ow">in</span> <span class="n">remaining_dicts</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">checktrack</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="ow">or</span> <span class="n">checktrack</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="p">):</span>
+                            <span class="n">possible_prior_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">checktrack</span><span class="p">)</span>
+                    <span class="c1"># If it is not zero, then check the calculated distance</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_prior_tracks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">distance_score_list</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">possible_prior_track</span> <span class="ow">in</span> <span class="n">possible_prior_tracks</span><span class="p">:</span>
+                            <span class="n">distance_score_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order_track_distance</span><span class="p">(</span><span class="n">possible_prior_track</span><span class="p">,</span> <span class="n">track</span><span class="p">,</span> <span class="n">video_array</span><span class="p">))</span>
+                        <span class="n">distance_score_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">distance_score_list</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">distance_score_array</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+                            <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distance_score_array</span><span class="p">)</span>
+                            <span class="n">new_anchor</span> <span class="o">=</span> <span class="n">order_merge_tracks</span><span class="p">(</span><span class="n">possible_prior_tracks</span><span class="p">[</span><span class="n">min_index</span><span class="p">],</span> <span class="n">track</span><span class="p">)</span>
+                            <span class="c1"># update_anchor()</span>
+                            <span class="n">anchor_combination</span><span class="p">[</span><span class="n">track_ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_anchor</span>
+                            <span class="n">track</span> <span class="o">=</span> <span class="n">new_anchor</span>
+                            <span class="n">remaining_dicts</span> <span class="o">=</span> <span class="n">update_remain</span><span class="p">(</span><span class="n">remaining_dicts</span><span class="p">,</span> <span class="n">possible_prior_tracks</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># Try to extend backwards</span>
+            <span class="k">if</span> <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">end_frame</span><span class="p">:</span>
+                    <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># Find the candidate that is connected to it and in front of it</span>
+                    <span class="n">possible_after_tracks</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">checktrack</span> <span class="ow">in</span> <span class="n">remaining_dicts</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span>
+                            <span class="n">checktrack</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="ow">or</span> <span class="n">checktrack</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">track</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="p">):</span>
+                            <span class="n">possible_after_tracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">checktrack</span><span class="p">)</span>
+                    <span class="c1"># If it is not zero, then check the calculated distance</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">possible_after_tracks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">distance_score_list</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">possible_after_track</span> <span class="ow">in</span> <span class="n">possible_after_tracks</span><span class="p">:</span>
+                            <span class="n">distance_score_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">order_track_distance</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">possible_after_track</span><span class="p">,</span> <span class="n">video_array</span><span class="p">))</span>
+                        <span class="n">distance_score_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">distance_score_list</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">distance_score_array</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+                            <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distance_score_array</span><span class="p">)</span>
+                            <span class="n">new_anchor</span> <span class="o">=</span> <span class="n">order_merge_tracks</span><span class="p">(</span><span class="n">track</span><span class="p">,</span> <span class="n">possible_after_tracks</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span>
+                            <span class="c1"># update_anchor()</span>
+                            <span class="n">anchor_combination</span><span class="p">[</span><span class="n">track_ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_anchor</span>
+                            <span class="n">remaining_dicts</span> <span class="o">=</span> <span class="n">update_remain</span><span class="p">(</span><span class="n">remaining_dicts</span><span class="p">,</span> <span class="n">possible_after_tracks</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">continue_flag</span><span class="p">[</span><span class="n">track_ind</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">final_tracks</span> <span class="o">=</span> <span class="n">anchor_combination</span> <span class="o">+</span> <span class="n">remaining_dicts</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_tracks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">sorted_tracks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">final_tracks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">top_tracks</span> <span class="o">=</span> <span class="n">sorted_tracks</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">top_tracks</span> <span class="o">=</span> <span class="n">final_tracks</span>
+        <span class="c1"># return len(anchor_combination), top_5_tracks</span>
+    <span class="n">returntracks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">top_tracks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="n">returntracks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">anchor_combination</span><span class="p">),</span> <span class="n">returntracks</span></div>
+
+
+
+<div class="viewcode-block" id="longest_continuous_actives">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.longest_continuous_actives">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">longest_continuous_actives</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="n">max_length</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">current_length</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">current_length</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">current_length</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+                <span class="n">max_length</span> <span class="o">=</span> <span class="n">current_length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_length</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">return</span> <span class="n">max_length</span></div>
+
+
+
+<div class="viewcode-block" id="annotate_video_with_bounding_boxes_with_audio">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_with_audio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotate_video_with_bounding_boxes_with_audio</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">q_human_video_track_bbox</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+    <span class="n">bbox_path</span> <span class="o">=</span> <span class="n">q_human_video_track_bbox</span><span class="p">[</span><span class="s2">"bbox_path"</span><span class="p">]</span>
+    <span class="n">frame_indices</span> <span class="o">=</span> <span class="n">q_human_video_track_bbox</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]</span>
+    <span class="n">video_array</span> <span class="o">=</span> <span class="n">get_video_array_cv2</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bbox_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">bbox_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">xy_bbox</span> <span class="o">=</span> <span class="n">bbox_data</span><span class="p">[</span><span class="s2">"xy_bbox"</span><span class="p">]</span>
+
+    <span class="c1"># Get video dimensions and frame rate</span>
+    <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>  <span class="c1"># Get original video frame rate</span>
+    <span class="n">num_frames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">video_array</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="n">channels</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Input video must have 3 channels (BGR)."</span>
+
+    <span class="c1"># Initialize video writer</span>
+    <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">"mp4v"</span><span class="p">)</span>  <span class="c1"># Codec for mp4</span>
+    <span class="n">temp_video_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"temp.mp4"</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>  <span class="c1"># Use original FPS</span>
+
+    <span class="c1"># Annotate video frames with bounding boxes</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame_indices</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">frame_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">xy_bbox</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="c1"># Draw bounding box</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">40</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">thickness</span><span class="p">)</span>
+
+        <span class="c1"># Write frame to temporary video</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="n">out</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>  <span class="c1"># Release the video capture object</span>
+
+    <span class="c1"># Load original video and audio</span>
+    <span class="n">original_video</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">VideoFileClip</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">annotated_video</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">VideoFileClip</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">)</span>
+
+    <span class="c1"># Combine annotated video with original audio, ensuring alignment</span>
+    <span class="n">final_video</span> <span class="o">=</span> <span class="n">annotated_video</span><span class="o">.</span><span class="n">set_audio</span><span class="p">(</span><span class="n">original_video</span><span class="o">.</span><span class="n">audio</span><span class="p">)</span>
+
+    <span class="c1"># Write the final output video with audio</span>
+    <span class="n">final_video</span><span class="o">.</span><span class="n">write_videofile</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">codec</span><span class="o">=</span><span class="s2">"libx264"</span><span class="p">,</span> <span class="n">audio_codec</span><span class="o">=</span><span class="s2">"aac"</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">)</span>
+
+    <span class="c1"># Clean up temporary video file</span>
+    <span class="n">annotated_video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">original_video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Optionally, remove the temporary video file</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<div class="viewcode-block" id="annotate_video_with_bounding_boxes_withText_with_audio">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_withText_with_audio">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotate_video_with_bounding_boxes_withText_with_audio</span><span class="p">(</span><span class="n">video_path</span><span class="p">,</span> <span class="n">q_human_video_track_bbox</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">numbers</span><span class="p">):</span>
+    <span class="n">bbox_path</span> <span class="o">=</span> <span class="n">q_human_video_track_bbox</span><span class="p">[</span><span class="s2">"bbox_path"</span><span class="p">]</span>
+    <span class="n">frame_indices</span> <span class="o">=</span> <span class="n">q_human_video_track_bbox</span><span class="p">[</span><span class="s2">"track"</span><span class="p">][</span><span class="s2">"frame"</span><span class="p">]</span>
+    <span class="n">video_array</span> <span class="o">=</span> <span class="n">get_video_array_cv2</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bbox_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">bbox_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">xy_bbox</span> <span class="o">=</span> <span class="n">bbox_data</span><span class="p">[</span><span class="s2">"xy_bbox"</span><span class="p">]</span>
+
+    <span class="c1"># Get video dimensions and frame rate</span>
+    <span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">fps</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">CAP_PROP_FPS</span><span class="p">)</span>  <span class="c1"># Get original video frame rate</span>
+    <span class="n">num_frames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">video_array</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="n">channels</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Input video must have 3 channels (BGR)."</span>
+
+    <span class="c1"># Initialize video writer</span>
+    <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">"mp4v"</span><span class="p">)</span>  <span class="c1"># Codec for mp4</span>
+    <span class="n">temp_video_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"temp.mp4"</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>  <span class="c1"># Use original FPS</span>
+
+    <span class="c1"># Annotate video frames with bounding boxes</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame_indices</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">frame_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">xy_bbox</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="c1"># Draw bounding box</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">40</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">thickness</span><span class="p">)</span>
+            <span class="c1"># Put the number in the top-left corner of the bounding box</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">putText</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">numbers</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">35</span><span class="p">),</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FONT_HERSHEY_SIMPLEX</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1"># Write frame to temporary video</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="n">out</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>  <span class="c1"># Release the video capture object</span>
+
+    <span class="c1"># Load original video and audio</span>
+    <span class="n">original_video</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">VideoFileClip</span><span class="p">(</span><span class="n">video_path</span><span class="p">)</span>
+    <span class="n">annotated_video</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">VideoFileClip</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">)</span>
+
+    <span class="c1"># Combine annotated video with original audio, ensuring alignment</span>
+    <span class="n">final_video</span> <span class="o">=</span> <span class="n">annotated_video</span><span class="o">.</span><span class="n">set_audio</span><span class="p">(</span><span class="n">original_video</span><span class="o">.</span><span class="n">audio</span><span class="p">)</span>
+
+    <span class="c1"># Write the final output video with audio</span>
+    <span class="n">final_video</span><span class="o">.</span><span class="n">write_videofile</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">codec</span><span class="o">=</span><span class="s2">"libx264"</span><span class="p">,</span> <span class="n">audio_codec</span><span class="o">=</span><span class="s2">"aac"</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">)</span>
+
+    <span class="c1"># Clean up temporary video file</span>
+    <span class="n">annotated_video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">original_video</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Optionally, remove the temporary video file</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_video_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<div class="viewcode-block" id="annotate_video_with_bounding_boxes">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">annotate_video_with_bounding_boxes</span><span class="p">(</span><span class="n">video_array</span><span class="p">,</span> <span class="n">frame_indices</span><span class="p">,</span> <span class="n">bounding_boxes</span><span class="p">,</span> <span class="n">output_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Annotates specified frames in the video with bounding boxes and saves the result to a new video file.</span>
+
+<span class="sd">    :param video_array: Input video as a numpy array with shape (num_frames, height, width, channels).</span>
+<span class="sd">    :param frame_indices: List of frame indices to annotate.</span>
+<span class="sd">    :param bounding_boxes: Array of bounding box coordinates with shape (num_frames_to_annotate, 4), where each bounding box is (x, y, w, h).</span>
+<span class="sd">    :param output_path: Path to save the output video.</span>
+<span class="sd">    """</span>
+    <span class="c1"># Get video dimensions</span>
+    <span class="n">num_frames</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">channels</span> <span class="o">=</span> <span class="n">video_array</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="n">channels</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"Input video must have 3 channels (BGR)."</span>
+
+    <span class="c1"># Initialize video writer</span>
+    <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">"mp4v"</span><span class="p">)</span>  <span class="c1"># Codec for mp4</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="mf">30.0</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+
+    <span class="c1"># option 1: keep all video</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_frames</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">video_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame_indices</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">frame_indices</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">bounding_boxes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="c1"># Draw bounding box</span>
+            <span class="n">thinkness</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">40</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y1</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y2</span><span class="p">)),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="n">thinkness</span><span class="p">)</span>
+
+        <span class="c1"># Write frame to output video</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="c1"># option 2:crap</span>
+    <span class="c1"># for in_id, out_id in enumerate(frame_indices):</span>
+    <span class="c1">#     frame = video_array[out_id]</span>
+    <span class="c1">#     x1, y1, x2, y2 = bounding_boxes[in_id]</span>
+    <span class="c1">#     # Draw bounding box</span>
+    <span class="c1">#     cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 5)</span>
+    <span class="c1">#     # Write frame to output video</span>
+    <span class="c1">#     out.write(frame)</span>
+
+    <span class="n">out</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+
+<div class="viewcode-block" id="crop_from_array">
+<a class="viewcode-back" href="../../../api/data_juicer.utils.ASD_mapper_utils.html#data_juicer.utils.ASD_mapper_utils.crop_from_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crop_from_array</span><span class="p">(</span><span class="n">frame_before_crop</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">coords</span>
+    <span class="n">cropped_frame</span> <span class="o">=</span> <span class="n">frame_before_crop</span><span class="p">[</span><span class="n">y1</span><span class="p">:</span><span class="n">y2</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cropped_frame</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Data-Juicer Team.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

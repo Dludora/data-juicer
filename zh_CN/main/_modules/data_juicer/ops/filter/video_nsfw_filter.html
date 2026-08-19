@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.video_nsfw_filter</span></li>
   </ul>
 </nav>
@@ -533,10 +536,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTER_SAMPLED_FRAMES</span><span class="p">,</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_nsfw_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_nsfw_filter"</span>
 
 
 <div class="viewcode-block" id="VideoNSFWFilter">
@@ -545,36 +548,36 @@
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@INTER_SAMPLED_FRAMES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoNSFWFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples whose videos have nsfw scores in a specified range.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples whose videos have nsfw scores in a specified range.</span>
 
 <span class="sd">    This operator uses a Hugging Face model to detect NSFW content in video frames. It keeps</span>
 <span class="sd">    samples where the NSFW score is below a specified threshold. The operator supports two</span>
-<span class="sd">    frame sampling methods: &quot;all_keyframes&quot; and &quot;uniform&quot;. For &quot;uniform&quot;, it extracts a</span>
-<span class="sd">    specified number of frames. The NSFW scores are reduced using one of three modes: &quot;avg&quot;,</span>
-<span class="sd">    &quot;max&quot;, or &quot;min&quot;. The key metric, &#39;video_nsfw_score&#39;, is computed for each video and</span>
-<span class="sd">    stored in the sample&#39;s stats. The operator can use either an &quot;any&quot; or &quot;all&quot; strategy to</span>
-<span class="sd">    decide if a sample should be kept based on the NSFW scores of its videos.&quot;&quot;&quot;</span>
+<span class="sd">    frame sampling methods: "all_keyframes" and "uniform". For "uniform", it extracts a</span>
+<span class="sd">    specified number of frames. The NSFW scores are reduced using one of three modes: "avg",</span>
+<span class="sd">    "max", or "min". The key metric, 'video_nsfw_score', is computed for each video and</span>
+<span class="sd">    stored in the sample's stats. The operator can use either an "any" or "all" strategy to</span>
+<span class="sd">    decide if a sample should be kept based on the NSFW scores of its videos."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoNSFWFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.VideoNSFWFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_nsfw_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Falconsai/nsfw_image_detection&quot;</span><span class="p">,</span>
+        <span class="n">hf_nsfw_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Falconsai/nsfw_image_detection"</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
         <span class="n">max_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
         <span class="n">frame_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">frame_sampling_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;all_keyframes&quot;</span><span class="p">,</span>
+        <span class="n">frame_sampling_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"all_keyframes"</span><span class="p">,</span>
         <span class="n">frame_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-        <span class="n">reduce_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;avg&quot;</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
-        <span class="n">video_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;av&quot;</span><span class="p">,</span>
+        <span class="n">reduce_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"avg"</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
+        <span class="n">video_backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"av"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_nsfw_model: nsfw detection model name on huggingface.</span>
@@ -589,73 +592,73 @@
 <span class="sd">            If frame_field is None, extract frames from the video field.</span>
 <span class="sd">        :param frame_sampling_method: sampling method of extracting frame</span>
 <span class="sd">            images from the videos.</span>
-<span class="sd">            Should be one of [&quot;all_keyframes&quot;, &quot;uniform&quot;].</span>
+<span class="sd">            Should be one of ["all_keyframes", "uniform"].</span>
 <span class="sd">            The former one extracts all key frames (the number of which depends</span>
 <span class="sd">            on the duration of the video) and the latter one extract specified</span>
 <span class="sd">            number of frames uniformly from the video.</span>
-<span class="sd">            Default: &quot;all_keyframes&quot;.</span>
+<span class="sd">            Default: "all_keyframes".</span>
 <span class="sd">        :param frame_num: the number of frames to be extracted uniformly from</span>
-<span class="sd">            the video. Only works when frame_sampling_method is &quot;uniform&quot; or &quot;frame_field&quot; is given.</span>
-<span class="sd">            If it&#39;s 1, only the middle frame will be extracted. If it&#39;s 2, only</span>
-<span class="sd">            the first and the last frames will be extracted. If it&#39;s larger</span>
+<span class="sd">            the video. Only works when frame_sampling_method is "uniform" or "frame_field" is given.</span>
+<span class="sd">            If it's 1, only the middle frame will be extracted. If it's 2, only</span>
+<span class="sd">            the first and the last frames will be extracted. If it's larger</span>
 <span class="sd">            than 2, in addition to the first and the last frames, other frames</span>
 <span class="sd">            will be extracted uniformly within the video duration.</span>
 <span class="sd">        :param reduce_mode: reduce mode for multiple sampled video frames.</span>
-<span class="sd">            &#39;avg&#39;: Take the average of multiple values</span>
-<span class="sd">            &#39;max&#39;: Take the max of multiple values</span>
-<span class="sd">            &#39;min&#39;: Take the min of multiple values</span>
-<span class="sd">        :param any_or_all: keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all videos. &#39;any&#39;: keep this sample if any videos meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all videos meet the</span>
+<span class="sd">            'avg': Take the average of multiple values</span>
+<span class="sd">            'max': Take the max of multiple values</span>
+<span class="sd">            'min': Take the min of multiple values</span>
+<span class="sd">        :param any_or_all: keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all videos. 'any': keep this sample if any videos meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all videos meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param video_backend: video backend, can be `ffmpeg`, `av`.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1GB&quot;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1GB"</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="n">min_score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">max_score</span>
-        <span class="k">if</span> <span class="n">frame_sampling_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all_keyframes&quot;</span><span class="p">,</span> <span class="s2">&quot;uniform&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">frame_sampling_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"all_keyframes"</span><span class="p">,</span> <span class="s2">"uniform"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Frame sampling method &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">frame_sampling_method</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span>
-                <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;all_keyframes&quot;, &quot;uniform&quot;].&#39;</span>
+                <span class="sa">f</span><span class="s2">"Frame sampling method "</span>
+                <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">frame_sampling_method</span><span class="si">}</span><span class="s2">] is not supported. "</span>
+                <span class="sa">f</span><span class="s1">'Can only be one of ["all_keyframes", "uniform"].'</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">reduce_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;avg&quot;</span><span class="p">,</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="s2">&quot;min&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">reduce_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"avg"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">,</span> <span class="s2">"min"</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Reduce mode [</span><span class="si">{</span><span class="n">reduce_mode</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;avg&quot;, &quot;max&quot;, &quot;min&quot;].&#39;</span>
+                <span class="sa">f</span><span class="s2">"Reduce mode [</span><span class="si">{</span><span class="n">reduce_mode</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["avg", "max", "min"].'</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_nsfw_model</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_nsfw_model</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mode</span> <span class="o">=</span> <span class="n">reduce_mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_field</span> <span class="o">=</span> <span class="n">frame_field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">=</span> <span class="n">frame_sampling_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_num</span> <span class="o">=</span> <span class="n">frame_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">=</span> <span class="n">video_backend</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ffmpeg&quot;</span><span class="p">,</span> <span class="s2">&quot;av&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">==</span> <span class="s2">&quot;av&quot;</span><span class="p">,</span> <span class="s2">&quot;Only &#39;av&#39; backend is supported for &#39;uniform&#39; frame sampling method.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"ffmpeg"</span><span class="p">,</span> <span class="s2">"av"</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">"uniform"</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_backend</span> <span class="o">==</span> <span class="s2">"av"</span><span class="p">,</span> <span class="s2">"Only 'av' backend is supported for 'uniform' frame sampling method."</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sampled_frames_key_suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">frame_sampling_method</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="p">(</span>
-            <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">&quot;all_keyframes&quot;</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">frame_num</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampled_frames_key_suffix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"-</span><span class="si">{</span><span class="n">frame_sampling_method</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="p">(</span>
+            <span class="s2">""</span> <span class="k">if</span> <span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">"all_keyframes"</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"-</span><span class="si">{</span><span class="n">frame_num</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calculate_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_images</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">processor</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame_images</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">frame_images</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="n">frame_images</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
             <span class="n">cur_scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">outputs</span><span class="o">.</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mode</span> <span class="o">==</span> <span class="s2">&quot;avg&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mode</span> <span class="o">==</span> <span class="s2">"avg"</span><span class="p">:</span>
                 <span class="n">cur_score</span> <span class="o">=</span> <span class="n">cur_scores</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mode</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_mode</span> <span class="o">==</span> <span class="s2">"max"</span><span class="p">:</span>
                 <span class="n">cur_score</span> <span class="o">=</span> <span class="n">cur_scores</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cur_score</span> <span class="o">=</span> <span class="n">cur_scores</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
@@ -667,7 +670,7 @@
 <div class="viewcode-block" id="VideoNSFWFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.VideoNSFWFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">video_nsfw_score</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -706,10 +709,10 @@
                     <span class="c1"># context hit</span>
                     <span class="n">frames</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">][</span><span class="n">sampled_frames_key</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">&quot;all_keyframes&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">"all_keyframes"</span><span class="p">:</span>
                         <span class="n">frames</span> <span class="o">=</span> <span class="n">video</span><span class="o">.</span><span class="n">extract_keyframes</span><span class="p">()</span><span class="o">.</span><span class="n">frames</span>
                         <span class="n">frame_images</span> <span class="o">=</span> <span class="p">[</span><span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">]</span>
-                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_sampling_method</span> <span class="o">==</span> <span class="s2">"uniform"</span><span class="p">:</span>
                         <span class="c1"># only support av backend</span>
                         <span class="n">frames</span> <span class="o">=</span> <span class="n">extract_video_frames_uniformly</span><span class="p">(</span><span class="n">video</span><span class="o">.</span><span class="n">container</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_num</span><span class="p">)</span>
                         <span class="n">frame_images</span> <span class="o">=</span> <span class="p">[</span><span class="n">frame</span><span class="o">.</span><span class="n">to_image</span><span class="p">()</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">]</span>

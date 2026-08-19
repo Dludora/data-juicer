@@ -513,12 +513,12 @@
                 <article class="bd-article">
                   
   <h1>data_juicer.utils.s3_utils 源代码</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">S3 utilities for Data-Juicer.</span>
 
 <span class="sd">Provides unified S3 authentication and filesystem creation for both</span>
 <span class="sd">s3fs (default executor) and PyArrow (Ray executor) backends.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -533,14 +533,22 @@
     <span class="c1"># Load environment variables from .env file if it exists</span>
     <span class="n">load_dotenv</span><span class="p">()</span>  <span class="c1"># By default, override=False, so environment variables take precedence</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="c1"># python-dotenv not installed, .env files won&#39;t be automatically loaded</span>
+    <span class="c1"># python-dotenv not installed, .env files won't be automatically loaded</span>
     <span class="k">pass</span>
+
+<span class="n">ACCEPTED_CONFIG_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">"aws_access_key_id"</span><span class="p">,</span>
+    <span class="s2">"aws_secret_access_key"</span><span class="p">,</span>
+    <span class="s2">"aws_session_token"</span><span class="p">,</span>
+    <span class="s2">"aws_region"</span><span class="p">,</span>
+    <span class="s2">"endpoint_url"</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="get_aws_credentials">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.get_aws_credentials">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_aws_credentials</span><span class="p">(</span><span class="n">ds_config</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get AWS credentials with priority order:</span>
 <span class="sd">    1. Environment variables (e.g., AWS_ACCESS_KEY_ID)</span>
 <span class="sd">    2. Explicit config parameters (e.g., in a dataset config dict)</span>
@@ -551,27 +559,27 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Tuple of (access_key_id, secret_access_key, session_token, region)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Try environment variables first (most secure)</span>
-    <span class="n">aws_access_key_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AWS_ACCESS_KEY_ID&quot;</span><span class="p">)</span>
-    <span class="n">aws_secret_access_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AWS_SECRET_ACCESS_KEY&quot;</span><span class="p">)</span>
-    <span class="n">aws_session_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AWS_SESSION_TOKEN&quot;</span><span class="p">)</span>
-    <span class="n">aws_region</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AWS_REGION&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;AWS_DEFAULT_REGION&quot;</span><span class="p">)</span>
+    <span class="n">aws_access_key_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"AWS_ACCESS_KEY_ID"</span><span class="p">)</span>
+    <span class="n">aws_secret_access_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"AWS_SECRET_ACCESS_KEY"</span><span class="p">)</span>
+    <span class="n">aws_session_token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"AWS_SESSION_TOKEN"</span><span class="p">)</span>
+    <span class="n">aws_region</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"AWS_REGION"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"AWS_DEFAULT_REGION"</span><span class="p">)</span>
 
     <span class="c1"># Fall back to config if not in environment</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_access_key_id</span> <span class="ow">and</span> <span class="s2">&quot;aws_access_key_id&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">aws_access_key_id</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_access_key_id</span> <span class="ow">and</span> <span class="s2">"aws_access_key_id"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">aws_access_key_id</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_access_key_id"</span><span class="p">]</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">&quot;AWS credentials found in config file. For better security, &quot;</span>
-            <span class="s2">&quot;consider using environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)&quot;</span>
+            <span class="s2">"AWS credentials found in config file. For better security, "</span>
+            <span class="s2">"consider using environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)"</span>
         <span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_secret_access_key</span> <span class="ow">and</span> <span class="s2">&quot;aws_secret_access_key&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">aws_secret_access_key</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_session_token</span> <span class="ow">and</span> <span class="s2">&quot;aws_session_token&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">aws_session_token</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_region</span> <span class="ow">and</span> <span class="s2">&quot;aws_region&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">aws_region</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_secret_access_key</span> <span class="ow">and</span> <span class="s2">"aws_secret_access_key"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">aws_secret_access_key</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_secret_access_key"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_session_token</span> <span class="ow">and</span> <span class="s2">"aws_session_token"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">aws_session_token</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">aws_region</span> <span class="ow">and</span> <span class="s2">"aws_region"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">aws_region</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_region"</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">aws_access_key_id</span><span class="p">,</span> <span class="n">aws_secret_access_key</span><span class="p">,</span> <span class="n">aws_session_token</span><span class="p">,</span> <span class="n">aws_region</span></div>
 
@@ -579,8 +587,8 @@
 
 <div class="viewcode-block" id="create_pyarrow_s3_filesystem">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.create_pyarrow_s3_filesystem">[文档]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">create_pyarrow_s3_filesystem</span><span class="p">(</span><span class="n">ds_config</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="s2">&quot;pyarrow.fs.S3FileSystem&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_pyarrow_s3_filesystem</span><span class="p">(</span><span class="n">ds_config</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="s2">"pyarrow.fs.S3FileSystem"</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Create a PyArrow S3FileSystem with proper authentication.</span>
 
 <span class="sd">    Authentication priority:</span>
@@ -593,7 +601,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        pyarrow.fs.S3FileSystem instance configured with credentials</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Get credentials with priority order</span>
     <span class="n">aws_access_key_id</span><span class="p">,</span> <span class="n">aws_secret_access_key</span><span class="p">,</span> <span class="n">aws_session_token</span><span class="p">,</span> <span class="n">aws_region</span> <span class="o">=</span> <span class="n">get_aws_credentials</span><span class="p">(</span><span class="n">ds_config</span><span class="p">)</span>
@@ -602,25 +610,25 @@
 
     <span class="c1"># Set credentials if provided</span>
     <span class="k">if</span> <span class="n">aws_access_key_id</span><span class="p">:</span>
-        <span class="n">s3_options</span><span class="p">[</span><span class="s2">&quot;access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
+        <span class="n">s3_options</span><span class="p">[</span><span class="s2">"access_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
     <span class="k">if</span> <span class="n">aws_secret_access_key</span><span class="p">:</span>
-        <span class="n">s3_options</span><span class="p">[</span><span class="s2">&quot;secret_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
+        <span class="n">s3_options</span><span class="p">[</span><span class="s2">"secret_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
     <span class="k">if</span> <span class="n">aws_session_token</span><span class="p">:</span>
-        <span class="n">s3_options</span><span class="p">[</span><span class="s2">&quot;session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
+        <span class="n">s3_options</span><span class="p">[</span><span class="s2">"session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
     <span class="k">if</span> <span class="n">aws_region</span><span class="p">:</span>
-        <span class="n">s3_options</span><span class="p">[</span><span class="s2">&quot;region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span> <span class="ow">or</span> <span class="s2">&quot;us-east-2&quot;</span>
+        <span class="n">s3_options</span><span class="p">[</span><span class="s2">"region"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span> <span class="ow">or</span> <span class="s2">"us-east-2"</span>
 
-    <span class="k">if</span> <span class="s2">&quot;endpoint_url&quot;</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
-        <span class="n">s3_options</span><span class="p">[</span><span class="s2">&quot;endpoint_override&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">"endpoint_url"</span> <span class="ow">in</span> <span class="n">ds_config</span><span class="p">:</span>
+        <span class="n">s3_options</span><span class="p">[</span><span class="s2">"endpoint_override"</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span>
 
     <span class="c1"># Create S3 filesystem</span>
     <span class="c1"># If no explicit credentials, PyArrow will use default AWS credential chain</span>
     <span class="k">if</span> <span class="n">s3_options</span><span class="p">:</span>
         <span class="n">s3_fs</span> <span class="o">=</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">(</span><span class="o">**</span><span class="n">s3_options</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using explicit AWS credentials for S3 access&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using explicit AWS credentials for S3 access"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">s3_fs</span> <span class="o">=</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">fs</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using default AWS credential chain for S3 access&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using default AWS credential chain for S3 access"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">s3_fs</span></div>
 
@@ -629,17 +637,20 @@
 <div class="viewcode-block" id="validate_s3_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.s3_utils.html#data_juicer.utils.s3_utils.validate_s3_path">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_s3_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validate that a path is a valid S3 path.</span>
+
+<span class="sd">    The scheme check is case-insensitive ('s3://', 'S3://', ... are all</span>
+<span class="sd">    accepted), while single-slash forms like 's3:/bucket' are rejected.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path: Path to validate</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If path doesn&#39;t start with &#39;s3://&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;S3 path must start with &#39;s3://&#39;, got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+<span class="sd">        ValueError: If path doesn't start with 's3://'</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s3://"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"S3 path must start with 's3://', got: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 </pre></div>
 

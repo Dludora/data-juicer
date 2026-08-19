@@ -1,0 +1,1954 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Elastic Multi-Node Sharding on Shared Storage &#8212; Data Juicer</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=34d13042" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=8a448e45"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'demos/elastic_sharding/README';</script>
+    <script src="../../_static/sidebar.js?v=3fc1065c"></script>
+    <script src="../../_static/switcher-mobile.js?v=07875724"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="icon" href="../../_static/icon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Note for dataset path" href="../process_video_on_ray/data/Note.html" />
+    <link rel="prev" title="VLA Visualization Demo" href="../ego_hand_action_annotation/README.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search docs..."
+         aria-label="Search docs..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/icon.png" class="logo__image only-light" alt=""/>
+    <img src="../../_static/icon.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Data Juicer</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../en/main/demos/elastic_sharding/README.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../zh_CN/main/demos/elastic_sharding/README_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../main/demos/elastic_sharding/README.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../docs_index.html">
+    DOCS
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/en/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/en/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/en/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: en">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">en</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../../en/main/demos/elastic_sharding/README.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            English
+          </a>
+        
+          
+          
+          <a href="../../../../zh_CN/main/demos/elastic_sharding/README_ZH.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../../main/demos/elastic_sharding/README.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorial</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/tutorial/DJ-Cookbook.html">DJ-Cookbook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/tutorial/Installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/tutorial/QuickStart.html">Quick Start</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">docs</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/Operators.html">Operator Schemas 算子提要</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/DatasetCfg.html">Dataset Configuration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/BadDataExhibition.html">“Bad” Data Exhibition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/Cache.html">Cache Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/DJ_SORA.html">DJ-SORA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/DJ_service.html">DJ_service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/DeveloperGuide.html">How-to Guide for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/Export.html">Dataset Export</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/OperatorPlugins.html">Operator Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/Tracing.html">Data Tracing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">operators</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/aggregator/index.html">Aggregator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/deduplicator/index.html">Deduplicator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/filter/index.html">Filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/mapper/index.html">Mapper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/formatter/index.html">Formatter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/grouper/index.html">Grouper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/selector/index.html">Selector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/operators/pipeline/index.html">Pipeline</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">demos</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Demos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/BAD_CASE_INSIGHTS.html">Agent 交互数据：Bad case 洞察</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/BAD_CASE_REPORT.html">Bad case 自助报告（简化入口）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/PERFORMANCE_LLM.html">Agent 流水线里 LLM 算子：加速与超参</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/QUICKSTART_BAD_CASE.html">Bad case 流水线：一键运行与端到端指南</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/README.html">Agent quality &amp; bad-case docs</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Elastic Multi-Node Sharding on Shared Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../tools/distributed_deduplication/README.html">Distributed Fuzzy Deduplication Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/evaluator/README.html">Auto Evaluation Toolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/evaluator/gpt_eval/README.html">GPT EVAL: Evaluate your model with OpenAI API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/evaluator/recorder/README.html">Evaluation Results Recorder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/fmt_conversion/README.html">Format Conversion Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/fmt_conversion/multimodal/README.html">Multimodal Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/fmt_conversion/post_tuning_dialog/README.html">Post Tuning Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/humanops/README.html">Label Studio Service Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/mm_eval/inception_metrics/README.html">Metrics for video generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/mm_eval/vbench_metrics/README.html">VBench metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/postprocess/README.html">Postprocess tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools/preprocess/README.html">Preprocess Tools</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README.html">Third-party Model Library</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../docs_index.html" class="nav-link">DOCS</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Elastic Multi-Node Sharding on Shared Storage</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="elastic-multi-node-sharding-on-shared-storage">
+<h1>Elastic Multi-Node Sharding on Shared Storage<a class="headerlink" href="#elastic-multi-node-sharding-on-shared-storage" title="Link to this heading">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>This demo adds a “shard across nodes, use Ray inside each node” execution mode
+for large JSONL datasets:</p>
+<ol class="arabic simple">
+<li><p>Pre-split the complete input into a fixed, deterministic set of JSONL
+shards.</p></li>
+<li><p>Let independent Workers dynamically claim shards through a shared
+POSIX/NAS/CPFS directory.</p></li>
+<li><p>Process each claimed shard with Data-Juicer’s <code class="docutils literal notranslate"><span class="pre">ray</span></code> executor on the claiming
+node.</p></li>
+<li><p>Publish validated completion metadata and let an idle Worker claim another
+shard.</p></li>
+<li><p>Validate and merge all successful shard outputs in their original order.</p></li>
+</ol>
+<p>This design does not require a cross-node Ray cluster. The shared filesystem
+coordinates nodes, while every node has its own independent Ray runtime.</p>
+<blockquote>
+<div><p><strong>DLC launch topology matters.</strong> <code class="docutils literal notranslate"><span class="pre">dlc_job.py</span> <span class="pre">dlc</span></code> requires a job type that
+broadcasts the configured startup command to every Worker. A PAI-DLC MPIJob
+does not do that: its command runs on the Launcher, which must use <code class="docutils literal notranslate"><span class="pre">mpirun</span></code>
+and DLC’s <code class="docutils literal notranslate"><span class="pre">/etc/mpi/hostfile</span></code> to start one process on every GPU Worker. In
+both cases each GPU Worker still uses its own node-local Ray runtime.</p>
+</div></blockquote>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                 Worker-broadcast DLC job submission
+                                  |
+             +--------------------+--------------------+
+             |                    |                    |
+       DLC Worker 0         DLC Worker 1         DLC Worker N
+       claim shard A        claim shard B        claim shard C
+       node-local Ray       node-local Ray       node-local Ray
+             |                    |                    |
+             +--------------------+--------------------+
+                                  |
+                        shared NAS/CPFS job-dir
+                manifest / shards / locks / done / attempts
+                                  |
+                       validate and ordered merge
+</pre></div>
+</div>
+</section>
+<section id="key-advantages">
+<h2>Key advantages<a class="headerlink" href="#key-advantages" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>One submission for multiple nodes</strong>: use either Worker broadcast or an
+MPIJob Launcher with <code class="docutils literal notranslate"><span class="pre">mpirun</span></code>; neither requires logging in to every machine.</p></li>
+<li><p><strong>Dynamic load balancing</strong>: a Worker claims another shard after finishing its
+current one, so faster nodes naturally process more work.</p></li>
+<li><p><strong>Ray remains available inside every node</strong>: every shard is processed by the
+Data-Juicer Ray executor using that node’s CPU/GPU resources.</p></li>
+<li><p><strong>No rank dependency</strong>: coordination does not require <code class="docutils literal notranslate"><span class="pre">RANK</span></code>, <code class="docutils literal notranslate"><span class="pre">WORLD_SIZE</span></code>,
+or a static hostname-to-file mapping.</p></li>
+<li><p><strong>Auditable and reproducible</strong>: the manifest records input fingerprints,
+recipe hash, Data-Juicer commit, Ray configuration, and shard order.</p></li>
+<li><p><strong>Exclusive claims</strong>: POSIX <code class="docutils literal notranslate"><span class="pre">O_CREAT|O_EXCL</span></code> prevents two active Workers from
+normally owning the same shard.</p></li>
+<li><p><strong>Failure handling</strong>: failed attempts can retry, and expired claims can be
+reclaimed by another Worker.</p></li>
+<li><p><strong>Integrity validation</strong>: row counts, byte counts, and SHA256 values are
+checked before a result is accepted and merged.</p></li>
+<li><p><strong>Deterministic order</strong>: directory inputs are sorted, shards are contiguous,
+and merge follows manifest order.</p></li>
+<li><p><strong>Low integration risk</strong>: the implementation lives under <code class="docutils literal notranslate"><span class="pre">demos</span></code> and does
+not modify existing executors or operators.</p></li>
+</ul>
+</section>
+<section id="comparison-with-existing-approaches">
+<h2>Comparison with existing approaches<a class="headerlink" href="#comparison-with-existing-approaches" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Approach</p></th>
+<th class="head"><p>Splitting</p></th>
+<th class="head"><p>Dynamic claims</p></th>
+<th class="head"><p>Recovery</p></th>
+<th class="head"><p>Ray inside node</p></th>
+<th class="head"><p>Cross-node Ray</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tools/data_resplit.py</span></code></p></td>
+<td><p>Pre-split</p></td>
+<td><p>No</p></td>
+<td><p>No</p></td>
+<td><p>User-managed</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code></p></td>
+<td><p>Runtime</p></td>
+<td><p>Ray scheduling</p></td>
+<td><p>Ray job</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>This demo</p></td>
+<td><p>Pre-split</p></td>
+<td><p>Shared filesystem</p></td>
+<td><p>Timeout/retry</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This demo is useful when:</p>
+<ul class="simple">
+<li><p>the input is large and fixed, inspectable shards are desirable;</p></li>
+<li><p>DLC Workers share NAS/CPFS but should not form one Ray cluster;</p></li>
+<li><p>nodes have different speeds or may be restarted;</p></li>
+<li><p>per-shard logs, attempts, ownership, and verifiable outputs are required.</p></li>
+</ul>
+</section>
+<section id="files">
+<h2>Files<a class="headerlink" href="#files" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>demos/elastic_sharding/
+├── shard_job.py             # Generic prepare/worker/status/retry/merge CLI
+├── dlc_job.py               # Launcher for DLC job types that broadcast to Workers
+├── two_node_test.py         # Backward-compatible strict two-node wrapper
+├── configs/
+│   ├── demo.yaml            # CPU-only Mapper/Filter recipe
+│   ├── gpu_demo.yaml        # One-GPU-per-node CPU + GPU smoke test
+│   └── gpu_demo_4gpu.yaml   # Single-node, four-GPU smoke test
+├── data/
+│   └── gpu-demo-dataset.jsonl
+├── README.md
+└── README_ZH.md
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">shard_job.py</span></code> contains the shared-storage shard state machine. For
+Worker-broadcast job types, <code class="docutils literal notranslate"><span class="pre">dlc_job.py</span></code> coordinates one-time preparation and
+finalization around any number of DLC Workers. <code class="docutils literal notranslate"><span class="pre">two_node_test.py</span></code> keeps the
+original strict two-node defaults for backward compatibility. An MPIJob
+Launcher should instead call the lower-level <code class="docutils literal notranslate"><span class="pre">prepare</span></code>, <code class="docutils literal notranslate"><span class="pre">worker</span></code>, and <code class="docutils literal notranslate"><span class="pre">merge</span></code>
+commands around an <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">N</span> <span class="pre">-npernode</span> <span class="pre">1</span></code> worker launch.</p>
+</section>
+<section id="important-path-concepts">
+<h2>Important path concepts<a class="headerlink" href="#important-path-concepts" title="Link to this heading">#</a></h2>
+<p>Do not confuse these three paths:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--config</span></code>: the Data-Juicer YAML recipe.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code>: the JSONL file or directory to pre-split. When specified,
+it overrides <code class="docutils literal notranslate"><span class="pre">dataset_path</span></code> in the recipe.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code>: the shared working directory containing shards, locks, attempts,
+logs, states, and results. It is not the original dataset directory.</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>/mnt/shared/recipes/my_process.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset-path<span class="w"> </span>/mnt/shared/input/my_dataset.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">16</span>
+</pre></div>
+</div>
+</section>
+<section id="requirements-and-current-scope">
+<h2>Requirements and current scope<a class="headerlink" href="#requirements-and-current-scope" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>All Workers must run the same Data-Juicer version and dependencies.</p></li>
+<li><p>The job directory must be on a shared POSIX filesystem supporting atomic
+create, atomic rename, hard links, and <code class="docutils literal notranslate"><span class="pre">fcntl</span></code> advisory locks, such as a
+normally configured NAS/NFS/CPFS.</p></li>
+<li><p>Every Worker must see the job directory, input JSONL, and local media at
+identical paths.</p></li>
+<li><p>Inputs are local <code class="docutils literal notranslate"><span class="pre">.jsonl</span></code> files or local directories recursively containing
+<code class="docutils literal notranslate"><span class="pre">.jsonl</span></code> files.</p></li>
+<li><p>Every line must be a UTF-8 JSON object. Blank lines, JSON arrays as rows, and
+malformed JSON are rejected.</p></li>
+<li><p>Only shard-independent Mapper and Filter operators are currently accepted.</p></li>
+<li><p>Deduplicators, Selectors, Groupers, Aggregators, Pipelines, and other
+whole-dataset operations are rejected during <code class="docutils literal notranslate"><span class="pre">prepare</span></code>.</p></li>
+<li><p>Claims use a static timeout without a heartbeat. The timeout must be longer
+than the longest expected shard runtime.</p></li>
+<li><p>The job directory stores normalized shards and attempt results, so reserve
+enough capacity. Media files are referenced by path and are not copied.</p></li>
+</ul>
+</section>
+<section id="pai-dlc-worker-broadcast-quick-start">
+<h2>PAI-DLC Worker-broadcast quick start<a class="headerlink" href="#pai-dlc-worker-broadcast-quick-start" title="Link to this heading">#</a></h2>
+<p>This section is <strong>not</strong> the MPIJob launch procedure. Use it only after
+confirming that the selected DLC job type runs the startup command on every
+Worker. For MPIJob, configure the command once on the Launcher and have that
+command run preparation, <code class="docutils literal notranslate"><span class="pre">mpirun</span></code> one process per Worker, and merge.</p>
+<section id="configure-the-dlc-job">
+<h3>1. Configure the DLC job<a class="headerlink" href="#configure-the-dlc-job" title="Link to this heading">#</a></h3>
+<p>Create one DLC job with:</p>
+<ul class="simple">
+<li><p>Framework: a <code class="docutils literal notranslate"><span class="pre">PyTorch</span></code>-style job that starts the user command on every
+Worker, without <code class="docutils literal notranslate"><span class="pre">torchrun</span></code>.</p></li>
+<li><p>Worker count: any positive number, for example <code class="docutils literal notranslate"><span class="pre">4</span></code>, with one script process
+per Worker.</p></li>
+<li><p>Do not select DLC’s <code class="docutils literal notranslate"><span class="pre">Ray</span></code> framework for this demo. DLC Ray creates a
+cross-node Ray cluster, while this design intentionally uses independent
+node-local Ray runtimes.</p></li>
+<li><p>Mount the same Data-Juicer code at the same path on all Workers, for example
+<code class="docutils literal notranslate"><span class="pre">/mnt/data/data-juicer</span></code>.</p></li>
+<li><p>Mount the same read-write NAS/CPFS at the same path, for example
+<code class="docutils literal notranslate"><span class="pre">/mnt/shared</span></code>.</p></li>
+<li><p>Use the same image with Data-Juicer’s Ray dependencies on all Workers.</p></li>
+</ul>
+<p>Only one startup command and a Worker count are configured on the PAI-DLC job
+page; the selected job type must dispatch that command to every Worker. See the official
+<a class="reference external" href="https://help.aliyun.com/zh/pai/create-a-training-task">Create a training job</a>
+guide.</p>
+</section>
+<section id="enter-one-startup-command">
+<h3>2. Enter one startup command<a class="headerlink" href="#enter-one-startup-command" title="Link to this heading">#</a></h3>
+<p>Enter this command once in the DLC job configuration:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/mnt/data/data-juicer<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/multi-node-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>The defaults are:</p>
+<ul class="simple">
+<li><p>recipe: <code class="docutils literal notranslate"><span class="pre">demos/elastic_sharding/configs/demo.yaml</span></code>;</p></li>
+<li><p>input: <code class="docutils literal notranslate"><span class="pre">demos/data/demo-dataset.jsonl</span></code> from that recipe;</p></li>
+<li><p>shard count: 4 unless explicitly set;</p></li>
+<li><p>expected DLC Workers: not enforced in the default elastic mode;</p></li>
+<li><p>Ray: independent <code class="docutils literal notranslate"><span class="pre">local</span></code> mode on every node;</p></li>
+<li><p>merged result: <code class="docutils literal notranslate"><span class="pre">&lt;job-dir&gt;/merged.jsonl</span></code>.</p></li>
+</ul>
+</section>
+<section id="automatic-workflow">
+<h3>3. Automatic workflow<a class="headerlink" href="#automatic-workflow" title="Link to this heading">#</a></h3>
+<p>The selected Worker-broadcast job type runs the same <code class="docutils literal notranslate"><span class="pre">dlc</span></code> entry point on
+every Worker:</p>
+<ol class="arabic simple">
+<li><p>Atomically elect one prepare coordinator through shared storage.</p></li>
+<li><p>Validate the input and recipe, then pre-split exactly once.</p></li>
+<li><p>Let every live Worker claim shards without a per-Worker cap.</p></li>
+<li><p>Process each shard through <code class="docutils literal notranslate"><span class="pre">tools/process_data.py</span></code> with
+<code class="docutils literal notranslate"><span class="pre">--executor_type</span> <span class="pre">ray</span> <span class="pre">--ray_address</span> <span class="pre">local</span></code>.</p></li>
+<li><p>Wait for all shards to complete or reach terminal failure.</p></li>
+<li><p>Atomically elect one finalize coordinator.</p></li>
+<li><p>Report participating hostnames, validate outputs, and merge.</p></li>
+<li><p>Let every other instance read the same final result and exit with the same
+code.</p></li>
+</ol>
+<p>Useful successful log messages include:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>elected as DLC prepare coordinator
+Starting DLC worker on hostname=...
+elected as DLC finalize coordinator
+PASS: 16 shards were completed by 4 node(s)
+</pre></div>
+</div>
+<p>Inspect status from any environment that mounts the job directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>status<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/multi-node-job-001
+</pre></div>
+</div>
+<p>The merged output is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/mnt/shared/data-juicer-jobs/multi-node-job-001/merged.jsonl
+</pre></div>
+</div>
+</section>
+<section id="elastic-mode-and-strict-participation-mode">
+<h3>Elastic mode and strict participation mode<a class="headerlink" href="#elastic-mode-and-strict-participation-mode" title="Link to this heading">#</a></h3>
+<p>The default is <strong>elastic mode</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--nodes</span></code> is optional and informational;</p></li>
+<li><p>Workers have no claim cap;</p></li>
+<li><p>if fewer Workers start than requested, the live Workers can still claim all
+remaining shards;</p></li>
+<li><p>finalization requires completed shards, not a specific Worker count.</p></li>
+</ul>
+<p>This is the recommended production behavior:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/elastic-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>Use <strong>strict participation mode</strong> only when testing that every configured DLC
+Worker actually processed at least one shard:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/strict-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--require-all-nodes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>Strict mode sets a per-Worker claim cap and verifies at least <code class="docutils literal notranslate"><span class="pre">--nodes</span></code>
+distinct completion hostnames. A missing Worker therefore causes the strict
+job to wait and eventually fail. Use a shard count that is a multiple of the
+node count.</p>
+</section>
+</section>
+<section id="gpu-smoke-test-one-recipe-with-cpu-and-gpu-operators">
+<h2>GPU smoke test: one recipe with CPU and GPU operators<a class="headerlink" href="#gpu-smoke-test-one-recipe-with-cpu-and-gpu-operators" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">configs/gpu_demo.yaml</span></code> verifies that a claimed shard can move through both
+CPU and GPU operators inside the node-local Ray executor:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Order</p></th>
+<th class="head"><p>Operator</p></th>
+<th class="head"><p>Resource requested from Ray</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">whitespace_normalization_mapper</span></code></p></td>
+<td><p>1 CPU</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_sentiment_detection_mapper</span></code></p></td>
+<td><p>1 CPU + 1 GPU</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">query_topic_detection_mapper</span></code></p></td>
+<td><p>1 CPU + 1 GPU</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">text_pair_similarity_filter</span></code></p></td>
+<td><p>1 CPU + 1 GPU</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">text_length_filter</span></code></p></td>
+<td><p>1 CPU</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The two GPU Mappers write sentiment and topic labels into <code class="docutils literal notranslate"><span class="pre">meta</span></code>. The GPU
+Filter uses <code class="docutils literal notranslate"><span class="pre">openai/clip-vit-base-patch32</span></code> and writes
+<code class="docutils literal notranslate"><span class="pre">text_pair_similarity</span></code> into <code class="docutils literal notranslate"><span class="pre">__dj__stats__</span></code>. All three GPU operators set
+<code class="docutils literal notranslate"><span class="pre">num_gpus:</span> <span class="pre">1</span></code>, so Ray must schedule their tasks on a real GPU; this is not a
+CPU-fallback test.</p>
+<p>Before submitting the job:</p>
+<ul class="simple">
+<li><p>give every DLC Worker at least one visible NVIDIA GPU;</p></li>
+<li><p>install the CUDA-enabled PyTorch, Ray, Transformers, and Data-Juicer
+dependencies in the image;</p></li>
+<li><p>make these three models available to every Worker:
+<code class="docutils literal notranslate"><span class="pre">mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis</span></code>,
+<code class="docutils literal notranslate"><span class="pre">dstefa/roberta-base_topic_classification_nyt_news</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">openai/clip-vit-base-patch32</span></code>;</p></li>
+<li><p>the first run downloads the models from Hugging Face unless the corresponding
+recipe fields are changed to pre-downloaded paths;</p></li>
+<li><p>prefer models baked into the image or a pre-populated cache for a
+multi-node test, rather than making all Workers download them concurrently.</p></li>
+</ul>
+<p>Check one Worker image first:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0))"</span>
+</pre></div>
+</div>
+<section id="single-node-four-gpu-command">
+<h3>Single-node, four-GPU command<a class="headerlink" href="#single-node-four-gpu-command" title="Link to this heading">#</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">gpu_demo_4gpu.yaml</span></code> when one machine has four visible GPUs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/mnt/data/data-juicer<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3<span class="w"> </span><span class="se">\</span>
+python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>demos/elastic_sharding/configs/gpu_demo_4gpu.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-4card-smoke-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-4card-smoke-001/merged.jsonl
+</pre></div>
+</div>
+<p>The four-GPU recipe uses <code class="docutils literal notranslate"><span class="pre">override_num_blocks:</span> <span class="pre">4</span></code>, <code class="docutils literal notranslate"><span class="pre">batch_size:</span> <span class="pre">1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">num_proc:</span> <span class="pre">4</span></code>, and <code class="docutils literal notranslate"><span class="pre">num_gpus:</span> <span class="pre">1</span></code> for each GPU operator. One node-local Ray
+runtime can therefore schedule four one-GPU tasks concurrently.</p>
+<p>Keep <code class="docutils literal notranslate"><span class="pre">--num-shards</span> <span class="pre">1</span></code> for this four-row smoke test. A single DLC Worker claims
+shards sequentially, so <code class="docutils literal notranslate"><span class="pre">--num-shards</span> <span class="pre">4</span></code> would create four one-row Ray jobs and
+would normally exercise only one GPU at a time. For a larger input, keep each
+shard large enough to contain at least four Ray blocks.</p>
+<p>You can observe placement in another terminal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>watch<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>nvidia-smi
+</pre></div>
+</div>
+<p>Because the bundled input is tiny, GPU utilization may be brief. A larger
+<code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code> is better for sustained utilization and throughput
+measurements.</p>
+</section>
+<section id="multi-node-one-gpu-per-node-command">
+<h3>Multi-node, one-GPU-per-node command<a class="headerlink" href="#multi-node-one-gpu-per-node-command" title="Link to this heading">#</a></h3>
+<p>For a strict two-GPU-node DLC smoke test, configure two Workers and enter this
+single startup command once:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/mnt/data/data-juicer<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>demos/elastic_sharding/configs/gpu_demo.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-smoke-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--require-all-nodes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-smoke-001/merged.jsonl
+</pre></div>
+</div>
+<p>The bundled dataset has four rows, so it supports at most four non-empty
+shards. To test more nodes or realistic throughput, pass a larger JSONL with
+both <code class="docutils literal notranslate"><span class="pre">text</span></code> and <code class="docutils literal notranslate"><span class="pre">target_text</span></code> fields:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>demos/elastic_sharding/configs/gpu_demo.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset-path<span class="w"> </span>/mnt/shared/input/text-pairs.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-large-smoke-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">32</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--require-all-nodes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>After completion, verify ownership and the GPU-generated metadata/statistics:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>status<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/gpu-smoke-001
+
+rg<span class="w"> </span>-n<span class="w"> </span><span class="s1">'query_(sentiment|topic)_label|text_pair_similarity'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>/mnt/shared/data-juicer-jobs/gpu-smoke-001/merged.jsonl
+</pre></div>
+</div>
+<p>Each Worker handles one shard attempt at a time. The bundled recipe deliberately
+sets <code class="docutils literal notranslate"><span class="pre">ray_execution_mode:</span> <span class="pre">task</span></code>, <code class="docutils literal notranslate"><span class="pre">num_proc:</span> <span class="pre">1</span></code>, and <code class="docutils literal notranslate"><span class="pre">num_gpus:</span> <span class="pre">1</span></code> for every GPU
+operator. Their Ray tasks can therefore reuse a single GPU on each node instead
+of requiring three GPUs concurrently. For a production recipe, tune operator
+concurrency, GPU fractions, batch size, model size, and shard size for the
+hardware.</p>
+</section>
+</section>
+<section id="important-use-an-existing-mapper-filter-recipe-and-your-own-jsonl">
+<h2>Important: use an existing Mapper/Filter recipe and your own JSONL<a class="headerlink" href="#important-use-an-existing-mapper-filter-recipe-and-your-own-jsonl" title="Link to this heading">#</a></h2>
+<p>The demo is not limited to the bundled recipe. The intended real-world usage is
+to reuse an existing Data-Juicer Mapper/Filter recipe and point
+<code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code> at a large user-owned JSONL dataset.</p>
+<section id="recipe-compatibility-rules">
+<h3>Recipe compatibility rules<a class="headerlink" href="#recipe-compatibility-rules" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">executor_type</span></code> may be <code class="docutils literal notranslate"><span class="pre">default</span></code> or <code class="docutils literal notranslate"><span class="pre">ray</span></code>; Workers always override it with
+<code class="docutils literal notranslate"><span class="pre">ray</span></code>.</p></li>
+<li><p>The recipe must contain an explicit <code class="docutils literal notranslate"><span class="pre">process</span></code> list.</p></li>
+<li><p>Every operator must resolve to a Mapper or Filter and must not be a global
+operation.</p></li>
+<li><p>Operators must not set <code class="docutils literal notranslate"><span class="pre">stats_export_path</span></code>, because different shards would
+collide on the same statistics file.</p></li>
+<li><p>A fixed <code class="docutils literal notranslate"><span class="pre">save_dir</span></code> is allowed with a warning; users must ensure generated
+filenames cannot collide across shards.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">custom_operator_paths</span></code> is supported. Relative paths resolve from the
+Data-Juicer repository root, and custom operators must still inherit Mapper
+or Filter.</p></li>
+<li><p>When an operator declares <code class="docutils literal notranslate"><span class="pre">index_key</span></code>, preparation fills missing values
+with the global input row index. Existing values remain unchanged.</p></li>
+</ol>
+<p>Generally suitable operations include:</p>
+<ul class="simple">
+<li><p>per-sample text cleanup Mappers;</p></li>
+<li><p>per-sample text, image, audio, or video property Mappers;</p></li>
+<li><p>Filters based only on the current sample and its computed statistics;</p></li>
+<li><p>custom Mappers/Filters with no cross-sample state or shared fixed outputs.</p></li>
+</ul>
+<p>Operations that are not directly shard-safe include:</p>
+<ul class="simple">
+<li><p>global deduplication;</p></li>
+<li><p>Selectors requiring global ordering or sampling;</p></li>
+<li><p>Groupers, Aggregators, and Pipelines;</p></li>
+<li><p>operators with cross-sample state or one global output.</p></li>
+</ul>
+<p>Example recipe:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my-elastic-job</span>
+<span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/mnt/shared/input/default.jsonl</span>
+<span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/mnt/shared/output/ignored-by-shard-worker.jsonl</span>
+<span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ray</span>
+<span class="nt">ray_address</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">local</span>
+
+<span class="nt">text_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text</span>
+<span class="nt">image_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">images</span>
+<span class="nt">audio_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">audios</span>
+<span class="nt">video_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">videos</span>
+
+<span class="nt">process</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">whitespace_normalization_mapper</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">text_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">text_length_filter</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">text_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text</span>
+<span class="w">      </span><span class="nt">min_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">      </span><span class="nt">max_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span>
+</pre></div>
+</div>
+<p>For every claim, the Worker overrides the recipe’s <code class="docutils literal notranslate"><span class="pre">dataset_path</span></code> with the
+current shard and overrides <code class="docutils literal notranslate"><span class="pre">export_path</span></code> with the isolated attempt output.
+The same recipe can therefore be safely reused for all shards.</p>
+</section>
+<section id="requirements-for-your-jsonl">
+<h3>Requirements for your JSONL<a class="headerlink" href="#requirements-for-your-jsonl" title="Link to this heading">#</a></h3>
+<p>Single-file input:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/mnt/shared/input/my_dataset.jsonl
+</pre></div>
+</div>
+<p>Directory input:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>/mnt/shared/input/my_dataset/
+├── 000.jsonl
+├── 001.jsonl
+└── nested/
+    └── 002.jsonl
+</pre></div>
+</div>
+<p>Directories are scanned recursively and sorted by relative path. Each line
+must be an object:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example"</span><span class="p">,</span><span class="w"> </span><span class="nt">"images"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"media/1.jpg"</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>Media path behavior:</p>
+<ul class="simple">
+<li><p>absolute paths are preserved;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">http://</span></code>, <code class="docutils literal notranslate"><span class="pre">https://</span></code>, <code class="docutils literal notranslate"><span class="pre">s3://</span></code>, <code class="docutils literal notranslate"><span class="pre">gs://</span></code>, and <code class="docutils literal notranslate"><span class="pre">hdfs://</span></code> values are preserved;</p></li>
+<li><p>relative paths become absolute:</p>
+<ul>
+<li><p>relative to the JSONL’s parent for single-file input;</p></li>
+<li><p>relative to the dataset root for directory input;</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">images</span></code>, <code class="docutils literal notranslate"><span class="pre">audios</span></code>, and <code class="docutils literal notranslate"><span class="pre">videos</span></code> must be string lists or <code class="docutils literal notranslate"><span class="pre">null</span></code>. Change their
+names through <code class="docutils literal notranslate"><span class="pre">image_key</span></code>, <code class="docutils literal notranslate"><span class="pre">audio_key</span></code>, and <code class="docutils literal notranslate"><span class="pre">video_key</span></code> in the recipe.</p></li>
+</ul>
+</section>
+<section id="run-your-recipe-and-input-on-any-number-of-broadcast-started-dlc-workers">
+<h3>Run your recipe and input on any number of broadcast-started DLC Workers<a class="headerlink" href="#run-your-recipe-and-input-on-any-number-of-broadcast-started-dlc-workers" title="Link to this heading">#</a></h3>
+<p>The Worker-broadcast DLC job still contains only one configured startup
+command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/mnt/data/data-juicer<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="se">\</span>
+python<span class="w"> </span>demos/elastic_sharding/dlc_job.py<span class="w"> </span>dlc<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>/mnt/shared/recipes/my_process.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset-path<span class="w"> </span>/mnt/shared/input/my_dataset.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-dataset-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--nodes<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/mnt/shared/output/my_dataset.processed.jsonl
+</pre></div>
+</div>
+<p>In this command:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--config</span></code> reuses the existing Mapper/Filter recipe;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code> overrides the recipe’s original input;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code> stores all state and intermediate results for this run;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output</span></code> selects the final merged JSONL;</p></li>
+<li><p>any live Workers dynamically claim sixteen shards and use Ray inside each
+node.</p></li>
+</ul>
+<p>Start with a small sample and at least a few shards per node, then scale the
+input and shard count after the smoke test succeeds.</p>
+</section>
+<section id="choosing-the-shard-count">
+<h3>Choosing the shard count<a class="headerlink" href="#choosing-the-shard-count" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">&lt;=</span> <span class="pre">num_shards</span> <span class="pre">&lt;=</span> <span class="pre">total</span> <span class="pre">JSONL</span> <span class="pre">rows</span></code> must hold.</p></li>
+<li><p>More shards than nodes improve work stealing and reduce skew.</p></li>
+<li><p>Start with <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">×</span> <span class="pre">node_count</span></code> or <code class="docutils literal notranslate"><span class="pre">4</span> <span class="pre">×</span> <span class="pre">node_count</span></code>.</p></li>
+<li><p>A shard should complete well before <code class="docutils literal notranslate"><span class="pre">lock_timeout_secs</span></code>.</p></li>
+<li><p>Too few shards reduce load balancing; too many increase Ray startup,
+metadata, and small-file overhead.</p></li>
+<li><p>Default elastic mode has no per-Worker cap, so the shard count does not need
+to be a multiple of the Worker count.</p></li>
+<li><p>With <code class="docutils literal notranslate"><span class="pre">--require-all-nodes</span></code>, a multiple of <code class="docutils literal notranslate"><span class="pre">--nodes</span></code> is the simplest choice
+and guarantees a clean equal upper bound.</p></li>
+</ul>
+</section>
+<section id="when-the-recipe-or-input-changes">
+<h3>When the recipe or input changes<a class="headerlink" href="#when-the-recipe-or-input-changes" title="Link to this heading">#</a></h3>
+<p>Preparation records the recipe SHA256, input file SHA256 values, sizes, mtimes,
+row counts, normalized-content SHA256, and Data-Juicer commit.</p>
+<ul class="simple">
+<li><p>Repeating an identical request is an idempotent no-op.</p></li>
+<li><p>Do not reuse an old job directory after changing the recipe, input, shard
+count, or Ray address.</p></li>
+<li><p>Use a new directory for each independent run, such as <code class="docutils literal notranslate"><span class="pre">my-dataset-001</span></code> and
+<code class="docutils literal notranslate"><span class="pre">my-dataset-002</span></code>.</p></li>
+</ul>
+</section>
+</section>
+<section id="dlc-job-py-parameter-reference">
+<h2><code class="docutils literal notranslate"><span class="pre">dlc_job.py</span></code> parameter reference<a class="headerlink" href="#dlc-job-py-parameter-reference" title="Link to this heading">#</a></h2>
+<section id="dlc">
+<h3><code class="docutils literal notranslate"><span class="pre">dlc</span></code><a class="headerlink" href="#dlc" title="Link to this heading">#</a></h3>
+<p>Runs the complete Worker-broadcast DLC workflow.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Shared job directory used by every Worker</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">configs/demo.yaml</span></code></p></td>
+<td><p>Existing shard-safe Data-Juicer recipe</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Recipe value</p></td>
+<td><p>Override with a JSONL file or directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--nodes</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Not enforced</p></td>
+<td><p>Informational in elastic mode; required in strict mode</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--num-shards</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p></td>
+<td><p>Exact number of non-empty shards</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--require-all-nodes</span></code></p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Cap claims and require all <code class="docutils literal notranslate"><span class="pre">--nodes</span></code> hostnames</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--ray-address</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local</span></code></p></td>
+<td><p>Ray address used independently in each node</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--output</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;job-dir&gt;/merged.jsonl</span></code></p></td>
+<td><p>Final merged JSONL</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--run-id</span></code></p></td>
+<td><p>No</p></td>
+<td><p>DLC Job ID</p></td>
+<td><p>Identifier shared by Workers in one submission</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--wait-timeout-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">126000</span></code> (35h)</p></td>
+<td><p>Maximum prepare/completion/finalize wait</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--poll-interval-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p></td>
+<td><p>DLC coordination polling interval</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--wait-timeout-secs</span></code> controls cross-instance DLC coordination. It is different
+from the per-shard claim timeout.</p>
+<p>The launcher reads the submission identity from <code class="docutils literal notranslate"><span class="pre">PAI_JOB_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">DLC_JOB_ID</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">JOB_ID</span></code>. Outside DLC, pass the same <code class="docutils literal notranslate"><span class="pre">--run-id</span></code> to every Worker and use a new
+value for each new submission. This keeps terminal coordination state from one
+submission out of later submissions that reuse the same <code class="docutils literal notranslate"><span class="pre">job-dir</span></code>.</p>
+</section>
+<section id="other-wrapper-subcommands">
+<h3>Other wrapper subcommands<a class="headerlink" href="#other-wrapper-subcommands" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Option</p></th>
+<th class="head"><p>Default and meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">prepare</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Required shared directory</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--config</span></code></p></td>
+<td><p>Bundled demo recipe</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code></p></td>
+<td><p>Optional recipe input override</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--num-shards</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--ray-address</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">worker</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--max-shards</span></code></p></td>
+<td><p>Unlimited unless explicitly set</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--ray-address</span></code></p></td>
+<td><p>Optional manifest override</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">status</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Required; prints all shards</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">verify</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--output</span></code></p></td>
+<td><p>Defaults inside the job directory</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">--expect-nodes</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1</span></code>; minimum distinct completion hostnames</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="complete-shard-job-py-parameter-reference">
+<h2>Complete <code class="docutils literal notranslate"><span class="pre">shard_job.py</span></code> parameter reference<a class="headerlink" href="#complete-shard-job-py-parameter-reference" title="Link to this heading">#</a></h2>
+<section id="prepare">
+<h3><code class="docutils literal notranslate"><span class="pre">prepare</span></code><a class="headerlink" href="#prepare" title="Link to this heading">#</a></h3>
+<p>Validate the recipe, scan the input, and atomically publish a prepared job.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--config</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Data-Juicer YAML recipe</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dataset-path</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Recipe value</p></td>
+<td><p>Override input JSONL file/directory</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>New shared POSIX job directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--num-shards</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Exact number of non-empty shards</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--lock-timeout-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">126000</span></code></p></td>
+<td><p>Per-shard claim timeout stored in manifest</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--max-retries</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p></td>
+<td><p>Retries after the first failure; four total failures</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--poll-interval-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">20</span></code></p></td>
+<td><p>Worker wait when no claim is available</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ray-address</span></code></p></td>
+<td><p>No</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">local</span></code></p></td>
+<td><p>Ray address stored for Workers</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="worker">
+<h3><code class="docutils literal notranslate"><span class="pre">worker</span></code><a class="headerlink" href="#worker" title="Link to this heading">#</a></h3>
+<p>Continuously claim and process shards.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Shared directory created by prepare</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--max-shards</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Unlimited</p></td>
+<td><p>Maximum claims; failed attempts also count</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--lock-timeout-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Override claim timeout for this Worker</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--max-retries</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Override failure retries for this Worker</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--poll-interval-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Override no-claim polling interval</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--ray-address</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Override Ray address for this Worker</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--allow-version-mismatch</span></code></p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Allow a Worker commit mismatch intentionally</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Without <code class="docutils literal notranslate"><span class="pre">--max-shards</span></code>, a Worker keeps claiming until all shards complete or
+the job reaches terminal failure.</p>
+</section>
+<section id="status">
+<h3><code class="docutils literal notranslate"><span class="pre">status</span></code><a class="headerlink" href="#status" title="Link to this heading">#</a></h3>
+<p>Read job state without changing it.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Job directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--lock-timeout-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Only affects whether locks display as stale</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--json</span></code></p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Print machine-readable JSON</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--all</span></code></p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Print every shard and owner in text mode</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="retry">
+<h3><code class="docutils literal notranslate"><span class="pre">retry</span></code><a class="headerlink" href="#retry" title="Link to this heading">#</a></h3>
+<p>Archive terminal failure state and requeue shards. Select exactly one mode:
+<code class="docutils literal notranslate"><span class="pre">--all-failed</span></code> or one or more <code class="docutils literal notranslate"><span class="pre">--shard-id</span></code> options.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Job directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--all-failed</span></code></p></td>
+<td><p>Conditional</p></td>
+<td><p>false</p></td>
+<td><p>Requeue every failed shard</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--shard-id</span></code></p></td>
+<td><p>Conditional</p></td>
+<td><p>None</p></td>
+<td><p>Requeue this ID; may be repeated</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Old failure metadata and attempts move into <code class="docutils literal notranslate"><span class="pre">state/history</span></code>; retry does not
+overwrite history.</p>
+</section>
+<section id="merge">
+<h3><code class="docutils literal notranslate"><span class="pre">merge</span></code><a class="headerlink" href="#merge" title="Link to this heading">#</a></h3>
+<p>Revalidate and merge all completed results in manifest order.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--job-dir</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Fully completed job</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--output</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>None</p></td>
+<td><p>Final JSONL path</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--lock-timeout-secs</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Manifest value</p></td>
+<td><p>Used while calculating pre-merge status</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--overwrite</span></code></p></td>
+<td><p>No</p></td>
+<td><p>false</p></td>
+<td><p>Replace an existing output</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="generic-manual-or-scheduler-workflow">
+<h2>Generic manual or scheduler workflow<a class="headerlink" href="#generic-manual-or-scheduler-workflow" title="Link to this heading">#</a></h2>
+<p>Use the lower-level CLI when a scheduler other than DLC launches the Workers.</p>
+<section id="id1">
+<h3>1. Prepare<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>prepare<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config<span class="w"> </span>/mnt/shared/recipes/my_process.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dataset-path<span class="w"> </span>/mnt/shared/input/my_dataset.jsonl<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--num-shards<span class="w"> </span><span class="m">16</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--lock-timeout-secs<span class="w"> </span><span class="m">126000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--max-retries<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--poll-interval-secs<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>Preparation uses two streaming passes:</p>
+<ul class="simple">
+<li><p>pass one validates JSONL, fingerprints inputs, normalizes media paths, and
+assigns missing global <code class="docutils literal notranslate"><span class="pre">index_key</span></code> values;</p></li>
+<li><p>pass two writes contiguous, non-empty shards approximately balanced by
+normalized bytes;</p></li>
+<li><p>input changes between passes are detected;</p></li>
+<li><p>the complete stage directory is atomically renamed to <code class="docutils literal notranslate"><span class="pre">job-dir</span></code>.</p></li>
+</ul>
+</section>
+<section id="start-a-worker-on-each-node">
+<h3>2. Start a Worker on each node<a class="headerlink" href="#start-a-worker-on-each-node" title="Link to this heading">#</a></h3>
+<p>Have the scheduler start this on every node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>worker<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001
+</pre></div>
+</div>
+</section>
+<section id="inspect-status">
+<h3>3. Inspect status<a class="headerlink" href="#inspect-status" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>status<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span>--all
+
+python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>status<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span>--json
+</pre></div>
+</div>
+<p>States are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pending</span></code>: not claimed;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">running</span></code>: has a non-expired claim;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stale</span></code>: claim age exceeds the timeout and the next claimant may reclaim it;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">done</span></code>: validated completion metadata is published;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">failed</span></code>: terminal failure after the retry limit.</p></li>
+</ul>
+</section>
+<section id="requeue-failures">
+<h3>4. Requeue failures<a class="headerlink" href="#requeue-failures" title="Link to this heading">#</a></h3>
+<p>After fixing the root cause:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>retry<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--all-failed
+</pre></div>
+</div>
+<p>Or select shards:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>retry<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shard-id<span class="w"> </span>part-00003-of-00016<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--shard-id<span class="w"> </span>part-00007-of-00016
+</pre></div>
+</div>
+<p>Then start Workers again.</p>
+</section>
+<section id="id2">
+<h3>5. Merge<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>merge<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output<span class="w"> </span>/mnt/shared/output/my_dataset.processed.jsonl
+</pre></div>
+</div>
+<p>Merge parses every JSONL row again and checks the row count and SHA256 from
+completion metadata. It refuses an existing output unless <code class="docutils literal notranslate"><span class="pre">--overwrite</span></code> is
+explicit.</p>
+</section>
+</section>
+<section id="ray-execution-modes">
+<h2>Ray execution modes<a class="headerlink" href="#ray-execution-modes" title="Link to this heading">#</a></h2>
+<section id="default-local-ray-per-attempt">
+<h3>Default: local Ray per attempt<a class="headerlink" href="#default-local-ray-per-attempt" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>--ray-address<span class="w"> </span><span class="nb">local</span>
+</pre></div>
+</div>
+<p>Every shard attempt starts an independent Ray instance, which is cleaned up
+when the Data-Juicer process exits. This is simple and isolated, but adds a Ray
+startup cost per attempt.</p>
+</section>
+<section id="optional-persistent-ray-head-on-each-node">
+<h3>Optional: persistent Ray head on each node<a class="headerlink" href="#optional-persistent-ray-head-on-each-node" title="Link to this heading">#</a></h3>
+<p>If the scheduler guarantees one Worker per node, run separately on each node:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>start<span class="w"> </span>--head
+python<span class="w"> </span>demos/elastic_sharding/shard_job.py<span class="w"> </span>worker<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-dir<span class="w"> </span>/mnt/shared/data-juicer-jobs/my-job-001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--ray-address<span class="w"> </span>auto
+ray<span class="w"> </span>stop
+</pre></div>
+</div>
+<p>Do not let every node’s <code class="docutils literal notranslate"><span class="pre">auto</span></code> resolve to one shared Ray cluster; that changes
+the intended topology.</p>
+</section>
+</section>
+<section id="job-directory-layout">
+<h2>Job directory layout<a class="headerlink" href="#job-directory-layout" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>my-job-001/
+├── manifest.json
+├── recipe.yaml
+├── shards/
+│   └── part-xxxxx-of-xxxxx.jsonl
+├── cache/
+├── attempts/&lt;shard-id&gt;/&lt;attempt-id&gt;/
+│   ├── attempt.json
+│   ├── process.log
+│   ├── logs/
+│   ├── checkpoints/
+│   ├── partitions/
+│   ├── ray-output.jsonl/
+│   └── processed.jsonl
+├── state/
+│   ├── locks/
+│   ├── stale_locks/
+│   ├── done/
+│   ├── failed/
+│   └── history/
+└── merge.json
+</pre></div>
+</div>
+<p>The one-command DLC entry point also creates a sibling directory:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>.&lt;job-dir-name&gt;.dlc-coordination/
+└── &lt;submission-id-hash&gt;/
+    ├── prepare.lock
+    ├── prepare-result.json
+    ├── abort.lock
+    ├── abort.json
+    ├── finalize.lock
+    └── finalize-result.json
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">XDG_CACHE_HOME</span></code> or <code class="docutils literal notranslate"><span class="pre">HF_HOME</span></code> is not explicitly set, Workers use
+<code class="docutils literal notranslate"><span class="pre">&lt;job-dir&gt;/cache</span></code>.</p>
+</section>
+<section id="failure-semantics">
+<h2>Failure semantics<a class="headerlink" href="#failure-semantics" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>A shard has one visible claim, although stale takeover can briefly overlap
+an old attempt and a new attempt.</p></li>
+<li><p>Every attempt has an isolated directory and cannot overwrite another result.</p></li>
+<li><p>Only the first successful atomic done publication is accepted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_retries=3</span></code> means three retries after the initial failure, allowing four
+failed attempts before terminal state.</p></li>
+<li><p>A shard reaching the retry limit publishes <code class="docutils literal notranslate"><span class="pre">state/failed</span></code>, and the job exits
+with code 2.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">retry</span></code> only after confirming there is no active claim and fixing the
+root cause.</p></li>
+<li><p>Input or recipe changes require a new job directory, not <code class="docutils literal notranslate"><span class="pre">retry</span></code>.</p></li>
+<li><p>If a DLC prepare/finalize coordinator is killed before publishing its phase
+result, other instances wait until <code class="docutils literal notranslate"><span class="pre">wait_timeout_secs</span></code> and then fail. A new
+submission uses a new coordination generation and can safely retry with the
+same unchanged <code class="docutils literal notranslate"><span class="pre">job-dir</span></code>.</p></li>
+</ul>
+</section>
+<section id="exit-codes">
+<h2>Exit codes<a class="headerlink" href="#exit-codes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">0</span></code>: success; for a Worker, it may also mean <code class="docutils literal notranslate"><span class="pre">--max-shards</span></code> was reached.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: <code class="docutils literal notranslate"><span class="pre">status</span></code> found an incomplete job without terminal failure.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: parameter, input, recipe, version, or runtime error, or terminal shard
+failure.</p></li>
+</ul>
+<p>Any nonzero Worker exit should fail the DLC job.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<section id="preparation-fails">
+<h3>Preparation fails<a class="headerlink" href="#preparation-fails" title="Link to this heading">#</a></h3>
+<p>Check:</p>
+<ul class="simple">
+<li><p>JSONL is UTF-8, contains one object per line, and has no blank lines;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_shards</span></code> does not exceed the row count;</p></li>
+<li><p>the recipe has no global operator or <code class="docutils literal notranslate"><span class="pre">stats_export_path</span></code>;</p></li>
+<li><p>recipe and data relative paths resolve from the Data-Juicer repository root;</p></li>
+<li><p>a mismatched request is not reusing an old job directory.</p></li>
+</ul>
+</section>
+<section id="worker-or-ray-fails">
+<h3>Worker or Ray fails<a class="headerlink" href="#worker-or-ray-fails" title="Link to this heading">#</a></h3>
+<p>Inspect:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&lt;job-dir&gt;/attempts/&lt;shard-id&gt;/&lt;attempt-id&gt;/process.log
+&lt;job-dir&gt;/attempts/&lt;shard-id&gt;/&lt;attempt-id&gt;/attempt.json
+</pre></div>
+</div>
+<p>Also check:</p>
+<ul class="simple">
+<li><p>Ray dependencies in the image;</p></li>
+<li><p>node CPU, GPU, shared memory, and temporary storage;</p></li>
+<li><p>the intended <code class="docutils literal notranslate"><span class="pre">local</span></code> or node-local <code class="docutils literal notranslate"><span class="pre">auto</span></code> Ray address;</p></li>
+<li><p>whether <code class="docutils literal notranslate"><span class="pre">lock_timeout_secs</span></code> is shorter than real shard runtime;</p></li>
+<li><p>whether every Worker uses the same Data-Juicer commit.</p></li>
+</ul>
+</section>
+<section id="dlc-keeps-waiting">
+<h3>DLC keeps waiting<a class="headerlink" href="#dlc-keeps-waiting" title="Link to this heading">#</a></h3>
+<p>Check:</p>
+<ul class="simple">
+<li><p>this is a Worker-broadcast job type, not an MPIJob whose command ran only on
+the Launcher;</p></li>
+<li><p>in strict mode, DLC Worker count equals <code class="docutils literal notranslate"><span class="pre">--nodes</span></code>; in elastic mode,
+<code class="docutils literal notranslate"><span class="pre">--nodes</span></code> may be omitted;</p></li>
+<li><p>every Worker started the same command;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">job-dir</span></code> is one shared mount, not separate local directories with the same
+path string;</p></li>
+<li><p>every Worker resolved the same <code class="docutils literal notranslate"><span class="pre">--run-id</span></code> or DLC Job ID;</p></li>
+<li><p>the current generation’s <code class="docutils literal notranslate"><span class="pre">prepare-result.json</span></code>, <code class="docutils literal notranslate"><span class="pre">abort.json</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">finalize-result.json</span></code> below the sibling coordination directory;</p></li>
+<li><p>with <code class="docutils literal notranslate"><span class="pre">--require-all-nodes</span></code>, failed attempts did not consume the strict
+mode’s per-Worker claim cap.</p></li>
+</ul>
+</section>
+</section>
+<section id="tests">
+<h2>Tests<a class="headerlink" href="#tests" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-q<span class="w"> </span>tests/demos/test_elastic_sharding.py
+</pre></div>
+</div>
+<p>Coverage includes:</p>
+<ul class="simple">
+<li><p>deterministic splitting, input ordering, and media path normalization;</p></li>
+<li><p>recipe safety validation and default-to-Ray override;</p></li>
+<li><p>concurrent exclusive claims and stale-lock takeover;</p></li>
+<li><p>isolated attempts, Ray command construction, and multi-file output
+materialization;</p></li>
+<li><p>retry limits, selected retry, and ordered merge;</p></li>
+<li><p>distinct two-host ownership verification;</p></li>
+<li><p>DLC prepare/finalize election and failure propagation.</p></li>
+</ul>
+<p>See <span class="xref myst">README_ZH.md</span> for the Chinese guide.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../ego_hand_action_annotation/README.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">VLA Visualization Demo</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../process_video_on_ray/data/Note.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Note for dataset path</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-advantages">Key advantages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-existing-approaches">Comparison with existing approaches</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#files">Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#important-path-concepts">Important path concepts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements-and-current-scope">Requirements and current scope</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pai-dlc-worker-broadcast-quick-start">PAI-DLC Worker-broadcast quick start</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-the-dlc-job">1. Configure the DLC job</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enter-one-startup-command">2. Enter one startup command</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-workflow">3. Automatic workflow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elastic-mode-and-strict-participation-mode">Elastic mode and strict participation mode</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gpu-smoke-test-one-recipe-with-cpu-and-gpu-operators">GPU smoke test: one recipe with CPU and GPU operators</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#single-node-four-gpu-command">Single-node, four-GPU command</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-node-one-gpu-per-node-command">Multi-node, one-GPU-per-node command</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#important-use-an-existing-mapper-filter-recipe-and-your-own-jsonl">Important: use an existing Mapper/Filter recipe and your own JSONL</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recipe-compatibility-rules">Recipe compatibility rules</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements-for-your-jsonl">Requirements for your JSONL</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-your-recipe-and-input-on-any-number-of-broadcast-started-dlc-workers">Run your recipe and input on any number of broadcast-started DLC Workers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-the-shard-count">Choosing the shard count</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-recipe-or-input-changes">When the recipe or input changes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dlc-job-py-parameter-reference"><code class="docutils literal notranslate"><span class="pre">dlc_job.py</span></code> parameter reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dlc"><code class="docutils literal notranslate"><span class="pre">dlc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#other-wrapper-subcommands">Other wrapper subcommands</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-shard-job-py-parameter-reference">Complete <code class="docutils literal notranslate"><span class="pre">shard_job.py</span></code> parameter reference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prepare"><code class="docutils literal notranslate"><span class="pre">prepare</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worker"><code class="docutils literal notranslate"><span class="pre">worker</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#status"><code class="docutils literal notranslate"><span class="pre">status</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#retry"><code class="docutils literal notranslate"><span class="pre">retry</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge"><code class="docutils literal notranslate"><span class="pre">merge</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generic-manual-or-scheduler-workflow">Generic manual or scheduler workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1. Prepare</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-a-worker-on-each-node">2. Start a Worker on each node</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-status">3. Inspect status</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#requeue-failures">4. Requeue failures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5. Merge</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ray-execution-modes">Ray execution modes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#default-local-ray-per-attempt">Default: local Ray per attempt</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-persistent-ray-head-on-each-node">Optional: persistent Ray head on each node</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#job-directory-layout">Job directory layout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#failure-semantics">Failure semantics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exit-codes">Exit codes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation-fails">Preparation fails</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#worker-or-ray-fails">Worker or Ray fails</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dlc-keeps-waiting">DLC keeps waiting</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tests">Tests</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/demos/elastic_sharding/README.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Data-Juicer Team.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -789,6 +789,28 @@ Uses fsspec/s3fs to access S3 files</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.core.data.load_strategy.</span></span><span class="sig-name descname"><span class="pre">DefaultHdfsDataLoadStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#DefaultHdfsDataLoadStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data_juicer.core.data.load_strategy.DefaultDataLoadStrategy" title="data_juicer.core.data.load_strategy.DefaultDataLoadStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultDataLoadStrategy</span></code></a></p>
+<p>data load strategy for HDFS datasets for LocalExecutor (default executor).</p>
+<p>Creates a PyArrow HadoopFileSystem with user-supplied config (host, port,
+user, kerb_ticket, extra_conf), wraps it via fsspec ArrowFSWrapper, and
+passes it as <code class="docutils literal notranslate"><span class="pre">filesystem</span></code> in storage_options — consistent with how the
+Exporter handles HDFS export paths.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES">
+<span class="sig-name descname"><span class="pre">CONFIG_VALIDATION_RULES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'custom_validators':</span> <span class="pre">{'path':</span> <span class="pre">&lt;function</span> <span class="pre">DefaultHdfsDataLoadStrategy.&lt;lambda&gt;&gt;},</span> <span class="pre">'field_types':</span> <span class="pre">{'path':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;},</span> <span class="pre">'optional_fields':</span> <span class="pre">['format',</span> <span class="pre">'hdfs_host',</span> <span class="pre">'hdfs_port',</span> <span class="pre">'hdfs_user',</span> <span class="pre">'hdfs_kerb_ticket',</span> <span class="pre">'hdfs_extra_conf'],</span> <span class="pre">'required_fields':</span> <span class="pre">['path']}</span></span><a class="headerlink" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#DefaultHdfsDataLoadStrategy.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.load_data" title="Link to this definition">#</a></dt>
+<dd><p>Need to be implemented in the</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.RayS3DataLoadStrategy">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.core.data.load_strategy.</span></span><span class="sig-name descname"><span class="pre">RayS3DataLoadStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#RayS3DataLoadStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#data_juicer.core.data.load_strategy.RayDataLoadStrategy" title="data_juicer.core.data.load_strategy.RayDataLoadStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayDataLoadStrategy</span></code></a></p>
@@ -802,6 +824,27 @@ Uses PyArrow’s filesystem to read from S3</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.RayS3DataLoadStrategy.load_data">
 <span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#RayS3DataLoadStrategy.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy.load_data" title="Link to this definition">#</a></dt>
+<dd><p>Need to be implemented in the</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.core.data.load_strategy.</span></span><span class="sig-name descname"><span class="pre">RayHdfsDataLoadStrategy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ds_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#RayHdfsDataLoadStrategy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#data_juicer.core.data.load_strategy.RayDataLoadStrategy" title="data_juicer.core.data.load_strategy.RayDataLoadStrategy"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayDataLoadStrategy</span></code></a></p>
+<p>data load strategy for HDFS datasets for RayExecutor.
+Uses PyArrow’s HadoopFileSystem to read from HDFS.</p>
+<p>Requires a working Hadoop/JVM environment on every Ray node
+(HADOOP_HOME, JAVA_HOME, CLASSPATH, ARROW_LIBHDFS_DIR).</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES">
+<span class="sig-name descname"><span class="pre">CONFIG_VALIDATION_RULES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'custom_validators':</span> <span class="pre">{'path':</span> <span class="pre">&lt;function</span> <span class="pre">RayHdfsDataLoadStrategy.&lt;lambda&gt;&gt;},</span> <span class="pre">'field_types':</span> <span class="pre">{'path':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;},</span> <span class="pre">'optional_fields':</span> <span class="pre">['format',</span> <span class="pre">'hdfs_host',</span> <span class="pre">'hdfs_port',</span> <span class="pre">'hdfs_user',</span> <span class="pre">'hdfs_kerb_ticket',</span> <span class="pre">'hdfs_extra_conf'],</span> <span class="pre">'required_fields':</span> <span class="pre">['path']}</span></span><a class="headerlink" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/data/load_strategy.html#RayHdfsDataLoadStrategy.load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.load_data" title="Link to this definition">#</a></dt>
 <dd><p>Need to be implemented in the</p>
 </dd></dl>
 
@@ -908,9 +951,19 @@ Uses PyArrow’s filesystem to read from S3</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.DefaultS3DataLoadStrategy.load_data"><code class="docutils literal notranslate"><span class="pre">DefaultS3DataLoadStrategy.load_data()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy"><code class="docutils literal notranslate"><span class="pre">DefaultHdfsDataLoadStrategy</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES"><code class="docutils literal notranslate"><span class="pre">DefaultHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.DefaultHdfsDataLoadStrategy.load_data"><code class="docutils literal notranslate"><span class="pre">DefaultHdfsDataLoadStrategy.load_data()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy"><code class="docutils literal notranslate"><span class="pre">RayS3DataLoadStrategy</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy.CONFIG_VALIDATION_RULES"><code class="docutils literal notranslate"><span class="pre">RayS3DataLoadStrategy.CONFIG_VALIDATION_RULES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayS3DataLoadStrategy.load_data"><code class="docutils literal notranslate"><span class="pre">RayS3DataLoadStrategy.load_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy"><code class="docutils literal notranslate"><span class="pre">RayHdfsDataLoadStrategy</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES"><code class="docutils literal notranslate"><span class="pre">RayHdfsDataLoadStrategy.CONFIG_VALIDATION_RULES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.data.load_strategy.RayHdfsDataLoadStrategy.load_data"><code class="docutils literal notranslate"><span class="pre">RayHdfsDataLoadStrategy.load_data()</span></code></a></li>
 </ul>
 </li>
 </ul>

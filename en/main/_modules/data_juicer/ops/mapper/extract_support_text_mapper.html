@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.extract_support_text_mapper</span></li>
   </ul>
 </nav>
@@ -521,7 +524,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;extract_support_text_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"extract_support_text_mapper"</span>
 
 
 <span class="c1"># TODO: LLM-based inference.</span>
@@ -530,45 +533,45 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ExtractSupportTextMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts a supporting sub-text from the original text based on a given summary.</span>
+<span class="w">    </span><span class="sd">"""Extracts a supporting sub-text from the original text based on a given summary.</span>
 
 <span class="sd">    This operator uses an API model to identify and extract a segment of the original text</span>
 <span class="sd">    that best matches the provided summary. It leverages a system prompt and input template</span>
 <span class="sd">    to guide the extraction process. The extracted support text is stored in the specified</span>
 <span class="sd">    meta field key. If the extraction fails or returns an empty string, the original summary</span>
 <span class="sd">    is used as a fallback. The operator retries the extraction up to a specified number of</span>
-<span class="sd">    times in case of errors.&quot;&quot;&quot;</span>
+<span class="sd">    times in case of errors."""</span>
 
     <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;你将扮演一个文本摘录助手的角色。你的主要任务是基于给定&quot;</span>
-        <span class="s2">&quot;的文章（称为“原文”）以及对原文某个部分的简短描述或总结&quot;</span>
-        <span class="s2">&quot;（称为“总结”），准确地识别并提取出与该总结相对应的原文&quot;</span>
-        <span class="s2">&quot;片段。</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;要求：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 你需要尽可能精确地匹配到最符合总结内容的那部分内容</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 如果存在多个可能的答案，请选择最贴近总结意思的那个</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;- 下面是一个例子帮助理解这一过程：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;### 原文：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;《红楼梦》是中国古典小说四大名著之一，由清代作家曹雪芹创&quot;</span>
-        <span class="s2">&quot;作。它讲述了贾宝玉、林黛玉等人的爱情故事及四大家族的兴衰&quot;</span>
-        <span class="s2">&quot;历程。书中通过复杂的人物关系展现了封建社会的各种矛盾冲突&quot;</span>
-        <span class="s2">&quot;。其中关于贾府内部斗争的部分尤其精彩，特别是王熙凤与尤二&quot;</span>
-        <span class="s2">&quot;姐之间的争斗，生动描绘了权力争夺下的女性形象。此外，《红&quot;</span>
-        <span class="s2">&quot;楼梦》还以其精美的诗词闻名，这些诗词不仅增添了文学色彩，&quot;</span>
-        <span class="s2">&quot;也深刻反映了人物的性格特点和命运走向。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;### 总结：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;描述了书中的两个女性角色之间围绕权力展开的竞争。</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;### 原文摘录：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;其中关于贾府内部斗争的部分尤其精彩，特别是王熙凤与尤二姐&quot;</span>
-        <span class="s2">&quot;之间的争斗，生动描绘了权力争夺下的女性形象。&quot;</span>
+        <span class="s2">"你将扮演一个文本摘录助手的角色。你的主要任务是基于给定"</span>
+        <span class="s2">"的文章（称为“原文”）以及对原文某个部分的简短描述或总结"</span>
+        <span class="s2">"（称为“总结”），准确地识别并提取出与该总结相对应的原文"</span>
+        <span class="s2">"片段。</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"要求：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 你需要尽可能精确地匹配到最符合总结内容的那部分内容</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 如果存在多个可能的答案，请选择最贴近总结意思的那个</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"- 下面是一个例子帮助理解这一过程：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"### 原文：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"《红楼梦》是中国古典小说四大名著之一，由清代作家曹雪芹创"</span>
+        <span class="s2">"作。它讲述了贾宝玉、林黛玉等人的爱情故事及四大家族的兴衰"</span>
+        <span class="s2">"历程。书中通过复杂的人物关系展现了封建社会的各种矛盾冲突"</span>
+        <span class="s2">"。其中关于贾府内部斗争的部分尤其精彩，特别是王熙凤与尤二"</span>
+        <span class="s2">"姐之间的争斗，生动描绘了权力争夺下的女性形象。此外，《红"</span>
+        <span class="s2">"楼梦》还以其精美的诗词闻名，这些诗词不仅增添了文学色彩，"</span>
+        <span class="s2">"也深刻反映了人物的性格特点和命运走向。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"### 总结：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"描述了书中的两个女性角色之间围绕权力展开的竞争。</span><span class="se">\n\n</span><span class="s2">"</span>
+        <span class="s2">"### 原文摘录：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"其中关于贾府内部斗争的部分尤其精彩，特别是王熙凤与尤二姐"</span>
+        <span class="s2">"之间的争斗，生动描绘了权力争夺下的女性形象。"</span>
     <span class="p">)</span>
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;### 原文：</span><span class="se">\n</span><span class="si">{text}</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="s2">&quot;### 总结：</span><span class="se">\n</span><span class="si">{summary}</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="s2">&quot;### 原文摘录：</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"### 原文：</span><span class="se">\n</span><span class="si">{text}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="s2">"### 总结：</span><span class="se">\n</span><span class="si">{summary}</span><span class="se">\n\n</span><span class="s2">"</span> <span class="s2">"### 原文摘录：</span><span class="se">\n</span><span class="s2">"</span>
 
 <div class="viewcode-block" id="ExtractSupportTextMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractSupportTextMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">summary_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">event_description</span><span class="p">,</span>
         <span class="n">support_text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">support_text</span><span class="p">,</span>
@@ -582,17 +585,17 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param api_model: API model name.</span>
 <span class="sd">        :param summary_key: The key name to store the input summary in the</span>
-<span class="sd">            meta field. It&#39;s &quot;event_description&quot; in default.</span>
+<span class="sd">            meta field. It's "event_description" in default.</span>
 <span class="sd">        :param support_text_key: The key name to store the output</span>
-<span class="sd">            support text for the summary in the meta field. It&#39;s</span>
-<span class="sd">            &quot;support_text&quot; in default.</span>
+<span class="sd">            support text for the summary in the meta field. It's</span>
+<span class="sd">            "support_text" in default.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param system_prompt: System prompt for the task.</span>
 <span class="sd">        :param input_template: Template for building the model input.</span>
 <span class="sd">        :param try_num: The number of retry attempts when there is an API</span>
@@ -600,9 +603,9 @@
 <span class="sd">        :param drop_text: If drop the text in the output.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">summary_key</span> <span class="o">=</span> <span class="n">summary_key</span>
@@ -613,7 +616,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">try_num</span> <span class="o">=</span> <span class="n">try_num</span>
@@ -623,24 +626,24 @@
 <div class="viewcode-block" id="ExtractSupportTextMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ExtractSupportTextMapper.process_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">support_text_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="n">client</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">summary_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_key</span><span class="si">}</span><span class="s2"> does not exist in the meta field!&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_key</span><span class="si">}</span><span class="s2"> does not exist in the meta field!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">sample</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">summary_key</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Invalid input summary!&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Invalid input summary!"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">],</span> <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">)</span>
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span> <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
 
-        <span class="n">support_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">support_text</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
@@ -648,7 +651,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">support_text</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="c1"># default to summary if return None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">support_text</span><span class="p">:</span>
             <span class="n">support_text</span> <span class="o">=</span> <span class="n">summary</span>

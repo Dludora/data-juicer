@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -777,23 +782,23 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <p>Export results directly to Amazon S3 or S3-compatible storage.</p>
 <section id="default-mode">
 <h3>Default Mode<a class="headerlink" href="#default-mode" title="Link to this heading">#</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;s3://my-bucket/outputs/result.jsonl&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">"s3://my-bucket/outputs/result.jsonl"</span>
 <span class="nt">export_aws_credentials</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AKIA...&quot;</span>
-<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;secret...&quot;</span>
-<span class="w">  </span><span class="nt">aws_region</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;us-east-1&quot;</span>
-<span class="w">  </span><span class="nt">endpoint_url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://s3.example.com&quot;</span><span class="w">   </span><span class="c1"># Optional: for S3-compatible storage</span>
+<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">"AKIA..."</span>
+<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">"secret..."</span>
+<span class="w">  </span><span class="nt">aws_region</span><span class="p">:</span><span class="w"> </span><span class="s">"us-east-1"</span>
+<span class="w">  </span><span class="nt">endpoint_url</span><span class="p">:</span><span class="w"> </span><span class="s">"https://s3.example.com"</span><span class="w">   </span><span class="c1"># Optional: for S3-compatible storage</span>
 </pre></div>
 </div>
 <p>The default exporter uses HuggingFace’s <code class="docutils literal notranslate"><span class="pre">storage_options</span></code> with <code class="docutils literal notranslate"><span class="pre">fsspec</span></code>/<code class="docutils literal notranslate"><span class="pre">s3fs</span></code> for S3 access.</p>
 </section>
 <section id="ray-mode">
 <h3>Ray Mode<a class="headerlink" href="#ray-mode" title="Link to this heading">#</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;s3://my-bucket/outputs/result.jsonl&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">"s3://my-bucket/outputs/result.jsonl"</span>
 <span class="nt">export_extra_args</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AKIA...&quot;</span>
-<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;secret...&quot;</span>
-<span class="w">  </span><span class="nt">aws_region</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;us-east-1&quot;</span>
+<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">"AKIA..."</span>
+<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">"secret..."</span>
+<span class="w">  </span><span class="nt">aws_region</span><span class="p">:</span><span class="w"> </span><span class="s">"us-east-1"</span>
 </pre></div>
 </div>
 <p>The Ray exporter uses PyArrow’s S3 filesystem for S3 access.</p>
@@ -801,11 +806,11 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <section id="s3-with-sharding">
 <h3>S3 with Sharding<a class="headerlink" href="#s3-with-sharding" title="Link to this heading">#</a></h3>
 <p>When using S3 with shard export, shard files are written directly to S3:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;s3://my-bucket/outputs/result.jsonl&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">export_path</span><span class="p">:</span><span class="w"> </span><span class="s">"s3://my-bucket/outputs/result.jsonl"</span>
 <span class="nt">export_shard_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">268435456</span>
 <span class="nt">export_aws_credentials</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;AKIA...&quot;</span>
-<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;secret...&quot;</span>
+<span class="w">  </span><span class="nt">aws_access_key_id</span><span class="p">:</span><span class="w"> </span><span class="s">"AKIA..."</span>
+<span class="w">  </span><span class="nt">aws_secret_access_key</span><span class="p">:</span><span class="w"> </span><span class="s">"secret..."</span>
 </pre></div>
 </div>
 <p>This produces S3 objects like:</p>
@@ -855,9 +860,9 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="nt">export_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">webdataset</span>
 <span class="nt">export_extra_args</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">field_mapping</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">txt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;text&quot;</span>
-<span class="w">    </span><span class="nt">png</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;images&quot;</span>
-<span class="w">    </span><span class="nt">json</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;metadata&quot;</span>
+<span class="w">    </span><span class="nt">txt</span><span class="p">:</span><span class="w"> </span><span class="s">"text"</span>
+<span class="w">    </span><span class="nt">png</span><span class="p">:</span><span class="w"> </span><span class="s">"images"</span>
+<span class="w">    </span><span class="nt">json</span><span class="p">:</span><span class="w"> </span><span class="s">"metadata"</span>
 </pre></div>
 </div>
 </section>
@@ -868,8 +873,8 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.exporter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Exporter</span>
 
 <span class="n">exporter</span> <span class="o">=</span> <span class="n">Exporter</span><span class="p">(</span>
-    <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;./outputs/result.jsonl&quot;</span><span class="p">,</span>
-    <span class="n">export_type</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+    <span class="n">export_path</span><span class="o">=</span><span class="s2">"./outputs/result.jsonl"</span><span class="p">,</span>
+    <span class="n">export_type</span><span class="o">=</span><span class="s2">"jsonl"</span><span class="p">,</span>
     <span class="n">export_shard_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">export_in_parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
@@ -886,8 +891,8 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.ray_exporter</span><span class="w"> </span><span class="kn">import</span> <span class="n">RayExporter</span>
 
 <span class="n">exporter</span> <span class="o">=</span> <span class="n">RayExporter</span><span class="p">(</span>
-    <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;./outputs/result.jsonl&quot;</span><span class="p">,</span>
-    <span class="n">export_type</span><span class="o">=</span><span class="s2">&quot;jsonl&quot;</span><span class="p">,</span>
+    <span class="n">export_path</span><span class="o">=</span><span class="s2">"./outputs/result.jsonl"</span><span class="p">,</span>
+    <span class="n">export_type</span><span class="o">=</span><span class="s2">"jsonl"</span><span class="p">,</span>
     <span class="n">export_shard_size</span><span class="o">=</span><span class="mi">268435456</span><span class="p">,</span>
     <span class="n">keep_stats_in_res_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">keep_hashes_in_res_ds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

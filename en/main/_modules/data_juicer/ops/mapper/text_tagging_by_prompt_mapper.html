@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.text_tagging_by_prompt_mapper</span></li>
   </ul>
 </nav>
@@ -524,46 +527,46 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ray_mode</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"transformers"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;text_tagging_by_prompt_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"text_tagging_by_prompt_mapper"</span>
 
-<span class="n">DEFAULT_CLASSIFICATION_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="n">DEFAULT_CLASSIFICATION_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">请对下面的example文本回复的任务类别进行检测,并进行分类。</span>
 <span class="s2">备选的分类包括：</span><span class="si">{tag_list}</span><span class="s2">。</span>
 <span class="s2">只回复对应的分类,不回复其他内容。</span>
 <span class="s2">example文本:</span>
 <span class="si">{text}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
+<span class="s2">"""</span>  <span class="c1"># noqa</span>
 
 <span class="n">DEFAULT_CLASSIFICATION_LIST</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;数学&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;代码&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;翻译&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;角色扮演&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;开放领域问答&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;特定领域问答&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;提取&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;生成&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;头脑风暴&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;分类&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;总结&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;改写&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;其他&quot;</span><span class="p">,</span>
+    <span class="s2">"数学"</span><span class="p">,</span>
+    <span class="s2">"代码"</span><span class="p">,</span>
+    <span class="s2">"翻译"</span><span class="p">,</span>
+    <span class="s2">"角色扮演"</span><span class="p">,</span>
+    <span class="s2">"开放领域问答"</span><span class="p">,</span>
+    <span class="s2">"特定领域问答"</span><span class="p">,</span>
+    <span class="s2">"提取"</span><span class="p">,</span>
+    <span class="s2">"生成"</span><span class="p">,</span>
+    <span class="s2">"头脑风暴"</span><span class="p">,</span>
+    <span class="s2">"分类"</span><span class="p">,</span>
+    <span class="s2">"总结"</span><span class="p">,</span>
+    <span class="s2">"改写"</span><span class="p">,</span>
+    <span class="s2">"其他"</span><span class="p">,</span>
 <span class="p">]</span>  <span class="c1"># noqa</span>
 
-<span class="n">DEFAULT_IDENTITY_BINARY_PROMPT</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="n">DEFAULT_IDENTITY_BINARY_PROMPT</span> <span class="o">=</span> <span class="s2">"""</span>
 <span class="s2">检测下面的example文本的回复中是否包含人工智能模型的自我认知(例如表现出自己是一个AI人工助手)。</span>
 <span class="s2">备选的分类包括：</span><span class="si">{tag_list}</span><span class="s2">。</span>
 <span class="s2">只回复对应的分类,不回复其他内容。</span>
 
 <span class="s2">example文本:</span>
 <span class="si">{text}</span>
-<span class="s2">&quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
+<span class="s2">"""</span>  <span class="c1"># noqa</span>
 
-<span class="n">DEFAULT_BINARY_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;是&quot;</span><span class="p">,</span> <span class="s2">&quot;否&quot;</span><span class="p">]</span>
+<span class="n">DEFAULT_BINARY_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"是"</span><span class="p">,</span> <span class="s2">"否"</span><span class="p">]</span>
 
 
 <span class="c1"># TODO: Extend LLM-based OPs into API-based implementation.</span>
@@ -572,19 +575,19 @@
 <span class="nd">@UNFORKABLE</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextTaggingByPromptMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Mapper to generate text tags using prompt with LLM.</span>
 <span class="sd">    Other opensourced models with good instruction following ability</span>
 <span class="sd">    also works.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="TextTaggingByPromptMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.TextTaggingByPromptMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-7B-Instruct&quot;</span><span class="p">,</span>
+        <span class="n">hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-7B-Instruct"</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_CLASSIFICATION_PROMPT</span><span class="p">,</span>
         <span class="n">tag_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">DEFAULT_CLASSIFICATION_LIST</span><span class="p">,</span>
@@ -597,7 +600,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 <span class="sd">        :param hf_model: Hugginface model id.</span>
 <span class="sd">        :param trust_remote_code: passed to transformers</span>
@@ -614,35 +617,34 @@
 <span class="sd">            Maximum number of sequences to be processed in a single iteration.</span>
 <span class="sd">        :param model_params: Parameters for model initialization.</span>
 <span class="sd">        :param sampling_params: Sampling parameters for text generation.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
 
 <span class="sd">        The default data format parsed by this interface is as follows:</span>
 <span class="sd">        Model Input:</span>
-<span class="sd">            请对下面的example文本回复的任务类别进行检测，并进行分类。备选的分类包括：[&quot;数学&quot;，&quot;代码&quot;，&quot;翻译&quot;，&quot;角色扮演&quot;，&quot;开放领域问答&quot;，&quot;特定领域问答&quot;, &quot;提取&quot;, &quot;生成&quot;, &quot;头脑风暴&quot;, &quot;分类&quot;，&quot;总结&quot;，&quot;改写&quot;， &quot;其他&quot;]。只回复对应的分类，不回复其他内容。</span>
+<span class="sd">            请对下面的example文本回复的任务类别进行检测，并进行分类。备选的分类包括：["数学"，"代码"，"翻译"，"角色扮演"，"开放领域问答"，"特定领域问答", "提取", "生成", "头脑风暴", "分类"，"总结"，"改写"， "其他"]。只回复对应的分类，不回复其他内容。</span>
 <span class="sd">            example文本:</span>
 <span class="sd">            {</span>
-<span class="sd">                &quot;instruction&quot;: &quot;找出方程 x2 - 3x = 0 的根。&quot;,</span>
-<span class="sd">                &quot;input&quot;: &quot;&quot;,</span>
-<span class="sd">                &quot;output&quot;: &quot;该方程可以写成 x(x-3)=0。\n\n根据乘法原理，x = 0或x - 3 = 0。\n\n因此，x1 = 0和x2 = 3是方程 x2 - 3x = 0 的两个根。&quot;</span>
+<span class="sd">                "instruction": "找出方程 x2 - 3x = 0 的根。",</span>
+<span class="sd">                "input": "",</span>
+<span class="sd">                "output": "该方程可以写成 x(x-3)=0。\n\n根据乘法原理，x = 0或x - 3 = 0。\n\n因此，x1 = 0和x2 = 3是方程 x2 - 3x = 0 的两个根。"</span>
 <span class="sd">            }</span>
 <span class="sd">        Model Output:</span>
 <span class="sd">            数学</span>
-<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
+<span class="sd">        """</span>  <span class="c1"># noqa</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">prompt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_list</span> <span class="o">=</span> <span class="n">tag_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">enable_vllm</span> <span class="o">=</span> <span class="n">enable_vllm</span>
         <span class="n">model_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">model_params</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">model_params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;trust_remote_code&quot;</span><span class="p">:</span> <span class="n">trust_remote_code</span><span class="p">,</span> <span class="s2">&quot;max_num_seqs&quot;</span><span class="p">:</span> <span class="n">max_num_seqs</span><span class="p">})</span>
+        <span class="n">model_params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"trust_remote_code"</span><span class="p">:</span> <span class="n">trust_remote_code</span><span class="p">,</span> <span class="s2">"max_num_seqs"</span><span class="p">:</span> <span class="n">max_num_seqs</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">tensor_parallel_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">model_params</span><span class="p">[</span><span class="s2">&quot;tensor_parallel_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensor_parallel_size</span>
+            <span class="n">model_params</span><span class="p">[</span><span class="s2">"tensor_parallel_size"</span><span class="p">]</span> <span class="o">=</span> <span class="n">tensor_parallel_size</span>
         <span class="k">if</span> <span class="n">max_model_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">model_params</span><span class="p">[</span><span class="s2">&quot;max_model_len&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_model_len</span>
+            <span class="n">model_params</span><span class="p">[</span><span class="s2">"max_model_len"</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_model_len</span>
         <span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="n">sampling_params</span> <span class="o">=</span> <span class="n">update_sampling_params</span><span class="p">(</span><span class="n">sampling_params</span><span class="p">,</span> <span class="n">hf_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_vllm</span><span class="p">)</span>
 
@@ -651,14 +653,14 @@
                 <span class="c1"># cannot initialize vllm replicas on different GPUs</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_proc</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vllm&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"vllm"</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_model</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">model_params</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">vllm</span><span class="o">.</span><span class="n">SamplingParams</span><span class="p">(</span><span class="o">**</span><span class="n">sampling_params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_model</span><span class="p">,</span>
                 <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span><span class="p">,</span>
                 <span class="n">return_pipe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -670,7 +672,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.TextTaggingByPromptMapper.process_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">input_prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">],</span> <span class="n">tag_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_list</span><span class="p">)</span>
-        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">input_prompt</span><span class="p">}]</span>
         <span class="n">model</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_vllm</span><span class="p">:</span>
@@ -678,7 +680,7 @@
             <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">response</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">,</span> <span class="n">return_full_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
-            <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;generated_text&quot;</span><span class="p">]</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"generated_text"</span><span class="p">]</span>
 
         <span class="n">text_tags</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">text_tags</span><span class="p">]</span> <span class="o">=</span> <span class="n">text_tags</span>

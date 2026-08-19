@@ -523,13 +523,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_files_with_suffix</span><span class="p">,</span> <span class="n">is_absolute_path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registry</span>
 
-<span class="n">FORMATTERS</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">&quot;Formatters&quot;</span><span class="p">)</span>
+<span class="n">FORMATTERS</span> <span class="o">=</span> <span class="n">Registry</span><span class="p">(</span><span class="s2">"Formatters"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseFormatter">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.BaseFormatter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseFormatter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class to load dataset.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class to load dataset."""</span>
 
 <div class="viewcode-block" id="BaseFormatter.load_dataset">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.BaseFormatter.load_dataset">[docs]</a>
@@ -542,8 +542,8 @@
 <div class="viewcode-block" id="LocalFormatter">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.LocalFormatter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocalFormatter</span><span class="p">(</span><span class="n">BaseFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The class is used to load a dataset from local files or local</span>
-<span class="sd">    directory.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""The class is used to load a dataset from local files or local</span>
+<span class="sd">    directory."""</span>
 
 <div class="viewcode-block" id="LocalFormatter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.LocalFormatter.__init__">[docs]</a>
@@ -556,7 +556,7 @@
         <span class="n">add_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param dataset_path: path to a dataset file or a dataset</span>
@@ -568,7 +568,7 @@
 <span class="sd">        :param add_suffix: whether to add the file suffix to dataset</span>
 <span class="sd">            meta info</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_keys</span> <span class="o">=</span> <span class="n">text_keys</span>
@@ -579,24 +579,24 @@
 <div class="viewcode-block" id="LocalFormatter.load_dataset">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.LocalFormatter.load_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">global_cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Load a dataset from dataset file or dataset directory, and unify its</span>
 <span class="sd">        format.</span>
 
 <span class="sd">        :param num_proc: number of processes when loading the dataset</span>
 <span class="sd">        :param global_cfg: global cfg used in consequent processes,</span>
 <span class="sd">        :return: formatted dataset</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_num_proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;num_proc&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">_num_proc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"num_proc"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">num_proc</span> <span class="o">=</span> <span class="n">num_proc</span> <span class="ow">or</span> <span class="n">_num_proc</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading dataset with num_proc: </span><span class="si">{</span><span class="n">num_proc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loading dataset with num_proc: </span><span class="si">{</span><span class="n">num_proc</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># If decrypt_after_reading is enabled, decrypt each file into a</span>
         <span class="c1"># temporary file so that no plaintext from the original encrypted</span>
         <span class="c1"># file is written to the regular filesystem.  We write to a NamedTemp-</span>
         <span class="c1"># oraryFile with delete=False, collect all paths, call load_dataset,</span>
         <span class="c1"># then immediately remove the temp files so plaintext does not linger.</span>
-        <span class="n">decrypt</span> <span class="o">=</span> <span class="n">global_cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;decrypt_after_reading&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">decrypt</span> <span class="o">=</span> <span class="n">global_cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"decrypt_after_reading"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">decrypt</span><span class="p">:</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
@@ -606,7 +606,7 @@
                 <span class="n">load_fernet_key</span><span class="p">,</span>
             <span class="p">)</span>
 
-            <span class="n">fernet</span> <span class="o">=</span> <span class="n">load_fernet_key</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;encryption_key_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="n">fernet</span> <span class="o">=</span> <span class="n">load_fernet_key</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"encryption_key_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
             <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">get_secure_tmpdir</span><span class="p">()</span>
             <span class="n">decrypted_data_files</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">tmp_paths</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># track for cleanup</span>
@@ -619,7 +619,7 @@
                         <span class="n">tmp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                         <span class="n">tmp_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                         <span class="n">tmp_file_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                <span class="n">decrypted_data_files</span><span class="p">[</span><span class="n">ext</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">tmp_file_paths</span>
+                <span class="n">decrypted_data_files</span><span class="p">[</span><span class="n">ext</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"."</span><span class="p">)]</span> <span class="o">=</span> <span class="n">tmp_file_paths</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">datasets</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
@@ -636,12 +636,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
-                <span class="n">data_files</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">},</span>
+                <span class="n">data_files</span><span class="o">=</span><span class="p">{</span><span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_files</span><span class="p">},</span>
                 <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span>
                 <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_suffix</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Add suffix info into dataset...&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Add suffix info into dataset..."</span><span class="p">)</span>
             <span class="n">datasets</span> <span class="o">=</span> <span class="n">add_suffixes</span><span class="p">(</span><span class="n">datasets</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedDataset</span>
@@ -656,20 +656,20 @@
 <div class="viewcode-block" id="RemoteFormatter">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.RemoteFormatter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoteFormatter</span><span class="p">(</span><span class="n">BaseFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The class is used to load a dataset from repository of huggingface</span>
-<span class="sd">    hub.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""The class is used to load a dataset from repository of huggingface</span>
+<span class="sd">    hub."""</span>
 
 <div class="viewcode-block" id="RemoteFormatter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.RemoteFormatter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param dataset_path: a dataset file or a dataset directory</span>
 <span class="sd">        :param text_keys: key names of field that stores sample</span>
 <span class="sd">            text.</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">dataset_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_keys</span> <span class="o">=</span> <span class="n">text_keys</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span></div>
@@ -678,14 +678,14 @@
 <div class="viewcode-block" id="RemoteFormatter.load_dataset">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.RemoteFormatter.load_dataset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">global_cfg</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Load a dataset from HuggingFace, and unify its format.</span>
 
 <span class="sd">        :param num_proc: number of processes when loading the dataset</span>
 <span class="sd">        :param global_cfg: the global cfg used in consequent processes,</span>
 <span class="sd">        :return: formatted dataset</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">"train"</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">unify_format</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">text_keys</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">text_keys</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">global_cfg</span><span class="o">=</span><span class="n">global_cfg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ds</span></div>
 </div>
@@ -695,23 +695,23 @@
 <div class="viewcode-block" id="add_suffixes">
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.add_suffixes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_suffixes</span><span class="p">(</span><span class="n">datasets</span><span class="p">:</span> <span class="n">DatasetDict</span><span class="p">,</span> <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Add suffix filed to datasets.</span>
 
 <span class="sd">    :param datasets: a DatasetDict object</span>
 <span class="sd">    :param num_proc: number of processes to add suffixes</span>
 <span class="sd">    :return: datasets with suffix features.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Add suffix column for dataset&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Add suffix column for dataset"</span><span class="p">)</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_same_content_to_new_column</span>
 
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">Fields</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">datasets</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
                 <span class="n">add_same_content_to_new_column</span><span class="p">,</span>
-                <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;new_column_name&quot;</span><span class="p">:</span> <span class="n">Fields</span><span class="o">.</span><span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;initial_value&quot;</span><span class="p">:</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">},</span>
+                <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"new_column_name"</span><span class="p">:</span> <span class="n">Fields</span><span class="o">.</span><span class="n">suffix</span><span class="p">,</span> <span class="s2">"initial_value"</span><span class="p">:</span> <span class="s2">"."</span> <span class="o">+</span> <span class="n">key</span><span class="p">},</span>
                 <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span>
-                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Adding new column for suffix&quot;</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">"Adding new column for suffix"</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="n">datasets</span> <span class="o">=</span> <span class="n">concatenate_datasets</span><span class="p">([</span><span class="n">ds</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedDataset</span>
@@ -724,11 +724,11 @@
 <a class="viewcode-back" href="../../../api/data_juicer.format.formatter.html#data_juicer.format.unify_format">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">unify_format</span><span class="p">(</span>
     <span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">,</span>
-    <span class="n">text_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+    <span class="n">text_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">,</span>
     <span class="n">num_proc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">global_cfg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Get an unified internal format, conduct the following modifications.</span>
 
 <span class="sd">    1. check keys of dataset</span>
@@ -742,15 +742,15 @@
 <span class="sd">        since cfg.text_key may be modified after unifying</span>
 
 <span class="sd">    :return: unified_format_dataset</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedDataset</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">DatasetDict</span><span class="p">):</span>
         <span class="n">datasets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Please make sure the passed datasets &quot;</span> <span class="s2">&quot;contains only 1 dataset&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"Please make sure the passed datasets "</span> <span class="s2">"contains only 1 dataset"</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">NestedDataset</span><span class="p">),</span> <span class="p">(</span>
-        <span class="s2">&quot;Currently we only support processing data&quot;</span> <span class="s2">&quot;with huggingface-Dataset format&quot;</span>
+        <span class="s2">"Currently we only support processing data"</span> <span class="s2">"with huggingface-Dataset format"</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">text_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -759,7 +759,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">text_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">text_keys</span><span class="p">]</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Unifying the input dataset formats...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Unifying the input dataset formats..."</span><span class="p">)</span>
 
     <span class="n">dataset</span> <span class="o">=</span> <span class="n">NestedDataset</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
@@ -767,16 +767,16 @@
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">text_keys</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;There is no key [</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">] in dataset. You might set &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;wrong text_key in the config file for your dataset. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Please check and retry!&quot;</span>
+                <span class="sa">f</span><span class="s2">"There is no key [</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">] in dataset. You might set "</span>
+                <span class="sa">f</span><span class="s2">"wrong text_key in the config file for your dataset. "</span>
+                <span class="sa">f</span><span class="s2">"Please check and retry!"</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span>
 
     <span class="c1"># 2. filter out those samples with empty or None text</span>
     <span class="c1"># TODO: optimize the filtering operation for better efficiency</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> sample(s) in the original dataset.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"There are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> sample(s) in the original dataset."</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">non_empty_text</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">target_keys</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">target_key</span> <span class="ow">in</span> <span class="n">target_keys</span><span class="p">:</span>
@@ -787,8 +787,8 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">non_empty_text</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;target_keys&quot;</span><span class="p">:</span> <span class="n">text_keys</span><span class="p">})</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples left after filtering empty text.&quot;</span><span class="p">)</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">non_empty_text</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"target_keys"</span><span class="p">:</span> <span class="n">text_keys</span><span class="p">})</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2"> samples left after filtering empty text."</span><span class="p">)</span>
 
     <span class="c1"># 3. convert relative paths to absolute paths</span>
     <span class="k">if</span> <span class="n">global_cfg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -796,7 +796,7 @@
             <span class="n">global_cfg</span> <span class="o">=</span> <span class="n">dict_to_namespace</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">)</span>
         <span class="c1"># check and get dataset dir</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;dataset_path&quot;</span><span class="p">)</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"dataset_path"</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">dataset_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">global_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span>
         <span class="p">):</span>
@@ -805,10 +805,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ds_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">global_cfg</span><span class="o">.</span><span class="n">dataset_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ds_dir</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">image_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">image_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;image_key&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;images&quot;</span>
-        <span class="n">audio_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">audio_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;audio_key&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;audios&quot;</span>
-        <span class="n">video_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">video_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">&quot;video_key&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;videos&quot;</span>
+            <span class="n">ds_dir</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">image_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">image_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"image_key"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"images"</span>
+        <span class="n">audio_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">audio_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"audio_key"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"audios"</span>
+        <span class="n">video_key</span> <span class="o">=</span> <span class="n">global_cfg</span><span class="o">.</span><span class="n">video_key</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">global_cfg</span><span class="p">,</span> <span class="s2">"video_key"</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"videos"</span>
 
         <span class="n">data_path_keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">image_key</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
@@ -821,13 +821,13 @@
             <span class="c1"># no image/audio/video path list in dataset, no need to convert</span>
             <span class="k">return</span> <span class="n">dataset</span>
 
-        <span class="k">if</span> <span class="n">ds_dir</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ds_dir</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Converting relative paths in the dataset to their &quot;</span>
-            <span class="s2">&quot;absolute version. (Based on the directory of input &quot;</span>
-            <span class="s2">&quot;dataset file)&quot;</span>
+            <span class="s2">"Converting relative paths in the dataset to their "</span>
+            <span class="s2">"absolute version. (Based on the directory of input "</span>
+            <span class="s2">"dataset file)"</span>
         <span class="p">)</span>
 
         <span class="c1"># function to convert relative paths to absolute paths</span>
@@ -843,14 +843,14 @@
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-            <span class="n">rel2abs</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;path_keys&quot;</span><span class="p">:</span> <span class="n">data_path_keys</span><span class="p">,</span> <span class="s2">&quot;dataset_dir&quot;</span><span class="p">:</span> <span class="n">ds_dir</span><span class="p">}</span>
+            <span class="n">rel2abs</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="n">num_proc</span><span class="p">,</span> <span class="n">fn_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"path_keys"</span><span class="p">:</span> <span class="n">data_path_keys</span><span class="p">,</span> <span class="s2">"dataset_dir"</span><span class="p">:</span> <span class="n">ds_dir</span><span class="p">}</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">&quot;No global config passed into unify_format function. &quot;</span>
-            <span class="s2">&quot;Relative paths in the dataset might not be converted &quot;</span>
-            <span class="s2">&quot;to their absolute versions. Data of other modalities &quot;</span>
-            <span class="s2">&quot;might not be able to find by Data-Juicer.&quot;</span>
+            <span class="s2">"No global config passed into unify_format function. "</span>
+            <span class="s2">"Relative paths in the dataset might not be converted "</span>
+            <span class="s2">"to their absolute versions. Data of other modalities "</span>
+            <span class="s2">"might not be able to find by Data-Juicer."</span>
         <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">dataset</span></div>

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.annotation.human_preference_annotation_mapper</span></li>
   </ul>
 </nav>
@@ -527,9 +530,9 @@
 
 <div class="viewcode-block" id="HumanPreferenceAnnotationMapper">
 <a class="viewcode-back" href="../../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.HumanPreferenceAnnotationMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;human_preference_annotation_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"human_preference_annotation_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">HumanPreferenceAnnotationMapper</span><span class="p">(</span><span class="n">LabelStudioAnnotationMapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Operator for human preference annotation using Label Studio.</span>
+<span class="w">    </span><span class="sd">"""Operator for human preference annotation using Label Studio.</span>
 
 <span class="sd">    This operator formats and presents pairs of answers to a prompt for human evaluation. It</span>
 <span class="sd">    uses a default or custom Label Studio configuration to display the prompt and answer</span>
@@ -537,16 +540,16 @@
 <span class="sd">    updating the sample with the chosen and rejected answers. The operator requires specific</span>
 <span class="sd">    keys in the samples for the prompt and answer options. If these keys are missing, it</span>
 <span class="sd">    logs warnings and uses placeholder text. The annotated results are processed to update</span>
-<span class="sd">    the sample with the chosen and rejected answers.&quot;&quot;&quot;</span>
+<span class="sd">    the sample with the chosen and rejected answers."""</span>
 
-    <span class="n">DEFAULT_LABEL_CONFIG</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    &lt;View className=&quot;root&quot;&gt;</span>
+    <span class="n">DEFAULT_LABEL_CONFIG</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">    &lt;View className="root"&gt;</span>
 <span class="s2">      &lt;Style&gt;</span>
 <span class="s2">        .root {</span>
 <span class="s2">          box-sizing: border-box;</span>
 <span class="s2">          margin: 0;</span>
 <span class="s2">          padding: 0;</span>
-<span class="s2">          font-family: &#39;Roboto&#39;,</span>
+<span class="s2">          font-family: 'Roboto',</span>
 <span class="s2">            sans-serif;</span>
 <span class="s2">          line-height: 1.6;</span>
 <span class="s2">          background-color: #f0f0f0;</span>
@@ -603,38 +606,38 @@
 <span class="s2">          padding: 20px</span>
 <span class="s2">        }</span>
 <span class="s2">      &lt;/Style&gt;</span>
-<span class="s2">      &lt;View className=&quot;container&quot;&gt;</span>
-<span class="s2">        &lt;View className=&quot;prompt&quot;&gt;</span>
-<span class="s2">          &lt;Text name=&quot;prompt&quot; value=&quot;$prompt&quot; /&gt;</span>
+<span class="s2">      &lt;View className="container"&gt;</span>
+<span class="s2">        &lt;View className="prompt"&gt;</span>
+<span class="s2">          &lt;Text name="prompt" value="$prompt" /&gt;</span>
 <span class="s2">        &lt;/View&gt;</span>
-<span class="s2">        &lt;View className=&quot;answers&quot;&gt;</span>
-<span class="s2">          &lt;Pairwise name=&quot;comparison&quot; toName=&quot;answer1,answer2&quot;</span>
-<span class="s2">                    selectionStyle=&quot;background-color: #27ae60; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border: 2px solid #2ecc71; cursor: pointer; transition: all 0.3s ease;&quot;</span>
-<span class="s2">                    leftChoiceValue=&quot;answer1&quot; rightChoiceValue=&quot;answer2&quot; /&gt;</span>
-<span class="s2">          &lt;View className=&quot;answer-box&quot;&gt;</span>
-<span class="s2">            &lt;Text name=&quot;answer1&quot; value=&quot;$answer1&quot; /&gt;</span>
+<span class="s2">        &lt;View className="answers"&gt;</span>
+<span class="s2">          &lt;Pairwise name="comparison" toName="answer1,answer2"</span>
+<span class="s2">                    selectionStyle="background-color: #27ae60; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2); border: 2px solid #2ecc71; cursor: pointer; transition: all 0.3s ease;"</span>
+<span class="s2">                    leftChoiceValue="answer1" rightChoiceValue="answer2" /&gt;</span>
+<span class="s2">          &lt;View className="answer-box"&gt;</span>
+<span class="s2">            &lt;Text name="answer1" value="$answer1" /&gt;</span>
 <span class="s2">          &lt;/View&gt;</span>
-<span class="s2">          &lt;View className=&quot;answer-box&quot;&gt;</span>
-<span class="s2">            &lt;Text name=&quot;answer2&quot; value=&quot;$answer2&quot; /&gt;</span>
+<span class="s2">          &lt;View className="answer-box"&gt;</span>
+<span class="s2">            &lt;Text name="answer2" value="$answer2" /&gt;</span>
 <span class="s2">          &lt;/View&gt;</span>
 <span class="s2">        &lt;/View&gt;</span>
 <span class="s2">      &lt;/View&gt;</span>
 <span class="s2">    &lt;/View&gt;</span>
-<span class="s2">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: E501</span>
+<span class="s2">    """</span>  <span class="c1"># noqa: E501</span>
 
 <div class="viewcode-block" id="HumanPreferenceAnnotationMapper.__init__">
 <a class="viewcode-back" href="../../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.HumanPreferenceAnnotationMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">label_config_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">answer1_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;answer1&quot;</span><span class="p">,</span>
-        <span class="n">answer2_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;answer2&quot;</span><span class="p">,</span>
-        <span class="n">prompt_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;prompt&quot;</span><span class="p">,</span>
-        <span class="n">chosen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chosen&quot;</span><span class="p">,</span>
-        <span class="n">rejected_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rejected&quot;</span><span class="p">,</span>
+        <span class="n">answer1_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"answer1"</span><span class="p">,</span>
+        <span class="n">answer2_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"answer2"</span><span class="p">,</span>
+        <span class="n">prompt_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"prompt"</span><span class="p">,</span>
+        <span class="n">chosen_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"chosen"</span><span class="p">,</span>
+        <span class="n">rejected_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"rejected"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the human preference annotation operator.</span>
 
 <span class="sd">        :param label_config_file: Path to the label config file</span>
@@ -643,10 +646,10 @@
 <span class="sd">        :param prompt_key: Key for the prompt/question</span>
 <span class="sd">        :param chosen_key: Key for the chosen answer</span>
 <span class="sd">        :param rejected_key: Key for the rejected answer</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Ensure text_key is set to prompt_key if not explicitly provided</span>
-        <span class="k">if</span> <span class="s2">&quot;text_key&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;text_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">prompt_key</span>
+        <span class="k">if</span> <span class="s2">"text_key"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"text_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">prompt_key</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Store our class-specific attributes</span>
@@ -658,81 +661,81 @@
 
         <span class="c1"># Prepare the label_config parameter</span>
         <span class="k">if</span> <span class="n">label_config_file</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">label_config_file</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_config_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;label_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded label config from </span><span class="si">{</span><span class="n">label_config_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">label_config_file</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">"label_config"</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loaded label config from </span><span class="si">{</span><span class="n">label_config_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;label_config&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_LABEL_CONFIG</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using default UI config for human preference annotation&quot;</span><span class="p">)</span></div>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"label_config"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_LABEL_CONFIG</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using default UI config for human preference annotation"</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format samples as a Label Studio task for human preference.</span>
+<span class="w">        </span><span class="sd">"""Format samples as a Label Studio task for human preference.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            samples: List of samples to include in the task</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict: Formatted task data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># For human preference, we need a special format</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Human preference requires exactly one sample per task&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Human preference requires exactly one sample per task"</span><span class="p">)</span>
 
         <span class="n">sample</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">task</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="p">{}}</span>
 
         <span class="c1"># Add the prompt/question</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;prompt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">]</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"prompt"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample missing required field &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;prompt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No prompt provided&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sample missing required field '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"prompt"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"No prompt provided"</span>
 
         <span class="c1"># Add the answer options</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;answer1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="p">]</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"answer1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample missing required field &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;answer1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No answer 1 provided&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sample missing required field '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"answer1"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"No answer 1 provided"</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;answer2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="p">]</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"answer2"</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample missing required field &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;answer2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;No answer 2 provided&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sample missing required field '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="s2">"answer2"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"No answer 2 provided"</span>
 
         <span class="c1"># Add any other metadata as string values only</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">))</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># Convert to string to ensure compatibility</span>
-                    <span class="n">task</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="sa">f</span><span class="s2">&quot;meta:</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">task</span><span class="p">[</span><span class="s2">"data"</span><span class="p">][</span><span class="sa">f</span><span class="s2">"meta:</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">""</span>
 
         <span class="c1"># Log the task for debugging</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted task: </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Formatted task: </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">task</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_task_annotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get annotation for a task if available&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get annotation for a task if available"""</span>
         <span class="n">annotation</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_task_annotation</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
 
         <span class="c1"># Process the annotation if available</span>
-        <span class="k">if</span> <span class="n">annotation</span> <span class="ow">and</span> <span class="s2">&quot;result&quot;</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">annotation</span> <span class="ow">and</span> <span class="s2">"result"</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">:</span>
             <span class="c1"># Extract the preference information</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;pairwise&quot;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"pairwise"</span><span class="p">:</span>
                     <span class="c1"># Get the selected option (from_id or to_id)</span>
-                    <span class="n">selected</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;selected&quot;</span><span class="p">)</span>
+                    <span class="n">selected</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"selected"</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
                         <span class="c1"># Add the preference to the annotation</span>
-                        <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;preference&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected</span>
+                        <span class="n">annotation</span><span class="p">[</span><span class="s2">"preference"</span><span class="p">]</span> <span class="o">=</span> <span class="n">selected</span>
 
         <span class="k">return</span> <span class="n">annotation</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_annotation_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process human preference annotation result and update the sample</span>
+<span class="w">        </span><span class="sd">"""Process human preference annotation result and update the sample</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            annotation: The annotation result from Label Studio</span>
@@ -740,34 +743,34 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict: The updated sample with preference results</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Extract the preference information</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing annotation result: </span><span class="si">{</span><span class="n">annotation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processing annotation result: </span><span class="si">{</span><span class="n">annotation</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">all_keys</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">all_keys</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">preference</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;pairwise&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">annotation</span><span class="p">[</span><span class="s2">"result"</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"pairwise"</span><span class="p">:</span>
                 <span class="c1"># Get the selected option</span>
-                <span class="n">selected</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;selected&quot;</span><span class="p">)</span>
+                <span class="n">selected</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"selected"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
-                    <span class="c1"># Map &#39;left&#39;/&#39;right&#39; to &#39;answer1&#39;/&#39;answer2&#39;</span>
-                    <span class="k">if</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+                    <span class="c1"># Map 'left'/'right' to 'answer1'/'answer2'</span>
+                    <span class="k">if</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">"left"</span><span class="p">:</span>
                         <span class="n">preference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer1_key</span>
-                    <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+                    <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">"right"</span><span class="p">:</span>
                         <span class="n">preference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">answer2_key</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># In case it&#39;s already &#39;answer1&#39;/&#39;answer2&#39;</span>
+                        <span class="c1"># In case it's already 'answer1'/'answer2'</span>
                         <span class="n">preference</span> <span class="o">=</span> <span class="n">selected</span>
                     <span class="k">break</span>
 
         <span class="c1"># Store the preference result directly in the sample</span>
-        <span class="n">chosen</span> <span class="o">=</span> <span class="n">preference</span> <span class="k">if</span> <span class="n">preference</span> <span class="k">else</span> <span class="s2">&quot;Unanswered&quot;</span>
-        <span class="n">rejected</span> <span class="o">=</span> <span class="n">all_keys</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">preference</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">preference</span> <span class="k">else</span> <span class="s2">&quot;Unanswered&quot;</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="n">preference</span> <span class="k">if</span> <span class="n">preference</span> <span class="k">else</span> <span class="s2">"Unanswered"</span>
+        <span class="n">rejected</span> <span class="o">=</span> <span class="n">all_keys</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">preference</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">if</span> <span class="n">preference</span> <span class="k">else</span> <span class="s2">"Unanswered"</span>
         <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chosen_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">chosen</span><span class="p">]</span>
         <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rejected_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">rejected</span><span class="p">]</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated sample: </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Updated sample: </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 
 </pre></div>

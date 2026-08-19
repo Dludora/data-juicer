@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator</span></li>
   </ul>
 </nav>
@@ -538,7 +541,7 @@
     <span class="n">sha1_hash32</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 <span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">1000</span>
 
@@ -596,12 +599,12 @@
 <div class="viewcode-block" id="BTSUnionFind">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.BTSUnionFind">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BTSUnionFind</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A distributed implementation of Union-Find with load balancing.</span>
 
 <span class="sd">    The original paper on BTS Union-Find is available at:</span>
 <span class="sd">    https://ieeexplore.ieee.org/document/10598116</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="BTSUnionFind.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.BTSUnionFind.__init__">[文档]</a>
@@ -811,26 +814,26 @@
 <div class="viewcode-block" id="get_remote_classes">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.get_remote_classes">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_remote_classes</span><span class="p">(</span><span class="n">actor_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get remote versions of classes with Ray decorators applied at runtime.</span>
+<span class="w">    </span><span class="sd">"""Get remote versions of classes with Ray decorators applied at runtime.</span>
 
 <span class="sd">    :param actor_memory: Memory reservation for EdgeBuffer and BTSUnionFind actors in bytes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Apply ray.method decorator to get_next_id at runtime</span>
     <span class="n">IdGenerator</span><span class="o">.</span><span class="n">get_next_id</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">num_returns</span><span class="o">=</span><span class="mi">2</span><span class="p">)(</span><span class="n">IdGenerator</span><span class="o">.</span><span class="n">get_next_id</span><span class="p">)</span>
 
-    <span class="n">remote_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;scheduling_strategy&quot;</span><span class="p">:</span> <span class="s2">&quot;SPREAD&quot;</span><span class="p">}</span>
+    <span class="n">remote_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"scheduling_strategy"</span><span class="p">:</span> <span class="s2">"SPREAD"</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">actor_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">remote_args</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">actor_memory</span>
+        <span class="n">remote_args</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="n">actor_memory</span>
 
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;IdGenerator&quot;</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">IdGenerator</span><span class="p">),</span>
-        <span class="s2">&quot;EdgeBuffer&quot;</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="o">**</span><span class="n">remote_args</span><span class="p">)(</span><span class="n">EdgeBuffer</span><span class="p">),</span>
-        <span class="s2">&quot;BTSUnionFind&quot;</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="o">**</span><span class="n">remote_args</span><span class="p">)(</span><span class="n">BTSUnionFind</span><span class="p">),</span>
+        <span class="s2">"IdGenerator"</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">IdGenerator</span><span class="p">),</span>
+        <span class="s2">"EdgeBuffer"</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="o">**</span><span class="n">remote_args</span><span class="p">)(</span><span class="n">EdgeBuffer</span><span class="p">),</span>
+        <span class="s2">"BTSUnionFind"</span><span class="p">:</span> <span class="n">ray</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="o">**</span><span class="n">remote_args</span><span class="p">)(</span><span class="n">BTSUnionFind</span><span class="p">),</span>
     <span class="p">}</span></div>
 
 
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;ray_bts_minhash_deduplicator&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"ray_bts_minhash_deduplicator"</span>
 
 
 <div class="viewcode-block" id="GPUMinHashActor">
@@ -857,17 +860,17 @@
                 <span class="p">],</span>
                 <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">T</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span> <span class="o">=</span> <span class="n">cudf</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">perm_a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint32&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span> <span class="o">=</span> <span class="n">cudf</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">perm_b</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">&quot;uint32&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span> <span class="o">=</span> <span class="n">cudf</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">perm_a</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"uint32"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span> <span class="o">=</span> <span class="n">cudf</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">perm_b</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s2">"uint32"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span> <span class="o">=</span> <span class="n">lowercase</span></div>
 
 
 <div class="viewcode-block" id="GPUMinHashActor.compute_minhash">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.GPUMinHashActor.compute_minhash">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_minhash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_arr</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Compute MinHash signatures for texts in a table</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">cudf</span>
 
         <span class="n">text_df</span> <span class="o">=</span> <span class="n">cudf</span><span class="o">.</span><span class="n">Series</span><span class="o">.</span><span class="n">from_arrow</span><span class="p">(</span><span class="n">text_arr</span><span class="p">)</span>
@@ -880,18 +883,18 @@
         <span class="k">return</span> <span class="n">arrow_minhashes</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span> <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span> <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
         <span class="n">minhashes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_minhash</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">text_key</span><span class="p">])</span>
-        <span class="n">new_table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s2">&quot;_minhash&quot;</span><span class="p">,</span> <span class="n">minhashes</span><span class="p">)</span>
+        <span class="n">new_table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="s2">"_minhash"</span><span class="p">,</span> <span class="n">minhashes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_table</span></div>
 
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayBTSMinhashDeduplicator</span><span class="p">(</span><span class="n">Deduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A MinhashLSH deduplicator that operates in Ray distributed mode.</span>
+<span class="w">    </span><span class="sd">"""A MinhashLSH deduplicator that operates in Ray distributed mode.</span>
 
 <span class="sd">    This operator uses the MinHash LSH technique to identify and remove near-duplicate</span>
 <span class="sd">    samples from a dataset. It supports various tokenization methods, including space,</span>
@@ -901,17 +904,17 @@
 <span class="sd">    filtered out. The operator computes the MinHash values for each sample and uses a union-</span>
 <span class="sd">    find algorithm to group similar samples. The key metric, Jaccard similarity, is computed</span>
 <span class="sd">    based on the shingling of the text. The operator can run on both CPU and GPU, with</span>
-<span class="sd">    specific batch size and memory configurations for each.&quot;&quot;&quot;</span>
+<span class="sd">    specific batch size and memory configurations for each."""</span>
 
     <span class="c1"># TODO: Set a more reasonable value</span>
-    <span class="n">EMPTY_HASH_VALUE</span> <span class="o">=</span> <span class="s2">&quot;EMPTY&quot;</span>
+    <span class="n">EMPTY_HASH_VALUE</span> <span class="o">=</span> <span class="s2">"EMPTY"</span>
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.__init__">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.__init__">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;space&quot;</span><span class="p">,</span>
+        <span class="n">tokenization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"space"</span><span class="p">,</span>
         <span class="n">window_size</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">lowercase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">ignore_pattern</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -920,30 +923,30 @@
         <span class="n">num_bands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">num_rows_per_band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tokenizer_model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">union_find_parallel_num</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">union_find_parallel_num</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"auto"</span><span class="p">,</span>
         <span class="n">union_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">256</span><span class="p">,</span>
         <span class="n">max_pending_edge_buffer_task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">num_edge_buffer_task_returns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">max_pending_filter_tasks</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">num_filter_task_returns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">merge_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
-        <span class="n">minhash_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">minhash_batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">"auto"</span><span class="p">,</span>
         <span class="n">memory_per_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># MB per sample</span>
         <span class="n">actor_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Memory per actor (bytes)</span>
         <span class="n">task_memory</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Memory per map_batches task (bytes)</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param tokenization: tokenization method for sample texts. It</span>
 <span class="sd">            should be one of [space, punctuation, character,</span>
 <span class="sd">            sentencepiece]. For English-like languages, we recommend</span>
-<span class="sd">            to use &#39;space&#39;, for Chinese-like languages, we recommend</span>
-<span class="sd">            to use &#39;character&#39;, and for multiple languages, we recommend</span>
-<span class="sd">            to use &#39;sentencepiece&#39;. If using &#39;sentencepiece&#39;, please</span>
-<span class="sd">            provided the model path in the &#39;tokenizer_model&#39; field.</span>
+<span class="sd">            to use 'space', for Chinese-like languages, we recommend</span>
+<span class="sd">            to use 'character', and for multiple languages, we recommend</span>
+<span class="sd">            to use 'sentencepiece'. If using 'sentencepiece', please</span>
+<span class="sd">            provided the model path in the 'tokenizer_model' field.</span>
 <span class="sd">        :param window_size: window size of shingling</span>
 <span class="sd">        :param lowercase: whether to convert text to lower case first</span>
 <span class="sd">        :param ignore_pattern: whether to ignore sub-strings with</span>
@@ -955,31 +958,31 @@
 <span class="sd">            two sample texts is &gt;= this threshold, they are regarded as</span>
 <span class="sd">            similar samples and this op will only keep one of them after</span>
 <span class="sd">            deduplication</span>
-<span class="sd">        :param num_bands: number of bands in LSH. Default it&#39;s None, and</span>
+<span class="sd">        :param num_bands: number of bands in LSH. Default it's None, and</span>
 <span class="sd">            it will be determined by an optimal params computation</span>
 <span class="sd">            algorithm by minimize the weighted sum of probs of False</span>
 <span class="sd">            Positives and False Negatives</span>
 <span class="sd">        :param num_rows_per_band: number of rows in each band in LSH.</span>
-<span class="sd">            Default it&#39;s None, and it will be determined by an optimal</span>
+<span class="sd">            Default it's None, and it will be determined by an optimal</span>
 <span class="sd">            params computation algorithm</span>
 <span class="sd">        :param tokenizer_model: path for the sentencepiece model, used for</span>
 <span class="sd">            sentencepiece tokenization.</span>
 <span class="sd">        :param union_find_parallel_num: number of parallel workers for</span>
-<span class="sd">            union-find algorithm. Default it&#39;s &#39;auto&#39;, and it will be</span>
+<span class="sd">            union-find algorithm. Default it's 'auto', and it will be</span>
 <span class="sd">            determined by half of the number of CPUs.</span>
 <span class="sd">        :param union_threshold: threshold for minhash values group to</span>
-<span class="sd">            perform union-find algorithm. Default it&#39;s 256.</span>
+<span class="sd">            perform union-find algorithm. Default it's 256.</span>
 <span class="sd">        :param max_pending_edge_buffer_task: max number of pending edge buffer</span>
-<span class="sd">            ray tasks. Default it&#39;s 20.</span>
+<span class="sd">            ray tasks. Default it's 20.</span>
 <span class="sd">        :param num_edge_buffer_task_returns: number of edge buffer tasks for</span>
-<span class="sd">            `ray.wait` to return. Default it&#39;s 10.</span>
+<span class="sd">            `ray.wait` to return. Default it's 10.</span>
 <span class="sd">        :param max_pending_filter_tasks: max number of pending filter ray</span>
-<span class="sd">            tasks. Default it&#39;s 20.</span>
+<span class="sd">            tasks. Default it's 20.</span>
 <span class="sd">        :param num_filter_task_returns: number of filter tasks for `ray.wait`</span>
-<span class="sd">            to return. Default it&#39;s 10.</span>
+<span class="sd">            to return. Default it's 10.</span>
 <span class="sd">        :param merge_batch_size: batch size for BTS operations. Default</span>
-<span class="sd">            it&#39;s 1000.</span>
-<span class="sd">        :param minhash_batch_size: batch size for MinHash computation. If &quot;auto&quot;,</span>
+<span class="sd">            it's 1000.</span>
+<span class="sd">        :param minhash_batch_size: batch size for MinHash computation. If "auto",</span>
 <span class="sd">            it will be set to default value on CPU(1024), or auto calculated per</span>
 <span class="sd">            available GPU memory and memory_per_sample setting for GPU.</span>
 <span class="sd">        :param memory_per_sample: estimated memory needed per sample in MB.</span>
@@ -991,7 +994,7 @@
 <span class="sd">        :param task_memory: Memory reservation per map_batches task in bytes.</span>
 <span class="sd">            For billion-row scale, use 2_000_000_000 (2GB).</span>
 <span class="sd">            Default is None (no reservation).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -1000,7 +1003,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span> <span class="o">=</span> <span class="n">lowercase</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="o">=</span> <span class="n">ignore_pattern</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">memory_per_sample</span> <span class="o">=</span> <span class="n">memory_per_sample</span>
-        <span class="k">if</span> <span class="n">minhash_batch_size</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">minhash_batch_size</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">minhash_batch_size</span> <span class="o">=</span> <span class="mi">200_000</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1009,59 +1012,59 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">minhash_batch_size</span> <span class="o">=</span> <span class="n">minhash_batch_size</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">!=</span> <span class="s2">&quot;character&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;GPU MinHash computation is only supported for character tokenization&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">!=</span> <span class="s2">"character"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"GPU MinHash computation is only supported for character tokenization"</span><span class="p">)</span>
 
         <span class="c1"># check parameters</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;punctuation&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"punctuation"</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Be careful that tokenization with punctuations &quot;</span>
-                <span class="s2">&quot;won&#39;t work if the ignore pattern includes &quot;</span>
-                <span class="s2">&quot;punctuations.&quot;</span>
+                <span class="s2">"Be careful that tokenization with punctuations "</span>
+                <span class="s2">"won't work if the ignore pattern includes "</span>
+                <span class="s2">"punctuations."</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\p</span><span class="si">{P}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\p</span><span class="si">{P}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;sentencepiece&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"sentencepiece"</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">tokenizer_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;To use &#39;sentencepiece&#39; tokenization, &quot;</span> <span class="s2">&quot;&#39;tokenizer_model&#39; is required.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"To use 'sentencepiece' tokenization, "</span> <span class="s2">"'tokenizer_model' is required."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">prepare_sentencepiece_model</span><span class="p">(</span><span class="n">tokenizer_model</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;character&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"character"</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">tokenization_func</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
                 <span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)}</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;punctuation&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"punctuation"</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">tokenization_func</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
                 <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">punctuation_pattern</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
                 <span class="k">return</span> <span class="p">{</span>
-                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">}</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;space&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"space"</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">tokenization_func</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
                 <span class="n">tokens</span> <span class="o">=</span> <span class="n">split_on_whitespace</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
                 <span class="k">return</span> <span class="p">{</span>
-                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">}</span>
 
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">&quot;sentencepiece&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span> <span class="o">==</span> <span class="s2">"sentencepiece"</span><span class="p">:</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">tokenization_func</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
                 <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">out_type</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
                 <span class="k">return</span> <span class="p">{</span>
-                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
+                    <span class="nb">str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span><span class="p">]))</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">window_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="p">}</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unimplemented tokenization method [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unimplemented tokenization method [</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenization</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tokenization_func</span> <span class="o">=</span> <span class="n">tokenization_func</span>
 
         <span class="c1"># about deduplication</span>
@@ -1096,7 +1099,7 @@
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
-        <span class="c1"># Store config for lazy initialization - don&#39;t create actors yet</span>
+        <span class="c1"># Store config for lazy initialization - don't create actors yet</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_union_find_parallel_num_config</span> <span class="o">=</span> <span class="n">union_find_parallel_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_merge_batch_size_config</span> <span class="o">=</span> <span class="n">merge_batch_size</span>
 
@@ -1119,27 +1122,27 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create actors lazily on first use, when cluster has autoscaled.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create actors lazily on first use, when cluster has autoscaled."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actors_initialized</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="c1"># Calculate union_find_parallel_num NOW when cluster has scaled</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_union_find_parallel_num_config</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;CPU&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_union_find_parallel_num_config</span> <span class="o">==</span> <span class="s2">"auto"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">ray</span><span class="o">.</span><span class="n">cluster_resources</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"CPU"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_union_find_parallel_num_config</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">merge_batch_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_merge_batch_size_config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;union_find_parallel_num = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"union_find_parallel_num = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;actor_memory = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_memory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"actor_memory = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_memory</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># Create actors NOW when cluster has resources</span>
         <span class="n">remote_classes</span> <span class="o">=</span> <span class="n">get_remote_classes</span><span class="p">(</span><span class="n">actor_memory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_memory</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remote_edge_buffers</span> <span class="o">=</span> <span class="p">[</span><span class="n">remote_classes</span><span class="p">[</span><span class="s2">&quot;EdgeBuffer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remote_edge_buffers</span> <span class="o">=</span> <span class="p">[</span><span class="n">remote_classes</span><span class="p">[</span><span class="s2">"EdgeBuffer"</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">union_find_list</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">remote_classes</span><span class="p">[</span><span class="s2">&quot;BTSUnionFind&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
+            <span class="n">remote_classes</span><span class="p">[</span><span class="s2">"BTSUnionFind"</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">union_threshold</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="p">,</span>
                 <span class="n">i</span><span class="p">,</span>
@@ -1157,28 +1160,28 @@
         <span class="p">)</span>
 
         <span class="n">empty_hash_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_rows_per_band</span><span class="p">,),</span> <span class="n">MAX_HASH</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">empty_hash_value</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x00\x00\x00\x00</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">empty_hash_value</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">empty_hash_value</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00\x00\x00\x00</span><span class="s2">"</span> <span class="o">+</span> <span class="n">empty_hash_value</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">empty_hash_table_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">MAX_HASH</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_actors_initialized</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_map_batches_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;batch_format&quot;</span><span class="p">:</span> <span class="s2">&quot;pyarrow&quot;</span><span class="p">,</span> <span class="s2">&quot;zero_copy_batch&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"batch_format"</span><span class="p">:</span> <span class="s2">"pyarrow"</span><span class="p">,</span> <span class="s2">"zero_copy_batch"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_memory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_memory</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_memory</span>
         <span class="k">return</span> <span class="n">kwargs</span>
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.band_minhash">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.band_minhash">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.band_minhash">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">band_minhash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minhash_list</span><span class="p">,</span> <span class="n">uid_list</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Logic for creating and pusing LSH bands to the union find list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">minhash_list</span> <span class="o">=</span> <span class="n">minhash_list</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">zero_copy_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">minhash</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">minhash_list</span><span class="p">,</span> <span class="n">uid_list</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_ranges</span><span class="p">):</span>
-                <span class="n">hash_value</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">minhash</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+                <span class="n">hash_value</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">"big"</span><span class="p">)</span> <span class="o">+</span> <span class="n">minhash</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
                 <span class="n">hash_table_id</span> <span class="o">=</span> <span class="n">minhash</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span>
                 <span class="k">if</span> <span class="n">hash_table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
                     <span class="n">pairs</span><span class="p">[</span><span class="n">hash_table_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1193,18 +1196,18 @@
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.calc_minhash">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.calc_minhash">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.calc_minhash">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calc_minhash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_list</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">uid_list</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Logic for computing minhash values for each text in the input table</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">text_list</span><span class="p">,</span> <span class="n">uid_list</span><span class="p">):</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowercase</span><span class="p">:</span>
                 <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="p">:</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_pattern</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
             <span class="n">tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenization_func</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1212,7 +1215,7 @@
                 <span class="n">phv</span> <span class="o">=</span> <span class="p">((</span><span class="n">hv</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_a</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">perm_b</span><span class="p">)</span> <span class="o">%</span> <span class="n">MERSENNE_PRIME</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
                 <span class="n">hash_values</span> <span class="o">=</span> <span class="n">phv</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hash_ranges</span><span class="p">):</span>
-                    <span class="n">hash_value</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;big&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">hash_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+                    <span class="n">hash_value</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">"big"</span><span class="p">)</span> <span class="o">+</span> <span class="n">hash_values</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
                     <span class="n">hash_table_id</span> <span class="o">=</span> <span class="n">hash_values</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">union_find_parallel_num</span>
                     <span class="k">if</span> <span class="n">hash_table_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
                         <span class="n">pairs</span><span class="p">[</span><span class="n">hash_table_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1231,7 +1234,7 @@
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.merge_op_batch">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.merge_op_batch">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.merge_op_batch">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">merge_op_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_refs</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">while</span> <span class="n">object_refs</span><span class="p">:</span>
@@ -1241,7 +1244,7 @@
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.merge">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.merge">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.merge">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">merge_op_batch</span><span class="p">([</span><span class="n">union_find</span><span class="o">.</span><span class="n">edge_redistribution</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span> <span class="k">for</span> <span class="n">union_find</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">union_find_list</span><span class="p">])</span>
         <span class="k">while</span> <span class="nb">any</span><span class="p">(</span>
@@ -1252,7 +1255,7 @@
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.filter_with_union_find">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.filter_with_union_find">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.filter_with_union_find">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">filter_with_union_find</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
         <span class="n">query_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">uid</span><span class="p">]):</span>
@@ -1280,7 +1283,7 @@
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicator.run">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.run">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicator.run">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Ignore additional parameters like exporter, tracer, etc.</span>
         <span class="c1"># Initialize actors lazily - now cluster has had time to autoscale</span>
@@ -1289,15 +1292,15 @@
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="c1"># Get remote IdGenerator only when needed</span>
         <span class="n">remote_classes</span> <span class="o">=</span> <span class="n">get_remote_classes</span><span class="p">()</span>
-        <span class="n">id_generator</span> <span class="o">=</span> <span class="n">remote_classes</span><span class="p">[</span><span class="s2">&quot;IdGenerator&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span>
+        <span class="n">id_generator</span> <span class="o">=</span> <span class="n">remote_classes</span><span class="p">[</span><span class="s2">"IdGenerator"</span><span class="p">]</span><span class="o">.</span><span class="n">remote</span><span class="p">()</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">band_with_uid</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
             <span class="n">num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
             <span class="n">min_id</span><span class="p">,</span> <span class="n">max_id</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">id_generator</span><span class="o">.</span><span class="n">get_next_id</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span><span class="n">num_rows</span><span class="p">))</span>
             <span class="n">uid_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_id</span><span class="p">,</span> <span class="n">max_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">band_minhash</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">&quot;_minhash&quot;</span><span class="p">],</span> <span class="n">uid_list</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">band_minhash</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">"_minhash"</span><span class="p">],</span> <span class="n">uid_list</span><span class="p">)</span>
             <span class="n">new_table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">uid_list</span><span class="p">)))</span>
-            <span class="n">new_table</span> <span class="o">=</span> <span class="n">new_table</span><span class="o">.</span><span class="n">drop_columns</span><span class="p">([</span><span class="s2">&quot;_minhash&quot;</span><span class="p">])</span>
+            <span class="n">new_table</span> <span class="o">=</span> <span class="n">new_table</span><span class="o">.</span><span class="n">drop_columns</span><span class="p">([</span><span class="s2">"_minhash"</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">new_table</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">minhash_with_uid</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
@@ -1308,17 +1311,17 @@
             <span class="n">new_table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">HashKeys</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">uid_list</span><span class="p">)))</span>
             <span class="k">return</span> <span class="n">new_table</span>
 
-        <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">&quot;.tmp&quot;</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">get_runtime_context</span><span class="p">()</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">())</span>
+        <span class="n">tmp_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">work_dir</span><span class="p">,</span> <span class="s2">".tmp"</span><span class="p">,</span> <span class="n">ray</span><span class="o">.</span><span class="n">get_runtime_context</span><span class="p">()</span><span class="o">.</span><span class="n">get_job_id</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using GPU for MinHash computation&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using GPU for MinHash computation"</span><span class="p">)</span>
             <span class="c1"># Get available GPU count and set concurrency</span>
             <span class="n">gpu_count</span> <span class="o">=</span> <span class="n">ray_gpu_count</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">gpu_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No GPUs available in Ray cluster&quot;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No GPUs available in Ray cluster&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"No GPUs available in Ray cluster"</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"No GPUs available in Ray cluster"</span><span class="p">)</span>
 
             <span class="n">concurrency</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">gpu_count</span><span class="p">)</span>  <span class="c1"># Ensure at least 1 concurrent task</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting GPU concurrency to </span><span class="si">{</span><span class="n">concurrency</span><span class="si">}</span><span class="s2"> based on available GPUs&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Setting GPU concurrency to </span><span class="si">{</span><span class="n">concurrency</span><span class="si">}</span><span class="s2"> based on available GPUs"</span><span class="p">)</span>
 
             <span class="c1"># Get available GPU memory and set batch size</span>
             <span class="n">gpu_memory</span> <span class="o">=</span> <span class="n">ray_available_gpu_memories</span><span class="p">()</span>
@@ -1334,17 +1337,17 @@
                 <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">10_000</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">estimated_batch_size</span><span class="p">,</span> <span class="n">max_reasonable_batch</span><span class="p">))</span>
 
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Setting batch size to </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> based on available GPU memory &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">min_memory</span><span class="si">}</span><span class="s2">MB), memory per sample (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory_per_sample</span><span class="si">}</span><span class="s2">MB), &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;and safe memory limit (</span><span class="si">{</span><span class="n">safe_memory</span><span class="si">}</span><span class="s2">MB)&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Setting batch size to </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2"> based on available GPU memory "</span>
+                    <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">min_memory</span><span class="si">}</span><span class="s2">MB), memory per sample (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">memory_per_sample</span><span class="si">}</span><span class="s2">MB), "</span>
+                    <span class="sa">f</span><span class="s2">"and safe memory limit (</span><span class="si">{</span><span class="n">safe_memory</span><span class="si">}</span><span class="s2">MB)"</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minhash_batch_size</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default batch size of </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Using default batch size of </span><span class="si">{</span><span class="n">batch_size</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
             <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span>
                 <span class="n">GPUMinHashActor</span><span class="p">,</span>
-                <span class="n">batch_format</span><span class="o">=</span><span class="s2">&quot;pyarrow&quot;</span><span class="p">,</span>
+                <span class="n">batch_format</span><span class="o">=</span><span class="s2">"pyarrow"</span><span class="p">,</span>
                 <span class="n">zero_copy_batch</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">num_gpus</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                 <span class="n">compute</span><span class="o">=</span><span class="n">ray</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ActorPoolStrategy</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">concurrency</span><span class="p">),</span>
@@ -1353,50 +1356,50 @@
             <span class="n">dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="n">band_with_uid</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_map_batches_kwargs</span><span class="p">())</span><span class="o">.</span><span class="n">write_parquet</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span>
             <span class="k">del</span> <span class="n">dataset</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using CPU for MinHash computation&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Using CPU for MinHash computation"</span><span class="p">)</span>
             <span class="n">dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="n">minhash_with_uid</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_map_batches_kwargs</span><span class="p">())</span><span class="o">.</span><span class="n">write_parquet</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MinHash time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MinHash time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">ray</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">)</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;merge time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"merge time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">new_dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_with_union_find</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_map_batches_kwargs</span><span class="p">())</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;filter time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"filter time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span></div>
 </div>
 
 
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicatorWithUid">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicatorWithUid">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">_with_uid&quot;</span><span class="p">)</span>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicatorWithUid">[文档]</a>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">_with_uid"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayBTSMinhashDeduplicatorWithUid</span><span class="p">(</span><span class="n">RayBTSMinhashDeduplicator</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A MinhashLSH deduplicator based on RAY.</span>
 
 <span class="sd">    Unlike `RayBTSMinhashDeduplicator`, this class requires the input dataset to contain an additional column</span>
-<span class="sd">    named &#39;__dj__uid&#39; of type int, where each value is unique across samples. This column serves two main purposes:</span>
+<span class="sd">    named '__dj__uid' of type int, where each value is unique across samples. This column serves two main purposes:</span>
 
 <span class="sd">    1. **Reduced I/O Overhead**: Compared to RayBTSMinhashDeduplicator, this class does not persist intermediate</span>
 <span class="sd">    results, thereby reducing disk read and write operations.</span>
 
-<span class="sd">    2. **Support for Incremental Deduplication**: The &#39;__dj__uid&#39; column enables the deduplicator to perform</span>
+<span class="sd">    2. **Support for Incremental Deduplication**: The '__dj__uid' column enables the deduplicator to perform</span>
 <span class="sd">    incremental deduplication. This is particularly useful in scenarios where you already have a deduplicated dataset</span>
 <span class="sd">    (e.g., dataset A) and want to add a new dataset (e.g., dataset B) while ensuring that duplicates are resolved</span>
 <span class="sd">    in favor of the original data.</span>
 
 <span class="sd">        For example, consider a scenario where you have an already deduplicated dataset A and a new dataset B that</span>
 <span class="sd">        you wish to add. If you want to perform joint deduplication on both A and B while prioritizing the retention</span>
-<span class="sd">        of data from A, you can ensure that all &#39;__dj__uid&#39; values in B are greater than those in A. Then, by applying</span>
+<span class="sd">        of data from A, you can ensure that all '__dj__uid' values in B are greater than those in A. Then, by applying</span>
 <span class="sd">        this deduplicator to the combined dataset, duplicates will be resolved in favor of the entries from A.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="RayBTSMinhashDeduplicatorWithUid.run">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.ray_bts_minhash_deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicatorWithUid.run">[文档]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.deduplicator.html#data_juicer.ops.deduplicator.RayBTSMinhashDeduplicatorWithUid.run">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Ignore additional parameters like exporter, tracer, etc.</span>
         <span class="c1"># Initialize actors lazily - now cluster has had time to autoscale</span>
@@ -1411,12 +1414,12 @@
 
         <span class="n">dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="n">minhash_with_uid</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_map_batches_kwargs</span><span class="p">())</span><span class="o">.</span><span class="n">materialize</span><span class="p">()</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MinHash time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"MinHash time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">()</span>
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;merge time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"merge time = </span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">map_batches</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_with_union_find</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_map_batches_kwargs</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">result</span></div>
 </div>

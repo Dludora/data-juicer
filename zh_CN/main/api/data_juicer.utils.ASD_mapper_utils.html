@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+
+
+<html lang="zh-CN" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>data_juicer.utils.ASD_mapper_utils module &#8212; Data Juicer</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=34d13042" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=91bfbbb6"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=540d3cec"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/data_juicer.utils.ASD_mapper_utils';</script>
+    <script src="../_static/sidebar.js?v=3fc1065c"></script>
+    <script src="../_static/switcher-mobile.js?v=07875724"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="icon" href="../_static/icon.png"/>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="zh-CN"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">跳转至主要内容</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>回到顶部</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search docs..."
+         aria-label="Search docs..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="版本警告"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="网页导航">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index_ZH.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/icon.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/icon.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">Data Juicer</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../docs_index_ZH.html">
+    文档
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/zh_CN/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/zh_CN/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/zh_CN/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="搜索" aria-label="搜索" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="亮色"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="暗色"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: zh-CN">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">zh-CN</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../en/main/api/data_juicer.utils.ASD_mapper_utils.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            English
+          </a>
+        
+          
+          
+          <a href="../../../zh_CN/main/api/data_juicer.utils.ASD_mapper_utils.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../main/api/data_juicer.utils.ASD_mapper_utils.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="搜索" aria-label="搜索" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="当前页面">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../docs_index_ZH.html">
+    文档
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../api.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-sandbox/zh_CN/main/">
+    Sandbox
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-hub/zh_CN/main/">
+    Hub
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://datajuicer.github.io/data-juicer-agents/zh_CN/main/">
+    Agents
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/Dludora/data-juicer" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="亮色"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="暗色"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><div class="navbar-switcher-container">
+  
+  <div class="navbar-dropdown language-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select language: zh-CN">
+      <span class="switcher-icon" aria-hidden="true">🌐</span>
+      <span class="switcher-text">zh-CN</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+          
+          
+          <a href="../../../en/main/api/data_juicer.utils.ASD_mapper_utils.html"
+             class="dropdown-item "
+             role="menuitem"
+             >
+            English
+          </a>
+        
+          
+          
+          <a href="../../../zh_CN/main/api/data_juicer.utils.ASD_mapper_utils.html"
+             class="dropdown-item active"
+             role="menuitem"
+             aria-current="true">
+            简体中文
+          </a>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  
+  <div class="navbar-dropdown version-dropdown">
+    <button type="button" 
+            class="navbar-dropdown-trigger" 
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Select version: main">
+      <span class="switcher-icon" aria-hidden="true">📦</span>
+      <span class="switcher-text">main</span>
+      <i class="fa-solid fa-chevron-down dropdown-icon" aria-hidden="true"></i>
+    </button>
+    <div class="navbar-dropdown-panel" role="menu">
+      <div class="dropdown-content">
+        
+        <a href="../../main/api/data_juicer.utils.ASD_mapper_utils.html"
+           class="dropdown-item active"
+           role="menuitem"
+           aria-current="true">
+          main
+        </a>
+        
+      </div>
+    </div>
+  </div>
+  
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index_ZH.html" class="nav-link" aria-label="初始页面">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.utils.ASD_mapper_utils module</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-data_juicer.utils.ASD_mapper_utils">
+<span id="data-juicer-utils-asd-mapper-utils-module"></span><h1>data_juicer.utils.ASD_mapper_utils module<a class="headerlink" href="#module-data_juicer.utils.ASD_mapper_utils" title="链接到此标题。">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.scene_detect">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">scene_detect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">videoFilePath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#scene_detect"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.scene_detect" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.inference_video">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">inference_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DET</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#inference_video"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.inference_video" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.get_video_array_cv2">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">get_video_array_cv2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">videoFilePath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#get_video_array_cv2"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.get_video_array_cv2" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.bb_intersection_over_union">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">bb_intersection_over_union</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evalCol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#bb_intersection_over_union"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.bb_intersection_over_union" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.track_shot">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">track_shot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sceneFaces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numFailedDet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minTrack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#track_shot"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.track_shot" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.find_human_bounding_box">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">find_human_bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">human_bboxes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#find_human_bounding_box"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.find_human_bounding_box" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.update_negative_ones">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">update_negative_ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#update_negative_ones"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.update_negative_ones" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.detect_and_mark_anomalies">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">detect_and_mark_anomalies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_multiplier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#detect_and_mark_anomalies"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.detect_and_mark_anomalies" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.crop_video_with_facetrack">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">crop_video_with_facetrack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cropFile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">audioFilePath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#crop_video_with_facetrack"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.crop_video_with_facetrack" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.evaluate_network">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">evaluate_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pycropPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#evaluate_network"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.evaluate_network" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.visualization">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">visualization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyaviPath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#visualization"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.visualization" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.calculate_good_matches">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">calculate_good_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matches</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#calculate_good_matches"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.calculate_good_matches" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.find_max_intersection_and_remaining_dicts">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">find_max_intersection_and_remaining_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dicts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#find_max_intersection_and_remaining_dicts"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.find_max_intersection_and_remaining_dicts" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.get_faces_array">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">get_faces_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#get_faces_array"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.get_faces_array" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.order_track_distance">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">order_track_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#order_track_distance"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.order_track_distance" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.update_remain">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">update_remain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remaining_dicts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pop_item</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#update_remain"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.update_remain" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.order_merge_tracks">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">order_merge_tracks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">track1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#order_merge_tracks"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.order_merge_tracks" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.post_merge">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">post_merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vidTracks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#post_merge"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.post_merge" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.longest_continuous_actives">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">longest_continuous_actives</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#longest_continuous_actives"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.longest_continuous_actives" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_with_audio">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">annotate_video_with_bounding_boxes_with_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_human_video_track_bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#annotate_video_with_bounding_boxes_with_audio"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_with_audio" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_withText_with_audio">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">annotate_video_with_bounding_boxes_withText_with_audio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_human_video_track_bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numbers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#annotate_video_with_bounding_boxes_withText_with_audio"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_withText_with_audio" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">annotate_video_with_bounding_boxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">video_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounding_boxes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#annotate_video_with_bounding_boxes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes" title="链接到此定义。">#</a></dt>
+<dd><p>Annotates specified frames in the video with bounding boxes and saves the result to a new video file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">参数<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>video_array</strong> -- Input video as a numpy array with shape (num_frames, height, width, channels).</p></li>
+<li><p><strong>frame_indices</strong> -- List of frame indices to annotate.</p></li>
+<li><p><strong>bounding_boxes</strong> -- Array of bounding box coordinates with shape (num_frames_to_annotate, 4), where each bounding box is (x, y, w, h).</p></li>
+<li><p><strong>output_path</strong> -- Path to save the output video.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="data_juicer.utils.ASD_mapper_utils.crop_from_array">
+<span class="sig-prename descclassname"><span class="pre">data_juicer.utils.ASD_mapper_utils.</span></span><span class="sig-name descname"><span class="pre">crop_from_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_before_crop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/utils/ASD_mapper_utils.html#crop_from_array"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#data_juicer.utils.ASD_mapper_utils.crop_from_array" title="链接到此定义。">#</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> 当前页面
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.scene_detect"><code class="docutils literal notranslate"><span class="pre">scene_detect()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.inference_video"><code class="docutils literal notranslate"><span class="pre">inference_video()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.get_video_array_cv2"><code class="docutils literal notranslate"><span class="pre">get_video_array_cv2()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.bb_intersection_over_union"><code class="docutils literal notranslate"><span class="pre">bb_intersection_over_union()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.track_shot"><code class="docutils literal notranslate"><span class="pre">track_shot()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.find_human_bounding_box"><code class="docutils literal notranslate"><span class="pre">find_human_bounding_box()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.update_negative_ones"><code class="docutils literal notranslate"><span class="pre">update_negative_ones()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.detect_and_mark_anomalies"><code class="docutils literal notranslate"><span class="pre">detect_and_mark_anomalies()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.crop_video_with_facetrack"><code class="docutils literal notranslate"><span class="pre">crop_video_with_facetrack()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.evaluate_network"><code class="docutils literal notranslate"><span class="pre">evaluate_network()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.visualization"><code class="docutils literal notranslate"><span class="pre">visualization()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.calculate_good_matches"><code class="docutils literal notranslate"><span class="pre">calculate_good_matches()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.find_max_intersection_and_remaining_dicts"><code class="docutils literal notranslate"><span class="pre">find_max_intersection_and_remaining_dicts()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.get_faces_array"><code class="docutils literal notranslate"><span class="pre">get_faces_array()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.order_track_distance"><code class="docutils literal notranslate"><span class="pre">order_track_distance()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.update_remain"><code class="docutils literal notranslate"><span class="pre">update_remain()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.order_merge_tracks"><code class="docutils literal notranslate"><span class="pre">order_merge_tracks()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.post_merge"><code class="docutils literal notranslate"><span class="pre">post_merge()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.longest_continuous_actives"><code class="docutils literal notranslate"><span class="pre">longest_continuous_actives()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_with_audio"><code class="docutils literal notranslate"><span class="pre">annotate_video_with_bounding_boxes_with_audio()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes_withText_with_audio"><code class="docutils literal notranslate"><span class="pre">annotate_video_with_bounding_boxes_withText_with_audio()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.annotate_video_with_bounding_boxes"><code class="docutils literal notranslate"><span class="pre">annotate_video_with_bounding_boxes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.utils.ASD_mapper_utils.crop_from_array"><code class="docutils literal notranslate"><span class="pre">crop_from_array()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/data_juicer.utils.ASD_mapper_utils.rst.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, Data-Juicer Team.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    由 <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4创建。
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  使用 <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1构建.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

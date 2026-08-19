@@ -512,7 +512,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for data_juicer.utils.lazy_loader</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;A LazyLoader class for on-demand module loading with uv integration.&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""A LazyLoader class for on-demand module loading with uv integration."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.resources</span>
@@ -529,68 +529,68 @@
 <div class="viewcode-block" id="get_toml_file_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.get_toml_file_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_toml_file_path</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the path to pyproject.toml file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Get the path to pyproject.toml file."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># First try to find it in the installed package data</span>
-        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;py_data_juicer&quot;</span><span class="p">,</span> <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">toml_path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"py_data_juicer"</span><span class="p">,</span> <span class="s2">"pyproject.toml"</span><span class="p">)</span> <span class="k">as</span> <span class="n">toml_path</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">toml_path</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
         <span class="c1"># If not found in package data, try project root</span>
-        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;data_juicer&quot;</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">init_path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"data_juicer"</span><span class="p">,</span> <span class="s2">"__init__.py"</span><span class="p">)</span> <span class="k">as</span> <span class="n">init_path</span><span class="p">:</span>
             <span class="n">project_root</span> <span class="o">=</span> <span class="n">init_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
-            <span class="k">return</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;pyproject.toml&quot;</span></div>
+            <span class="k">return</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">"pyproject.toml"</span></div>
 
 
 
 <div class="viewcode-block" id="get_uv_lock_path">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.get_uv_lock_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_uv_lock_path</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the path to uv.lock file.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Get the path to uv.lock file."""</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># First try to find it in the installed package data</span>
-        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;py_data_juicer&quot;</span><span class="p">,</span> <span class="s2">&quot;uv.lock&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">lock_path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"py_data_juicer"</span><span class="p">,</span> <span class="s2">"uv.lock"</span><span class="p">)</span> <span class="k">as</span> <span class="n">lock_path</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">lock_path</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
         <span class="c1"># If not found in package data, try project root</span>
-        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">&quot;data_juicer&quot;</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">init_path</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="s2">"data_juicer"</span><span class="p">,</span> <span class="s2">"__init__.py"</span><span class="p">)</span> <span class="k">as</span> <span class="n">init_path</span><span class="p">:</span>
             <span class="n">project_root</span> <span class="o">=</span> <span class="n">init_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">parent</span>
-            <span class="k">return</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">&quot;uv.lock&quot;</span></div>
+            <span class="k">return</span> <span class="n">project_root</span> <span class="o">/</span> <span class="s2">"uv.lock"</span></div>
 
 
 
 <div class="viewcode-block" id="LazyLoader">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.LazyLoader">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LazyLoader</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Lazily import a module, mainly to avoid pulling in large dependencies.</span>
 <span class="sd">    Uses uv for fast dependency installation when available.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Class variable to cache dependencies</span>
     <span class="n">_dependencies</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Mapping of module names to their corresponding package names</span>
     <span class="n">_module_to_package</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;cv2&quot;</span><span class="p">:</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;PIL&quot;</span><span class="p">:</span> <span class="s2">&quot;Pillow&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bs4&quot;</span><span class="p">:</span> <span class="s2">&quot;beautifulsoup4&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;sklearn&quot;</span><span class="p">:</span> <span class="s2">&quot;scikit-learn&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;yaml&quot;</span><span class="p">:</span> <span class="s2">&quot;PyYAML&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;git&quot;</span><span class="p">:</span> <span class="s2">&quot;gitpython&quot;</span><span class="p">,</span>
+        <span class="s2">"cv2"</span><span class="p">:</span> <span class="s2">"opencv-contrib-python"</span><span class="p">,</span>
+        <span class="s2">"PIL"</span><span class="p">:</span> <span class="s2">"Pillow"</span><span class="p">,</span>
+        <span class="s2">"bs4"</span><span class="p">:</span> <span class="s2">"beautifulsoup4"</span><span class="p">,</span>
+        <span class="s2">"sklearn"</span><span class="p">:</span> <span class="s2">"scikit-learn"</span><span class="p">,</span>
+        <span class="s2">"yaml"</span><span class="p">:</span> <span class="s2">"PyYAML"</span><span class="p">,</span>
+        <span class="s2">"git"</span><span class="p">:</span> <span class="s2">"gitpython"</span><span class="p">,</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="LazyLoader.get_package_name">
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.LazyLoader.get_package_name">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_package_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">module_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a module name to its corresponding package name.</span>
+<span class="w">        </span><span class="sd">"""Convert a module name to its corresponding package name.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            module_name: The name of the module (e.g., &#39;cv2&#39;, &#39;PIL&#39;)</span>
+<span class="sd">            module_name: The name of the module (e.g., 'cv2', 'PIL')</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The corresponding package name (e.g., &#39;opencv-contrib-python&#39;, &#39;Pillow&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            str: The corresponding package name (e.g., 'opencv-contrib-python', 'Pillow')</span>
+<span class="sd">        """</span>
         <span class="c1"># Try to get the package name from the mapping</span>
         <span class="k">if</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_module_to_package</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_module_to_package</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span>
@@ -603,7 +603,7 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.LazyLoader.reset_dependencies_cache">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset_dependencies_cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the dependencies cache.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Reset the dependencies cache."""</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
@@ -611,14 +611,14 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.LazyLoader.get_all_dependencies">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all_dependencies</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Get all dependencies, prioritizing uv.lock if available.</span>
 <span class="sd">        Falls back to pyproject.toml if uv.lock is not found or fails to parse.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: A dictionary mapping module names to their full package specifications</span>
-<span class="sd">                 e.g. {&#39;numpy&#39;: &#39;numpy&gt;=1.26.4,&lt;2.0.0&#39;, &#39;pandas&#39;: &#39;pandas&gt;=2.0.0&#39;}</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                 e.g. {'numpy': 'numpy&gt;=1.26.4,&lt;2.0.0', 'pandas': 'pandas&gt;=2.0.0'}</span>
+<span class="sd">        """</span>
         <span class="c1"># Return cached dependencies if available</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span>
@@ -627,74 +627,74 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">lock_path</span> <span class="o">=</span> <span class="n">get_uv_lock_path</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">lock_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lock_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lock_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">lock_data</span> <span class="o">=</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse uv.lock: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                        <span class="c1"># Don&#39;t return empty dict here, fall back to pyproject.toml</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to parse uv.lock: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="c1"># Don't return empty dict here, fall back to pyproject.toml</span>
                         <span class="k">pass</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
                         <span class="c1"># Extract package versions from uv.lock</span>
-                        <span class="k">if</span> <span class="s2">&quot;package&quot;</span> <span class="ow">in</span> <span class="n">lock_data</span><span class="p">:</span>
-                            <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="n">lock_data</span><span class="p">[</span><span class="s2">&quot;package&quot;</span><span class="p">]:</span>
-                                <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">pkg</span> <span class="ow">and</span> <span class="s2">&quot;version&quot;</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
-                                    <span class="n">name</span> <span class="o">=</span> <span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-                                    <span class="n">version</span> <span class="o">=</span> <span class="n">pkg</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span>
-                                    <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="k">if</span> <span class="s2">"package"</span> <span class="ow">in</span> <span class="n">lock_data</span><span class="p">:</span>
+                            <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="n">lock_data</span><span class="p">[</span><span class="s2">"package"</span><span class="p">]:</span>
+                                <span class="k">if</span> <span class="s2">"name"</span> <span class="ow">in</span> <span class="n">pkg</span> <span class="ow">and</span> <span class="s2">"version"</span> <span class="ow">in</span> <span class="n">pkg</span><span class="p">:</span>
+                                    <span class="n">name</span> <span class="o">=</span> <span class="n">pkg</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span>
+                                    <span class="n">version</span> <span class="o">=</span> <span class="n">pkg</span><span class="p">[</span><span class="s2">"version"</span><span class="p">]</span>
+                                    <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">==</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span>
 
                         <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
                             <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="o">=</span> <span class="n">result</span>
                             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to read dependencies from uv.lock: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to read dependencies from uv.lock: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># Fall back to pyproject.toml if uv.lock is not available or empty</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pyproject_path</span> <span class="o">=</span> <span class="n">get_toml_file_path</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">pyproject_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pyproject.toml not found&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"pyproject.toml not found"</span><span class="p">)</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">pyproject_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">pyproject</span> <span class="o">=</span> <span class="n">tomli</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to parse pyproject.toml: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to parse pyproject.toml: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="o">=</span> <span class="p">{}</span>
                     <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span>
 
             <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
 
             <span class="c1"># Get main dependencies</span>
-            <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">pyproject</span> <span class="ow">and</span> <span class="s2">&quot;dependencies&quot;</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]:</span>
-                <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">][</span><span class="s2">&quot;dependencies&quot;</span><span class="p">]:</span>
-                    <span class="k">if</span> <span class="s2">&quot;&gt;=&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&lt;=&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;==&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&gt;&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&lt;&quot;</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">"project"</span> <span class="ow">in</span> <span class="n">pyproject</span> <span class="ow">and</span> <span class="s2">"dependencies"</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">"project"</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">"project"</span><span class="p">][</span><span class="s2">"dependencies"</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="s2">"&gt;="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&lt;="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"=="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&gt;"</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&lt;"</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
                         <span class="c1"># Find the first occurrence of any version operator</span>
-                        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">]:</span>
+                        <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"&gt;="</span><span class="p">,</span> <span class="s2">"&lt;="</span><span class="p">,</span> <span class="s2">"=="</span><span class="p">,</span> <span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&lt;"</span><span class="p">]:</span>
                             <span class="k">if</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
                                 <span class="n">name</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                                 <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                                <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">op</span><span class="si">}{</span><span class="n">version</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">op</span><span class="si">}{</span><span class="n">version</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
                                 <span class="k">break</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                         <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
 
             <span class="c1"># Get optional dependencies</span>
-            <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">pyproject</span> <span class="ow">and</span> <span class="s2">&quot;optional-dependencies&quot;</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">]:</span>
-                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">][</span><span class="s2">&quot;optional-dependencies&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">"project"</span> <span class="ow">in</span> <span class="n">pyproject</span> <span class="ow">and</span> <span class="s2">"optional-dependencies"</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">"project"</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pyproject</span><span class="p">[</span><span class="s2">"project"</span><span class="p">][</span><span class="s2">"optional-dependencies"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                     <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">group</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="s2">&quot;&gt;=&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&lt;=&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;==&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&gt;&quot;</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">&quot;&lt;&quot;</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s2">"&gt;="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&lt;="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"=="</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&gt;"</span> <span class="ow">in</span> <span class="n">dep</span> <span class="ow">or</span> <span class="s2">"&lt;"</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
                             <span class="c1"># Find the first occurrence of any version operator</span>
-                            <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;&quot;</span><span class="p">]:</span>
+                            <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"&gt;="</span><span class="p">,</span> <span class="s2">"&lt;="</span><span class="p">,</span> <span class="s2">"=="</span><span class="p">,</span> <span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&lt;"</span><span class="p">]:</span>
                                 <span class="k">if</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">dep</span><span class="p">:</span>
                                     <span class="n">name</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                                     <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                                    <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">op</span><span class="si">}{</span><span class="n">version</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                                    <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}{</span><span class="n">op</span><span class="si">}{</span><span class="n">version</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
                                     <span class="k">break</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">name</span> <span class="o">=</span> <span class="n">dep</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -705,7 +705,7 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to read dependencies from pyproject.toml: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to read dependencies from pyproject.toml: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_dependencies</span></div>
 
@@ -714,48 +714,48 @@
 <a class="viewcode-back" href="../../../api/data_juicer.utils.lazy_loader.html#data_juicer.utils.lazy_loader.LazyLoader.check_packages">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_packages</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">package_specs</span><span class="p">,</span> <span class="n">pip_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Check if packages are installed and install them if needed.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            package_specs: A list of package specifications to check/install.</span>
-<span class="sd">                          Can be package names or URLs (e.g., &#39;torch&#39; or &#39;git+https://github.com/...&#39;)</span>
+<span class="sd">                          Can be package names or URLs (e.g., 'torch' or 'git+https://github.com/...')</span>
 <span class="sd">            pip_args: Optional list of additional arguments to pass to pip install command</span>
-<span class="sd">                     (e.g., [&#39;--no-deps&#39;, &#39;--upgrade&#39;])</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">                     (e.g., ['--no-deps', '--upgrade'])</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_is_package_installed</span><span class="p">(</span><span class="n">package_name</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Check if a package is installed by attempting to import it.&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
-                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;[&quot;</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
-                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>  <span class="c1"># Handle GitHub URLs</span>
-                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.git&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="sd">"""Check if a package is installed by attempting to import it."""</span>
+            <span class="k">if</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
+                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"["</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
+                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"["</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"/"</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>  <span class="c1"># Handle GitHub URLs</span>
+                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".git"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">package_name</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-        <span class="c1"># Convert pip_args to list if it&#39;s a string</span>
+        <span class="c1"># Convert pip_args to list if it's a string</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pip_args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">pip_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">pip_args</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">package_spec</span> <span class="ow">in</span> <span class="n">package_specs</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_package_installed</span><span class="p">(</span><span class="n">package_spec</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Package [</span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">] not found, installing...&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Package [</span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">] not found, installing..."</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">cls</span><span class="o">.</span><span class="n">_install_package</span><span class="p">(</span><span class="n">package_spec</span><span class="p">,</span> <span class="n">pip_args</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Failed to install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. This package may &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;require system-level dependencies. Please try &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;installing it manually with: pip install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Failed to install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. This package may "</span>
+                        <span class="sa">f</span><span class="s2">"require system-level dependencies. Please try "</span>
+                        <span class="sa">f</span><span class="s2">"installing it manually with: pip install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                        <span class="sa">f</span><span class="s2">"Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Package [</span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">] already installed, carry on..&quot;</span><span class="p">)</span></div>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Package [</span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">] already installed, carry on.."</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LazyLoader.__init__">
@@ -768,29 +768,29 @@
         <span class="n">auto_install</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">post_import</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize the LazyLoader.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            module_name: The name of the module to import (e.g., &#39;cv2&#39;, &#39;ray.data&#39;, &#39;torchvision.models&#39;)</span>
-<span class="sd">            package_name: The name of the pip package to install (e.g., &#39;opencv-contrib-python&#39;, &#39;ray&#39;, &#39;torchvision&#39;)</span>
-<span class="sd">                        If None, will use the base module name (e.g., &#39;ray&#39; for &#39;ray.data&#39;)</span>
+<span class="sd">            module_name: The name of the module to import (e.g., 'cv2', 'ray.data', 'torchvision.models')</span>
+<span class="sd">            package_name: The name of the pip package to install (e.g., 'opencv-contrib-python', 'ray', 'torchvision')</span>
+<span class="sd">                        If None, will use the base module name (e.g., 'ray' for 'ray.data')</span>
 <span class="sd">            package_url: The URL to install the package from (e.g., git+https://github.com/...)</span>
 <span class="sd">            auto_install: Whether to automatically install missing dependencies</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span> <span class="o">=</span> <span class="n">module_name</span>
 
         <span class="c1"># For installation, use the provided package_name or get it from mapping</span>
         <span class="k">if</span> <span class="n">package_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">base_module</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">base_module</span> <span class="o">=</span> <span class="n">module_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_package_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_package_name</span><span class="p">(</span><span class="n">base_module</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_package_name</span> <span class="o">=</span> <span class="n">package_name</span>
 
         <span class="c1"># Standardize package_url to use git+ format</span>
-        <span class="k">if</span> <span class="n">package_url</span> <span class="ow">and</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">package_url</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">package_url</span> <span class="ow">and</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">package_url</span><span class="p">:</span>
             <span class="c1"># Convert from package@git+ format to git+ format</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span> <span class="o">=</span> <span class="n">package_url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span> <span class="o">=</span> <span class="n">package_url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span> <span class="o">=</span> <span class="n">package_url</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_url</span>
@@ -805,32 +805,32 @@
 
         <span class="c1"># Print trace information</span>
         <span class="c1"># logger.debug(</span>
-        <span class="c1">#     f&#39;Initialized LazyLoader for module: {module_name} &#39;</span>
-        <span class="c1">#     f&#39;(package: {self._package_name}&#39; +</span>
-        <span class="c1">#     (f&#39;, url: {self._package_url}&#39; if self._package_url else &#39;&#39;) + &#39;)&#39;)</span>
+        <span class="c1">#     f'Initialized LazyLoader for module: {module_name} '</span>
+        <span class="c1">#     f'(package: {self._package_name}' +</span>
+        <span class="c1">#     (f', url: {self._package_url}' if self._package_url else '') + ')')</span>
         <span class="c1"># # Get last 3 frames of the stack trace</span>
         <span class="c1"># stack = traceback.extract_stack(frame)[-3:]</span>
-        <span class="c1"># logger.debug(&#39;LazyLoader called from:\n&#39; +</span>
-        <span class="c1">#              &#39;&#39;.join(traceback.format_list(stack)))</span>
+        <span class="c1"># logger.debug('LazyLoader called from:\n' +</span>
+        <span class="c1">#              ''.join(traceback.format_list(stack)))</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">LazyLoader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span></div>
 
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_install_package</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">,</span> <span class="n">pip_args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Install a package using uv if available, otherwise pip.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Install a package using uv if available, otherwise pip."""</span>
         <span class="c1"># Print trace information for package installation</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Installing package: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Installing package: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="c1"># Get last 3 frames of the stack trace</span>
         <span class="n">stack</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">extract_stack</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Package installation triggered from:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_list</span><span class="p">(</span><span class="n">stack</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Package installation triggered from:</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_list</span><span class="p">(</span><span class="n">stack</span><span class="p">)))</span>
 
-        <span class="c1"># Convert pip_args to list if it&#39;s a string</span>
+        <span class="c1"># Convert pip_args to list if it's a string</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pip_args</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">pip_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">pip_args</span><span class="p">]</span>
 
         <span class="c1"># For GitHub repositories, clone only to get dependencies</span>
-        <span class="k">if</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;git+&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"git+"</span><span class="p">,</span> <span class="s2">"https://github.com/"</span><span class="p">)):</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
             <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
@@ -841,21 +841,21 @@
             <span class="n">temp_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Clone the repository</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cloning </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> to get dependencies...&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;git+&quot;</span><span class="p">):</span>
-                    <span class="n">repo_url</span> <span class="o">=</span> <span class="n">package_spec</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>  <span class="c1"># Remove &#39;git+&#39; prefix</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Cloning </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> to get dependencies..."</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"git+"</span><span class="p">):</span>
+                    <span class="n">repo_url</span> <span class="o">=</span> <span class="n">package_spec</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>  <span class="c1"># Remove 'git+' prefix</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">repo_url</span> <span class="o">=</span> <span class="n">package_spec</span>
                 <span class="n">git</span><span class="o">.</span><span class="n">Repo</span><span class="o">.</span><span class="n">clone_from</span><span class="p">(</span><span class="n">repo_url</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">)</span>
 
                 <span class="c1"># Define all possible dependency files</span>
                 <span class="n">dep_files</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;requirements.txt&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing requirements from requirements.txt...&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing dependencies from pyproject.toml...&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;setup.py&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing dependencies from setup.py...&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;setup.cfg&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing dependencies from setup.cfg...&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;Pipfile&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing dependencies from Pipfile...&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;poetry.lock&quot;</span><span class="p">:</span> <span class="s2">&quot;Installing dependencies from poetry.lock...&quot;</span><span class="p">,</span>
+                    <span class="s2">"requirements.txt"</span><span class="p">:</span> <span class="s2">"Installing requirements from requirements.txt..."</span><span class="p">,</span>
+                    <span class="s2">"pyproject.toml"</span><span class="p">:</span> <span class="s2">"Installing dependencies from pyproject.toml..."</span><span class="p">,</span>
+                    <span class="s2">"setup.py"</span><span class="p">:</span> <span class="s2">"Installing dependencies from setup.py..."</span><span class="p">,</span>
+                    <span class="s2">"setup.cfg"</span><span class="p">:</span> <span class="s2">"Installing dependencies from setup.cfg..."</span><span class="p">,</span>
+                    <span class="s2">"Pipfile"</span><span class="p">:</span> <span class="s2">"Installing dependencies from Pipfile..."</span><span class="p">,</span>
+                    <span class="s2">"poetry.lock"</span><span class="p">:</span> <span class="s2">"Installing dependencies from poetry.lock..."</span><span class="p">,</span>
                 <span class="p">}</span>
 
                 <span class="c1"># Try to install dependencies from each file if it exists</span>
@@ -865,46 +865,46 @@
                         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">log_msg</span><span class="p">)</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="c1"># Try uv first</span>
-                            <span class="k">if</span> <span class="n">dep_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.py&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.cfg&quot;</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">dep_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"pyproject.toml"</span><span class="p">,</span> <span class="s2">"setup.py"</span><span class="p">,</span> <span class="s2">"setup.cfg"</span><span class="p">]:</span>
                                 <span class="c1"># For these files, install dependencies only</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">]</span>
-                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">&quot;Pipfile&quot;</span><span class="p">:</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"uv"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">]</span>
+                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">"Pipfile"</span><span class="p">:</span>
                                 <span class="c1"># For Pipfile, use pipenv</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pipenv&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;--skip-lock&quot;</span><span class="p">]</span>
-                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">&quot;poetry.lock&quot;</span><span class="p">:</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pipenv"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--deploy"</span><span class="p">,</span> <span class="s2">"--skip-lock"</span><span class="p">]</span>
+                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">"poetry.lock"</span><span class="p">:</span>
                                 <span class="c1"># For poetry.lock, use poetry</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-root&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-sync&quot;</span><span class="p">]</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"poetry"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--no-root"</span><span class="p">,</span> <span class="s2">"--no-sync"</span><span class="p">]</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="c1"># For requirements.txt, use standard pip install</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="n">dep_path</span><span class="p">]</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"uv"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"-r"</span><span class="p">,</span> <span class="n">dep_path</span><span class="p">]</span>
 
                             <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                                 <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
                         <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;uv not found or failed, falling back to pip...&quot;</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">dep_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.py&quot;</span><span class="p">,</span> <span class="s2">&quot;setup.cfg&quot;</span><span class="p">]:</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">]</span>
-                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">&quot;Pipfile&quot;</span><span class="p">:</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pipenv&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--deploy&quot;</span><span class="p">,</span> <span class="s2">&quot;--skip-lock&quot;</span><span class="p">]</span>
-                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">&quot;poetry.lock&quot;</span><span class="p">:</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-root&quot;</span><span class="p">,</span> <span class="s2">&quot;--no-sync&quot;</span><span class="p">]</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"uv not found or failed, falling back to pip..."</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">dep_file</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"pyproject.toml"</span><span class="p">,</span> <span class="s2">"setup.py"</span><span class="p">,</span> <span class="s2">"setup.cfg"</span><span class="p">]:</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="n">temp_dir</span><span class="p">]</span>
+                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">"Pipfile"</span><span class="p">:</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pipenv"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--deploy"</span><span class="p">,</span> <span class="s2">"--skip-lock"</span><span class="p">]</span>
+                            <span class="k">elif</span> <span class="n">dep_file</span> <span class="o">==</span> <span class="s2">"poetry.lock"</span><span class="p">:</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"poetry"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--no-root"</span><span class="p">,</span> <span class="s2">"--no-sync"</span><span class="p">]</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="n">dep_path</span><span class="p">]</span>
+                                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"-r"</span><span class="p">,</span> <span class="n">dep_path</span><span class="p">]</span>
                             <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                                 <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                             <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
                 <span class="c1"># Install the package directly from remote</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> directly from remote...&quot;</span><span class="p">)</span>
-                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--force-reinstall&quot;</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> directly from remote..."</span><span class="p">)</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"uv"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--force-reinstall"</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                         <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                     <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
                 <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;uv not found or failed, falling back to pip...&quot;</span><span class="p">)</span>
-                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;--force-reinstall&quot;</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"uv not found or failed, falling back to pip..."</span><span class="p">)</span>
+                    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="s2">"--force-reinstall"</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                         <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                     <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
@@ -915,43 +915,43 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Get the full package spec from dependencies</span>
             <span class="n">deps</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_all_dependencies</span><span class="p">()</span>
-            <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">package_spec</span> <span class="k">else</span> <span class="n">package_spec</span>
-            <span class="k">if</span> <span class="s2">&quot;[&quot;</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
-                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>  <span class="c1"># Handle GitHub URLs</span>
-                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.git&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"@"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s2">"@"</span> <span class="ow">in</span> <span class="n">package_spec</span> <span class="k">else</span> <span class="n">package_spec</span>
+            <span class="k">if</span> <span class="s2">"["</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>
+                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"["</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">"/"</span> <span class="ow">in</span> <span class="n">package_name</span><span class="p">:</span>  <span class="c1"># Handle GitHub URLs</span>
+                <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".git"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
             <span class="n">package_name</span> <span class="o">=</span> <span class="n">package_name</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
             <span class="c1"># Use the version from dependencies if available and not a URL</span>
-            <span class="n">is_url</span> <span class="o">=</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;git+&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">))</span>
+            <span class="n">is_url</span> <span class="o">=</span> <span class="n">package_spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"git+"</span><span class="p">,</span> <span class="s2">"https://"</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">package_name</span> <span class="ow">in</span> <span class="n">deps</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_url</span><span class="p">:</span>
                 <span class="n">package_spec</span> <span class="o">=</span> <span class="n">deps</span><span class="p">[</span><span class="n">package_name</span><span class="p">]</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using version from dependencies: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Using version from dependencies: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;No version constraint found in pyproject.toml for </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s2">, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;using original spec: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"No version constraint found in pyproject.toml for </span><span class="si">{</span><span class="n">package_name</span><span class="si">}</span><span class="s2">, "</span>
+                    <span class="sa">f</span><span class="s2">"using original spec: </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
 
             <span class="c1"># For non-GitHub packages, use direct installation</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> using uv...&quot;</span><span class="p">)</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;uv&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2"> using uv..."</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"uv"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                     <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">,</span> <span class="ne">FileNotFoundError</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;uv not found or failed, falling back to pip...&quot;</span><span class="p">)</span>
-                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"uv not found or failed, falling back to pip..."</span><span class="p">)</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="s2">"-m"</span><span class="p">,</span> <span class="s2">"pip"</span><span class="p">,</span> <span class="s2">"install"</span><span class="p">,</span> <span class="n">package_spec</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">pip_args</span><span class="p">:</span>
                     <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">pip_args</span><span class="p">)</span>
                 <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the module and handle any missing dependencies.&quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Load the module and handle any missing dependencies."""</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span>
@@ -971,10 +971,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_install_package</span><span class="p">(</span><span class="n">package_spec</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Failed to install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. This package may &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;require system-level dependencies. Please try &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;installing it manually with: pip install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Failed to install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. This package may "</span>
+                    <span class="sa">f</span><span class="s2">"require system-level dependencies. Please try "</span>
+                    <span class="sa">f</span><span class="s2">"installing it manually with: pip install </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+                    <span class="sa">f</span><span class="s2">"Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
 
             <span class="c1"># Try importing again</span>
@@ -984,18 +984,18 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">post_import</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">import_error</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Failed to import </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2"> after &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">import_error</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Failed to import </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2"> after "</span>
+                    <span class="sa">f</span><span class="s2">"installing </span><span class="si">{</span><span class="n">package_spec</span><span class="si">}</span><span class="s2">. "</span>
+                    <span class="sa">f</span><span class="s2">"Error details: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">import_error</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
 
-        <span class="c1"># Update the parent module&#39;s globals with the loaded module</span>
+        <span class="c1"># Update the parent module's globals with the loaded module</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent_module_globals</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle attribute access, including submodule imports.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Handle attribute access, including submodule imports."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
 
@@ -1005,11 +1005,11 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="c1"># If not found, try importing it as a submodule</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">submodule</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">submodule</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">submodule</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">submodule</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;module &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">&#39; has no attribute &#39;</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"module '</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s2">' has no attribute '</span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

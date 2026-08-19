@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.text_embd_similarity_filter</span></li>
   </ul>
 </nav>
@@ -527,10 +530,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"transformers"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;text_embd_similarity_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"text_embd_similarity_filter"</span>
 
 
 <div class="viewcode-block" id="TextEmbdSimilarityFilter">
@@ -538,30 +541,30 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@ATTRIBUTION_FILTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextEmbdSimilarityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep texts whose average embedding similarity to a set of given validation</span>
+<span class="w">    </span><span class="sd">"""Filter to keep texts whose average embedding similarity to a set of given validation</span>
 <span class="sd">    texts falls within a specific range.</span>
 
 <span class="sd">    This operator computes the cosine similarity between the text embeddings and a set of</span>
 <span class="sd">    validation text embeddings. It keeps samples where the average similarity score is</span>
-<span class="sd">    within the specified range. The key metric, &#39;text_embd_similarity&#39;, is computed as the</span>
+<span class="sd">    within the specified range. The key metric, 'text_embd_similarity', is computed as the</span>
 <span class="sd">    mean cosine similarity. The operator supports both API-based and Hugging Face model-</span>
 <span class="sd">    based embeddings. If no valid dataset is provided, the `prepare_valid_feature` method</span>
-<span class="sd">    must be called manually before applying the filter.&quot;&quot;&quot;</span>
+<span class="sd">    must be called manually before applying the filter."""</span>
 
     <span class="c1"># TODO: save embeddings in local cache to save computation for multiple validation samples</span>
     <span class="c1"># TODO: aggregation strategies</span>
     <span class="c1"># TODO: truncation option</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="TextEmbdSimilarityFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.TextEmbdSimilarityFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text-embedding-v4&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text-embedding-v4"</span><span class="p">,</span>
         <span class="n">is_hf_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">api_endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;embeddings&quot;</span><span class="p">,</span>
-        <span class="n">response_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;data.0.embedding&quot;</span><span class="p">,</span>
+        <span class="n">api_endpoint</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"embeddings"</span><span class="p">,</span>
+        <span class="n">response_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"data.0.embedding"</span><span class="p">,</span>
         <span class="n">model_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
         <span class="n">max_score</span><span class="p">:</span> <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -572,32 +575,32 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface embedding model name.</span>
 <span class="sd">        :param is_hf_model: Indicates if the model is from HuggingFace.</span>
 <span class="sd">        :param api_endpoint: Embedding URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;data.0.embedding&#39; for embedding model.</span>
+<span class="sd">            Defaults to 'data.0.embedding' for embedding model.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param min_score: The min average similarity to keep samples.</span>
 <span class="sd">        :param max_score: The max average similarity to keep samples.</span>
 <span class="sd">        :param valid_dataset: The dataset to use for validation.</span>
-<span class="sd">            If None, &#39;self.prepare_valid_feature&#39; should be manually called before applying the filter.</span>
-<span class="sd">        :param ebd_dim: The embedding&#39;s dimension via API.</span>
+<span class="sd">            If None, 'self.prepare_valid_feature' should be manually called before applying the filter.</span>
+<span class="sd">        :param ebd_dim: The embedding's dimension via API.</span>
 <span class="sd">            API specific parameter, i.e., if is_hf_model=True, this parameter will not take effect.</span>
 <span class="sd">        :param pooling: strategy to extract embedding from the hidden states. https://arxiv.org/abs/2503.01807</span>
 <span class="sd">            None: default option, the hidden state of the last token.</span>
-<span class="sd">            &quot;mean&quot;: uniform mean of hidden states.</span>
-<span class="sd">            &quot;weighted_mean&quot;: weighted mean of hidden states. https://arxiv.org/abs/2202.08904</span>
+<span class="sd">            "mean": uniform mean of hidden states.</span>
+<span class="sd">            "weighted_mean": weighted mean of hidden states. https://arxiv.org/abs/2202.08904</span>
 <span class="sd">            HF_MODEL specific parameter, i.e., if is_hf_model=False, this parameter will not take effect.</span>
 <span class="sd">        :param input_template: Template for building the model input.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">model_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">model_params</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1500MB&quot;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1500MB"</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">api_or_hf_model</span> <span class="o">=</span> <span class="n">api_or_hf_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_hf_model</span> <span class="o">=</span> <span class="n">is_hf_model</span>
@@ -607,15 +610,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">max_score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ebd_dim</span> <span class="o">=</span> <span class="n">ebd_dim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">pooling</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span> <span class="ow">or</span> <span class="s2">&quot;{&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span> <span class="o">=</span> <span class="n">input_template</span> <span class="ow">or</span> <span class="s2">"{"</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span> <span class="o">+</span> <span class="s2">"}"</span>
 
         <span class="k">if</span> <span class="n">is_hf_model</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;embedding&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="n">pooling</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"embedding"</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span> <span class="n">pooling</span><span class="o">=</span><span class="n">pooling</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">endpoint</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span>
                 <span class="n">response_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">response_path</span><span class="p">,</span>
@@ -625,8 +628,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">valid_dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;valid_dataset is None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
-<span class="s2">            prepare_valid_feature&#39; method should be manually called before applying the filter.&quot;</span>
+                <span class="sa">f</span><span class="s2">"valid_dataset is None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
+<span class="s2">            prepare_valid_feature' method should be manually called before applying the filter."</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">prepare_valid_feature</span><span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">))</span></div>
@@ -634,7 +637,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">valid_feature_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;embeddings&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
+        <span class="k">return</span> <span class="s2">"embeddings"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
 
 <div class="viewcode-block" id="TextEmbdSimilarityFilter.prepare_valid_feature">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.TextEmbdSimilarityFilter.prepare_valid_feature">[文档]</a>
@@ -642,8 +645,8 @@
         <span class="n">n_shot</span> <span class="o">=</span> <span class="n">n_shot</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_shot</span><span class="p">))</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_embd</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-        <span class="c1"># self.valid_feature = {&quot;embeddings&quot;: embeddings}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;embeddings&quot;</span><span class="p">:</span> <span class="n">embeddings</span><span class="p">})</span></div>
+        <span class="c1"># self.valid_feature = {"embeddings": embeddings}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"embeddings"</span><span class="p">:</span> <span class="n">embeddings</span><span class="p">})</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_sample_to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
@@ -656,9 +659,9 @@
                 <span class="k">break</span>
         <span class="k">if</span> <span class="n">valid_sample</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">sample</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="s2">&quot;messages&quot;</span> <span class="ow">in</span> <span class="n">sample</span>
-        <span class="n">msgs</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">]</span>
-        <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">msgs</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">"messages"</span> <span class="ow">in</span> <span class="n">sample</span>
+        <span class="n">msgs</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">]</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[</span><span class="n">msg</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">msgs</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">contents</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)])))</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_embd_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -672,26 +675,26 @@
             <span class="c1"># Embeddings extract via API</span>
             <span class="n">embedding</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ebd_dim</span><span class="p">,</span> <span class="n">encoding_format</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+                <span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ebd_dim</span><span class="p">,</span> <span class="n">encoding_format</span><span class="o">=</span><span class="s2">"float"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">embedding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">embedding</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Trying to request with a list of texts.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Trying to request with a list of texts."</span><span class="p">)</span>
             <span class="n">sub_seq_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">//</span> <span class="mi">9</span>
             <span class="n">text_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">text</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">sub_seq_length</span> <span class="p">:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">sub_seq_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text_list</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ebd_dim</span><span class="p">,</span> <span class="n">encoding_format</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+                <span class="n">embedding</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">text_list</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ebd_dim</span><span class="p">,</span> <span class="n">encoding_format</span><span class="o">=</span><span class="s2">"float"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">embedding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Failed to extract embedding from text.&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Failed to extract embedding from text."</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">embedding</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_embd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Embedding&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;sample&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Embedding"</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"sample"</span><span class="p">):</span>
             <span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_embd_single</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
             <span class="n">embeddings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
         <span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -701,23 +704,23 @@
 <div class="viewcode-block" id="TextEmbdSimilarityFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.TextEmbdSimilarityFilter.compute_stats_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_embd_similarity</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">&quot;Validation feature not ready yet. Call prepare_valid_feature first.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">"Validation feature not ready yet. Call prepare_valid_feature first."</span>
 
         <span class="n">embedding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_embd_single</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">similarity</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cosine_similarity</span><span class="p">(</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;embeddings&quot;</span><span class="p">])</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"embeddings"</span><span class="p">])</span>
                 <span class="p">)</span>
                 <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">item</span><span class="p">()</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="n">similarity</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_embd_similarity</span><span class="p">]</span> <span class="o">=</span> <span class="n">similarity</span>

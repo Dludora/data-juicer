@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.image_pair_similarity_filter</span></li>
   </ul>
 </nav>
@@ -522,9 +525,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.mm_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_data_with_context</span><span class="p">,</span> <span class="n">load_image</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_pair_similarity_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_pair_similarity_filter"</span>
 
 
 <div class="viewcode-block" id="ImagePairSimilarityFilter">
@@ -532,30 +535,30 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImagePairSimilarityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep image pairs with similarities between images within a specific range.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep image pairs with similarities between images within a specific range.</span>
 
 <span class="sd">    This operator uses a Hugging Face CLIP model to compute the cosine similarity between</span>
 <span class="sd">    two images in each sample. It retains samples where the similarity score falls within</span>
-<span class="sd">    the specified minimum and maximum thresholds. The &#39;any&#39; strategy keeps a sample if any</span>
-<span class="sd">    of the image pairs meet the condition, while the &#39;all&#39; strategy requires all image pairs</span>
-<span class="sd">    to meet the condition. The similarity scores are cached in the &#39;image_pair_similarity&#39;</span>
-<span class="sd">    field. Each sample must include exactly two distinct images.&quot;&quot;&quot;</span>
+<span class="sd">    the specified minimum and maximum thresholds. The 'any' strategy keeps a sample if any</span>
+<span class="sd">    of the image pairs meet the condition, while the 'all' strategy requires all image pairs</span>
+<span class="sd">    to meet the condition. The similarity scores are cached in the 'image_pair_similarity'</span>
+<span class="sd">    field. Each sample must include exactly two distinct images."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="ImagePairSimilarityFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_pair_similarity_filter.html#data_juicer.ops.filter.ImagePairSimilarityFilter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_clip</span><span class="o">=</span><span class="s2">&quot;openai/clip-vit-base-patch32&quot;</span><span class="p">,</span>
+        <span class="n">hf_clip</span><span class="o">=</span><span class="s2">"openai/clip-vit-base-patch32"</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
         <span class="n">max_score</span><span class="p">:</span> <span class="n">ClosedUnitInterval</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_clip: clip model name on huggingface to compute</span>
@@ -563,28 +566,28 @@
 <span class="sd">        :param trust_remote_code: whether to trust the remote code of HF models.</span>
 <span class="sd">        :param min_score: The min similarity to keep samples.</span>
 <span class="sd">        :param max_score: The max similarity to keep samples.</span>
-<span class="sd">        :param any_or_all: keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all images. &#39;any&#39;: keep this sample if any images meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all images meet the</span>
+<span class="sd">        :param any_or_all: keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all images. 'any': keep this sample if any images meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all images meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="n">min_score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">max_score</span>
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_clip</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_clip</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImagePairSimilarityFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_pair_similarity_filter.html#data_juicer.ops.filter.ImagePairSimilarityFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_pair_similarity</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -594,7 +597,7 @@
             <span class="ow">or</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
             <span class="ow">or</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each sample must include two images.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Each sample must include two images."</span><span class="p">)</span>
 
         <span class="c1"># load images</span>
         <span class="n">loaded_image_keys</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image_key</span><span class="p">]</span>
@@ -608,7 +611,7 @@
         <span class="n">image_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">temp_key</span> <span class="ow">in</span> <span class="n">images</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">image_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="n">temp_key</span><span class="p">])</span>
-        <span class="n">image_tensors</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">image_processor</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)[</span><span class="s2">&quot;pixel_values&quot;</span><span class="p">]</span>
+        <span class="n">image_tensors</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">image_processor</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)[</span><span class="s2">"pixel_values"</span><span class="p">]</span>
         <span class="n">image1_batch_feature</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_image_features</span><span class="p">(</span><span class="n">image_tensors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
         <span class="n">image2_batch_feature</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_image_features</span><span class="p">(</span><span class="n">image_tensors</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
 

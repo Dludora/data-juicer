@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -644,7 +649,7 @@
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StatsKeysConstant</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="o">...</span>              <span class="c1"># other keys</span>
-    <span class="n">text_len</span> <span class="o">=</span> <span class="s1">&#39;text_len&#39;</span>
+    <span class="n">text_len</span> <span class="o">=</span> <span class="s1">'text_len'</span>
 </pre></div>
 </div>
 <ol class="arabic" start="2">
@@ -663,17 +668,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 
 
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">&#39;text_length_filter&#39;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">'text_length_filter'</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextLengthFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with total text length within a specific</span>
-<span class="sd">    range.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with total text length within a specific</span>
+<span class="sd">    range."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">min_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
                 <span class="n">max_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_len: The min text length in the filtering. samples</span>
@@ -684,13 +689,13 @@
 <span class="sd">            parameter.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_len</span> <span class="o">=</span> <span class="n">min_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_len</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -712,7 +717,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.text_length_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextLengthFilter</span>  <span class="c1"># import this new OP class</span>
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># other Ops</span>
-    <span class="s2">&quot;TextLengthFilter&quot;</span><span class="p">,</span>  <span class="c1"># add this new Op to __all__</span>
+    <span class="s2">"TextLengthFilter"</span><span class="p">,</span>  <span class="c1"># add this new Op to __all__</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -798,16 +803,16 @@ optional arguments:
   --project_name PROJECT_NAME
                         name of your data process project. (type: str, default: null)
   --dataset_path DATASET_PATH
-                        path to your dataset file, relative with respect to the config file&#39;s location (type: Path_fr, default: null)
+                        path to your dataset file, relative with respect to the config file's location (type: Path_fr, default: null)
   --dataset_dir DATASET_DIR
-                        path to your dataset(s) within a directory, relative with respect to the config file&#39;s location (type: Path_drw, default: null)
+                        path to your dataset(s) within a directory, relative with respect to the config file's location (type: Path_drw, default: null)
   --export_path EXPORT_PATH
-                        path to the output processed dataset, relative with respect to the config file&#39;s location (type: Path_fc, default: null)
+                        path to the output processed dataset, relative with respect to the config file's location (type: Path_fc, default: null)
   --process PROCESS, --process+ PROCESS
                         a list of several process operators with their arguments (type: List[Dict], default: null)
   --np NP               number of subprocess to process your dataset. (type: PositiveInt, default: null)
 
-&lt;class &#39;data_juicer.ops.filter.alphanumeric_filter.AlphanumericFilter&#39;&gt;:
+&lt;class 'data_juicer.ops.filter.alphanumeric_filter.AlphanumericFilter'&gt;:
   --alphanumeric_filter CONFIG
                         Path to a configuration file.
   --alphanumeric_filter.min MIN
@@ -815,7 +820,7 @@ optional arguments:
   --alphanumeric_filter.max MAX
                         the max filter rate in alphanumeric op. (type: ClosedUnitInterval, default: 0.25)
 
-&lt;class &#39;data_juicer.ops.filter.text_length_filter.TextLengthFilter&#39;&gt;:
+&lt;class 'data_juicer.ops.filter.text_length_filter.TextLengthFilter'&gt;:
   --text_length_filter CONFIG
                         Path to a configuration file.
   --text_length_filter.min MIN
@@ -879,12 +884,12 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 <p>Example:</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project.dependencies]</span>
 <span class="c1"># Core dependencies</span>
-<span class="n">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=1.26.4,&lt;2.0.0&quot;</span>
+<span class="n">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=1.26.4,&lt;2.0.0"</span>
 
 <span class="k">[project.optional-dependencies]</span>
 <span class="n">generic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;torch==2.6.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;transformers&gt;=4.47.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"torch==2.6.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"transformers&gt;=4.47.0"</span><span class="p">,</span>
 <span class="w">    </span><span class="err">...</span>
 <span class="err">]</span>
 </pre></div>
@@ -895,15 +900,15 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 <ol class="arabic simple">
 <li><p>Install the package with all dependencies:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[all]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[all]"</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Or install with specific groups:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[generic]&quot;</span><span class="w">      </span><span class="c1"># Generic dependencies</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w">          </span><span class="c1"># Development tools</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[ai_services]&quot;</span><span class="w">  </span><span class="c1"># Services dependencies</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[generic]"</span><span class="w">      </span><span class="c1"># Generic dependencies</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w">          </span><span class="c1"># Development tools</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[ai_services]"</span><span class="w">  </span><span class="c1"># Services dependencies</span>
 </pre></div>
 </div>
 </section>
@@ -937,7 +942,7 @@ git<span class="w"> </span>add<span class="w"> </span>.
 pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 
 <span class="c1"># commit after all checking are passed</span>
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;xxxx&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"xxxx"</span>
 </pre></div>
 </div>
 <p><strong>Note</strong>: We have configured pre-commit checks in github workflow. If this
@@ -1000,7 +1005,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
     <span class="k">def</span><span class="w"> </span><span class="nf">test_func3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
     <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1018,7 +1023,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
 <span class="w">    </span><span class="nt">stopwords_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./assets</span><span class="w">                                 </span><span class="c1"># directory to store stopwords dictionaries</span>
 <span class="w">    </span><span class="nt">use_words_aug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                                    </span><span class="c1"># whether to augment words, especially for Chinese and Vietnamese</span>
 <span class="w">    </span><span class="nt">words_aug_group_sizes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">]</span><span class="w">                              </span><span class="c1"># the group size of words to augment</span>
-<span class="w">    </span><span class="nt">words_aug_join_char</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w">                                 </span><span class="c1"># the join char between words to augment</span>
+<span class="w">    </span><span class="nt">words_aug_join_char</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="w">                                 </span><span class="c1"># the join char between words to augment</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">text_length_filter</span><span class="p">:</span><span class="w">                                     </span><span class="c1"># filter text with length out of specific range</span>
 <span class="w">    </span><span class="nt">min_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">                                             </span><span class="c1"># the min length of filter range</span>
 <span class="w">    </span><span class="nt">max_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span><span class="w">                                          </span><span class="c1"># the max length of filter range</span>
@@ -1038,10 +1043,10 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) If Hugging Face models are used within an operator, you might want to leverage GPU acceleration. To achieve this, declare <code class="docutils literal notranslate"><span class="pre">_accelerator</span> <span class="pre">=</span> <span class="pre">'cuda'</span></code> in the OP’s constructor, and ensure that <code class="docutils literal notranslate"><span class="pre">compute_stats_single/batched</span></code> and <code class="docutils literal notranslate"><span class="pre">process_single/batched</span></code> methods accept an additional positional argument <code class="docutils literal notranslate"><span class="pre">rank</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (same as above)</span>
 
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">&#39;text_length_filter&#39;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">'text_length_filter'</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextLengthFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">'cuda'</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">min_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -1061,7 +1066,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) If the operator processes data in batches rather than a single sample, or you want to enable batched processing, it is necessary to declare <code class="docutils literal notranslate"><span class="pre">_batched_op</span> <span class="pre">=</span> <span class="pre">True</span></code>.
 - For the original <code class="docutils literal notranslate"><span class="pre">compute_stats_single</span></code> and <code class="docutils literal notranslate"><span class="pre">process_single</span></code> functions, you can keep it still and Data-Juicer will call the default batched version to call the single version to support batched processing. Or you can implement your batched version in a more efficient way.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (import some other libraries)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;image_diffusion_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'image_diffusion_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageDiffusionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1081,7 +1086,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) In a mapper operator, to avoid process conflicts and data coverage, we offer an interface to make a saving path for produced extra data. The format of the saving path is <code class="docutils literal notranslate"><span class="pre">{ORIGINAL_DATAPATH}/__dj__produced_data__/{OP_NAME}/{ORIGINAL_FILENAME}__dj_hash_#{HASH_VALUE}#.{EXT}</span></code>, where the <code class="docutils literal notranslate"><span class="pre">HASH_VALUE</span></code> is hashed from the init parameters of the operator, the related parameters in each sample, the process ID, and the timestamp. You can also specify the save path (for example, save_dir) or set the storage path through the environment variable <code class="docutils literal notranslate"><span class="pre">DJ_PRODUCED_DATA_DIR</span></code>. For convenience, we can call <code class="docutils literal notranslate"><span class="pre">self.remove_extra_parameters(locals())</span></code> at the beginning of the initiation to get the init parameters. At the same time, we can call <code class="docutils literal notranslate"><span class="pre">self.add_parameters</span></code> to add related parameters with the produced extra data from each sample. Take the operator which enhances the images with diffusion models as example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">transfer_filename</span>
 <span class="c1"># ... (import some other libraries)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;image_diffusion_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'image_diffusion_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageDiffusionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1107,7 +1112,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
 <p>For the mapper to produce multi extra data base on one origin data, we can add suffix at the saving path. Take the operator which splits videos according to their key frames as example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.file_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_suffix_to_filename</span><span class="p">,</span> <span class="n">transfer_filename</span>
 <span class="c1"># ... (import some other libraries)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;video_split_by_key_frame_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'video_split_by_key_frame_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoSplitByKeyFrameMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1124,7 +1129,7 @@ and ② execute <code class="docutils literal notranslate"><span class="pre">pre
         <span class="c1"># ... (some codes)</span>
         <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">transfer_filename</span><span class="p">(</span>
                     <span class="n">original_video_path</span><span class="p">,</span> <span class="n">OP_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
-        <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">split_video_path</span><span class="p">,</span>  <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">split_video_path</span><span class="p">,</span>  <span class="sa">f</span><span class="s1">'_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
         <span class="c1"># ... (some codes)</span>
 </pre></div>
 </div>
@@ -1145,8 +1150,8 @@ the <code class="docutils literal notranslate"><span class="pre">InterVars</span
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">InterVars</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># text</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;lines&#39;</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;words&#39;</span>  <span class="c1"># add the new intermediate variable here</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">'lines'</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">'words'</span>  <span class="c1"># add the new intermediate variable here</span>
     <span class="o">...</span>
 </pre></div>
 </div>
@@ -1202,7 +1207,7 @@ it’s calculated by this new OP.</p></li>
 
 <span class="c1"># after modification</span>
 <span class="o">...</span>
-<span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="si">}</span><span class="s1">'</span>
 <span class="k">if</span> <span class="n">context</span> <span class="ow">and</span> <span class="n">words_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">]:</span>
     <span class="c1"># get the value of intermediate variable from context directly</span>
     <span class="n">words</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">][</span><span class="n">words_key</span><span class="p">]</span>
@@ -1231,12 +1236,12 @@ it’s calculated by this new OP.</p></li>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
 <span class="c1"># lazy import</span>
-<span class="n">kenlm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;kenlm&#39;</span><span class="p">)</span>
-<span class="n">sp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;sentencepiece&#39;</span><span class="p">)</span>
+<span class="n">kenlm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'kenlm'</span><span class="p">)</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'sentencepiece'</span><span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PerplexityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
     <span class="c1"># set the additional requirements for this OP explicitly</span>
-    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kenlm&#39;</span><span class="p">,</span> <span class="s1">&#39;sentencepiece&#39;</span><span class="p">,</span> <span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">]</span>
+    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'kenlm'</span><span class="p">,</span> <span class="s1">'sentencepiece'</span><span class="p">,</span> <span class="s1">'fasttext-predict'</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="c1"># ... (OP parameters)</span>
@@ -1244,7 +1249,7 @@ it’s calculated by this new OP.</p></li>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># auto install before init</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">])</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">'fasttext-predict'</span><span class="p">])</span>
         <span class="c1"># ... (some codes)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>

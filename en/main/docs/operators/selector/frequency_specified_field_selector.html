@@ -52,7 +52,7 @@
     <link rel="icon" href="../../../_static/icon.png"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="random_selector" href="random_selector.html" />
+    <link rel="next" title="image_ohem_selector" href="image_ohem_selector.html" />
     <link rel="prev" title="Selector" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -498,6 +499,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../grouper/index.html">Grouper</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Selector</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">frequency_specified_field_selector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image_ohem_selector.html">image_ohem_selector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random_selector.html">random_selector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="range_specified_field_selector.html">range_specified_field_selector</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tags_specified_field_selector.html">tags_specified_field_selector</a></li>
@@ -517,7 +519,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -537,6 +542,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -658,7 +664,7 @@
 <h2>📊 Effect demonstration 效果演示<a class="headerlink" href="#effect-demonstration" title="Link to this heading">#</a></h2>
 <section id="test-topratio-select">
 <h3>test_topratio_select<a class="headerlink" href="#test-topratio-select" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FrequencySpecifiedFieldSelector</span><span class="p">(</span><span class="n">field_key</span><span class="o">=</span><span class="s1">&#39;meta.suffix&#39;</span><span class="p">,</span> <span class="n">top_ratio</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FrequencySpecifiedFieldSelector</span><span class="p">(</span><span class="n">field_key</span><span class="o">=</span><span class="s1">'meta.suffix'</span><span class="p">,</span> <span class="n">top_ratio</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="input-data">
@@ -685,7 +691,7 @@ d=6</pre><div class='meta' style='margin:6px 0;'><table class='meta-table' style
 </section>
 <section id="test-reverse-select">
 <h3>test_reverse_select<a class="headerlink" href="#test-reverse-select" title="Link to this heading">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FrequencySpecifiedFieldSelector</span><span class="p">(</span><span class="n">field_key</span><span class="o">=</span><span class="s1">&#39;meta.key1.key2.count&#39;</span><span class="p">,</span> <span class="n">top_ratio</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">FrequencySpecifiedFieldSelector</span><span class="p">(</span><span class="n">field_key</span><span class="o">=</span><span class="s1">'meta.key1.key2.count'</span><span class="p">,</span> <span class="n">top_ratio</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="id1">
@@ -737,11 +743,11 @@ d=6</pre><div class='meta' style='margin:6px 0;'><table class='meta-table' style
       </div>
     </a>
     <a class="right-next"
-       href="random_selector.html"
+       href="image_ohem_selector.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">random_selector</p>
+        <p class="prev-next-title">image_ohem_selector</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

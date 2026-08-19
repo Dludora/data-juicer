@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.video_tagging_from_audio_mapper</span></li>
   </ul>
 </nav>
@@ -522,8 +525,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_tagging_from_audio_mapper&quot;</span>
-<span class="n">torchaudio</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torchaudio&quot;</span><span class="p">)</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_tagging_from_audio_mapper"</span>
+<span class="n">torchaudio</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torchaudio"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="VideoTaggingFromAudioMapper">
@@ -531,45 +534,45 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoTaggingFromAudioMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates video tags from audio streams using the Audio Spectrogram Transformer.</span>
+<span class="w">    </span><span class="sd">"""Generates video tags from audio streams using the Audio Spectrogram Transformer.</span>
 
 <span class="sd">    This operator extracts audio streams from videos and uses a Hugging Face Audio</span>
 <span class="sd">    Spectrogram Transformer (AST) model to generate tags. The tags are stored in the</span>
-<span class="sd">    specified metadata field, defaulting to &#39;video_audio_tags&#39;. If no valid audio stream is</span>
-<span class="sd">    found, the tag is set to &#39;EMPTY&#39;. The operator resamples audio to match the model&#39;s</span>
+<span class="sd">    specified metadata field, defaulting to 'video_audio_tags'. If no valid audio stream is</span>
+<span class="sd">    found, the tag is set to 'EMPTY'. The operator resamples audio to match the model's</span>
 <span class="sd">    required sampling rate if necessary. The tags are inferred based on the highest logit</span>
-<span class="sd">    value from the model&#39;s output. If the tags are already present in the sample, the</span>
-<span class="sd">    operator skips processing for that sample.&quot;&quot;&quot;</span>
+<span class="sd">    value from the model's output. If the tags are already present in the sample, the</span>
+<span class="sd">    operator skips processing for that sample."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoTaggingFromAudioMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoTaggingFromAudioMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_ast</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MIT/ast-finetuned-audioset-10-10-0.4593&quot;</span><span class="p">,</span>
+        <span class="n">hf_ast</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"MIT/ast-finetuned-audioset-10-10-0.4593"</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">tag_field_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_audio_tags</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_ast: path to the HF model to tag from audios.</span>
 <span class="sd">        :param trust_remote_code: whether to trust the remote code of HF models</span>
-<span class="sd">        :param tag_field_name: the field name to store the tags. It&#39;s</span>
-<span class="sd">            &quot;video_audio_tags&quot; in default.</span>
+<span class="sd">        :param tag_field_name: the field name to store the tags. It's</span>
+<span class="sd">            "video_audio_tags" in default.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;500MB&quot;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"500MB"</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_ast</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_ast</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model_sampling_rate</span> <span class="o">=</span> <span class="mi">16000</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_no_audio_label</span> <span class="o">=</span> <span class="s2">&quot;EMPTY&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no_audio_label</span> <span class="o">=</span> <span class="s2">"EMPTY"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="o">=</span> <span class="n">tag_field_name</span></div>
 
@@ -577,7 +580,7 @@
 <div class="viewcode-block" id="VideoTaggingFromAudioMapper.process_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoTaggingFromAudioMapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -607,7 +610,7 @@
                 <span class="n">resampler</span> <span class="o">=</span> <span class="n">torchaudio</span><span class="o">.</span><span class="n">transforms</span><span class="o">.</span><span class="n">Resample</span><span class="p">(</span><span class="n">orig_freq</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">new_freq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model_sampling_rate</span><span class="p">)</span>
                 <span class="n">y</span> <span class="o">=</span> <span class="n">resampler</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">())</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
                 <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_sampling_rate</span>
-            <span class="n">inputs</span> <span class="o">=</span> <span class="n">feature_extractor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">feature_extractor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">sampling_rate</span><span class="o">=</span><span class="n">sr</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
                 <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span><span class="o">.</span><span class="n">logits</span>
             <span class="n">predicted_tag_id</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>

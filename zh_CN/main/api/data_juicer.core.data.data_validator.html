@@ -615,10 +615,10 @@ min_turns (int, optional): Minimum number of messages.</p>
 </dl>
 <dl>
 <dt>Example Format:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query&gt;&quot;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;assistant&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response&gt;&quot;</span><span class="p">},</span>
+    <span class="s2">"messages"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;query&gt;"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"assistant"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"&lt;response&gt;"</span><span class="p">},</span>
         <span class="o">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -669,12 +669,12 @@ min_turns (int, optional): Minimum number of conversation turns.</p>
 </dl>
 <dl>
 <dt>Example Format:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;system&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;system&gt;&quot;</span><span class="p">,</span>  <span class="c1"># Optional</span>
-    <span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query-inst&gt;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;query2&gt;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;response&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;response2&gt;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;history&quot;</span><span class="p">:</span> <span class="p">[</span>  <span class="c1"># Optional</span>
-        <span class="p">[</span><span class="s2">&quot;&lt;query1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;response1&gt;&quot;</span><span class="p">],</span>
+    <span class="s2">"system"</span><span class="p">:</span> <span class="s2">"&lt;system&gt;"</span><span class="p">,</span>  <span class="c1"># Optional</span>
+    <span class="s2">"instruction"</span><span class="p">:</span> <span class="s2">"&lt;query-inst&gt;"</span><span class="p">,</span>
+    <span class="s2">"query"</span><span class="p">:</span> <span class="s2">"&lt;query2&gt;"</span><span class="p">,</span>
+    <span class="s2">"response"</span><span class="p">:</span> <span class="s2">"&lt;response2&gt;"</span><span class="p">,</span>
+    <span class="s2">"history"</span><span class="p">:</span> <span class="p">[</span>  <span class="c1"># Optional</span>
+        <span class="p">[</span><span class="s2">"&lt;query1&gt;"</span><span class="p">,</span> <span class="s2">"&lt;response1&gt;"</span><span class="p">],</span>
         <span class="o">...</span>
     <span class="p">]</span>
 <span class="p">}</span>
@@ -743,9 +743,9 @@ missing values allowed. Defaults to 0.0.</p>
 </dl>
 <dl>
 <dt>Example Config:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;required_fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;field1&quot;</span><span class="p">,</span> <span class="s2">&quot;field2&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;field_types&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;field1&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;field2&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">},</span>
-    <span class="s2">&quot;allow_missing&quot;</span><span class="p">:</span> <span class="mf">0.0</span>
+    <span class="s2">"required_fields"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"field1"</span><span class="p">,</span> <span class="s2">"field2"</span><span class="p">],</span>
+    <span class="s2">"field_types"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"field1"</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="s2">"field2"</span><span class="p">:</span> <span class="nb">int</span><span class="p">},</span>
+    <span class="s2">"allow_missing"</span><span class="p">:</span> <span class="mf">0.0</span>
 <span class="p">}</span>
 </pre></div>
 </div>

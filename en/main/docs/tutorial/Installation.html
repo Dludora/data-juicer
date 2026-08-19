@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -631,53 +636,53 @@ pip<span class="w"> </span>install<span class="w"> </span>uv
 <p>For component details, plz refer to <a class="reference external" href="https://github.com/Dludora/data-juicer/blob/main/pyproject.toml">pyproject.toml</a>.</p>
 <p><strong>Core ML &amp; DL</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generic ML/DL capabilities</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic]"</span>
 </pre></div>
 </div>
 <p>Includes: PyTorch, Transformers, VLLM, etc.</p>
 <p><strong>Domain-Specific Features</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Computer Vision</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[vision]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[vision]"</span>
 
 <span class="c1"># Natural Language Processing</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[nlp]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[nlp]"</span>
 
 <span class="c1"># Audio Processing</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[audio]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[audio]"</span>
 
 **Additional<span class="w"> </span>Components**
 
 <span class="sb">```</span>bash
 <span class="c1"># Distributed Computing</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[distributed]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[distributed]"</span>
 
 <span class="c1"># AI Services &amp; APIs</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[ai_services]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[ai_services]"</span>
 
 **Development<span class="w"> </span>Tools**
 <span class="sb">```</span>bash
 <span class="c1"># Development &amp; Testing</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[dev]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[dev]"</span>
 </pre></div>
 </div>
 </section>
 <section id="common-installation-patterns">
 <h2>Common Installation Patterns<a class="headerlink" href="#common-installation-patterns" title="Link to this heading">#</a></h2>
 <p><strong>1. Text Processing Setup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp]"</span>
 </pre></div>
 </div>
 <p><strong>2. Vision Processing Setup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,vision]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,vision]"</span>
 </pre></div>
 </div>
 <p><strong>3. Full Processing Pipeline</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[generic,nlp,vision,distributed]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[generic,nlp,vision,distributed]"</span>
 </pre></div>
 </div>
 <p><strong>4. Complete Installation</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install all features (except sandbox)</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;py-data-juicer[all]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"py-data-juicer[all]"</span>
 </pre></div>
 </div>
 </section>
@@ -690,7 +695,7 @@ git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dataj
 uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 
 <span class="c1"># You can install specific domain as well</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[vision]&quot;</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[vision]"</span>
 </pre></div>
 </div>
 <p><strong>Note</strong>: It’s suggested to used <code class="docutils literal notranslate"><span class="pre">-e</span></code> to enable editable mode when installing from source.</p>

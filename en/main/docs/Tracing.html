@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -671,8 +676,8 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 </table>
 </div>
 <p>Example output (<code class="docutils literal notranslate"><span class="pre">sample_trace-clean_email_mapper.jsonl</span></code>):</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;original_text&quot;</span><span class="p">:</span><span class="s2">&quot;Contact us at user@example.com for details.&quot;</span><span class="p">,</span><span class="nt">&quot;processed_text&quot;</span><span class="p">:</span><span class="s2">&quot;Contact us at  for details.&quot;</span><span class="p">}</span>
-<span class="p">{</span><span class="nt">&quot;original_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email: admin@test.org&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;processed_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Email: &quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"original_text"</span><span class="p">:</span><span class="s2">"Contact us at user@example.com for details."</span><span class="p">,</span><span class="nt">"processed_text"</span><span class="p">:</span><span class="s2">"Contact us at  for details."</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">"original_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Email: admin@test.org"</span><span class="p">,</span><span class="w"> </span><span class="nt">"processed_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Email: "</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>Only samples with actual text changes are collected; unchanged samples are skipped.</p>
@@ -681,8 +686,8 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <h3>Filter Tracing<a class="headerlink" href="#filter-tracing" title="Link to this heading">#</a></h3>
 <p>For Filter operators, the Tracer records samples that are <strong>filtered out</strong> (removed). Each record contains the complete sample data.</p>
 <p>Example output (<code class="docutils literal notranslate"><span class="pre">sample_trace-words_num_filter.jsonl</span></code>):</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Too short.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;__dj__stats__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;words_num&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}}</span>
-<span class="p">{</span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Also brief.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;__dj__stats__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;words_num&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Too short."</span><span class="p">,</span><span class="w"> </span><span class="nt">"__dj__stats__"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"words_num"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}}</span>
+<span class="p">{</span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Also brief."</span><span class="p">,</span><span class="w"> </span><span class="nt">"__dj__stats__"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"words_num"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}}</span>
 </pre></div>
 </div>
 <p>Only samples that fail the filter are collected; samples passing the filter are skipped.</p>
@@ -707,7 +712,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 </table>
 </div>
 <p>Example output (<code class="docutils literal notranslate"><span class="pre">duplicate-document_deduplicator.jsonl</span></code>):</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;dup1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This is a duplicate text.&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dup2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;This is a duplicate text.&quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"dup1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a duplicate text."</span><span class="p">,</span><span class="w"> </span><span class="nt">"dup2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a duplicate text."</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -734,10 +739,10 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 </div>
 <p>With this configuration, Mapper trace entries will include:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;sample_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;doc_00042&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;source_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;corpus_part1.jsonl&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;original_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Original content...&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;processed_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processed content...&quot;</span>
+<span class="w">  </span><span class="nt">"sample_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"doc_00042"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"source_file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"corpus_part1.jsonl"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"original_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Original content..."</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"processed_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Processed content..."</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -749,30 +754,30 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.core.tracer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tracer</span>
 
 <span class="n">tracer</span> <span class="o">=</span> <span class="n">Tracer</span><span class="p">(</span>
-    <span class="n">work_dir</span><span class="o">=</span><span class="s2">&quot;./outputs&quot;</span><span class="p">,</span>
-    <span class="n">op_list_to_trace</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">,</span> <span class="s2">&quot;words_num_filter&quot;</span><span class="p">],</span>
+    <span class="n">work_dir</span><span class="o">=</span><span class="s2">"./outputs"</span><span class="p">,</span>
+    <span class="n">op_list_to_trace</span><span class="o">=</span><span class="p">[</span><span class="s2">"clean_email_mapper"</span><span class="p">,</span> <span class="s2">"words_num_filter"</span><span class="p">],</span>
     <span class="n">show_num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">trace_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span>
+    <span class="n">trace_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"sample_id"</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># Check if an operator should be traced</span>
-<span class="n">tracer</span><span class="o">.</span><span class="n">should_trace_op</span><span class="p">(</span><span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="n">tracer</span><span class="o">.</span><span class="n">should_trace_op</span><span class="p">(</span><span class="s2">"clean_email_mapper"</span><span class="p">)</span>  <span class="c1"># True</span>
 
 <span class="c1"># Check if enough samples have been collected</span>
-<span class="n">tracer</span><span class="o">.</span><span class="n">is_collection_complete</span><span class="p">(</span><span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">)</span>  <span class="c1"># False</span>
+<span class="n">tracer</span><span class="o">.</span><span class="n">is_collection_complete</span><span class="p">(</span><span class="s2">"clean_email_mapper"</span><span class="p">)</span>  <span class="c1"># False</span>
 
 <span class="c1"># Collect Mapper sample</span>
 <span class="n">tracer</span><span class="o">.</span><span class="n">collect_mapper_sample</span><span class="p">(</span>
-    <span class="n">op_name</span><span class="o">=</span><span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">,</span>
-    <span class="n">original_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Email: a@b.com&quot;</span><span class="p">},</span>
-    <span class="n">processed_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Email: &quot;</span><span class="p">},</span>
-    <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span>
+    <span class="n">op_name</span><span class="o">=</span><span class="s2">"clean_email_mapper"</span><span class="p">,</span>
+    <span class="n">original_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Email: a@b.com"</span><span class="p">},</span>
+    <span class="n">processed_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Email: "</span><span class="p">},</span>
+    <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span>
 <span class="p">)</span>
 
 <span class="c1"># Collect Filter sample</span>
 <span class="n">tracer</span><span class="o">.</span><span class="n">collect_filter_sample</span><span class="p">(</span>
-    <span class="n">op_name</span><span class="o">=</span><span class="s2">&quot;words_num_filter&quot;</span><span class="p">,</span>
-    <span class="n">sample</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;too short&quot;</span><span class="p">},</span>
+    <span class="n">op_name</span><span class="o">=</span><span class="s2">"words_num_filter"</span><span class="p">,</span>
+    <span class="n">sample</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"too short"</span><span class="p">},</span>
     <span class="n">should_keep</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 </pre></div>
@@ -784,18 +789,18 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 
 <span class="c1"># RayTracer is a Ray Actor — created via Ray</span>
 <span class="n">tracer</span> <span class="o">=</span> <span class="n">RayTracer</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
-    <span class="n">work_dir</span><span class="o">=</span><span class="s2">&quot;./outputs&quot;</span><span class="p">,</span>
+    <span class="n">work_dir</span><span class="o">=</span><span class="s2">"./outputs"</span><span class="p">,</span>
     <span class="n">op_list_to_trace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Trace all operators</span>
     <span class="n">show_num</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">trace_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span>
+    <span class="n">trace_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">"sample_id"</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># Remote method calls</span>
 <span class="n">ray</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tracer</span><span class="o">.</span><span class="n">collect_mapper_sample</span><span class="o">.</span><span class="n">remote</span><span class="p">(</span>
-    <span class="n">op_name</span><span class="o">=</span><span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">,</span>
-    <span class="n">original_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Email: a@b.com&quot;</span><span class="p">},</span>
-    <span class="n">processed_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Email: &quot;</span><span class="p">},</span>
-    <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span>
+    <span class="n">op_name</span><span class="o">=</span><span class="s2">"clean_email_mapper"</span><span class="p">,</span>
+    <span class="n">original_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Email: a@b.com"</span><span class="p">},</span>
+    <span class="n">processed_sample</span><span class="o">=</span><span class="p">{</span><span class="s2">"text"</span><span class="p">:</span> <span class="s2">"Email: "</span><span class="p">},</span>
+    <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span>
 <span class="p">))</span>
 
 <span class="c1"># Finalize and export all trace results</span>
@@ -814,10 +819,10 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="p">)</span>
 
 <span class="c1"># These functions automatically handle default mode and Ray mode</span>
-<span class="n">should_trace_op</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">)</span>
-<span class="n">check_tracer_collect_complete</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">&quot;clean_email_mapper&quot;</span><span class="p">)</span>
-<span class="n">collect_for_mapper</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">&quot;op_name&quot;</span><span class="p">,</span> <span class="n">original</span><span class="p">,</span> <span class="n">processed</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span>
-<span class="n">collect_for_filter</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">&quot;op_name&quot;</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">should_keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">should_trace_op</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">"clean_email_mapper"</span><span class="p">)</span>
+<span class="n">check_tracer_collect_complete</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">"clean_email_mapper"</span><span class="p">)</span>
+<span class="n">collect_for_mapper</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">"op_name"</span><span class="p">,</span> <span class="n">original</span><span class="p">,</span> <span class="n">processed</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">)</span>
+<span class="n">collect_for_filter</span><span class="p">(</span><span class="n">tracer_instance</span><span class="p">,</span> <span class="s2">"op_name"</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">should_keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -862,7 +867,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
 <p><strong>No trace files generated:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify tracer is enabled</span>
-grep<span class="w"> </span><span class="s2">&quot;open_tracer&quot;</span><span class="w"> </span>config.yaml
+grep<span class="w"> </span><span class="s2">"open_tracer"</span><span class="w"> </span>config.yaml
 
 <span class="c1"># Check if trace directory exists</span>
 ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/trace/

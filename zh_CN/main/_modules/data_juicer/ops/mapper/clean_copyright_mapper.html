@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.clean_copyright_mapper</span></li>
   </ul>
 </nav>
@@ -524,36 +527,36 @@
 
 <div class="viewcode-block" id="CleanCopyrightMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CleanCopyrightMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;clean_copyright_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"clean_copyright_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">CleanCopyrightMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleans copyright comments at the beginning of text samples.</span>
+<span class="w">    </span><span class="sd">"""Cleans copyright comments at the beginning of text samples.</span>
 
 <span class="sd">    This operator removes copyright comments from the start of text samples. It identifies</span>
-<span class="sd">    and strips multiline comments that contain the word &quot;copyright&quot; using a regular</span>
+<span class="sd">    and strips multiline comments that contain the word "copyright" using a regular</span>
 <span class="sd">    expression. It also greedily removes lines starting with comment markers like `//`, `#`,</span>
 <span class="sd">    or `--` at the beginning of the text, as these are often part of copyright headers. The</span>
-<span class="sd">    operator processes each sample individually but can handle batches for efficiency.&quot;&quot;&quot;</span>
+<span class="sd">    operator processes each sample individually but can handle batches for efficiency."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="CleanCopyrightMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CleanCopyrightMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;/</span><span class="se">\\</span><span class="s2">*[^*]*</span><span class="se">\\</span><span class="s2">*+(?:[^/*][^*]*</span><span class="se">\\</span><span class="s2">*+)*/&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cpat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">"/</span><span class="se">\\</span><span class="s2">*[^*]*</span><span class="se">\\</span><span class="s2">*+(?:[^/*][^*]*</span><span class="se">\\</span><span class="s2">*+)*/"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cpat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">"copyright"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_single_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-            <span class="c1"># found one, now see if it contains &quot;copyright&quot;, if so strip it</span>
+            <span class="c1"># found one, now see if it contains "copyright", if so strip it</span>
             <span class="n">span</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
             <span class="n">sub</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">span</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">:</span> <span class="n">span</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">sub</span><span class="p">):</span>
@@ -562,20 +565,20 @@
 
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">skip</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># Greedy replace any file that begins with comment block, most</span>
         <span class="c1"># are copyright headers</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;--&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"//"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"#"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"--"</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
                 <span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">skip</span><span class="p">:</span>
             <span class="c1"># we skipped, consume it</span>
-            <span class="n">sample</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">skip</span><span class="p">:])</span>
+            <span class="n">sample</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="n">skip</span><span class="p">:])</span>
         <span class="k">return</span> <span class="n">sample</span>
 
 <div class="viewcode-block" id="CleanCopyrightMapper.process_batched">

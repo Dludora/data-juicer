@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.grouper.naive_reverse_grouper</span></li>
   </ul>
 </nav>
@@ -524,31 +527,31 @@
 
 <div class="viewcode-block" id="NaiveReverseGrouper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.grouper.naive_reverse_grouper.html#data_juicer.ops.grouper.NaiveReverseGrouper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;naive_reverse_grouper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"naive_reverse_grouper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">NaiveReverseGrouper</span><span class="p">(</span><span class="n">Grouper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split batched samples into individual samples.</span>
+<span class="w">    </span><span class="sd">"""Split batched samples into individual samples.</span>
 
 <span class="sd">    This operator processes a dataset by splitting each batched sample into</span>
 <span class="sd">    individual samples. It also handles and optionally exports batch metadata.</span>
-<span class="sd">    - If a sample contains &#39;batch_meta&#39;, it is separated and can be exported</span>
+<span class="sd">    - If a sample contains 'batch_meta', it is separated and can be exported</span>
 <span class="sd">    to a specified path.</span>
 <span class="sd">    - The operator converts the remaining data from a dictionary of lists</span>
 <span class="sd">    to a list of dictionaries, effectively unbatching the samples.</span>
 <span class="sd">    - If `batch_meta_export_path` is provided, the batch metadata is written</span>
 <span class="sd">    to this file in JSON format, one entry per line.</span>
-<span class="sd">    - If no samples are present in the dataset, the original dataset is returned.&quot;&quot;&quot;</span>
+<span class="sd">    - If no samples are present in the dataset, the original dataset is returned."""</span>
 
 <div class="viewcode-block" id="NaiveReverseGrouper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.grouper.naive_reverse_grouper.html#data_juicer.ops.grouper.NaiveReverseGrouper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_meta_export_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param batch_meta_export_path: the path to export the batch meta.</span>
 <span class="sd">            Just drop the batch meta if it is None.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_meta_export_path</span> <span class="o">=</span> <span class="n">batch_meta_export_path</span></div>
 
@@ -568,9 +571,9 @@
             <span class="n">samples</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">convert_dict_list_to_list_dict</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_meta_export_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">create_directory_if_not_exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_meta_export_path</span><span class="p">))</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_meta_export_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_meta_export_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">batch_meta</span> <span class="ow">in</span> <span class="n">batch_metas</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">batch_meta</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">batch_meta</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">samples</span></div>
 </div>

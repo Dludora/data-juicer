@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.calibrate_qa_mapper</span></li>
   </ul>
 </nav>
@@ -521,7 +524,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;calibrate_qa_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"calibrate_qa_mapper"</span>
 
 
 <span class="c1"># TODO: LLM-based inference.</span>
@@ -529,7 +532,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CalibrateQAMapper">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">CalibrateQAMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calibrates question-answer pairs based on reference text using an API model.</span>
+<span class="w">    </span><span class="sd">"""Calibrates question-answer pairs based on reference text using an API model.</span>
 
 <span class="sd">    This operator uses a specified API model to calibrate question-answer pairs, making them</span>
 <span class="sd">    more detailed and accurate. It constructs the input prompt by combining the reference</span>
@@ -537,27 +540,27 @@
 <span class="sd">    is parsed to extract the calibrated question and answer. The operator retries the API</span>
 <span class="sd">    call and parsing up to a specified number of times in case of errors. The default system</span>
 <span class="sd">    prompt, input templates, and output pattern can be customized. The operator supports</span>
-<span class="sd">    additional parameters for model initialization and sampling.&quot;&quot;&quot;</span>
+<span class="sd">    additional parameters for model initialization and sampling."""</span>
 
     <span class="c1"># avoid leading whitespace</span>
     <span class="n">DEFAULT_SYSTEM_PROMPT</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;请根据提供的【参考信息】对【问题】和【回答】进行校准，使其更加详细、准确。</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;按照以下格式输出：</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;【问题】</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;校准后的问题</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;【回答】</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;校准后的回答&quot;</span>
+        <span class="s2">"请根据提供的【参考信息】对【问题】和【回答】进行校准，使其更加详细、准确。</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"按照以下格式输出：</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"【问题】</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"校准后的问题</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"【回答】</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="s2">"校准后的回答"</span>
     <span class="p">)</span>
-    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{reference}</span><span class="se">\n</span><span class="si">{qa_pair}</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_REFERENCE_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;【参考信息】</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_QA_PAIR_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;【问题】</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">【回答】</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
-    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;【问题】\s*(.*?)\s*【回答】\s*(.*)&quot;</span>
+    <span class="n">DEFAULT_INPUT_TEMPLATE</span> <span class="o">=</span> <span class="s2">"</span><span class="si">{reference}</span><span class="se">\n</span><span class="si">{qa_pair}</span><span class="s2">"</span>
+    <span class="n">DEFAULT_REFERENCE_TEMPLATE</span> <span class="o">=</span> <span class="s2">"【参考信息】</span><span class="se">\n</span><span class="si">{}</span><span class="s2">"</span>
+    <span class="n">DEFAULT_QA_PAIR_TEMPLATE</span> <span class="o">=</span> <span class="s2">"【问题】</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">【回答】</span><span class="se">\n</span><span class="si">{}</span><span class="s2">"</span>
+    <span class="n">DEFAULT_OUTPUT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"【问题】\s*(.*?)\s*【回答】\s*(.*)"</span>
 
 <div class="viewcode-block" id="CalibrateQAMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.CalibrateQAMapper.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">api_endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">response_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -571,13 +574,13 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_model: API model name.</span>
 <span class="sd">        :param api_endpoint: URL endpoint for the API.</span>
 <span class="sd">        :param response_path: Path to extract content from the API response.</span>
-<span class="sd">            Defaults to &#39;choices.0.message.content&#39;.</span>
+<span class="sd">            Defaults to 'choices.0.message.content'.</span>
 <span class="sd">        :param system_prompt: System prompt for the calibration task.</span>
 <span class="sd">        :param input_template: Template for building the model input.</span>
 <span class="sd">        :param reference_template: Template for formatting the reference text.</span>
@@ -587,9 +590,9 @@
 <span class="sd">            call error or output parsing error.</span>
 <span class="sd">        :param model_params: Parameters for initializing the API model.</span>
 <span class="sd">        :param sampling_params: Extra parameters passed to the API call.</span>
-<span class="sd">            e.g {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}</span>
+<span class="sd">            e.g {'temperature': 0.9, 'top_p': 0.95}</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span> <span class="o">=</span> <span class="n">system_prompt</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULT_SYSTEM_PROMPT</span>
@@ -601,7 +604,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">try_num</span> <span class="o">=</span> <span class="n">try_num</span></div>
@@ -632,8 +635,8 @@
         <span class="n">client</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
 
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_input</span><span class="p">(</span><span class="n">sample</span><span class="p">)},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_input</span><span class="p">(</span><span class="n">sample</span><span class="p">)},</span>
         <span class="p">]</span>
         <span class="n">parsed_q</span><span class="p">,</span> <span class="n">parsed_a</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
@@ -643,7 +646,7 @@
                 <span class="k">if</span> <span class="n">parsed_q</span> <span class="ow">or</span> <span class="n">parsed_a</span><span class="p">:</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">parsed_q</span><span class="p">:</span>
             <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">query_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed_q</span>
         <span class="k">if</span> <span class="n">parsed_a</span><span class="p">:</span>

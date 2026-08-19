@@ -522,7 +522,7 @@
 <div class="viewcode-block" id="load_formatter">
 <a class="viewcode-back" href="../../../api/data_juicer.format.load.html#data_juicer.format.load.load_formatter">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_formatter</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">text_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">add_suffix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseFormatter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Load the appropriate formatter for different types of data formats.</span>
 
 <span class="sd">    :param dataset_path: Path to dataset file or dataset directory</span>
@@ -533,7 +533,7 @@
 <span class="sd">    :param add_suffix: whether to add the file suffix to dataset meta.</span>
 <span class="sd">        Default: False</span>
 <span class="sd">    :return: a dataset formatter.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">if</span> <span class="n">suffixes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -541,7 +541,7 @@
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">):</span>
         <span class="n">file_dict</span> <span class="o">=</span> <span class="n">find_files_with_suffix</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">,</span> <span class="n">suffixes</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">file_dict</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Unable to find files matching the suffix from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">"Unable to find files matching the suffix from </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">file_dict</span><span class="p">:</span>
             <span class="n">ext_num</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_dict</span><span class="p">[</span><span class="n">ext</span><span class="p">])</span>
 
@@ -557,9 +557,9 @@
         <span class="n">target_suffixes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ext_num</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">formatter</span><span class="p">]</span><span class="o">.</span><span class="n">SUFFIXES</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target_suffixes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;No suitable formatter found for </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Supported extensions: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">SUFFIXES</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"No suitable formatter found for </span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Supported extensions: "</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">SUFFIXES</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">FORMATTERS</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">formatter</span><span class="p">](</span>
             <span class="n">dataset_path</span><span class="p">,</span> <span class="n">text_keys</span><span class="o">=</span><span class="n">text_keys</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="n">target_suffixes</span><span class="p">,</span> <span class="n">add_suffix</span><span class="o">=</span><span class="n">add_suffix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -567,11 +567,11 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unable to load the dataset from [</span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">]. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;It might be because Data-Juicer doesn&#39;t support &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;the format of this dataset, or the path of this &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;dataset is incorrect.Please check if it&#39;s a valid &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;dataset path and retry.&quot;</span>
+            <span class="sa">f</span><span class="s2">"Unable to load the dataset from [</span><span class="si">{</span><span class="n">dataset_path</span><span class="si">}</span><span class="s2">]. "</span>
+            <span class="sa">f</span><span class="s2">"It might be because Data-Juicer doesn't support "</span>
+            <span class="sa">f</span><span class="s2">"the format of this dataset, or the path of this "</span>
+            <span class="sa">f</span><span class="s2">"dataset is incorrect.Please check if it's a valid "</span>
+            <span class="sa">f</span><span class="s2">"dataset path and retry."</span>
         <span class="p">)</span></div>
 
 </pre></div>

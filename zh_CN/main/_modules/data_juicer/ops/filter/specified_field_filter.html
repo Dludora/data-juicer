@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.specified_field_filter</span></li>
   </ul>
 </nav>
@@ -517,14 +520,14 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;specified_field_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"specified_field_filter"</span>
 
 
 <div class="viewcode-block" id="SpecifiedFieldFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.SpecifiedFieldFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SpecifiedFieldFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter samples based on the specified field information.</span>
+<span class="w">    </span><span class="sd">"""Filter samples based on the specified field information.</span>
 
 <span class="sd">    This operator checks if the value of a specified field in each sample is within a given</span>
 <span class="sd">    target value range. If the field value is not within the target range, the sample is</span>
@@ -533,25 +536,25 @@
 <span class="sd">    list or tuple, it is converted to a list for comparison. Samples are retained if all</span>
 <span class="sd">    values in the field match any of the target values.</span>
 
-<span class="sd">    - Uses the &#39;field_key&#39; and &#39;target_value&#39; parameters.</span>
-<span class="sd">    - Supports multi-level field keys, e.g., &#39;level1.level2&#39;.</span>
-<span class="sd">    - Converts non-list/tuple field values to a list for comparison.&quot;&quot;&quot;</span>
+<span class="sd">    - Uses the 'field_key' and 'target_value' parameters.</span>
+<span class="sd">    - Supports multi-level field keys, e.g., 'level1.level2'.</span>
+<span class="sd">    - Converts non-list/tuple field values to a list for comparison."""</span>
 
 <div class="viewcode-block" id="SpecifiedFieldFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.html#data_juicer.ops.filter.SpecifiedFieldFilter.__init__">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">target_value</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">target_value</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param field_key: Filter based on the specified value</span>
 <span class="sd">            corresponding to the target key. The target key</span>
 <span class="sd">            corresponding to multi-level field information need to be</span>
-<span class="sd">            separated by &#39;.&#39;.</span>
+<span class="sd">            separated by '.'.</span>
 <span class="sd">        :param target_value: The range of specified field information</span>
 <span class="sd">            corresponding to the samples that need to be retained.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="o">=</span> <span class="n">field_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_value</span> <span class="o">=</span> <span class="n">target_value</span></div>
@@ -562,8 +565,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
         <span class="c1"># get the value from the original field</span>
         <span class="n">field_value</span> <span class="o">=</span> <span class="n">sample</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">field_value</span> <span class="o">=</span> <span class="n">field_value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="c1"># copy it into the stats field</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>

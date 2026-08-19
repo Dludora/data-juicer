@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.instruction_following_difficulty_filter</span></li>
   </ul>
 </nav>
@@ -519,43 +522,43 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"transformers"</span><span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;instruction_following_difficulty_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"instruction_following_difficulty_filter"</span>
 
 
 <div class="viewcode-block" id="InstructionFollowingDifficultyFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.instruction_following_difficulty_filter.html#data_juicer.ops.filter.InstructionFollowingDifficultyFilter">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">InstructionFollowingDifficultyFilter</span><span class="p">(</span><span class="n">LLMPerplexityFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep texts based on their instruction following difficulty (IFD,</span>
+<span class="w">    </span><span class="sd">"""Filter to keep texts based on their instruction following difficulty (IFD,</span>
 <span class="sd">        https://arxiv.org/abs/2308.12032) score.</span>
 
 <span class="sd">    This operator computes the IFD score for each sample, which is the ratio of the loss</span>
 <span class="sd">    with and without the query. It keeps samples where the IFD score falls within a</span>
 <span class="sd">    specified range. The IFD score is calculated using a Hugging Face tokenizer and model.</span>
-<span class="sd">    If the IFD score is already cached in the &#39;ifd_score&#39; field, it will be reused. The</span>
+<span class="sd">    If the IFD score is already cached in the 'ifd_score' field, it will be reused. The</span>
 <span class="sd">    operator decides to keep or filter samples based on the provided minimum and maximum IFD</span>
-<span class="sd">    score thresholds.&quot;&quot;&quot;</span>
+<span class="sd">    score thresholds."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="InstructionFollowingDifficultyFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.instruction_following_difficulty_filter.html#data_juicer.ops.filter.InstructionFollowingDifficultyFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">ifd_score</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="n">sample_w_msgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_with_messages</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
-        <span class="n">msgs_wo_query</span> <span class="o">=</span> <span class="n">sample_w_msgs</span><span class="p">[</span><span class="s2">&quot;messages&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">msgs_wo_query</span> <span class="o">=</span> <span class="n">sample_w_msgs</span><span class="p">[</span><span class="s2">"messages"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">sample_w_msg_wo_query</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">sample_w_msgs</span><span class="p">)</span>
-        <span class="n">sample_w_msg_wo_query</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;messages&quot;</span><span class="p">:</span> <span class="n">msgs_wo_query</span><span class="p">})</span>
+        <span class="n">sample_w_msg_wo_query</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"messages"</span><span class="p">:</span> <span class="n">msgs_wo_query</span><span class="p">})</span>
 
         <span class="n">loss_w_query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
         <span class="n">loss_wo_query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">sample_w_msg_wo_query</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>

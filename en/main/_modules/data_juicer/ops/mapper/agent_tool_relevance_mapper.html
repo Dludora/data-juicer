@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.agent_tool_relevance_mapper</span></li>
   </ul>
 </nav>
@@ -515,14 +518,14 @@
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
-<span class="sd">&quot;&quot;&quot;LLM: tool/capability fit vs user task (1–5).</span>
+<span class="sd">"""LLM: tool/capability fit vs user task (1–5).</span>
 
 <span class="sd">Inspired by OpenJudge tool-selection; DJ: meta tags or text-only, no schema.</span>
 
 <span class="sd">Reference:</span>
 <span class="sd">https://agentscope-ai.github.io/OpenJudge/built_in_graders/agent_graders/</span>
 <span class="sd">#toolselectiongrader</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -533,33 +536,33 @@
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaKeys</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;agent_tool_relevance_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"agent_tool_relevance_mapper"</span>
 
 
 <div class="viewcode-block" id="AgentToolRelevanceMapper">
-<a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.agent_tool_relevance_mapper.html#data_juicer.ops.mapper.AgentToolRelevanceMapper">[docs]</a>
+<a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.AgentToolRelevanceMapper">[docs]</a>
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgentToolRelevanceMapper</span><span class="p">(</span><span class="n">_DialogQualityLLMMapperBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rough fit between tools/capabilities and the user task (uses meta tool tags).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Rough fit between tools/capabilities and the user task (uses meta tool tags)."""</span>
 
     <span class="n">OP_NAME</span> <span class="o">=</span> <span class="n">OP_NAME</span>
     <span class="n">META_KEY</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_tool_relevance</span>
-    <span class="n">EVAL_KIND</span> <span class="o">=</span> <span class="s2">&quot;agent_tool&quot;</span>
+    <span class="n">EVAL_KIND</span> <span class="o">=</span> <span class="s2">"agent_tool"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_system_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="s2">&quot;Using the **User request**, **Assistant reply** (including any tool &quot;</span>
-            <span class="s2">&quot;trace embedded in that text), and the inferred tool list, judge &quot;</span>
-            <span class="s2">&quot;whether capability choices are roughly sound: when tools are &quot;</span>
-            <span class="s2">&quot;needed, were relevant ones used?</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;If the meta tool list matches tool names visible in the assistant &quot;</span>
-            <span class="s2">&quot;text, treat that as weak evidence of intent—reserve score 1–2 for &quot;</span>
-            <span class="s2">&quot;**clear** task/tool contradictions, not for underspecified user &quot;</span>
-            <span class="s2">&quot;wording alone.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;If no tool list is present, infer only from the text; an empty &quot;</span>
-            <span class="s2">&quot;list does not automatically imply a bad score.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1 = severe mismatch; 5 = apt and efficient.&quot;</span>
+            <span class="s2">"Using the **User request**, **Assistant reply** (including any tool "</span>
+            <span class="s2">"trace embedded in that text), and the inferred tool list, judge "</span>
+            <span class="s2">"whether capability choices are roughly sound: when tools are "</span>
+            <span class="s2">"needed, were relevant ones used?</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"If the meta tool list matches tool names visible in the assistant "</span>
+            <span class="s2">"text, treat that as weak evidence of intent—reserve score 1–2 for "</span>
+            <span class="s2">"**clear** task/tool contradictions, not for underspecified user "</span>
+            <span class="s2">"wording alone.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"If no tool list is present, infer only from the text; an empty "</span>
+            <span class="s2">"list does not automatically imply a bad score.</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="s2">"1 = severe mismatch; 5 = apt and efficient."</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_user_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="docs/Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -686,6 +691,7 @@
 <li class="toctree-l2"><a class="reference internal" href="docs/Distributed.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/Distributed.html#implementation-and-optimizations">Implementation and Optimizations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/Distributed.html#performance-results">Performance Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/Distributed.html#distributed-data-analysis">Distributed Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/Distributed.html#quick-start">Quick Start</a></li>
 </ul>
 </li>
@@ -708,6 +714,14 @@
 <li class="toctree-l2"><a class="reference internal" href="docs/JobManagement.html#logging">Logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/JobManagement.html#api-reference">API Reference</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docs/JobManagement.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/OperatorPlugins.html">Operator Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/OperatorPlugins.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/OperatorPlugins.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/OperatorPlugins.html#plugins-vs-custom-operator-paths">Plugins vs. <code class="docutils literal notranslate"><span class="pre">custom_operator_paths</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/OperatorPlugins.html#writing-an-operator-plugin">Writing an Operator Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/OperatorPlugins.html#notes-and-best-practices">Notes and Best Practices</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a><ul>
@@ -750,8 +764,8 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">demos</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="demos/README.html">Demos</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="demos/README.html#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="demos/README.html#available-demos">Available Demos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/README.html#interactive-demos">Interactive Demos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/README.html#functional-examples">Functional Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="demos/agent/BAD_CASE_INSIGHTS.html">Agent 交互数据：Bad case 洞察</a><ul>
@@ -812,7 +826,48 @@
 <li class="toctree-l2"><a class="reference internal" href="demos/agent/scripts/README.html#id2">与端到端流程的对应关系</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#pipeline-overview">Pipeline Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#output-format">Output Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#running-the-demo">Running the Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#input-data-format">Input Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#output-structure">Output Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#visualization-tools">Visualization Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/ego_hand_action_annotation/README.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#key-advantages">Key advantages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#comparison-with-existing-approaches">Comparison with existing approaches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#important-path-concepts">Important path concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#requirements-and-current-scope">Requirements and current scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#pai-dlc-worker-broadcast-quick-start">PAI-DLC Worker-broadcast quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#gpu-smoke-test-one-recipe-with-cpu-and-gpu-operators">GPU smoke test: one recipe with CPU and GPU operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#important-use-an-existing-mapper-filter-recipe-and-your-own-jsonl">Important: use an existing Mapper/Filter recipe and your own JSONL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#dlc-job-py-parameter-reference"><code class="docutils literal notranslate"><span class="pre">dlc_job.py</span></code> parameter reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#complete-shard-job-py-parameter-reference">Complete <code class="docutils literal notranslate"><span class="pre">shard_job.py</span></code> parameter reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#generic-manual-or-scheduler-workflow">Generic manual or scheduler workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#ray-execution-modes">Ray execution modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#job-directory-layout">Job directory layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#failure-semantics">Failure semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#exit-codes">Exit codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/elastic_sharding/README.html#tests">Tests</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#paper">Paper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#related-files">Related Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#operators">Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="demos/video_humanvbench_simple/README.html#pipeline-dependency">Pipeline Dependency</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -878,6 +933,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="thirdparty/LLM_ecosystems/README.html#installation">Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thirdparty/humanvbench_models/README.html#environment-initialization">1. Environment Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thirdparty/humanvbench_models/README.html#applying-custom-patches">2. Applying Custom Patches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thirdparty/humanvbench_models/README.html#external-weights-download">3. External Weights Download</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="thirdparty/models/README.html">Third-party Model Library</a><ul>

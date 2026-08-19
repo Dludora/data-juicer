@@ -524,18 +524,18 @@
 <div class="viewcode-block" id="DAGNodeType">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGNodeType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DAGNodeType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of DAG nodes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of DAG nodes."""</span>
 
-    <span class="n">OPERATION</span> <span class="o">=</span> <span class="s2">&quot;operation&quot;</span>
-    <span class="n">PARTITION_OPERATION</span> <span class="o">=</span> <span class="s2">&quot;partition_operation&quot;</span>
-    <span class="n">SCATTER_GATHER</span> <span class="o">=</span> <span class="s2">&quot;scatter_gather&quot;</span></div>
+    <span class="n">OPERATION</span> <span class="o">=</span> <span class="s2">"operation"</span>
+    <span class="n">PARTITION_OPERATION</span> <span class="o">=</span> <span class="s2">"partition_operation"</span>
+    <span class="n">SCATTER_GATHER</span> <span class="o">=</span> <span class="s2">"scatter_gather"</span></div>
 
 
 
 <div class="viewcode-block" id="DAGNodeStatusTransition">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGNodeStatusTransition">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DAGNodeStatusTransition</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validates DAG node status transitions.</span>
+<span class="w">    </span><span class="sd">"""Validates DAG node status transitions.</span>
 
 <span class="sd">    Uses DAGNodeStatus enum for type safety. Valid transitions:</span>
 <span class="sd">    - PENDING -&gt; RUNNING (node starts execution)</span>
@@ -544,7 +544,7 @@
 <span class="sd">    - RUNNING -&gt; FAILED (node fails)</span>
 <span class="sd">    - FAILED -&gt; RUNNING (node retries)</span>
 <span class="sd">    - COMPLETED is terminal (no transitions out)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">VALID_TRANSITIONS</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">PENDING</span><span class="p">:</span> <span class="p">{</span><span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="o">.</span><span class="n">COMPLETED</span><span class="p">},</span>
@@ -555,7 +555,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_status</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">DAGNodeStatus</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert string status to DAGNodeStatus enum.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert string status to DAGNodeStatus enum."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">status</span>
         <span class="k">return</span> <span class="n">DAGNodeStatus</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
@@ -564,7 +564,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGNodeStatusTransition.is_valid">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_valid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">from_status</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">],</span> <span class="n">to_status</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a status transition is valid.</span>
+<span class="w">        </span><span class="sd">"""Check if a status transition is valid.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            from_status: Current status (string or enum)</span>
@@ -572,7 +572,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if transition is valid, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">from_enum</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize_status</span><span class="p">(</span><span class="n">from_status</span><span class="p">)</span>
         <span class="n">to_enum</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_normalize_status</span><span class="p">(</span><span class="n">to_status</span><span class="p">)</span>
         <span class="n">valid_targets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">VALID_TRANSITIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">from_enum</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
@@ -585,7 +585,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_and_log</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">from_status</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">],</span> <span class="n">to_status</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DAGNodeStatus</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate transition and log warning if invalid.</span>
+<span class="w">        </span><span class="sd">"""Validate transition and log warning if invalid.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            node_id: Node identifier for logging</span>
@@ -594,7 +594,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if transition is valid, False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">from_status</span><span class="p">,</span> <span class="n">to_status</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
 
@@ -605,8 +605,8 @@
         <span class="n">valid_targets</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">VALID_TRANSITIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">from_enum</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Invalid DAG node transition for </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">from_enum</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">to_enum</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Valid targets: </span><span class="si">{</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">valid_targets</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Invalid DAG node transition for </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">from_enum</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">to_enum</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">. "</span>
+            <span class="sa">f</span><span class="s2">"Valid targets: </span><span class="si">{</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">valid_targets</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span></div>
 </div>
@@ -617,13 +617,13 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.ScatterGatherNode">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScatterGatherNode</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a scatter-gather operation in partitioned execution.</span>
+<span class="w">    </span><span class="sd">"""Represents a scatter-gather operation in partitioned execution.</span>
 
 <span class="sd">    Encapsulates the complete scatter-gather pattern:</span>
 <span class="sd">    1. Convergence: All partitions complete their work and converge</span>
 <span class="sd">    2. Global Operation: A single operation runs on the gathered data</span>
 <span class="sd">    3. Redistribution: Results are redistributed back to partitions</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">operation_index</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">operation_name</span><span class="p">:</span> <span class="nb">str</span>
@@ -632,27 +632,27 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate unique node ID for scatter-gather operation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;sg_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_index</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="w">        </span><span class="sd">"""Generate unique node ID for scatter-gather operation."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"sg_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_index</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">operation_name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
 <div class="viewcode-block" id="NodeID">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NodeID">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NodeID</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Utility for creating and parsing standardized node IDs.</span>
+<span class="w">    </span><span class="sd">"""Utility for creating and parsing standardized node IDs.</span>
 
 <span class="sd">    Node ID formats:</span>
-<span class="sd">    - Operation: &quot;op_{idx:03d}_{name}&quot;</span>
-<span class="sd">    - Partition Operation: &quot;op_{idx:03d}_{name}_partition_{pid}&quot;</span>
-<span class="sd">    - Scatter-Gather: &quot;sg_{idx:03d}_{name}&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    - Operation: "op_{idx:03d}_{name}"</span>
+<span class="sd">    - Partition Operation: "op_{idx:03d}_{name}_partition_{pid}"</span>
+<span class="sd">    - Scatter-Gather: "sg_{idx:03d}_{name}"</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="NodeID.for_operation">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NodeID.for_operation">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">for_operation</span><span class="p">(</span><span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create node ID for global operation.</span>
+<span class="w">        </span><span class="sd">"""Create node ID for global operation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            op_idx: Operation index (0-based)</span>
@@ -660,15 +660,15 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Standardized node ID</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="NodeID.for_partition_operation">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NodeID.for_partition_operation">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">for_partition_operation</span><span class="p">(</span><span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create node ID for partition operation.</span>
+<span class="w">        </span><span class="sd">"""Create node ID for partition operation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            partition_id: Partition ID</span>
@@ -677,15 +677,15 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Standardized node ID</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">_partition_</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">_partition_</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="NodeID.for_scatter_gather">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NodeID.for_scatter_gather">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">for_scatter_gather</span><span class="p">(</span><span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create node ID for scatter-gather operation.</span>
+<span class="w">        </span><span class="sd">"""Create node ID for scatter-gather operation.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            op_idx: Operation index (0-based)</span>
@@ -693,15 +693,15 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Standardized node ID</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;sg_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"sg_</span><span class="si">{</span><span class="n">op_idx</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="NodeID.parse">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NodeID.parse">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse node ID into components.</span>
+<span class="w">        </span><span class="sd">"""Parse node ID into components.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            node_id: The node ID to parse</span>
@@ -710,40 +710,40 @@
 <span class="sd">            Dictionary with node type and components, or None if invalid format</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; NodeID.parse(&quot;op_001_mapper_partition_0&quot;)</span>
-<span class="sd">            {&#39;type&#39;: DAGNodeType.PARTITION_OPERATION, &#39;partition_id&#39;: 0,</span>
-<span class="sd">             &#39;operation_index&#39;: 0, &#39;operation_name&#39;: &#39;mapper&#39;}</span>
+<span class="sd">            &gt;&gt;&gt; NodeID.parse("op_001_mapper_partition_0")</span>
+<span class="sd">            {'type': DAGNodeType.PARTITION_OPERATION, 'partition_id': 0,</span>
+<span class="sd">             'operation_index': 0, 'operation_name': 'mapper'}</span>
 
-<span class="sd">            &gt;&gt;&gt; NodeID.parse(&quot;sg_002_deduplicator&quot;)</span>
-<span class="sd">            {&#39;type&#39;: DAGNodeType.SCATTER_GATHER, &#39;operation_index&#39;: 2,</span>
-<span class="sd">             &#39;operation_name&#39;: &#39;deduplicator&#39;}</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; NodeID.parse("sg_002_deduplicator")</span>
+<span class="sd">            {'type': DAGNodeType.SCATTER_GATHER, 'operation_index': 2,</span>
+<span class="sd">             'operation_name': 'deduplicator'}</span>
+<span class="sd">        """</span>
         <span class="c1"># Partition operation: op_001_mapper_name_partition_0</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;op_(\d+)_(.+)_partition_(\d+)&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"op_(\d+)_(.+)_partition_(\d+)"</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">PARTITION_OPERATION</span><span class="p">,</span>
-                <span class="s2">&quot;operation_index&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Convert back to 0-based</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-                <span class="s2">&quot;partition_id&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">PARTITION_OPERATION</span><span class="p">,</span>
+                <span class="s2">"operation_index"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Convert back to 0-based</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                <span class="s2">"partition_id"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span>
             <span class="p">}</span>
 
         <span class="c1"># Scatter-gather: sg_002_mapper_name</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;sg_(\d+)_(.+)&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"sg_(\d+)_(.+)"</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="p">,</span>
-                <span class="s2">&quot;operation_index&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="p">,</span>
+                <span class="s2">"operation_index"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
             <span class="p">}</span>
 
         <span class="c1"># Regular operation: op_001_mapper_name</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;op_(\d+)_(.+)&quot;</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"op_(\d+)_(.+)"</span><span class="p">,</span> <span class="n">node_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">OPERATION</span><span class="p">,</span>
-                <span class="s2">&quot;operation_index&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">OPERATION</span><span class="p">,</span>
+                <span class="s2">"operation_index"</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
             <span class="p">}</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
@@ -754,13 +754,13 @@
 <div class="viewcode-block" id="DAGExecutionStrategy">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DAGExecutionStrategy</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for different DAG execution strategies.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Abstract base class for different DAG execution strategies."""</span>
 
 <div class="viewcode-block" id="DAGExecutionStrategy.generate_dag_nodes">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.generate_dag_nodes">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_dag_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate DAG nodes based on execution strategy.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate DAG nodes based on execution strategy."""</span>
         <span class="k">pass</span></div>
 
 
@@ -768,7 +768,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.get_dag_node_id">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dag_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get DAG node ID for operation based on strategy.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get DAG node ID for operation based on strategy."""</span>
         <span class="k">pass</span></div>
 
 
@@ -776,7 +776,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.build_dependencies">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build dependencies between nodes based on strategy.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build dependencies between nodes based on strategy."""</span>
         <span class="k">pass</span></div>
 
 
@@ -784,27 +784,27 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.can_execute_node">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">can_execute_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">completed_nodes</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a node can be executed based on strategy.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a node can be executed based on strategy."""</span>
         <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="DAGExecutionStrategy.validate_dag">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.DAGExecutionStrategy.validate_dag">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_dag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate DAG has no cycles using DFS.</span>
+<span class="w">        </span><span class="sd">"""Validate DAG has no cycles using DFS.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if DAG is valid (no cycles), False otherwise</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Build adjacency list</span>
-        <span class="n">adj</span> <span class="o">=</span> <span class="p">{</span><span class="n">node_id</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dependencies&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="p">{</span><span class="n">node_id</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"dependencies"</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
         <span class="c1"># Track visited nodes</span>
         <span class="n">WHITE</span><span class="p">,</span> <span class="n">GRAY</span><span class="p">,</span> <span class="n">BLACK</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
         <span class="n">color</span> <span class="o">=</span> <span class="p">{</span><span class="n">node_id</span><span class="p">:</span> <span class="n">WHITE</span> <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">}</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">has_cycle</span><span class="p">(</span><span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;DFS to detect cycle.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""DFS to detect cycle."""</span>
             <span class="n">color</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">GRAY</span>
             <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">adj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="k">if</span> <span class="n">dep</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">color</span><span class="p">:</span>
@@ -828,27 +828,27 @@
 <div class="viewcode-block" id="NonPartitionedDAGStrategy">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NonPartitionedDAGStrategy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NonPartitionedDAGStrategy</span><span class="p">(</span><span class="n">DAGExecutionStrategy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy for non-partitioned executors (default, ray).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Strategy for non-partitioned executors (default, ray)."""</span>
 
 <div class="viewcode-block" id="NonPartitionedDAGStrategy.generate_dag_nodes">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NonPartitionedDAGStrategy.generate_dag_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_dag_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate DAG nodes for non-partitioned execution.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate DAG nodes for non-partitioned execution."""</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operations</span><span class="p">):</span>
             <span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dag_node_id</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">)</span>
             <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
-                <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
-                <span class="s2">&quot;execution_order&quot;</span><span class="p">:</span> <span class="n">op_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="s2">&quot;node_type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">OPERATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;partition_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;actual_duration&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"node_id"</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
+                <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                <span class="s2">"execution_order"</span><span class="p">:</span> <span class="n">op_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">"node_type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">OPERATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"partition_id"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"dependencies"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"pending"</span><span class="p">,</span>
+                <span class="s2">"start_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"end_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"actual_duration"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="s2">"error_message"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">nodes</span></div>
 
@@ -856,30 +856,30 @@
 <div class="viewcode-block" id="NonPartitionedDAGStrategy.get_dag_node_id">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NonPartitionedDAGStrategy.get_dag_node_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dag_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get DAG node ID for non-partitioned operation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="w">        </span><span class="sd">"""Get DAG node ID for non-partitioned operation."""</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="NonPartitionedDAGStrategy.build_dependencies">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NonPartitionedDAGStrategy.build_dependencies">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build sequential dependencies for non-partitioned execution.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build sequential dependencies for non-partitioned execution."""</span>
         <span class="c1"># Simple sequential dependencies</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">operations</span><span class="p">)):</span>
             <span class="n">current_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dag_node_id</span><span class="p">(</span><span class="n">operations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">prev_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dag_node_id</span><span class="p">(</span><span class="n">operations</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">current_node</span> <span class="ow">in</span> <span class="n">nodes</span> <span class="ow">and</span> <span class="n">prev_node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-                <span class="n">nodes</span><span class="p">[</span><span class="n">current_node</span><span class="p">][</span><span class="s2">&quot;dependencies&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prev_node</span><span class="p">)</span></div>
+                <span class="n">nodes</span><span class="p">[</span><span class="n">current_node</span><span class="p">][</span><span class="s2">"dependencies"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prev_node</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NonPartitionedDAGStrategy.can_execute_node">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.NonPartitionedDAGStrategy.can_execute_node">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">can_execute_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">completed_nodes</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a node can be executed (all dependencies completed).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a node can be executed (all dependencies completed)."""</span>
         <span class="k">if</span> <span class="n">node_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">dep</span> <span class="ow">in</span> <span class="n">completed_nodes</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;dependencies&quot;</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">dep</span> <span class="ow">in</span> <span class="n">completed_nodes</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">"dependencies"</span><span class="p">])</span></div>
 </div>
 
 
@@ -887,7 +887,7 @@
 <div class="viewcode-block" id="PartitionedDAGStrategy">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PartitionedDAGStrategy</span><span class="p">(</span><span class="n">DAGExecutionStrategy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Strategy for partitioned executors (ray_partitioned).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Strategy for partitioned executors (ray_partitioned)."""</span>
 
 <div class="viewcode-block" id="PartitionedDAGStrategy.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy.__init__">[docs]</a>
@@ -898,26 +898,26 @@
 <div class="viewcode-block" id="PartitionedDAGStrategy.generate_dag_nodes">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy.generate_dag_nodes">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_dag_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate DAG nodes for partitioned execution using scatter-gather pattern.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Generate DAG nodes for partitioned execution using scatter-gather pattern."""</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">convergence_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;convergence_points&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">convergence_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"convergence_points"</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="c1"># Generate partition-specific nodes</span>
         <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operations</span><span class="p">):</span>
                 <span class="n">node_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dag_node_id</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">partition_id</span><span class="o">=</span><span class="n">partition_id</span><span class="p">)</span>
                 <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
-                    <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
-                    <span class="s2">&quot;execution_order&quot;</span><span class="p">:</span> <span class="n">op_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;node_type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">PARTITION_OPERATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                    <span class="s2">&quot;partition_id&quot;</span><span class="p">:</span> <span class="n">partition_id</span><span class="p">,</span>
-                    <span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;actual_duration&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"node_id"</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span>
+                    <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                    <span class="s2">"execution_order"</span><span class="p">:</span> <span class="n">op_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">"node_type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">PARTITION_OPERATION</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                    <span class="s2">"partition_id"</span><span class="p">:</span> <span class="n">partition_id</span><span class="p">,</span>
+                    <span class="s2">"dependencies"</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"pending"</span><span class="p">,</span>
+                    <span class="s2">"start_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"end_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"actual_duration"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"error_message"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="p">}</span>
 
         <span class="c1"># Generate scatter-gather nodes for global operations</span>
@@ -932,20 +932,20 @@
                 <span class="p">)</span>
 
                 <span class="n">nodes</span><span class="p">[</span><span class="n">sg_node</span><span class="o">.</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
-                    <span class="s2">&quot;operation_name&quot;</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
-                    <span class="s2">&quot;execution_order&quot;</span><span class="p">:</span> <span class="n">conv_point</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                    <span class="s2">&quot;node_type&quot;</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                    <span class="s2">&quot;operation_index&quot;</span><span class="p">:</span> <span class="n">conv_point</span><span class="p">,</span>
-                    <span class="s2">&quot;input_partitions&quot;</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">input_partitions</span><span class="p">,</span>
-                    <span class="s2">&quot;output_partitions&quot;</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">output_partitions</span><span class="p">,</span>
-                    <span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;actual_duration&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;error_message&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                    <span class="s2">&quot;scatter_gather_node&quot;</span><span class="p">:</span> <span class="n">sg_node</span><span class="p">,</span>
+                    <span class="s2">"node_id"</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">node_id</span><span class="p">,</span>
+                    <span class="s2">"operation_name"</span><span class="p">:</span> <span class="n">op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span>
+                    <span class="s2">"execution_order"</span><span class="p">:</span> <span class="n">conv_point</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">"node_type"</span><span class="p">:</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                    <span class="s2">"operation_index"</span><span class="p">:</span> <span class="n">conv_point</span><span class="p">,</span>
+                    <span class="s2">"input_partitions"</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">input_partitions</span><span class="p">,</span>
+                    <span class="s2">"output_partitions"</span><span class="p">:</span> <span class="n">sg_node</span><span class="o">.</span><span class="n">output_partitions</span><span class="p">,</span>
+                    <span class="s2">"dependencies"</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="s2">"status"</span><span class="p">:</span> <span class="s2">"pending"</span><span class="p">,</span>
+                    <span class="s2">"start_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"end_time"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"actual_duration"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"error_message"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="s2">"scatter_gather_node"</span><span class="p">:</span> <span class="n">sg_node</span><span class="p">,</span>
                 <span class="p">}</span>
 
         <span class="k">return</span> <span class="n">nodes</span></div>
@@ -954,29 +954,29 @@
 <div class="viewcode-block" id="PartitionedDAGStrategy.get_dag_node_id">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy.get_dag_node_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dag_node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">op_idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">partition_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get DAG node ID for partitioned operation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get DAG node ID for partitioned operation."""</span>
         <span class="k">if</span> <span class="n">partition_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">_partition_</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">_partition_</span><span class="si">{</span><span class="n">partition_id</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"op_</span><span class="si">{</span><span class="n">op_idx</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 <div class="viewcode-block" id="PartitionedDAGStrategy.build_dependencies">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy.build_dependencies">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">build_dependencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">operations</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build dependencies for partitioned execution using scatter-gather pattern.</span>
+<span class="w">        </span><span class="sd">"""Build dependencies for partitioned execution using scatter-gather pattern.</span>
 
 <span class="sd">        - Partition operations depend on previous operation in same partition</span>
 <span class="sd">        - Scatter-gather nodes depend on ALL partitions from previous op</span>
 <span class="sd">        - Post-scatter-gather partition ops depend on the scatter-gather node</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">convergence_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;convergence_points&quot;</span><span class="p">,</span> <span class="p">[])</span>
+<span class="sd">        """</span>
+        <span class="n">convergence_points</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"convergence_points"</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="c1"># Find all scatter-gather nodes</span>
         <span class="n">sg_nodes</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">node_id</span><span class="p">:</span> <span class="n">node</span>
             <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;node_type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="o">.</span><span class="n">value</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"node_type"</span><span class="p">)</span> <span class="o">==</span> <span class="n">DAGNodeType</span><span class="o">.</span><span class="n">SCATTER_GATHER</span><span class="o">.</span><span class="n">value</span>
         <span class="p">}</span>
 
         <span class="c1"># First, build scatter-gather dependencies (only once, not per-partition)</span>
@@ -987,27 +987,27 @@
             <span class="c1"># Find the scatter-gather node for this operation</span>
             <span class="n">sg_node_id</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">nid</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">sg_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">op_idx</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_index"</span><span class="p">)</span> <span class="o">==</span> <span class="n">op_idx</span><span class="p">:</span>
                     <span class="n">sg_node_id</span> <span class="o">=</span> <span class="n">nid</span>
                     <span class="k">break</span>
 
             <span class="k">if</span> <span class="n">sg_node_id</span> <span class="ow">and</span> <span class="n">op_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># Scatter-gather depends on PREVIOUS operation&#39;s partition outputs</span>
+                <span class="c1"># Scatter-gather depends on PREVIOUS operation's partition outputs</span>
                 <span class="n">prev_op</span> <span class="o">=</span> <span class="n">operations</span><span class="p">[</span><span class="n">op_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">):</span>
                     <span class="n">dep_node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dag_node_id</span><span class="p">(</span><span class="n">prev_op</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">op_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">partition_id</span><span class="o">=</span><span class="n">pid</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">dep_node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-                        <span class="n">nodes</span><span class="p">[</span><span class="n">sg_node_id</span><span class="p">][</span><span class="s2">&quot;dependencies&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep_node</span><span class="p">)</span>
+                        <span class="n">nodes</span><span class="p">[</span><span class="n">sg_node_id</span><span class="p">][</span><span class="s2">"dependencies"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dep_node</span><span class="p">)</span>
 
         <span class="c1"># Build partition-specific dependencies</span>
         <span class="k">for</span> <span class="n">partition_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_partitions</span><span class="p">):</span>
             <span class="n">prev_node_id</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">op_idx</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">operations</span><span class="p">):</span>
-                <span class="c1"># Skip convergence points - they&#39;re handled by scatter-gather nodes</span>
+                <span class="c1"># Skip convergence points - they're handled by scatter-gather nodes</span>
                 <span class="k">if</span> <span class="n">op_idx</span> <span class="ow">in</span> <span class="n">convergence_points</span><span class="p">:</span>
                     <span class="c1"># Find the scatter-gather node to use as prev_node for next op</span>
                     <span class="k">for</span> <span class="n">nid</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">sg_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;operation_index&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">op_idx</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"operation_index"</span><span class="p">)</span> <span class="o">==</span> <span class="n">op_idx</span><span class="p">:</span>
                             <span class="n">prev_node_id</span> <span class="o">=</span> <span class="n">nid</span>
                             <span class="k">break</span>
                     <span class="k">continue</span>
@@ -1017,18 +1017,18 @@
                 <span class="k">if</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
                     <span class="c1"># Depends on previous node in this partition (could be partition op or scatter-gather)</span>
                     <span class="k">if</span> <span class="n">prev_node_id</span><span class="p">:</span>
-                        <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">][</span><span class="s2">&quot;dependencies&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prev_node_id</span><span class="p">)</span>
+                        <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">][</span><span class="s2">"dependencies"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prev_node_id</span><span class="p">)</span>
                     <span class="n">prev_node_id</span> <span class="o">=</span> <span class="n">node_id</span></div>
 
 
 <div class="viewcode-block" id="PartitionedDAGStrategy.can_execute_node">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.PartitionedDAGStrategy.can_execute_node">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">can_execute_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">completed_nodes</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a node can be executed (all dependencies completed).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a node can be executed (all dependencies completed)."""</span>
         <span class="k">if</span> <span class="n">node_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">node</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">dep</span> <span class="ow">in</span> <span class="n">completed_nodes</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">&quot;dependencies&quot;</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">dep</span> <span class="ow">in</span> <span class="n">completed_nodes</span> <span class="k">for</span> <span class="n">dep</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s2">"dependencies"</span><span class="p">])</span></div>
 </div>
 
 
@@ -1036,7 +1036,7 @@
 <div class="viewcode-block" id="is_global_operation">
 <a class="viewcode-back" href="../../../../api/data_juicer.core.executor.dag_execution_strategies.html#data_juicer.core.executor.dag_execution_strategies.is_global_operation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_global_operation</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if an operation is a global operation that requires convergence.</span>
+<span class="w">    </span><span class="sd">"""Check if an operation is a global operation that requires convergence.</span>
 
 <span class="sd">    Global operations need to see all data at once (e.g., deduplication, global sorting).</span>
 <span class="sd">    They cannot be partitioned and require a scatter-gather pattern.</span>
@@ -1045,9 +1045,9 @@
 <span class="sd">    1. Explicit `is_global_operation` flag on the operation</span>
 <span class="sd">    2. Base class inheritance (Deduplicator)</span>
 <span class="sd">    3. Operation name pattern (fallback for unknown operations)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Priority 1: Explicit flag (most reliable)</span>
-    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="s2">&quot;is_global_operation&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="s2">"is_global_operation"</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="c1"># Priority 2: Check base class (interface-based detection)</span>
@@ -1060,8 +1060,8 @@
         <span class="k">pass</span>  <span class="c1"># Deduplicator class not available</span>
 
     <span class="c1"># Priority 3: Name-based detection (fallback for unknown ops)</span>
-    <span class="n">op_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="s2">&quot;_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">global_op_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;deduplicator&quot;</span><span class="p">,</span> <span class="s2">&quot;global_&quot;</span><span class="p">,</span> <span class="s2">&quot;full_dataset_&quot;</span><span class="p">]</span>
+    <span class="n">op_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span> <span class="s2">"_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+    <span class="n">global_op_patterns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"deduplicator"</span><span class="p">,</span> <span class="s2">"global_"</span><span class="p">,</span> <span class="s2">"full_dataset_"</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">pattern</span> <span class="ow">in</span> <span class="n">op_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">global_op_patterns</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 

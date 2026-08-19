@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.llm_condition_filter</span></li>
   </ul>
 </nav>
@@ -513,11 +516,11 @@
                 <article class="bd-article">
                   
   <h1>data_juicer.ops.filter.llm_condition_filter 源代码</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;LLM condition filter: keep samples satisfying a user-given condition.</span>
+<span></span><span class="sd">"""LLM condition filter: keep samples satisfying a user-given condition.</span>
 
 <span class="sd">Part of the llm_* ops family; yes/no by user-specified condition string</span>
 <span class="sd">(unlike llm_analysis_filter which uses fixed dimensions).</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
@@ -534,29 +537,29 @@
     <span class="n">update_sampling_params</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;llm_condition_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"llm_condition_filter"</span>
 
 
 <div class="viewcode-block" id="LLMConditionFilter">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_condition_filter.html#data_juicer.ops.filter.LLMConditionFilter">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LLMConditionFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter by user-given natural language condition (LLM yes/no).</span>
+<span class="w">    </span><span class="sd">"""Filter by user-given natural language condition (LLM yes/no).</span>
 
 <span class="sd">    Uses text_key; writes to stats.llm_condition_filter_result; keeps if True.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="LLMConditionFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.llm_condition_filter.html#data_juicer.ops.filter.LLMConditionFilter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
-        <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">,</span>
+        <span class="n">condition</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">knowledge_grounding_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">knowledge_grounding_fixed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -571,16 +574,16 @@
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Args:</span>
+<span class="w">        </span><span class="sd">"""Args:</span>
 <span class="sd">        text_key: Sample key for the text to evaluate.</span>
-<span class="sd">        condition: Natural language condition (e.g. &quot;contains X&quot;).</span>
+<span class="sd">        condition: Natural language condition (e.g. "contains X").</span>
 <span class="sd">        api_or_hf_model: Model name.</span>
 <span class="sd">        knowledge_grounding_key: Optional sample key for per-sample grounding.</span>
 <span class="sd">        knowledge_grounding_fixed: Optional fixed grounding string.</span>
 <span class="sd">        strategy: Prompt strategy for condition inference (direct/cot/few_shot/cot_shot).</span>
 <span class="sd">        examples: Optional examples text used by few-shot strategies.</span>
 <span class="sd">        try_num: Retries on API/parse failure; treat as False after all fail.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">text_key</span> <span class="o">=</span> <span class="n">text_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
@@ -599,14 +602,14 @@
 
         <span class="k">if</span> <span class="n">enable_vllm</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;vllm&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"vllm"</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">model_params</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">vllm</span><span class="o">.</span><span class="n">SamplingParams</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">is_hf_model</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span>
                 <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">return_pipe</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -614,7 +617,7 @@
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">api_or_hf_model</span><span class="p">,</span>
                 <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
                 <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -625,7 +628,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_knowledge_grounding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -673,16 +676,16 @@
                 <span class="p">)</span>
                 <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;LLMConditionFilter attempt failed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"LLMConditionFilter attempt failed: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_condition_filter_result</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
         <span class="k">if</span> <span class="n">usage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">prev_usage</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_semantic_usage</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">curr_usage</span> <span class="o">=</span> <span class="n">usage</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_semantic_usage</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;prompt_tokens&quot;</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;prompt_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                <span class="s2">&quot;completion_tokens&quot;</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completion_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completion_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                <span class="s2">&quot;total_tokens&quot;</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;total_tokens&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                <span class="s2">&quot;cost_estimate&quot;</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cost_estimate&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cost_estimate&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">"prompt_tokens"</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"prompt_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"prompt_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">"completion_tokens"</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"completion_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"completion_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">"total_tokens"</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"total_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"total_tokens"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="s2">"cost_estimate"</span><span class="p">:</span> <span class="n">prev_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"cost_estimate"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">curr_usage</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"cost_estimate"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 

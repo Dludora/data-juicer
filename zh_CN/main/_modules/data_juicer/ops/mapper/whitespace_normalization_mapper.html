@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.whitespace_normalization_mapper</span></li>
   </ul>
 </nav>
@@ -523,28 +526,28 @@
 
 <div class="viewcode-block" id="WhitespaceNormalizationMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.WhitespaceNormalizationMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;whitespace_normalization_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"whitespace_normalization_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">WhitespaceNormalizationMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalizes various types of whitespace characters to standard spaces in text samples.</span>
+<span class="w">    </span><span class="sd">"""Normalizes various types of whitespace characters to standard spaces in text samples.</span>
 
 <span class="sd">    This mapper converts all non-standard whitespace characters, such as tabs and newlines,</span>
-<span class="sd">    to the standard space character (&#39; &#39;, 0x20). It also trims leading and trailing</span>
+<span class="sd">    to the standard space character (' ', 0x20). It also trims leading and trailing</span>
 <span class="sd">    whitespace from the text. This ensures consistent spacing across all text samples,</span>
 <span class="sd">    improving readability and consistency. The normalization process is based on a</span>
 <span class="sd">    comprehensive list of whitespace characters, which can be found at</span>
-<span class="sd">    https://en.wikipedia.org/wiki/Whitespace_character.&quot;&quot;&quot;</span>
+<span class="sd">    https://en.wikipedia.org/wiki/Whitespace_character."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="WhitespaceNormalizationMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.WhitespaceNormalizationMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -555,8 +558,8 @@
             <span class="c1"># remove whitespaces before and after the main content</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-            <span class="c1"># replace all kinds of whitespaces with &#39; &#39;</span>
-            <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">char</span> <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VARIOUS_WHITESPACES</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">text</span><span class="p">])</span>
+            <span class="c1"># replace all kinds of whitespaces with ' '</span>
+            <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">char</span> <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">VARIOUS_WHITESPACES</span> <span class="k">else</span> <span class="s2">" "</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">text</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">samples</span></div>
 </div>

@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.selector.tags_specified_field_selector</span></li>
   </ul>
 </nav>
@@ -520,35 +523,35 @@
 
 <div class="viewcode-block" id="TagsSpecifiedFieldSelector">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.tags_specified_field_selector.html#data_juicer.ops.selector.TagsSpecifiedFieldSelector">[docs]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;tags_specified_field_selector&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"tags_specified_field_selector"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TagsSpecifiedFieldSelector</span><span class="p">(</span><span class="n">Selector</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selector to filter samples based on the tags of a specified field.</span>
+<span class="w">    </span><span class="sd">"""Selector to filter samples based on the tags of a specified field.</span>
 
 <span class="sd">    This operator selects samples where the value of the specified field matches one of the</span>
 <span class="sd">    target tags. The field can be multi-level, with levels separated by dots (e.g.,</span>
-<span class="sd">    &#39;level1.level2&#39;). The operator checks if the specified field exists in the dataset and</span>
+<span class="sd">    'level1.level2'). The operator checks if the specified field exists in the dataset and</span>
 <span class="sd">    if the field value is a string, number, or None. If the field value matches any of the</span>
 <span class="sd">    target tags, the sample is kept. The selection is case-sensitive.</span>
 
 <span class="sd">    - The `field_key` parameter specifies the field to check.</span>
 <span class="sd">    - The `target_tags` parameter is a list of tags to match against the field value.</span>
 <span class="sd">    - If the dataset has fewer than two samples or if `field_key` is empty, the dataset is</span>
-<span class="sd">      returned unchanged.&quot;&quot;&quot;</span>
+<span class="sd">      returned unchanged."""</span>
 
 <div class="viewcode-block" id="TagsSpecifiedFieldSelector.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.tags_specified_field_selector.html#data_juicer.ops.selector.TagsSpecifiedFieldSelector.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">target_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">target_tags</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param field_key: Selector based on the specified value</span>
 <span class="sd">            corresponding to the target key. The target key</span>
 <span class="sd">            corresponding to multi-level field information need to be</span>
-<span class="sd">            separated by &#39;.&#39;.</span>
+<span class="sd">            separated by '.'.</span>
 <span class="sd">        :param target_tags: Target tags to be select.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="o">=</span> <span class="n">field_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_tags</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">target_tags</span><span class="p">)</span></div>
@@ -560,18 +563,18 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dataset</span>
 
-        <span class="n">field_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="n">selected_index</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
             <span class="n">field_value</span> <span class="o">=</span> <span class="n">item</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                 <span class="n">field_value</span> <span class="o">=</span> <span class="n">field_value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">field_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span>
-            <span class="p">),</span> <span class="s2">&quot;The </span><span class="si">{}</span><span class="s2"> item is not String, Numbers or NoneType&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="p">),</span> <span class="s2">"The </span><span class="si">{}</span><span class="s2"> item is not String, Numbers or NoneType"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">field_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_tags</span><span class="p">:</span>
                 <span class="n">selected_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 

@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.in_context_influence_filter</span></li>
   </ul>
 </nav>
@@ -522,10 +525,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"transformers"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;in_context_influence_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"in_context_influence_filter"</span>
 
 
 <div class="viewcode-block" id="InContextInfluenceFilter">
@@ -533,21 +536,21 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@ATTRIBUTION_FILTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">InContextInfluenceFilter</span><span class="p">(</span><span class="n">LLMPerplexityFilter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep texts based on their in-context influence on a validation set.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep texts based on their in-context influence on a validation set.</span>
 
 <span class="sd">    This operator calculates the in-context influence of each sample by comparing</span>
 <span class="sd">    perplexities with and without the sample as context. The influence score is computed as</span>
 <span class="sd">    the ratio of these perplexities. If `valid_as_demo` is True, the score is L(A|Q) /</span>
 <span class="sd">    L(A|task_desc, Q_v, A_v, Q). Otherwise, it is L(A_v|Q) / L(A_v|task_desc, Q, A, Q_v).</span>
 <span class="sd">    The operator retains samples whose in-context influence score is within a specified</span>
-<span class="sd">    range. The in-context influence score is stored in the &#39;in_context_influence&#39; field of</span>
-<span class="sd">    the sample&#39;s stats. The validation set must be prepared using the</span>
-<span class="sd">    `prepare_valid_feature` method if not provided during initialization.&quot;&quot;&quot;</span>
+<span class="sd">    range. The in-context influence score is stored in the 'in_context_influence' field of</span>
+<span class="sd">    the sample's stats. The validation set must be prepared using the</span>
+<span class="sd">    `prepare_valid_feature` method if not provided during initialization."""</span>
 
     <span class="c1"># This operator is currently under development and evaluation as part of an ongoing research project.</span>
     <span class="c1"># The Data-Juicer team retains full copyright over this operator.</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="InContextInfluenceFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.in_context_influence_filter.html#data_juicer.ops.filter.InContextInfluenceFilter.__init__">[docs]</a>
@@ -560,16 +563,16 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param valid_dataset: The dataset to use for validation.</span>
-<span class="sd">            If None, &#39;self.prepare_valid_feature&#39; should be manually called before applying the filter.</span>
+<span class="sd">            If None, 'self.prepare_valid_feature' should be manually called before applying the filter.</span>
 <span class="sd">        :param task_desc: The description of the validation task.</span>
 <span class="sd">        :param valid_as_demo: If true, score =  L(A|Q) / L(A|task_desc, Q_v, A_v, Q);</span>
 <span class="sd">                              If false, score = L(A_v|Q) L(A_v|task_desc, Q, A, Q_v).</span>
 <span class="sd">        :param n_shot: The number of shots in validation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_as_demo</span> <span class="o">=</span> <span class="n">valid_as_demo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">task_desc</span> <span class="o">=</span> <span class="n">task_desc</span>
@@ -578,38 +581,38 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">prepare_valid_feature</span><span class="p">(</span><span class="n">Dataset</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">),</span> <span class="n">task_desc</span><span class="p">,</span> <span class="n">n_shot</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;valid_dataset and task_desc are both None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
-<span class="s2">                &#39;prepare_valid_feature&#39; method should be manually called before applying the filter.&quot;</span>
+                <span class="sa">f</span><span class="s2">"valid_dataset and task_desc are both None when initializing </span><span class="si">{</span><span class="n">OP_NAME</span><span class="si">}</span><span class="s2">. </span><span class="se">\</span>
+<span class="s2">                'prepare_valid_feature' method should be manually called before applying the filter."</span>
             <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">valid_feature_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;valid_samples&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span> <span class="ow">and</span> <span class="s2">&quot;valid_losses&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
+        <span class="k">return</span> <span class="s2">"valid_samples"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span> <span class="ow">and</span> <span class="s2">"valid_losses"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span>
 
 <div class="viewcode-block" id="InContextInfluenceFilter.prepare_valid_feature">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.in_context_influence_filter.html#data_juicer.ops.filter.InContextInfluenceFilter.prepare_valid_feature">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare_valid_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">task_desc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_shot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">n_shot</span> <span class="o">=</span> <span class="n">n_shot</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_samples&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_losses&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_samples"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_losses"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">n_shot</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="n">sample_w_msgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_with_messages</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">system_prompt</span><span class="o">=</span><span class="n">task_desc</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_samples&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_samples"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">)</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_losses&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_losses"</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="InContextInfluenceFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.in_context_influence_filter.html#data_juicer.ops.filter.InContextInfluenceFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">in_context_influence</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">&quot;Validation feature not ready yet. Call prepare_valid_feature first.&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature_ready</span><span class="p">,</span> <span class="s2">"Validation feature not ready yet. Call prepare_valid_feature first."</span>
 
         <span class="n">sample_w_msgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_with_messages</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 
@@ -617,13 +620,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_as_demo</span><span class="p">:</span>
             <span class="c1"># L(A|Q) / L(A|Q_v, A_v, Q)</span>
             <span class="n">loss_wo_demo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">valid_sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_samples&quot;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">valid_sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_samples"</span><span class="p">]:</span>
                 <span class="n">loss_w_demo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">sample_w_msgs</span><span class="p">,</span> <span class="n">pre_example</span><span class="o">=</span><span class="n">valid_sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
                 <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss_wo_demo</span> <span class="o">/</span> <span class="n">loss_w_demo</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># L(A_v|Q_v) / L(A_v|Q, A, Q_v)</span>
             <span class="k">for</span> <span class="n">valid_sample</span><span class="p">,</span> <span class="n">loss_wo_demo</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_samples&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">&quot;valid_losses&quot;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_samples"</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_feature</span><span class="p">[</span><span class="s2">"valid_losses"</span><span class="p">]</span>
             <span class="p">):</span>
                 <span class="n">loss_w_demo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">valid_sample</span><span class="p">,</span> <span class="n">pre_example</span><span class="o">=</span><span class="n">sample_w_msgs</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
                 <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss_wo_demo</span> <span class="o">/</span> <span class="n">loss_w_demo</span><span class="p">)</span>

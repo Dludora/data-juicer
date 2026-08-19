@@ -532,29 +532,29 @@
 <div class="viewcode-block" id="init_spark">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.init_spark">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">init_spark</span><span class="p">(</span><span class="n">spark_executor_memory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spark_driver_memory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spark_executor_memoryOverhead</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Initialize a spark session. You can set parameters such as memory, number</span>
 <span class="sd">    of partitions, timeout and so on here</span>
 <span class="sd">    :return: A spark session instance.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">spark_executor_memory</span><span class="p">:</span>
-        <span class="n">spark_executor_memory</span> <span class="o">=</span> <span class="s2">&quot;64g&quot;</span>
+        <span class="n">spark_executor_memory</span> <span class="o">=</span> <span class="s2">"64g"</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">spark_driver_memory</span><span class="p">:</span>
-        <span class="n">spark_driver_memory</span> <span class="o">=</span> <span class="s2">&quot;64g&quot;</span>
+        <span class="n">spark_driver_memory</span> <span class="o">=</span> <span class="s2">"64g"</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">spark_executor_memoryOverhead</span><span class="p">:</span>
-        <span class="n">spark_executor_memoryOverhead</span> <span class="o">=</span> <span class="s2">&quot;20000&quot;</span>
+        <span class="n">spark_executor_memoryOverhead</span> <span class="o">=</span> <span class="s2">"20000"</span>
     <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">&quot;local[*]&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.driver.memory&quot;</span><span class="p">,</span> <span class="n">spark_driver_memory</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memory&quot;</span><span class="p">,</span> <span class="n">spark_executor_memory</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.shuffle.partitions&quot;</span><span class="p">,</span> <span class="s2">&quot;300&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.sql.execution.arrow.pyspark.enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.memoryOverhead&quot;</span><span class="p">,</span> <span class="n">spark_executor_memoryOverhead</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.network.timeout&quot;</span><span class="p">,</span> <span class="s2">&quot;10000s&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">&quot;spark.executor.heartbeatInterval&quot;</span><span class="p">,</span> <span class="s2">&quot;3600s&quot;</span><span class="p">)</span>
+        <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">master</span><span class="p">(</span><span class="s2">"local[*]"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.driver.memory"</span><span class="p">,</span> <span class="n">spark_driver_memory</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.executor.memory"</span><span class="p">,</span> <span class="n">spark_executor_memory</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.sql.shuffle.partitions"</span><span class="p">,</span> <span class="s2">"300"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.sql.execution.arrow.pyspark.enabled"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.executor.memoryOverhead"</span><span class="p">,</span> <span class="n">spark_executor_memoryOverhead</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.network.timeout"</span><span class="p">,</span> <span class="s2">"10000s"</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">config</span><span class="p">(</span><span class="s2">"spark.executor.heartbeatInterval"</span><span class="p">,</span> <span class="s2">"3600s"</span><span class="p">)</span>
         <span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
     <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spark initialization done.&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Spark initialization done."</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">spark</span></div>
 
 
@@ -562,34 +562,34 @@
 <div class="viewcode-block" id="prepare_model">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.prepare_model">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">prepare_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">DATA_JUICER_MODELS_CACHE</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Prepare the specific model from model cache path or the remote oss</span>
 <span class="sd">    :param model_name: name of the quality classifier model</span>
 <span class="sd">    :param model_path: the path to store the model to be loaded</span>
 <span class="sd">    :return: a loaded PipelineModel</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">udm</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;gpt3&quot;</span><span class="p">,</span> <span class="s2">&quot;chinese&quot;</span><span class="p">,</span> <span class="s2">&quot;code&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"gpt3"</span><span class="p">,</span> <span class="s2">"chinese"</span><span class="p">,</span> <span class="s2">"code"</span><span class="p">]:</span>
         <span class="c1"># use user-specific model</span>
         <span class="n">real_model_path</span> <span class="o">=</span> <span class="n">model_name</span>
         <span class="n">udm</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># use prepared models we provided</span>
-        <span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_quality_model&quot;</span> <span class="o">%</span> <span class="n">model_name</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%s</span><span class="s2">_quality_model"</span> <span class="o">%</span> <span class="n">model_name</span>
         <span class="n">real_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">model_name</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Preparing scorer model in [</span><span class="si">{</span><span class="n">real_model_path</span><span class="si">}</span><span class="s2">]...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Preparing scorer model in [</span><span class="si">{</span><span class="n">real_model_path</span><span class="si">}</span><span class="s2">]..."</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">real_model_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">real_model_path</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">PipelineModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">real_model_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">udm</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Customized model [</span><span class="si">{</span><span class="n">real_model_path</span><span class="si">}</span><span class="s2">] cannot be loaded.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Customized model [</span><span class="si">{</span><span class="n">real_model_path</span><span class="si">}</span><span class="s2">] cannot be loaded."</span><span class="p">)</span>
         <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="c1"># No specific models in local file systems. Download them from remote.</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MODEL_LINKS</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">),</span> <span class="n">bar</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">MODEL_LINKS</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip"</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip"</span><span class="p">),</span> <span class="n">bar</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span>
     <span class="c1"># extract the compressed model file into a model directory</span>
-    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">zp</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">.zip"</span><span class="p">))</span> <span class="k">as</span> <span class="n">zp</span><span class="p">:</span>
         <span class="n">zp</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">PipelineModel</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">real_model_path</span><span class="p">)</span></div>
 
@@ -597,34 +597,34 @@
 
 <div class="viewcode-block" id="load_dataset">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.load_dataset">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_path</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">only_text</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load a single dataset using PySpark. Only support &#39;json&#39;, &#39;jsonl&#39;, or</span>
-<span class="sd">    &#39;parquet&#39; files for now</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_dataset</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_path</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">only_text</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Load a single dataset using PySpark. Only support 'json', 'jsonl', or</span>
+<span class="sd">    'parquet' files for now</span>
 <span class="sd">    :param spark: spark session</span>
 <span class="sd">    :param ds_path: dataset path</span>
 <span class="sd">    :param text_key: the name of the column that stores the contents of texts</span>
 <span class="sd">    :param only_text: whether to load texts only and drop other columns.</span>
 <span class="sd">    :return: a data frame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># load dataset using different methods according to the suffix</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading dataset from [</span><span class="si">{</span><span class="n">ds_path</span><span class="si">}</span><span class="s2">]...&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jsonl&quot;</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loading dataset from [</span><span class="si">{</span><span class="n">ds_path</span><span class="si">}</span><span class="s2">]..."</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl"</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="n">ds_path</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.parquet&quot;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">ds_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".parquet"</span><span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">ds_path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Dataset type is not supported for now. &quot;</span>
-            <span class="s2">&quot;Suffix of dataset file should be one of &quot;</span>
-            <span class="s2">&quot;[.json, .jsonl, .parquet]&quot;</span>
+            <span class="s2">"Dataset type is not supported for now. "</span>
+            <span class="s2">"Suffix of dataset file should be one of "</span>
+            <span class="s2">"[.json, .jsonl, .parquet]"</span>
         <span class="p">)</span>
-    <span class="c1"># rename the column that stores texts to &quot;text&quot; if necessary</span>
-    <span class="k">if</span> <span class="n">text_key</span> <span class="o">!=</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
-        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">text_key</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">)</span>
-    <span class="c1"># whether to keep &quot;text&quot; column only</span>
+    <span class="c1"># rename the column that stores texts to "text" if necessary</span>
+    <span class="k">if</span> <span class="n">text_key</span> <span class="o">!=</span> <span class="s2">"text"</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="n">text_key</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">)</span>
+    <span class="c1"># whether to keep "text" column only</span>
     <span class="k">if</span> <span class="n">only_text</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">df</span></div>
 
@@ -632,9 +632,9 @@
 
 <div class="viewcode-block" id="load_datasets">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.load_datasets">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_datasets</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_paths</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_text</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load a list of datasets. Only support &#39;json&#39;, &#39;jsonl&#39;, or &#39;parquet&#39; files</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_datasets</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_paths</span><span class="p">,</span> <span class="n">text_key</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_text</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Load a list of datasets. Only support 'json', 'jsonl', or 'parquet' files</span>
 <span class="sd">    for now</span>
 <span class="sd">    :param spark: spark session</span>
 <span class="sd">    :param ds_paths: a list of datasets to be loaded.</span>
@@ -642,9 +642,9 @@
 <span class="sd">    :param label: the label set to these datasets. Used in training pipeline</span>
 <span class="sd">    :param only_text: whether to load texts only and drop other columns.</span>
 <span class="sd">    :return: a data frame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds_paths</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No dataset path provided.&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"No dataset path provided."</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="c1"># load each dataset in order and union them all</span>
     <span class="n">base_ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">text_key</span><span class="p">,</span> <span class="n">only_text</span><span class="p">)</span>
@@ -652,7 +652,7 @@
         <span class="n">base_ds</span> <span class="o">=</span> <span class="n">base_ds</span><span class="o">.</span><span class="n">unionAll</span><span class="p">(</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">ds_paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">text_key</span><span class="p">,</span> <span class="n">only_text</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># add labels for training pipeline</span>
-        <span class="k">return</span> <span class="n">base_ds</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> as label&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base_ds</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">"</span><span class="si">%d</span><span class="s2"> as label"</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">base_ds</span></div>
 
@@ -661,12 +661,12 @@
 <div class="viewcode-block" id="shuffle">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.shuffle">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">shuffle</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Shuffle a data frame</span>
 <span class="sd">    :param df: input data frame</span>
 <span class="sd">    :return: shuffled data frame</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;rand&quot;</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
+<span class="sd">    """</span>
+    <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"rand"</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">))</span>
     <span class="n">df_rnd</span> <span class="o">=</span> <span class="n">temp_df</span><span class="o">.</span><span class="n">orderBy</span><span class="p">(</span><span class="n">temp_df</span><span class="o">.</span><span class="n">rand</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df_rnd</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df_rnd</span><span class="o">.</span><span class="n">rand</span><span class="p">)</span></div>
 
@@ -675,94 +675,94 @@
 <div class="viewcode-block" id="export_result">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.export_result">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">export_result</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">res_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Export a dataset to specified path. Only support &#39;json&#39;, &#39;jsonl&#39;, or</span>
-<span class="sd">    &#39;parquet&#39; export formats for now</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Export a dataset to specified path. Only support 'json', 'jsonl', or</span>
+<span class="sd">    'parquet' export formats for now</span>
 <span class="sd">    :param ds: the dataset to be exported</span>
 <span class="sd">    :param res_path: the path to store the exported dataset</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting predicted result to [</span><span class="si">{</span><span class="n">res_path</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.jsonl&quot;</span><span class="p">):</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.parquet&quot;</span><span class="p">):</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;parquet&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Exporting predicted result to [</span><span class="si">{</span><span class="n">res_path</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".json"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".jsonl"</span><span class="p">):</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">"overwrite"</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"json"</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">res_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".parquet"</span><span class="p">):</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">"overwrite"</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"parquet"</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span></div>
+        <span class="n">ds</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">"overwrite"</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">res_path</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="get_keep_method_udf">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.get_keep_method_udf">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_keep_method_udf</span><span class="p">(</span><span class="n">keep_method</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Given the name of keep method, return a PySpark user-defined function of</span>
-<span class="sd">    this kind of keep method. Only support &#39;gpt3&#39; or &#39;label&#39; for now</span>
+<span class="sd">    this kind of keep method. Only support 'gpt3' or 'label' for now</span>
 <span class="sd">    :param keep_method: name of keep method</span>
 <span class="sd">    :return: a PySpark udf of specified keep method</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">keep_method</span> <span class="o">==</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">keep_method</span> <span class="o">==</span> <span class="s2">"label"</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">udf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">score</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">IntegerType</span><span class="p">())</span>
-    <span class="k">elif</span> <span class="n">keep_method</span> <span class="o">==</span> <span class="s2">&quot;gpt3&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">keep_method</span> <span class="o">==</span> <span class="s2">"gpt3"</span><span class="p">:</span>
         <span class="n">pareto</span> <span class="o">=</span> <span class="mi">9</span>
         <span class="k">return</span> <span class="n">udf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">score</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">score</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">pareto</span><span class="p">(</span><span class="n">pareto</span><span class="p">)),</span> <span class="n">IntegerType</span><span class="p">())</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep method [</span><span class="si">{</span><span class="n">keep_method</span><span class="si">}</span><span class="s2">] is not &quot;</span> <span class="sa">f</span><span class="s2">&quot;implemented for now.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep method [</span><span class="si">{</span><span class="n">keep_method</span><span class="si">}</span><span class="s2">] is not "</span> <span class="sa">f</span><span class="s2">"implemented for now."</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="tokenize_dataset">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.tokenize_dataset">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">tokenize_dataset</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Tokenize the texts in input dataset using specified tokenizer</span>
 <span class="sd">    :param ds: dataset to be tokenized</span>
 <span class="sd">    :param tokenizer: tokenizer used to tokenize texts</span>
-<span class="sd">    :return: a dataset with an extra column &quot;words&quot; that stores the tokenized</span>
+<span class="sd">    :return: a dataset with an extra column "words" that stores the tokenized</span>
 <span class="sd">        texts</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tkn</span> <span class="o">=</span> <span class="n">prepare_sentencepiece_for_lang</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">tkn</span> <span class="o">=</span> <span class="n">prepare_sentencepiece_for_lang</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
     <span class="c1"># create a PySpark udf to tokenize the dataset</span>
     <span class="n">tokenizer_udf</span> <span class="o">=</span> <span class="n">udf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="n">tkn</span><span class="o">.</span><span class="n">encode_as_pieces</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">StringType</span><span class="p">()))</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Tokenize texts using specific tokenizer...&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;words&quot;</span><span class="p">,</span> <span class="n">tokenizer_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)))</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Tokenize texts using specific tokenizer..."</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ds</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"words"</span><span class="p">,</span> <span class="n">tokenizer_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)))</span></div>
 
 
 
 <div class="viewcode-block" id="train">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.train">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">output_model_path</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Train a quality classifier with training dataset and export the trained</span>
 <span class="sd">    model to a specified path</span>
 <span class="sd">    :param output_model_path: the path to store the trained model</span>
 <span class="sd">    :param ds: training dataset</span>
-<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It&#39;s None in default,</span>
+<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It's None in default,</span>
 <span class="sd">        which means using the standard Tokenizer in PySpark</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing training quality classifier model...&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Preparing training quality classifier model..."</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">tokenizer</span><span class="p">:</span>
         <span class="c1"># tokenizer is not standard Tokenizer in PySpark, need to apply it</span>
         <span class="c1"># explicitly</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">tokenize_dataset</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
 
     <span class="c1"># model</span>
-    <span class="n">hashingTF</span> <span class="o">=</span> <span class="n">HashingTF</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;words&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+    <span class="n">hashingTF</span> <span class="o">=</span> <span class="n">HashingTF</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">"words"</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">"features"</span><span class="p">)</span>
     <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># using standard Tokenizer in PySpark</span>
-        <span class="n">std_tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;words&quot;</span><span class="p">)</span>
+        <span class="n">std_tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">"words"</span><span class="p">)</span>
         <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">std_tokenizer</span><span class="p">,</span> <span class="n">hashingTF</span><span class="p">,</span> <span class="n">lr</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># using extra sentencepiece tokenizer, which will not included in the</span>
         <span class="c1"># final PipelineModel</span>
         <span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">hashingTF</span><span class="p">,</span> <span class="n">lr</span><span class="p">])</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start training...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Start training..."</span><span class="p">)</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Trained model saving...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Trained model saving..."</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">write</span><span class="p">()</span><span class="o">.</span><span class="n">overwrite</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_model_path</span><span class="p">)</span></div>
 
 
@@ -770,55 +770,55 @@
 <div class="viewcode-block" id="eval">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.eval">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">eval</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Evaluate a quality classifier model on specified dataset</span>
 <span class="sd">    :param model_path: the path to the model to be evaluated</span>
 <span class="sd">    :param ds: evaluation dataset</span>
-<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It&#39;s None in default,</span>
+<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It's None in default,</span>
 <span class="sd">        which means using the standard Tokenizer in PySpark</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing to evaluate...&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Preparing to evaluate..."</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">tokenizer</span><span class="p">:</span>
         <span class="c1"># tokenizer is not standard Tokenizer in PySpark, need to apply it</span>
         <span class="c1"># explicitly</span>
         <span class="n">ds</span> <span class="o">=</span> <span class="n">tokenize_dataset</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start evaluation...&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Start evaluation..."</span><span class="p">)</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
     <span class="n">pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
     <span class="c1"># get positive and negative samples</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;label = 1&quot;</span><span class="p">)</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;label = 0&quot;</span><span class="p">)</span>
+    <span class="n">P</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"label = 1"</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"label = 0"</span><span class="p">)</span>
     <span class="c1"># get TP, FP, TN, FN samples</span>
-    <span class="n">TP</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;prediction = 1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">FP</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;prediction = 1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">TN</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;prediction = 0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="n">FN</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;prediction = 0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">TP</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"prediction = 1"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">FP</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"prediction = 1"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">TN</span> <span class="o">=</span> <span class="n">N</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"prediction = 0"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">FN</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">"prediction = 0"</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="c1"># compute precision, recall and F1 metrics</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">TP</span> <span class="o">/</span> <span class="p">(</span><span class="n">TP</span> <span class="o">+</span> <span class="n">FP</span><span class="p">)</span>
     <span class="n">recall</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">TP</span> <span class="o">/</span> <span class="n">P</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
     <span class="n">F1</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TP: </span><span class="si">{</span><span class="n">TP</span><span class="si">}</span><span class="s2">, FN: </span><span class="si">{</span><span class="n">FN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FP: </span><span class="si">{</span><span class="n">FP</span><span class="si">}</span><span class="s2">, TN: </span><span class="si">{</span><span class="n">TN</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="n">recall</span><span class="si">}</span><span class="s2">, F1: </span><span class="si">{</span><span class="n">F1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"TP: </span><span class="si">{</span><span class="n">TP</span><span class="si">}</span><span class="s2">, FN: </span><span class="si">{</span><span class="n">FN</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"FP: </span><span class="si">{</span><span class="n">FP</span><span class="si">}</span><span class="s2">, TN: </span><span class="si">{</span><span class="n">TN</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"P: </span><span class="si">{</span><span class="n">precision</span><span class="si">}</span><span class="s2">, R: </span><span class="si">{</span><span class="n">recall</span><span class="si">}</span><span class="s2">, F1: </span><span class="si">{</span><span class="n">F1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="predict">
 <a class="viewcode-back" href="../../../../api/data_juicer.tools.quality_classifier.qc_utils.html#data_juicer.tools.quality_classifier.qc_utils.predict">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_method</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">tokenizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_method</span><span class="o">=</span><span class="s2">"label"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Predict document scores for a dataset using a trained quality classifier</span>
 <span class="sd">    model</span>
 <span class="sd">    :param model: the model used to predict</span>
 <span class="sd">    :param ds: the dataset to be predicted</span>
-<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It&#39;s None in default,</span>
+<span class="sd">    :param tokenizer: specified sentencepiece tokenizer. It's None in default,</span>
 <span class="sd">        which means using the standard Tokenizer in PySpark</span>
-<span class="sd">    :param keep_method: name of keep method to label the &quot;should_keep&quot; column</span>
+<span class="sd">    :param keep_method: name of keep method to label the "should_keep" column</span>
 <span class="sd">    :return:</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start scoring dataset...&quot;</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Start scoring dataset..."</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">tokenizer</span><span class="p">:</span>
         <span class="c1"># tokenizer is not standard Tokenizer in PySpark, need to apply it</span>
         <span class="c1"># explicitly</span>
@@ -835,13 +835,13 @@
 
     <span class="c1"># extract the predicted probability as the doc_score</span>
     <span class="n">extract_prob_udf</span> <span class="o">=</span> <span class="n">udf</span><span class="p">(</span><span class="n">extract_prob</span><span class="p">,</span> <span class="n">DoubleType</span><span class="p">())</span>
-    <span class="n">doc_score</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;doc_score&quot;</span><span class="p">,</span> <span class="n">extract_prob_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;probability&quot;</span><span class="p">)))</span>
+    <span class="n">doc_score</span> <span class="o">=</span> <span class="n">prediction</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"doc_score"</span><span class="p">,</span> <span class="n">extract_prob_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"probability"</span><span class="p">)))</span>
 
     <span class="c1"># A UDF to get the bool value indicating whether this sample should be kept</span>
     <span class="n">should_keep_label_udf</span> <span class="o">=</span> <span class="n">get_keep_method_udf</span><span class="p">(</span><span class="n">keep_method</span><span class="p">)</span>
-    <span class="n">should_keep</span> <span class="o">=</span> <span class="n">doc_score</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">&quot;should_keep&quot;</span><span class="p">,</span> <span class="n">should_keep_label_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">&quot;doc_score&quot;</span><span class="p">)))</span>
+    <span class="n">should_keep</span> <span class="o">=</span> <span class="n">doc_score</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"should_keep"</span><span class="p">,</span> <span class="n">should_keep_label_udf</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"doc_score"</span><span class="p">)))</span>
     <span class="c1"># drop extra useless columns</span>
-    <span class="k">return</span> <span class="n">should_keep</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;words&quot;</span><span class="p">,</span> <span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="s2">&quot;rawPrediction&quot;</span><span class="p">,</span> <span class="s2">&quot;probability&quot;</span><span class="p">,</span> <span class="s2">&quot;prediction&quot;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">should_keep</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"words"</span><span class="p">,</span> <span class="s2">"features"</span><span class="p">,</span> <span class="s2">"rawPrediction"</span><span class="p">,</span> <span class="s2">"probability"</span><span class="p">,</span> <span class="s2">"prediction"</span><span class="p">)</span></div>
 
 </pre></div>
 

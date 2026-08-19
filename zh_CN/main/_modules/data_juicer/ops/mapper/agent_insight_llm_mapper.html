@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.agent_insight_llm_mapper</span></li>
   </ul>
 </nav>
@@ -536,7 +539,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span><span class="p">,</span> <span class="n">MetaKeys</span><span class="p">,</span> <span class="n">StatsKeys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.model_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">prepare_model</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;agent_insight_llm_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"agent_insight_llm_mapper"</span>
 
 <span class="n">_DIALOG_QUALITY_LLM_META_KEYS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_memory_consistency</span><span class="p">,</span>
@@ -552,24 +555,24 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_dialog_quality_llm_pack</span><span class="p">(</span><span class="n">meta</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compact 1–5 axis scores from lightweight turn/trace LLM mappers.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compact 1–5 axis scores from lightweight turn/trace LLM mappers."""</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_DIALOG_QUALITY_LLM_META_KEYS</span><span class="p">:</span>
         <span class="n">rec</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;skipped&quot;</span><span class="p">):</span>
-            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;skipped&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"skipped"</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"skipped"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">):</span>
-            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">))}</span>
+        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error"</span><span class="p">):</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"error"</span><span class="p">))}</span>
             <span class="k">continue</span>
         <span class="n">piece</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">piece</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span>
-        <span class="n">reason</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reason&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">piece</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]</span> <span class="o">=</span> <span class="n">rec</span><span class="p">[</span><span class="s2">"score"</span><span class="p">]</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="n">rec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reason"</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">reason</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-            <span class="n">piece</span><span class="p">[</span><span class="s2">&quot;reason&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reason</span><span class="p">[:</span><span class="mi">400</span><span class="p">]</span>
+            <span class="n">piece</span><span class="p">[</span><span class="s2">"reason"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reason</span><span class="p">[:</span><span class="mi">400</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">piece</span><span class="p">:</span>
             <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">piece</span>
     <span class="k">return</span> <span class="n">out</span> <span class="k">if</span> <span class="n">out</span> <span class="k">else</span> <span class="kc">None</span>
@@ -577,19 +580,19 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_json_safe</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;...&quot;</span>
+        <span class="k">return</span> <span class="s2">"..."</span>
     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">x</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">_json_safe</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">40</span><span class="p">]}</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">_json_safe</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[:</span><span class="mi">30</span><span class="p">]]</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;tolist&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">"tolist"</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;item&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">"item"</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -607,18 +610,18 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">rec</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">rec</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;…&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_chars</span> <span class="k">else</span> <span class="n">rec</span>
+            <span class="k">return</span> <span class="n">rec</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"…"</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_chars</span> <span class="k">else</span> <span class="n">rec</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_json_safe</span><span class="p">(</span><span class="n">rec</span><span class="p">),</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_chars</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;…&quot;</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="n">max_chars</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"…"</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_llm_json</span><span class="p">(</span><span class="n">raw</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">raw</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{[\s\S]*\}\s*$&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\{[\s\S]*\}\s*$"</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -637,8 +640,8 @@
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
     <span class="n">meta</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="n">stats</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_head</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -648,53 +651,53 @@
     <span class="n">dq_pack</span> <span class="o">=</span> <span class="n">_dialog_quality_llm_pack</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;lineage&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;agent_request_model&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_request_model</span><span class="p">),</span>
-            <span class="s2">&quot;agent_pt&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_pt</span><span class="p">),</span>
-            <span class="s2">&quot;agent_total_cost_time_ms&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_total_cost_time_ms</span><span class="p">),</span>
+        <span class="s2">"lineage"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"agent_request_model"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_request_model</span><span class="p">),</span>
+            <span class="s2">"agent_pt"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_pt</span><span class="p">),</span>
+            <span class="s2">"agent_total_cost_time_ms"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_total_cost_time_ms</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;usage_tokens&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;prompt_tokens&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">prompt_tokens</span><span class="p">),</span>
-            <span class="s2">&quot;completion_tokens&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">completion_tokens</span><span class="p">),</span>
-            <span class="s2">&quot;total_tokens&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">total_tokens</span><span class="p">),</span>
+        <span class="s2">"usage_tokens"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"prompt_tokens"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">prompt_tokens</span><span class="p">),</span>
+            <span class="s2">"completion_tokens"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">completion_tokens</span><span class="p">),</span>
+            <span class="s2">"total_tokens"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">total_tokens</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;tools&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;tool_success_count&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_success_count</span><span class="p">),</span>
-            <span class="s2">&quot;tool_fail_count&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_fail_count</span><span class="p">),</span>
-            <span class="s2">&quot;tool_success_ratio&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_success_ratio</span><span class="p">),</span>
-            <span class="s2">&quot;primary_tool_type&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">primary_tool_type</span><span class="p">),</span>
-            <span class="s2">&quot;dominant_tool_types&quot;</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dominant_tool_types</span><span class="p">)),</span>
-            <span class="s2">&quot;agent_skill_insights&quot;</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_skill_insights</span><span class="p">)),</span>
+        <span class="s2">"tools"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"tool_success_count"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_success_count</span><span class="p">),</span>
+            <span class="s2">"tool_fail_count"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_fail_count</span><span class="p">),</span>
+            <span class="s2">"tool_success_ratio"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">tool_success_ratio</span><span class="p">),</span>
+            <span class="s2">"primary_tool_type"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">primary_tool_type</span><span class="p">),</span>
+            <span class="s2">"dominant_tool_types"</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dominant_tool_types</span><span class="p">)),</span>
+            <span class="s2">"agent_skill_insights"</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_skill_insights</span><span class="p">)),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;dialog_tags&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;dialog_intent_labels&quot;</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_intent_labels</span><span class="p">)),</span>
-            <span class="s2">&quot;dialog_topic_labels&quot;</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_topic_labels</span><span class="p">)),</span>
-            <span class="s2">&quot;dialog_sentiment_labels&quot;</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_sentiment_labels</span><span class="p">)),</span>
-            <span class="s2">&quot;agent_turn_count&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_turn_count</span><span class="p">),</span>
+        <span class="s2">"dialog_tags"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"dialog_intent_labels"</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_intent_labels</span><span class="p">)),</span>
+            <span class="s2">"dialog_topic_labels"</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_topic_labels</span><span class="p">)),</span>
+            <span class="s2">"dialog_sentiment_labels"</span><span class="p">:</span> <span class="n">_head</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">dialog_sentiment_labels</span><span class="p">)),</span>
+            <span class="s2">"agent_turn_count"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_turn_count</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;scores&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;llm_analysis_score&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_analysis_score</span><span class="p">),</span>
-            <span class="s2">&quot;llm_quality_score&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_quality_score</span><span class="p">),</span>
-            <span class="s2">&quot;llm_difficulty_score&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_score</span><span class="p">),</span>
+        <span class="s2">"scores"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"llm_analysis_score"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_analysis_score</span><span class="p">),</span>
+            <span class="s2">"llm_quality_score"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_quality_score</span><span class="p">),</span>
+            <span class="s2">"llm_difficulty_score"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_score</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;llm_eval_support&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;llm_analysis_record&quot;</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_analysis_record</span><span class="p">)),</span>
-            <span class="s2">&quot;llm_quality_record&quot;</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_quality_record</span><span class="p">)),</span>
-            <span class="s2">&quot;llm_difficulty_record&quot;</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_record</span><span class="p">)),</span>
+        <span class="s2">"llm_eval_support"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"llm_analysis_record"</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_analysis_record</span><span class="p">)),</span>
+            <span class="s2">"llm_quality_record"</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_quality_record</span><span class="p">)),</span>
+            <span class="s2">"llm_difficulty_record"</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">llm_difficulty_record</span><span class="p">)),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;text_stats&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;text_len&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_len</span><span class="p">),</span>
-            <span class="s2">&quot;num_words&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">num_words</span><span class="p">),</span>
-            <span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">perplexity</span><span class="p">),</span>
-            <span class="s2">&quot;lang_score&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">lang_score</span><span class="p">),</span>
+        <span class="s2">"text_stats"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"text_len"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_len</span><span class="p">),</span>
+            <span class="s2">"num_words"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">num_words</span><span class="p">),</span>
+            <span class="s2">"perplexity"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">perplexity</span><span class="p">),</span>
+            <span class="s2">"lang_score"</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">lang_score</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;deterministic_bad_case&quot;</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;signals&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_bad_case_signals</span><span class="p">),</span>
-            <span class="s2">&quot;tier&quot;</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_bad_case_tier</span><span class="p">),</span>
+        <span class="s2">"deterministic_bad_case"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"signals"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_bad_case_signals</span><span class="p">),</span>
+            <span class="s2">"tier"</span><span class="p">:</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_bad_case_tier</span><span class="p">),</span>
         <span class="p">},</span>
-        <span class="s2">&quot;dialog_quality_llm&quot;</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">dq_pack</span><span class="p">,</span> <span class="n">max_chars</span><span class="o">=</span><span class="mi">2800</span><span class="p">)</span> <span class="k">if</span> <span class="n">dq_pack</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;query_preview&quot;</span><span class="p">:</span> <span class="n">q</span><span class="p">[:</span><span class="n">query_max</span><span class="p">],</span>
-        <span class="s2">&quot;response_preview&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">[:</span><span class="n">response_max</span><span class="p">],</span>
+        <span class="s2">"dialog_quality_llm"</span><span class="p">:</span> <span class="n">_truncate_record</span><span class="p">(</span><span class="n">dq_pack</span><span class="p">,</span> <span class="n">max_chars</span><span class="o">=</span><span class="mi">2800</span><span class="p">)</span> <span class="k">if</span> <span class="n">dq_pack</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">"query_preview"</span><span class="p">:</span> <span class="n">q</span><span class="p">[:</span><span class="n">query_max</span><span class="p">],</span>
+        <span class="s2">"response_preview"</span><span class="p">:</span> <span class="n">r</span><span class="p">[:</span><span class="n">response_max</span><span class="p">],</span>
     <span class="p">}</span>
 
 
@@ -703,33 +706,33 @@
 <span class="nd">@TAGGING_OPS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AgentInsightLLMMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Synthesize stats + LLM eval text into ``meta.agent_insight_llm`` (JSON).</span>
+<span class="w">    </span><span class="sd">"""Synthesize stats + LLM eval text into ``meta.agent_insight_llm`` (JSON).</span>
 
 <span class="sd">    Intended to run **after** filters/mappers that populate ``stats`` and</span>
 <span class="sd">    ``agent_bad_case_signal_mapper``. Use ``run_for_tiers`` to limit API cost.</span>
 
 <span class="sd">    Output is best-effort JSON; raw model text is stored in</span>
 <span class="sd">    ``meta.agent_insight_llm_raw`` if parsing fails.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AgentInsightLLMMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.agent_insight_llm_mapper.html#data_juicer.ops.mapper.AgentInsightLLMMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"gpt-4o"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">api_endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">response_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;query&quot;</span><span class="p">,</span>
-        <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;response&quot;</span><span class="p">,</span>
+        <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"query"</span><span class="p">,</span>
+        <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"response"</span><span class="p">,</span>
         <span class="n">query_preview_max_chars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
         <span class="n">response_preview_max_chars</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
         <span class="n">run_for_tiers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">try_num</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
         <span class="n">model_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="n">preferred_output_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span><span class="p">,</span>
+        <span class="n">preferred_output_lang</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"en"</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -744,7 +747,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">try_num</span> <span class="o">=</span> <span class="n">try_num</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
             <span class="n">model</span><span class="o">=</span><span class="n">api_model</span><span class="p">,</span>
             <span class="n">endpoint</span><span class="o">=</span><span class="n">api_endpoint</span><span class="p">,</span>
             <span class="n">response_path</span><span class="o">=</span><span class="n">response_path</span><span class="p">,</span>
@@ -774,11 +777,11 @@
         <span class="p">)</span>
         <span class="n">user_content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">pack</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
-            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">user_content</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">user_content</span><span class="p">},</span>
         <span class="p">]</span>
 
-        <span class="n">raw</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">try_num</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">client</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
@@ -786,26 +789,26 @@
                 <span class="k">if</span> <span class="n">raw</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">raw</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                     <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;agent_insight_llm_mapper: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"agent_insight_llm_mapper: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 
-        <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_insight_llm_raw</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_insight_llm_raw</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="s2">""</span>
         <span class="n">parsed</span> <span class="o">=</span> <span class="n">_parse_llm_json</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">parsed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_insight_llm</span><span class="p">]</span> <span class="o">=</span> <span class="n">parsed</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_output_lang</span> <span class="o">==</span> <span class="s2">&quot;zh&quot;</span><span class="p">:</span>
-                <span class="n">headline</span> <span class="o">=</span> <span class="s2">&quot;解析失败，见 meta.agent_insight_llm_raw&quot;</span>
-                <span class="n">audit</span> <span class="o">=</span> <span class="s2">&quot;JSON parse failed&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">preferred_output_lang</span> <span class="o">==</span> <span class="s2">"zh"</span><span class="p">:</span>
+                <span class="n">headline</span> <span class="o">=</span> <span class="s2">"解析失败，见 meta.agent_insight_llm_raw"</span>
+                <span class="n">audit</span> <span class="o">=</span> <span class="s2">"JSON parse failed"</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">headline</span> <span class="o">=</span> <span class="s2">&quot;Parse failed; see meta.agent_insight_llm_raw&quot;</span>
-                <span class="n">audit</span> <span class="o">=</span> <span class="s2">&quot;JSON parse failed&quot;</span>
+                <span class="n">headline</span> <span class="o">=</span> <span class="s2">"Parse failed; see meta.agent_insight_llm_raw"</span>
+                <span class="n">audit</span> <span class="o">=</span> <span class="s2">"JSON parse failed"</span>
             <span class="n">meta</span><span class="p">[</span><span class="n">MetaKeys</span><span class="o">.</span><span class="n">agent_insight_llm</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;headline&quot;</span><span class="p">:</span> <span class="n">headline</span><span class="p">,</span>
-                <span class="s2">&quot;root_causes&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;narrative_alignment&quot;</span><span class="p">:</span> <span class="s2">&quot;mixed&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;human_review_priority&quot;</span><span class="p">:</span> <span class="s2">&quot;P2&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;viz_facets&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;audit_notes&quot;</span><span class="p">:</span> <span class="n">audit</span><span class="p">,</span>
+                <span class="s2">"headline"</span><span class="p">:</span> <span class="n">headline</span><span class="p">,</span>
+                <span class="s2">"root_causes"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"narrative_alignment"</span><span class="p">:</span> <span class="s2">"mixed"</span><span class="p">,</span>
+                <span class="s2">"human_review_priority"</span><span class="p">:</span> <span class="s2">"P2"</span><span class="p">,</span>
+                <span class="s2">"viz_facets"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"audit_notes"</span><span class="p">:</span> <span class="n">audit</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="n">sample</span></div>
 </div>

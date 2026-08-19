@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.s3_download_file_mapper</span></li>
   </ul>
 </nav>
@@ -525,17 +528,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.s3_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_aws_credentials</span>
 
-<span class="n">boto3</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;boto3&quot;</span><span class="p">)</span>
-<span class="n">botocore_exceptions</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;botocore.exceptions&quot;</span><span class="p">)</span>
+<span class="n">boto3</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"boto3"</span><span class="p">)</span>
+<span class="n">botocore_exceptions</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"botocore.exceptions"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;s3_download_file_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"s3_download_file_mapper"</span>
 
 
 <div class="viewcode-block" id="S3DownloadFileMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3DownloadFileMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3DownloadFileMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mapper to download files from S3 to local files or load them into memory.</span>
+<span class="w">    </span><span class="sd">"""Mapper to download files from S3 to local files or load them into memory.</span>
 
 <span class="sd">    This operator downloads files from S3 URLs (s3://...) or handles local files. It supports:</span>
 <span class="sd">    - Downloading multiple files concurrently</span>
@@ -545,7 +548,7 @@
 <span class="sd">    - Custom S3 endpoints (for S3-compatible services like MinIO)</span>
 
 <span class="sd">    The operator processes nested lists of URLs/paths, maintaining the original structure</span>
-<span class="sd">    in the output.&quot;&quot;&quot;</span>
+<span class="sd">    in the output."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -568,7 +571,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param download_field: The field name to get the URL/path to download.</span>
@@ -584,7 +587,7 @@
 <span class="sd">        :param endpoint_url: Custom S3 endpoint URL (for S3-compatible services).</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_extra_parameters</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
 
@@ -595,8 +598,8 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;Both `save_dir` and `save_field` are not specified. Use the default `image_bytes` key to &quot;</span>
-                <span class="s2">&quot;save the downloaded contents.&quot;</span>
+                <span class="s2">"Both `save_dir` and `save_field` are not specified. Use the default `image_bytes` key to "</span>
+                <span class="s2">"save the downloaded contents."</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_bytes_key</span>
 
@@ -609,15 +612,15 @@
         <span class="c1"># Prepare config dict for get_aws_credentials</span>
         <span class="n">ds_config</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">aws_access_key_id</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_access_key_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_access_key_id</span>
         <span class="k">if</span> <span class="n">aws_secret_access_key</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_secret_access_key"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_secret_access_key</span>
         <span class="k">if</span> <span class="n">aws_session_token</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_session_token</span>
         <span class="k">if</span> <span class="n">aws_region</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;aws_region&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"aws_region"</span><span class="p">]</span> <span class="o">=</span> <span class="n">aws_region</span>
         <span class="k">if</span> <span class="n">endpoint_url</span><span class="p">:</span>
-            <span class="n">ds_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
+            <span class="n">ds_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
 
         <span class="c1"># Get credentials with priority: environment variables &gt; operator parameters</span>
         <span class="p">(</span>
@@ -627,61 +630,61 @@
             <span class="n">resolved_region</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">get_aws_credentials</span><span class="p">(</span><span class="n">ds_config</span><span class="p">)</span>
 
-        <span class="c1"># Store S3 configuration (don&#39;t create client here to avoid serialization issues)</span>
+        <span class="c1"># Store S3 configuration (don't create client here to avoid serialization issues)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">resolved_access_key_id</span> <span class="ow">and</span> <span class="n">resolved_secret_access_key</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;aws_access_key_id&quot;</span><span class="p">:</span> <span class="n">resolved_access_key_id</span><span class="p">,</span>
-                <span class="s2">&quot;aws_secret_access_key&quot;</span><span class="p">:</span> <span class="n">resolved_secret_access_key</span><span class="p">,</span>
+                <span class="s2">"aws_access_key_id"</span><span class="p">:</span> <span class="n">resolved_access_key_id</span><span class="p">,</span>
+                <span class="s2">"aws_secret_access_key"</span><span class="p">:</span> <span class="n">resolved_secret_access_key</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">resolved_session_token</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;aws_session_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_session_token</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"aws_session_token"</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_session_token</span>
             <span class="k">if</span> <span class="n">resolved_region</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;region_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_region</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"region_name"</span><span class="p">]</span> <span class="o">=</span> <span class="n">resolved_region</span>
             <span class="k">if</span> <span class="n">endpoint_url</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;S3 configuration stored with endpoint: </span><span class="si">{</span><span class="n">endpoint_url</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;default&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">[</span><span class="s2">"endpoint_url"</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint_url</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"S3 configuration stored with endpoint: </span><span class="si">{</span><span class="n">endpoint_url</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'default'</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No S3 credentials provided. S3 URLs will not be supported.&quot;</span><span class="p">)</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"No S3 credentials provided. S3 URLs will not be supported."</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">s3_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Lazy initialization of S3 client to avoid serialization issues with Ray.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Lazy initialization of S3 client to avoid serialization issues with Ray."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;S3 client initialized (lazy)&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s2">"s3"</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">s3_config</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"S3 client initialized (lazy)"</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s3_client</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_is_s3_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the URL is an S3 URL.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Check if the URL is an S3 URL."""</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s3://"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_s3_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse S3 URL into bucket and key.</span>
+<span class="w">        </span><span class="sd">"""Parse S3 URL into bucket and key.</span>
 
-<span class="sd">        Example: s3://bucket-name/path/to/file.mp4 -&gt; (&#39;bucket-name&#39;, &#39;path/to/file.mp4&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">s3_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;s3://&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid S3 URL: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">        Example: s3://bucket-name/path/to/file.mp4 -&gt; ('bucket-name', 'path/to/file.mp4')</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s3_url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"s3://"</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid S3 URL: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="n">parts</span> <span class="o">=</span> <span class="n">s3_url</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">parts</span> <span class="o">=</span> <span class="n">s3_url</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">bucket</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
 
         <span class="k">return</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_download_from_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s3_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">return_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download a file from S3.</span>
+<span class="w">        </span><span class="sd">"""Download a file from S3.</span>
 
 <span class="sd">        :param s3_url: S3 URL (s3://bucket/key)</span>
 <span class="sd">        :param save_path: Local path to save the file</span>
 <span class="sd">        :param return_content: Whether to return file content as bytes</span>
 <span class="sd">        :return: (status, response, content, save_path)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;S3 client not initialized. Please provide AWS credentials.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"S3 client not initialized. Please provide AWS credentials."</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_s3_url</span><span class="p">(</span><span class="n">s3_url</span><span class="p">)</span>
@@ -694,40 +697,40 @@
 
                 <span class="c1"># Download to file</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">download_file</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">save_path</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloaded S3 file: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Downloaded S3 file: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
                 <span class="c1"># Read content if needed</span>
                 <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">return_content</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-                <span class="k">return</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">save_path</span>
+                <span class="k">return</span> <span class="s2">"success"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">save_path</span>
 
             <span class="k">elif</span> <span class="n">return_content</span><span class="p">:</span>
                 <span class="c1"># Download to memory</span>
                 <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s3_client</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-                <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;Body&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloaded S3 file to memory: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">"Body"</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Downloaded S3 file to memory: </span><span class="si">{</span><span class="n">s3_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-                <span class="k">return</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="s2">"success"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="kc">None</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="s2">"success"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="k">except</span> <span class="n">botocore_exceptions</span><span class="o">.</span><span class="n">ClientError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S3 download failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"S3 download failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S3 download error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"S3 download error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;failed&quot;</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="s2">"failed"</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="S3DownloadFileMapper.download_files_async">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3DownloadFileMapper.download_files_async">[文档]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">download_files_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">return_contents</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download files asynchronously from S3.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Download files asynchronously from S3."""</span>
 
         <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_download_file</span><span class="p">(</span>
             <span class="n">semaphore</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">,</span>
@@ -739,7 +742,7 @@
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+                    <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">save_path</span> <span class="o">=</span> <span class="s2">"success"</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
                     <span class="c1"># Handle S3 URLs (synchronous operation in async context)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_s3_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
@@ -750,7 +753,7 @@
                             <span class="c1"># Check if file exists and resume is enabled</span>
                             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume_download</span><span class="p">:</span>
                                 <span class="k">if</span> <span class="n">return_content</span><span class="p">:</span>
-                                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                                         <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
                                 <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span>
 
@@ -762,14 +765,14 @@
                         <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span>
 
                     <span class="c1"># Check for HTTP/HTTPS URLs - not supported</span>
-                    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"http://"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"https://"</span><span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;HTTP/HTTPS URLs are not supported. This mapper only supports S3 URLs (s3://...) and local files. Got: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">"HTTP/HTTPS URLs are not supported. This mapper only supports S3 URLs (s3://...) and local files. Got: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span>
                         <span class="p">)</span>
 
                     <span class="c1"># Handle local files</span>
                     <span class="k">if</span> <span class="n">return_content</span><span class="p">:</span>
-                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                             <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">save_dir</span><span class="p">:</span>
                         <span class="n">save_path</span> <span class="o">=</span> <span class="n">url</span>
@@ -777,7 +780,7 @@
                     <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span>
 
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;failed&quot;</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s2">"failed"</span>
                     <span class="n">response</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                     <span class="n">save_path</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="n">content</span> <span class="o">=</span> <span class="kc">None</span>
@@ -796,7 +799,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_flat_urls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_urls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flatten nested URLs while preserving structure information.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Flatten nested URLs while preserving structure information."""</span>
         <span class="n">flat_urls</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">structure_info</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># save as original index, sub index</span>
 
@@ -812,7 +815,7 @@
         <span class="k">return</span> <span class="n">flat_urls</span><span class="p">,</span> <span class="n">structure_info</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_path_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_urls</span><span class="p">,</span> <span class="n">keep_failed_url</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create path structure for output.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create path structure for output."""</span>
         <span class="k">if</span> <span class="n">keep_failed_url</span><span class="p">:</span>
             <span class="n">reconstructed</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">nested_urls</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -826,7 +829,7 @@
         <span class="k">return</span> <span class="n">reconstructed</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_save_field_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nested_urls</span><span class="p">,</span> <span class="n">save_field_contents</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create save field structure for output.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create save field structure for output."""</span>
         <span class="k">if</span> <span class="n">save_field_contents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">save_field_contents</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">nested_urls</span><span class="p">:</span>
@@ -848,7 +851,7 @@
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">download_nested_urls</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">nested_urls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_field_contents</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download nested URLs with structure preservation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Download nested URLs with structure preservation."""</span>
         <span class="n">flat_urls</span><span class="p">,</span> <span class="n">structure_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flat_urls</span><span class="p">(</span><span class="n">nested_urls</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">save_field_contents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -874,12 +877,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">reconstructed_path</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="n">failed_info</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">failed_info</span> <span class="o">=</span> <span class="s2">""</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">download_results</span><span class="p">):</span>
             <span class="n">orig_idx</span><span class="p">,</span> <span class="n">sub_idx</span> <span class="o">=</span> <span class="n">structure_info</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">&quot;success&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="s2">"success"</span><span class="p">:</span>
                 <span class="n">save_path</span> <span class="o">=</span> <span class="n">flat_urls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">failed_info</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+                <span class="n">failed_info</span> <span class="o">+=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">save_field_contents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">return_contents</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
@@ -900,7 +903,7 @@
 <div class="viewcode-block" id="S3DownloadFileMapper.process_batched">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.S3DownloadFileMapper.process_batched">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_batched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process a batch of samples.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Process a batch of samples."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">samples</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">download_field</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">samples</span>
 
@@ -910,8 +913,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">resume_download</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_field</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="si">}</span><span class="s2"> is already in samples. &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;If you want to resume download, please set `resume_download=True`&quot;</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="si">}</span><span class="s2"> is already in samples. "</span>
+                        <span class="sa">f</span><span class="s2">"If you want to resume download, please set `resume_download=True`"</span>
                     <span class="p">)</span>
                 <span class="n">save_field_contents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_save_field_struct</span><span class="p">(</span><span class="n">batch_nested_urls</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -935,7 +938,7 @@
             <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">save_field</span><span class="p">]</span> <span class="o">=</span> <span class="n">save_field_contents</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">failed_info</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed files:</span><span class="se">\n</span><span class="si">{</span><span class="n">failed_info</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed files:</span><span class="se">\n</span><span class="si">{</span><span class="n">failed_info</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">samples</span></div>
 </div>

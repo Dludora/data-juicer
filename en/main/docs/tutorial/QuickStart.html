@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -600,7 +605,7 @@
 <ul class="simple">
 <li><p>Simple scenarios, single path for local/HF file</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/your/dataset&#39;</span><span class="w">  </span><span class="c1"># path to your dataset directory or file</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'/path/to/your/dataset'</span><span class="w">  </span><span class="c1"># path to your dataset directory or file</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -608,8 +613,8 @@
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">configs</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;local&#39;</span>
-<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;path/to/your/dataset&#39;</span><span class="w"> </span><span class="c1"># path to your dataset directory or file</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">'local'</span>
+<span class="w">      </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">'path/to/your/dataset'</span><span class="w"> </span><span class="c1"># path to your dataset directory or file</span>
 </pre></div>
 </div>
 <p>Refer to <a class="reference internal" href="../DatasetCfg.html"><span class="std std-doc">Dataset Configuration Guide</span></a> for more details.</p>
@@ -633,11 +638,11 @@ The default download cache directory is <code class="docutils literal notranslat
 <li><p><strong>Note:</strong> When using operators with third-party models, it’s necessary to declare the corresponding <code class="docutils literal notranslate"><span class="pre">memory</span></code> in the configuration file (you can refer to the settings in the <code class="docutils literal notranslate"><span class="pre">data_juicer/config/config_all.yaml</span></code> file). During runtime, Data-Juicer will control the number of processes based on memory availability and the memory requirements of the operator models to achieve better data processing efficiency. When running with CUDA environments, if the memory for an operator is not declared correctly, it could potentially lead to a CUDA Out of Memory issue.</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># cache home</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">"/path/to/another/directory"</span>
 <span class="c1"># cache models</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/models&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/models"</span>
 <span class="c1"># cache assets</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/assets&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/assets"</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -701,8 +706,14 @@ dj-analyze<span class="w"> </span>--auto<span class="w"> </span>--dataset_path<s
 </li>
 <li><p>Sometimes, “Glyph missing” warning occurs and invalid characters show in the analyzed results figures. Users can specify appropriate font using the environment variable <code class="docutils literal notranslate"><span class="pre">ANALYZER_FONT</span></code>. For example:</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANALYZER_FONT</span><span class="o">=</span><span class="s2">&quot;Heiti TC&quot;</span><span class="w">  </span><span class="c1"># Use Heiti for Chinese characters. And it&#39;s the default font for analyzer.</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANALYZER_FONT</span><span class="o">=</span><span class="s2">"Heiti TC"</span><span class="w">  </span><span class="c1"># Use Heiti for Chinese characters. And it's the default font for analyzer.</span>
 python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/analyzer.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Distributed Analysis with Ray:</strong> <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> also supports Ray mode for large-scale distributed analysis. Set <code class="docutils literal notranslate"><span class="pre">executor_type:</span> <span class="pre">ray</span></code> in your config file, and the analyzer will automatically use <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>, which computes overall statistics (count/mean/std/min/max) via Ray native aggregation without pandas materialization. Note that RayAnalyzer does not produce per-column distribution charts or correlation analysis. More details can be found in the doc for <a class="reference internal" href="../Distributed.html"><span class="std std-doc">distributed processing</span></a>.</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
 </pre></div>
 </div>
 </section>

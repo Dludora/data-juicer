@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.remove_header_mapper</span></li>
   </ul>
 </nav>
@@ -524,39 +527,39 @@
 
 <div class="viewcode-block" id="RemoveHeaderMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveHeaderMapper">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;remove_header_mapper&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"remove_header_mapper"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RemoveHeaderMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes headers at the beginning of documents in LaTeX samples.</span>
+<span class="w">    </span><span class="sd">"""Removes headers at the beginning of documents in LaTeX samples.</span>
 
 <span class="sd">    This operator identifies and removes headers such as chapter, part, section, subsection,</span>
 <span class="sd">    subsubsection, paragraph, and subparagraph. It uses a regular expression to match these</span>
 <span class="sd">    headers. If a sample does not contain any headers and `drop_no_head` is set to True, the</span>
 <span class="sd">    sample text will be removed. Otherwise, the sample remains unchanged. The operator</span>
-<span class="sd">    processes samples in batches for efficiency.&quot;&quot;&quot;</span>
+<span class="sd">    processes samples in batches for efficiency."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="RemoveHeaderMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.RemoveHeaderMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">drop_no_head</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param drop_no_head: whether to drop sample texts without</span>
 <span class="sd">            headers.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;^(.*?)(&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bchapter\b\*?(?:\[(.*?)\])?\{(.*?)\}|&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bpart\b\*?(?:\[(.*?)\])?\{(.*?)\}|&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bsubsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bsubsubsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bparagraph\b\*?(?:\[(.*?)\])?\{(.*?)\}&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\bsubparagraph\b\*?(?:\[(.*?)\])?\{(.*?)\}&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^(.*?)("</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bchapter\b\*?(?:\[(.*?)\])?\{(.*?)\}|"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bpart\b\*?(?:\[(.*?)\])?\{(.*?)\}|"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bsubsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bsubsubsection\b\*?(?:\[(.*?)\])?\{(.*?)\}|"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bparagraph\b\*?(?:\[(.*?)\])?\{(.*?)\}"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">"</span><span class="se">\\</span><span class="s2">\bsubparagraph\b\*?(?:\[(.*?)\])?\{(.*?)\}"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">")"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_no_head</span> <span class="o">=</span> <span class="n">drop_no_head</span></div>
 
@@ -567,9 +570,9 @@
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">text</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">]):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">drop_no_head</span><span class="p">:</span>
-                    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="s2">""</span>
                 <span class="k">continue</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\2&quot;</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pattern</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">repl</span><span class="o">=</span><span class="sa">r</span><span class="s2">"\2"</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
 
             <span class="n">samples</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">text_key</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
 

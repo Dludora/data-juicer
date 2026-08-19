@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.pipeline.vlm_inference_with_ray_vllm_pipeline</span></li>
   </ul>
 </nav>
@@ -521,29 +524,29 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.ray_vllm_pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">RayVLLMEnginePipeline</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;vllm&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">vllm</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"vllm"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;vlm_ray_vllm_engine_pipeline&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"vlm_ray_vllm_engine_pipeline"</span>
 
 
 <div class="viewcode-block" id="VLMRayVLLMEnginePipeline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.vlm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.VLMRayVLLMEnginePipeline">[docs]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VLMRayVLLMEnginePipeline</span><span class="p">(</span><span class="n">RayVLLMEnginePipeline</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Pipeline to generate response using vLLM engine on Ray.</span>
 <span class="sd">    This pipeline leverages the vLLM engine for efficient large vision language model inference.</span>
 <span class="sd">    More details about ray vLLM engine can be found at: https://docs.ray.io/en/latest/data/working-with-llms.html</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VLMRayVLLMEnginePipeline.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.vlm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.VLMRayVLLMEnginePipeline.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Qwen/Qwen2.5-7B-Instruct&quot;</span><span class="p">,</span>
+        <span class="n">api_or_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Qwen/Qwen2.5-7B-Instruct"</span><span class="p">,</span>
         <span class="n">is_hf_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -552,24 +555,24 @@
         <span class="n">engine_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param api_or_hf_model: API or huggingface model name.</span>
 <span class="sd">        :param system_prompt: System prompt for guiding the optimization task.</span>
-<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., &quot;V100&quot;, &quot;A100&quot;).</span>
+<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., "V100", "A100").</span>
 <span class="sd">            Default to None, meaning that only the CPU will be used.</span>
 <span class="sd">        :param sampling_params: Sampling parameters for text generation (e.g.,</span>
-<span class="sd">            {&#39;temperature&#39;: 0.9, &#39;top_p&#39;: 0.95}).</span>
+<span class="sd">            {'temperature': 0.9, 'top_p': 0.95}).</span>
 <span class="sd">        :param engine_kwargs: The kwargs to pass to the vLLM engine.</span>
 <span class="sd">            See documentation for details: https://docs.vllm.ai/en/latest/api/vllm/engine/arg_utils/#vllm.engine.arg_utils.AsyncEngineArgs.</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">accelerator_type</span><span class="o">=</span><span class="n">accelerator_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">is_hf_model</span> <span class="o">=</span> <span class="n">is_hf_model</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_hf_model</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Only huggingface model is supported for now.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Only huggingface model is supported for now."</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">system_prompt</span> <span class="o">=</span> <span class="n">system_prompt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sampling_params</span> <span class="o">=</span> <span class="n">sampling_params</span> <span class="ow">or</span> <span class="p">{}</span>
@@ -608,25 +611,25 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">vision_preprocess</span><span class="p">(</span>
         <span class="n">row</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">query_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">image_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">system_prompt</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">sampling_params</span><span class="p">:</span> <span class="n">Dict</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Preprocessing function for vision-language model inputs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">system_prompt</span><span class="p">:</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">,</span>
+                    <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span>
+                    <span class="s2">"content"</span><span class="p">:</span> <span class="n">system_prompt</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
 
         <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">query_key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">},</span>
-                    <span class="o">*</span><span class="p">[{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;image&quot;</span><span class="p">:</span> <span class="n">load_image</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;low&quot;</span><span class="p">}</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="n">image_key</span><span class="p">]],</span>
+                <span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span>
+                <span class="s2">"content"</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">query_key</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">},</span>
+                    <span class="o">*</span><span class="p">[{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"image"</span><span class="p">,</span> <span class="s2">"image"</span><span class="p">:</span> <span class="n">load_image</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> <span class="s2">"detail"</span><span class="p">:</span> <span class="s2">"low"</span><span class="p">}</span> <span class="k">for</span> <span class="n">img</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="n">image_key</span><span class="p">]],</span>
                 <span class="p">],</span>
             <span class="p">}</span>
         <span class="p">)</span>
@@ -637,7 +640,7 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.vlm_inference_with_ray_vllm_pipeline.html#data_juicer.ops.pipeline.VLMRayVLLMEnginePipeline.postprocess_fn">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">postprocess_fn</span><span class="p">(</span><span class="n">row</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">response_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ori_columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;generated_text&quot;</span><span class="p">]</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">"generated_text"</span><span class="p">]</span>
         <span class="n">out_row</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ori_columns</span><span class="p">}</span>
         <span class="n">out_row</span><span class="p">[</span><span class="n">response_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">output</span>
 

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.pipeline.ray_vllm_pipeline</span></li>
   </ul>
 </nav>
@@ -519,15 +522,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.ray_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_ray_mode</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="RayVLLMEnginePipeline">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.ray_vllm_pipeline.html#data_juicer.ops.pipeline.ray_vllm_pipeline.RayVLLMEnginePipeline">[文档]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayVLLMEnginePipeline</span><span class="p">(</span><span class="n">Pipeline</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pipeline for Ray vLLM engine.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Pipeline for Ray vLLM engine."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="RayVLLMEnginePipeline.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.ray_vllm_pipeline.html#data_juicer.ops.pipeline.ray_vllm_pipeline.RayVLLMEnginePipeline.__init__">[文档]</a>
@@ -537,31 +540,31 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
-<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., &quot;V100&quot;, &quot;A100&quot;).</span>
+<span class="sd">        :param accelerator_type: The type of accelerator to use (e.g., "V100", "A100").</span>
 <span class="sd">            Default to None, meaning that only the CPU will be used.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_type</span> <span class="o">=</span> <span class="n">accelerator_type</span>
 
-        <span class="k">assert</span> <span class="n">is_ray_mode</span><span class="p">(),</span> <span class="s2">&quot;Ray vLLM engine only works in Ray mode.&quot;</span>
+        <span class="k">assert</span> <span class="n">is_ray_mode</span><span class="p">(),</span> <span class="s2">"Ray vLLM engine only works in Ray mode."</span>
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">ray.llm._internal.serve.core.configs.llm_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">GPUType</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_type</span><span class="p">:</span>
             <span class="n">all_accelerator_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">GPUType</span><span class="p">]</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">accelerator_type</span> <span class="ow">in</span> <span class="n">all_accelerator_types</span><span class="p">,</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unsupported accelerator type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accelerator_type</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;Supported types are: </span><span class="si">{</span><span class="n">all_accelerator_types</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"Unsupported accelerator type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accelerator_type</span><span class="si">}</span><span class="s2">. "</span>
+                <span class="sa">f</span><span class="s2">"Supported types are: </span><span class="si">{</span><span class="n">all_accelerator_types</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RayVLLMEnginePipeline.run">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.pipeline.ray_vllm_pipeline.html#data_juicer.ops.pipeline.ray_vllm_pipeline.RayVLLMEnginePipeline.run">[文档]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="s2">&quot;ray.data.Dataset&quot;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exporter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ray.data.Dataset&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">:</span> <span class="s2">"ray.data.Dataset"</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exporter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ray.data.Dataset"</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </div>
 

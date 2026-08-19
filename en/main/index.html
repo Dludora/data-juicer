@@ -534,7 +534,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.mapper</span><span class="w"> </span><span class="kn">import</span> <span class="n">WhitespaceNormalizationMapper</span>
 
 <span class="n">ds</span> <span class="o">=</span> <span class="n">NestedDataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span>
-    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Short&quot;</span><span class="p">,</span> <span class="s2">&quot;This passes the filter.&quot;</span><span class="p">,</span> <span class="s2">&quot;Text   with   spaces&quot;</span><span class="p">]</span>
+    <span class="s2">"text"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Short"</span><span class="p">,</span> <span class="s2">"This passes the filter."</span><span class="p">,</span> <span class="s2">"Text   with   spaces"</span><span class="p">]</span>
 <span class="p">})</span>
 <span class="n">res_ds</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">process</span><span class="p">([</span>
     <span class="n">TextLengthFilter</span><span class="p">(</span><span class="n">min_len</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
@@ -583,6 +583,47 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <section id="news">
 <h2>📰 News<a class="headerlink" href="#news" title="Link to this heading">#</a></h2>
 <details open>
+<summary>[2026-08-07] Release v1.5.5: <b>External OP Plugins; HDFS I/O & Ray Data Optimizations; Elastic Multi-node Sharding</b></summary>
+<ul class="simple">
+<li><p>🧩 <em>External OP Plugins</em> — Third-party operators can now be shipped as standalone pip packages and auto-registered via Python entry points.</p></li>
+<li><p>🗄️ <em>HDFS I/O</em> — Added <code class="docutils literal notranslate"><span class="pre">hdfs://</span></code> support for dataset loading and exporting, aligned with the existing S3 path.</p></li>
+<li><p>⚡ <em>Ray Data Optimizations</em> — Removed eager actions that forced premature execution, migrated to the public <code class="docutils literal notranslate"><span class="pre">TaskPoolStrategy</span></code>/<code class="docutils literal notranslate"><span class="pre">ActorPoolStrategy</span></code> APIs, parallelized partitioned execution, preserved elastic actor pool concurrency, and kept partition checkpoints valid across block-layout changes.</p></li>
+<li><p>🌐 <em>Elastic Multi-node Sharding</em> — New runnable reference workflow under <code class="docutils literal notranslate"><span class="pre">demos/elastic_sharding/</span></code> that shards large JSONL datasets across nodes via node-local Ray executors, with retries and ordered merge.</p></li>
+<li><p>📊 <em>Distributed RayAnalyzer</em> — New <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code> computes and aggregates dataset stats with Ray native operators, avoiding pandas materialization.</p></li>
+<li><p>🧮 <em>Memory Optimizations</em> — Streamed n-gram counting in repetition filters and block-wise MinHash permutations cut peak memory (768 → 272 MiB RSS) without changing results.</p></li>
+<li><p>🔧 <em>Robustness &amp; Dependency Fixes</em> — Fixed <code class="docutils literal notranslate"><span class="pre">text_chunk_mapper</span></code> delimiter leakage, <code class="docutils literal notranslate"><span class="pre">calibrate_response_mapper</span></code> <code class="docutils literal notranslate"><span class="pre">output_pattern</span></code> handling, and null captions in <code class="docutils literal notranslate"><span class="pre">image_diffusion_mapper</span></code>; added membership operators to <code class="docutils literal notranslate"><span class="pre">general_field_filter</span></code>; relaxed <code class="docutils literal notranslate"><span class="pre">numpy</span></code>/<code class="docutils literal notranslate"><span class="pre">fsspec</span></code>/<code class="docutils literal notranslate"><span class="pre">pandas</span></code> bounds for Python 3.13+ and pyarrow&gt;=17.</p></li>
+</ul>
+</details>
+<details open>
+<summary>[2026-07-17] Release v1.5.4: <b>HumanVBench Video OPs; Batch-local Stage Fusion; Robustness Fixes</b></summary>
+<ul class="simple">
+<li><p>🧑‍🤝‍🧑 <em>New OPs</em> — Added 9 human-centric video understanding operators (human track extraction, active-speaker detection, audio ASR, speech emotion &amp; age/gender detection, face demographic &amp; attribute/emotion captioning, face-ratio filtering) for building HumanVBench (CVPR’26)-style pipelines.</p></li>
+<li><p>⚡ <em>Batch-local Stage Fusion</em> — New <code class="docutils literal notranslate"><span class="pre">FusedSequentialBatchOp</span></code> fuses consecutive OPs within a batch to cut inter-op overhead and speed up sequential processing.</p></li>
+<li><p>🔧 <em>Robustness &amp; Install Fixes</em> — Fixed Ray deduplicator shared-state handling, resolved a relative-path issue in the Ray checkpoint writer, made <code class="docutils literal notranslate"><span class="pre">clean_html_mapper</span></code> robust to null text values, handled boolean stat columns in <code class="docutils literal notranslate"><span class="pre">ColumnWiseAnalysis</span></code>, and unblocked ARM64 (aarch64) installation via precise <code class="docutils literal notranslate"><span class="pre">decord</span></code>/<code class="docutils literal notranslate"><span class="pre">torchcodec</span></code> platform markers.</p></li>
+<li><p>🧪 <em>Test Coverage &amp; Cleanup</em> — Expanded tests for utility functions and model handling, plus assorted code cleanup.</p></li>
+</ul>
+</details>
+<details>
+<summary>[2026-06-26] Release v1.5.3: <b>VLA Ops Enhancements; Ray Repartition Pipeline; Scalability & Robustness</b></summary>
+<ul class="simple">
+<li><p>🤖 <em>VLA Ops Enhancements</em> — Expanded embodied-AI processing with 10+ new/renamed VLA operators (camera calibration via DeepCalib/DroidCalib/MoGe, atomic action segmentation, hand action computation &amp; motion smoothing, clip reassembly, trajectory overlay, LeRobot export) and a complete VLA pipeline demo.</p></li>
+<li><p>🔄 <em>Ray Repartition Pipeline</em> — New <code class="docutils literal notranslate"><span class="pre">ray_repartition_pipeline</span></code> for dataset-level block repartitioning in Ray mode.</p></li>
+<li><p>⚡ <em>Scalable Ray Data Reads</em> — Wired <code class="docutils literal notranslate"><span class="pre">override_num_blocks</span></code> through the full call chain for controlling block parallelism on PB-scale datasets.</p></li>
+<li><p>🧪 <em>Test Coverage Expansion</em> — Added 409 new test cases across 18 test files.</p></li>
+<li><p>🐳 <em>Stability &amp; Robustness Fixes</em> — JSONStreamDatasource schema unification, OP env version resolution, FUSE-safe rmtree for PartitionedRayExecutor, deprecated model name updates, and num_proc handling fixes.</p></li>
+</ul>
+</details>
+<details>
+<summary>[2026-05-29] Release v1.5.2: <b>Semantic LLM OPs, Cross-doc Line Dedup & Leaner Dependencies</b></summary>
+<ul class="simple">
+<li><p>🧹 <em>New Deduplicator</em> — Added <code class="docutils literal notranslate"><span class="pre">DocumentLineDeduplicator</span></code> for cross-document line-level dedup, removing boilerplate lines (templates, copyright notices, navigation bars) by global document frequency.</p></li>
+<li><p>🤖 <em>Agent Data Quality Toolkit</em> — Shipped interaction-quality OPs &amp; recipe, a bad-case HTML report, and more robust JSONL / HuggingFace meta loading.</p></li>
+<li><p>📦 <em>Leaner &amp; Faster Install</em> — Slimmed the default dependency set (Ray, audio, spaCy, av, etc. moved to on-demand extras) to speed up installation.</p></li>
+<li><p>🐳 <em>Stability &amp; Robustness Fixes</em> — Library-safe error handling (raise over <code class="docutils literal notranslate"><span class="pre">exit(1)</span></code>), Ray init/temp-dir fixes, valid API params (drop invalid <code class="docutils literal notranslate"><span class="pre">max_new_tokens</span></code>), PyArrow 20+ batch JSON reading, local-path aesthetics model support, and more performance/bug fixes.</p></li>
+<li><p>🧠 <em>Semantic LLM Operators</em> — Introduced <code class="docutils literal notranslate"><span class="pre">llm_extract_mapper</span></code>, <code class="docutils literal notranslate"><span class="pre">llm_condition_filter</span></code>, and <code class="docutils literal notranslate"><span class="pre">llm_structured_ops</span></code> with unified <code class="docutils literal notranslate"><span class="pre">llm_*</span></code> naming and configurable inference strategies (join/agg/top-k planned).</p></li>
+</ul>
+</details>
+<details>
 <summary>[2026-03-17] Release v1.5.1: <b>LaTeX OPs; Compressed Format Support; Operator Robustness Fixes</b></summary>
 <ul class="simple">
 <li><p>📄 Two new LaTeX-focused mapper OPs shipped, extending data-juicer’s document processing capabilities to handle <code class="docutils literal notranslate"><span class="pre">.tex</span></code> archives and figure contexts.</p></li>
@@ -591,7 +632,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🤖 Major refactor and upgrade of data-juicer-agents completed: The project architecture and CLI/session capabilities were comprehensively redesigned for better maintainability and extensibility. See <a class="reference external" href="https://github.com/datajuicer/data-juicer-agents">date-juicer-agents</a> for more details.</p></li>
 </ul>
 </details>
-<details open>
+<details>
 <summary>[2026-02-12] Release v1.5.0: <b>Partitioned Ray Executor, OP-level Env Management, and More Embodied-AI OPs</b></summary>
 <ul class="simple">
 <li><p>🚀 <em>Enhanced Distributed Execution Framework</em> – Introduced partitioned Ray executor and OP-level isolated environments to improve fault tolerance, scalability, and dependency conflict resolution.</p></li>
@@ -613,31 +654,13 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p>🐳 <em>Enhancements &amp; fixes</em> — refreshed Docker image, small perf boosts, GitHub Insights traffic workflow, Ray compatibility updates, and bug/doc fixes.</p></li>
 </ul>
 </details>
-<details>
-<summary>[2026-01-15] Release v1.4.5: <b>20+ New OPs, Ray vLLM Pipelines & Sphinx Docs Upgrade</b> </summary>
-<ul class="simple">
-<li><p><em>Embodied-AI OPs</em>: added/enhanced mappers for video captioning (VLM), video object segmentation (YOLOE+SAM2), video depth estimation (viz + point cloud), human pose (MMPose), image tagging (VLM), single-image 3D body mesh recovery (SAM 3D Body), plus <em>S3 upload/download</em>.</p></li>
-<li><p><em>New Pipeline OP</em>: compose multiple OPs into one pipeline; introduced <em>Ray + vLLM</em> pipelines for LLM/VLM inference.</p></li>
-<li><p><em>Docs upgrade</em>: moved to a unified <em>Sphinx-based</em> documentation build/deploy workflow with isolated theme/architecture repo.</p></li>
-<li><p><em>Enhancements &amp; fixes</em>: dependency updates, improved Ray deduplication and S3 loading, OpenAI Responses API support, tracer consistency, Docker base updated to CUDA 12.6.3 + Ubuntu 24.04 + Py3.11, and multiple bug fixes.</p></li>
-</ul>
-</details>
-<details>
-<summary>[2025-12-01] Release v1.4.4: <b>NeurIPS’25 Spotlight, 6 New Video/MM OPs & S3 I/O</b> </summary>
-<ul class="simple">
-<li><p>NeurIPS’25 <strong>Spotlight</strong> for Data-Juicer 2.0</p></li>
-<li><p><em>Repo split</em>: sandbox/recipes/agents moved to standalone repos</p></li>
-<li><p><em>S3 I/O</em> added to loader/exporter</p></li>
-<li><p><em>6 new video &amp; multimodal OPs</em> (character detection, VGGT, whole-body pose, hand reconstruction) + docs/Ray/video I/O improvements and bug fixes</p></li>
-</ul>
-</details>
 <p>View <a class="reference external" href="https://github.com/datajuicer/data-juicer/releases">All Release</a> and <a class="reference internal" href="docs/news.html"><span class="std std-doc">News Archive</span></a></p>
 </section>
 <hr class="docutils" />
 <section id="users-ecosystems">
 <h2>🔌 Users &amp; Ecosystems<a class="headerlink" href="#users-ecosystems" title="Link to this heading">#</a></h2>
 <blockquote>
-<div><p>The below list focuses on <em>developer-facing integration and usages</em> in <em>alphabetical order</em>.<br />
+<div><p>The below list focuses on <em>developer-facing integration and usages</em> in <em>alphabetical order</em>.
 Missing your project / name? Feel free to <a class="reference external" href="https://github.com/datajuicer/data-juicer/pulls">open a PR</a> or <a class="reference internal" href="#contributing-community">reach out</a>.</p>
 </div></blockquote>
 <p>Data-Juicer plugs into your existing stack and evolves with community contributions:</p>
@@ -709,7 +732,7 @@ Missing your project / name? Feel free to <a class="reference external" href="ht
 <hr class="docutils" />
 <section id="license-attribution">
 <h2>📄 License &amp; Attribution<a class="headerlink" href="#license-attribution" title="Link to this heading">#</a></h2>
-<p>Data-Juicer is released under the <a class="reference internal" href="#LICENSE"><span class="xref myst">Apache License 2.0</span></a>.<br />
+<p>Data-Juicer is released under the <a class="reference internal" href="#LICENSE"><span class="xref myst">Apache License 2.0</span></a>.
 Attribution is appreciated: please use our <a class="reference external" href="https://dail-wlcb.oss-cn-wulanchabu.aliyuncs.com/data_juicer/assets/DJ-Org-Logo.jpeg">badge</a>, or text as “This project uses Data-Juicer: <a class="github reference external" href="https://github.com/datajuicer">datajuicer</a>”.</p>
 </section>
 <hr class="docutils" />
@@ -739,8 +762,8 @@ Attribution is appreciated: please use our <a class="reference external" href="h
 <li><p>(TPAMI’25) <a class="reference external" href="https://arxiv.org/abs/2407.08583">The Synergy between Data and Multi-Modal Large Language Models: A Survey from Co-Development Perspective</a></p></li>
 <li><p>(NeurIPS’25) <a class="reference external" href="https://arxiv.org/abs/2502.04380">Diversity as a Reward: Fine-Tuning LLMs on a Mixture of Domain-Undetermined Data</a></p></li>
 <li><p>(NeurIPS’25) <a class="reference external" href="https://arxiv.org/abs/2503.09499">MindGYM: What Matters in Question Synthesis for Thinking-Centric Fine-Tuning?</a></p></li>
-<li><p>(Benchmark Data) <a class="reference external" href="https://arxiv.org/abs/2412.17574">HumanVBench: Exploring Human-Centric Video Understanding Capabilities of MLLMs with Synthetic Benchmark Data</a></p></li>
-<li><p>(Benchmark Data) <a class="reference external" href="https://www.arxiv.org/abs/2505.16915">DetailMaster: Can Your Text-to-Image Model Handle Long Prompts?</a></p></li>
+<li><p>(CVPR’26) <a class="reference external" href="https://arxiv.org/abs/2412.17574">HumanVBench: Exploring Human-Centric Video Understanding Capabilities of MLLMs with Synthetic Benchmark Data</a></p></li>
+<li><p>(ICML’26) <a class="reference external" href="https://www.arxiv.org/abs/2505.16915">DetailMaster: Can Your Text-to-Image Model Handle Long Prompts?</a></p></li>
 <li><p>(Data Scaling) <a class="reference external" href="https://arxiv.org/abs/2405.14908">BiMix: A Bivariate Data Mixing Law for Language Model Pretraining</a></p></li>
 </ul>
 </details>

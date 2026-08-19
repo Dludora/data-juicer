@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.selector.random_selector</span></li>
   </ul>
 </nav>
@@ -524,9 +527,9 @@
 
 <div class="viewcode-block" id="RandomSelector">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.random_selector.html#data_juicer.ops.selector.RandomSelector">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;random_selector&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"random_selector"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RandomSelector</span><span class="p">(</span><span class="n">Selector</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Randomly selects a subset of samples from the dataset.</span>
+<span class="w">    </span><span class="sd">"""Randomly selects a subset of samples from the dataset.</span>
 
 <span class="sd">    This operator randomly selects a subset of samples based on either a specified ratio or</span>
 <span class="sd">    a fixed number. If both `select_ratio` and `select_num` are provided, the one that</span>
@@ -535,7 +538,7 @@
 
 <span class="sd">    - `select_ratio`: The ratio of samples to select (0 to 1).</span>
 <span class="sd">    - `select_num`: The exact number of samples to select.</span>
-<span class="sd">    - If neither `select_ratio` nor `select_num` is set, the dataset remains unchanged.&quot;&quot;&quot;</span>
+<span class="sd">    - If neither `select_ratio` nor `select_num` is set, the dataset remains unchanged."""</span>
 
 <div class="viewcode-block" id="RandomSelector.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.random_selector.html#data_juicer.ops.selector.RandomSelector.__init__">[文档]</a>
@@ -546,7 +549,7 @@
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param select_ratio: The ratio to select. When both</span>
@@ -557,7 +560,7 @@
 <span class="sd">            to the smaller number of samples will be applied.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select_ratio</span> <span class="o">=</span> <span class="n">select_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select_num</span> <span class="o">=</span> <span class="n">select_num</span></div>

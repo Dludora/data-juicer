@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -647,7 +652,7 @@
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">StatsKeysConstant</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="o">...</span>              <span class="c1"># other keys</span>
-    <span class="n">text_len</span> <span class="o">=</span> <span class="s1">&#39;text_len&#39;</span>
+    <span class="n">text_len</span> <span class="o">=</span> <span class="s1">'text_len'</span>
 </pre></div>
 </div>
 <ol class="arabic" start="2">
@@ -666,17 +671,17 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.ops.base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 
 
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">&#39;text_length_filter&#39;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">'text_length_filter'</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextLengthFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with total text length within a specific</span>
-<span class="sd">    range.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with total text length within a specific</span>
+<span class="sd">    range."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">min_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
                 <span class="n">max_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">maxsize</span><span class="p">,</span>
                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param min_len: The min text length in the filtering. samples</span>
@@ -687,13 +692,13 @@
 <span class="sd">            parameter.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_len</span> <span class="o">=</span> <span class="n">min_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">text_len</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -715,7 +720,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.text_length_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextLengthFilter</span>  <span class="c1"># import this new OP class</span>
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># other Ops</span>
-    <span class="s2">&quot;TextLengthFilter&quot;</span><span class="p">,</span>  <span class="c1"># add this new Op to __all__</span>
+    <span class="s2">"TextLengthFilter"</span><span class="p">,</span>  <span class="c1"># add this new Op to __all__</span>
 <span class="p">]</span>
 </pre></div>
 </div>
@@ -792,16 +797,16 @@ optional arguments:
   --project_name PROJECT_NAME
                         name of your data process project. (type: str, default: null)
   --dataset_path DATASET_PATH
-                        path to your dataset file, relative with respect to the config file&#39;s location (type: Path_fr, default: null)
+                        path to your dataset file, relative with respect to the config file's location (type: Path_fr, default: null)
   --dataset_dir DATASET_DIR
-                        path to your dataset(s) within a directory, relative with respect to the config file&#39;s location (type: Path_drw, default: null)
+                        path to your dataset(s) within a directory, relative with respect to the config file's location (type: Path_drw, default: null)
   --export_path EXPORT_PATH
-                        path to the output processed dataset, relative with respect to the config file&#39;s location (type: Path_fc, default: null)
+                        path to the output processed dataset, relative with respect to the config file's location (type: Path_fc, default: null)
   --process PROCESS, --process+ PROCESS
                         a list of several process operators with their arguments (type: List[Dict], default: null)
   --np NP               number of subprocess to process your dataset. (type: PositiveInt, default: null)
 
-&lt;class &#39;data_juicer.ops.filter.alphanumeric_filter.AlphanumericFilter&#39;&gt;:
+&lt;class 'data_juicer.ops.filter.alphanumeric_filter.AlphanumericFilter'&gt;:
   --alphanumeric_filter CONFIG
                         Path to a configuration file.
   --alphanumeric_filter.min MIN
@@ -809,7 +814,7 @@ optional arguments:
   --alphanumeric_filter.max MAX
                         the max filter rate in alphanumeric op. (type: ClosedUnitInterval, default: 0.25)
 
-&lt;class &#39;data_juicer.ops.filter.text_length_filter.TextLengthFilter&#39;&gt;:
+&lt;class 'data_juicer.ops.filter.text_length_filter.TextLengthFilter'&gt;:
   --text_length_filter CONFIG
                         Path to a configuration file.
   --text_length_filter.min MIN
@@ -873,12 +878,12 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 <p>示例：</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[project.dependencies]</span>
 <span class="c1"># 核心依赖</span>
-<span class="n">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&gt;=1.26.4,&lt;2.0.0&quot;</span>
+<span class="n">numpy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=1.26.4,&lt;2.0.0"</span>
 
 <span class="k">[project.optional-dependencies]</span>
 <span class="n">generic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;torch==2.6.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;transformers&gt;=4.47.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"torch==2.6.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"transformers&gt;=4.47.0"</span><span class="p">,</span>
 <span class="w">    </span><span class="err">...</span>
 <span class="err">]</span>
 </pre></div>
@@ -889,15 +894,15 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 <ol class="arabic simple">
 <li><p>安装所有依赖：</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[all]&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[all]"</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>或安装特定组：</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[generic]&quot;</span><span class="w">      </span><span class="c1"># 通用依赖</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span><span class="w">          </span><span class="c1"># 开发工具</span>
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[ai_services]&quot;</span><span class="w">  </span><span class="c1"># 服务依赖</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[generic]"</span><span class="w">      </span><span class="c1"># 通用依赖</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[dev]"</span><span class="w">          </span><span class="c1"># 开发工具</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[ai_services]"</span><span class="w">  </span><span class="c1"># 服务依赖</span>
 </pre></div>
 </div>
 </section>
@@ -930,7 +935,7 @@ git<span class="w"> </span>add<span class="w"> </span>.
 pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
 
 <span class="c1"># commit after all checking are passed</span>
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;&lt;your_commit_message&gt;&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"&lt;your_commit_message&gt;"</span>
 </pre></div>
 </div>
 <p><strong>注意</strong>：我们在github workflow配置了pre-commit的检查。如果您的PR中该检查没通过，请在本地①确保pre-commit 的相关依赖与项目配置一致（可通过<code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">clean</span></code>和<code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code>完成）；②push前执行了<code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">run</span> <span class="pre">--all-files</span></code>.</p>
@@ -990,7 +995,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
     <span class="k">def</span><span class="w"> </span><span class="nf">test_func3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
         
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
     <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1008,7 +1013,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <span class="w">    </span><span class="nt">stopwords_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./assets</span><span class="w">                                 </span><span class="c1"># directory to store stopwords dictionaries</span>
 <span class="w">    </span><span class="nt">use_words_aug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w">                                    </span><span class="c1"># whether to augment words, especially for Chinese and Vietnamese</span>
 <span class="w">    </span><span class="nt">words_aug_group_sizes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">]</span><span class="w">                              </span><span class="c1"># the group size of words to augment</span>
-<span class="w">    </span><span class="nt">words_aug_join_char</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w">                                 </span><span class="c1"># the join char between words to augment</span>
+<span class="w">    </span><span class="nt">words_aug_join_char</span><span class="p">:</span><span class="w"> </span><span class="s">""</span><span class="w">                                 </span><span class="c1"># the join char between words to augment</span>
 <span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">text_length_filter</span><span class="p">:</span><span class="w">                                     </span><span class="c1"># filter text with length out of specific range</span>
 <span class="w">    </span><span class="nt">min_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w">                                             </span><span class="c1"># the min length of filter range</span>
 <span class="w">    </span><span class="nt">max_len</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10000</span><span class="w">                                          </span><span class="c1"># the max length of filter range</span>
@@ -1028,10 +1033,10 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) 如果在算子中使用了 Hugging Face 模型，您可能希望利用 GPU 加速。为了实现这一点，请在算子的构造函数中声明 <code class="docutils literal notranslate"><span class="pre">_accelerator</span> <span class="pre">=</span> <span class="pre">'cuda'</span></code>，并确保 <code class="docutils literal notranslate"><span class="pre">compute_stats_single/batched</span></code> 和 <code class="docutils literal notranslate"><span class="pre">process_single/batched</span></code> 方法接受一个额外的位置参数 <code class="docutils literal notranslate"><span class="pre">rank</span></code>。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (same as above)</span>
 
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">&#39;text_length_filter&#39;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s1">'text_length_filter'</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextLengthFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">&#39;cuda&#39;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s1">'cuda'</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">min_len</span><span class="p">:</span> <span class="n">PositiveInt</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
@@ -1051,7 +1056,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) 如果算子批量处理数据，输入不是一个样本而是一个batch，或者你想在单样本实现上直接激活batch化处理，需要声明<code class="docutils literal notranslate"><span class="pre">_batched_op</span> <span class="pre">=</span> <span class="pre">True</span></code>。
 - 对于单样本实现中原来的 <code class="docutils literal notranslate"><span class="pre">compute_stats_single</span></code> 和 <code class="docutils literal notranslate"><span class="pre">process_single</span></code> 方法，你可以保持它们不变，Data-Juicer 会调用默认的batch化处理版本，它们会自动拆分单个样本以调用单样本版本的两个方法来支持batch化处理。你也可以自行实现更高效的batch化的版本。</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (import some other libraries)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;image_diffusion_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'image_diffusion_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageDiffusionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1070,7 +1075,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </li>
 <li><p>(<img alt="stable" src="https://img.shields.io/badge/stable-green?style=plastic" />) 在mapper算子中，我们提供了产生额外数据的存储路径生成接口，避免出现进程冲突和数据覆盖的情况。生成的存储路径格式默认为<code class="docutils literal notranslate"><span class="pre">{ORIGINAL_DATAPATH}/__dj__produced_data__/{OP_NAME}/{ORIGINAL_FILENAME}__dj_hash_#{HASH_VALUE}#.{EXT}</span></code>，其中<code class="docutils literal notranslate"><span class="pre">HASH_VALUE</span></code>是算子初始化参数、每个样本中相关参数、进程ID和时间戳的哈希值。也可以指定保存路径（例如<code class="docutils literal notranslate"><span class="pre">save_dir</span></code>）或者通过环境变量（<code class="docutils literal notranslate"><span class="pre">DJ_PRODUCED_DATA_DIR</span></code>）设置额外数据的存储路径。为了方便，可以在OP类初始化开头调用<code class="docutils literal notranslate"><span class="pre">self.remove_extra_parameters(locals())</span></code>获取算子初始化参数，同时可以调用<code class="docutils literal notranslate"><span class="pre">self.add_parameters</span></code>添加每个样本与生成额外数据相关的参数。例如，利用diffusion模型对图像进行增强的算子：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (import some library)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;image_diffusion_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'image_diffusion_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageDiffusionMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1095,7 +1100,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </div>
 <p>针对一个数据源衍生出多个额外数据的情况，我们允许在生成的存储路径后面再加后缀。比如，根据关键帧将视频拆分成多个视频：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ... (import some library)</span>
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">&#39;video_split_by_key_frame_mapper&#39;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s1">'video_split_by_key_frame_mapper'</span>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoSplitByKeyFrameMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
@@ -1112,7 +1117,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
         <span class="c1"># ... (some codes)</span>
         <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">transfer_filename</span><span class="p">(</span>
                     <span class="n">original_video_path</span><span class="p">,</span> <span class="n">OP_NAME</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_parameters</span><span class="p">)</span>
-        <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">split_video_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">split_video_path</span> <span class="o">=</span> <span class="n">add_suffix_to_filename</span><span class="p">(</span><span class="n">split_video_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'_</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
         <span class="c1"># ... (some codes)</span>
 </pre></div>
 </div>
@@ -1129,8 +1134,8 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">InterVars</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="c1"># text</span>
-    <span class="n">lines</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;lines&#39;</span>
-    <span class="n">words</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">&#39;words&#39;</span>  <span class="c1"># 在这里添加新的中间变量</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">'lines'</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">DEFAULT_PREFIX</span> <span class="o">+</span> <span class="s1">'words'</span>  <span class="c1"># 在这里添加新的中间变量</span>
     <span class="o">...</span>
 </pre></div>
 </div>
@@ -1180,7 +1185,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 
 <span class="c1"># 修改计算逻辑后</span>
 <span class="o">...</span>
-<span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">words_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">InterVars</span><span class="o">.</span><span class="n">words</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="si">}</span><span class="s1">'</span>
 <span class="k">if</span> <span class="n">context</span> <span class="ow">and</span> <span class="n">words_key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">]:</span>
     <span class="c1"># 直接使用context中已有的中间变量值</span>
     <span class="n">words</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">context</span><span class="p">][</span><span class="n">words_key</span><span class="p">]</span>
@@ -1208,13 +1213,13 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.lazy_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">LazyLoader</span>
 
 <span class="c1"># 懒导入</span>
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
-<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;transformers&#39;</span><span class="p">)</span>
-<span class="n">nltk</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">&#39;nltk&#39;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'torch'</span><span class="p">)</span>
+<span class="n">transformers</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'transformers'</span><span class="p">)</span>
+<span class="n">nltk</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s1">'nltk'</span><span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PerplexityFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
     <span class="c1"># 显式为 OP 设置额外的依赖</span>
-    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kenlm&#39;</span><span class="p">,</span> <span class="s1">&#39;sentencepiece&#39;</span><span class="p">,</span> <span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">]</span>
+    <span class="n">_requirements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'kenlm'</span><span class="p">,</span> <span class="s1">'sentencepiece'</span><span class="p">,</span> <span class="s1">'fasttext-predict'</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="c1"># ... (OP parameters)</span>
@@ -1222,7 +1227,7 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># 在初始化前自动安装所需依赖库</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">&#39;fasttext-wheel&#39;</span><span class="p">])</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">check_packages</span><span class="p">([</span><span class="s1">'fasttext-predict'</span><span class="p">])</span>
         <span class="c1"># ... (some codes)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">):</span>

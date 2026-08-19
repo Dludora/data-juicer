@@ -1010,8 +1010,8 @@ dataset.</p></li>
 <li><p><strong>encrypt_before_export</strong> – whether to encrypt each exported file
 in-place immediately after writing. Requires a valid Fernet key
 accessible via <code class="docutils literal notranslate"><span class="pre">encryption_key_path</span></code> or the environment
-variable <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code>. S3 paths are skipped (use S3
-SSE instead). Default: False.</p></li>
+variable <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code>. Remote paths (s3://, hdfs://)
+are skipped. Default: False.</p></li>
 <li><p><strong>encryption_key_path</strong> – path to a file containing the Fernet key.
 Falls back to the <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code> environment variable when
 <code class="docutils literal notranslate"><span class="pre">None</span></code>. Only used when <code class="docutils literal notranslate"><span class="pre">encrypt_before_export</span></code> is True.</p></li>
@@ -1095,6 +1095,26 @@ Falls back to the <code class="docutils literal notranslate"><span class="pre">D
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="data_juicer.core.RayAnalyzer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">data_juicer.core.</span></span><span class="sig-name descname"><span class="pre">RayAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/ray_analyzer.html#RayAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.RayAnalyzer" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Analyzer that uses Ray for distributed stats computation.</p>
+<p>Computes filter stats in parallel via Ray, then uses Ray’s native
+aggregation (Mean, Std, Min, Max, Count) for overall analysis.
+No data is materialized to pandas — all computation stays distributed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.core.RayAnalyzer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/ray_analyzer.html#RayAnalyzer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.RayAnalyzer.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="data_juicer.core.RayAnalyzer.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_data_np</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Annotated</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Gt</span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">gt</span></span><span class="o"><span class="pre">=</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_export</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_return</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/data_juicer/core/ray_analyzer.html#RayAnalyzer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#data_juicer.core.RayAnalyzer.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1613,6 +1633,11 @@ deduplicator</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.Exporter.to_jsonl"><code class="docutils literal notranslate"><span class="pre">Exporter.to_jsonl()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.Exporter.to_json"><code class="docutils literal notranslate"><span class="pre">Exporter.to_json()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.Exporter.to_parquet"><code class="docutils literal notranslate"><span class="pre">Exporter.to_parquet()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.RayAnalyzer"><code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.RayAnalyzer.__init__"><code class="docutils literal notranslate"><span class="pre">RayAnalyzer.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.RayAnalyzer.run"><code class="docutils literal notranslate"><span class="pre">RayAnalyzer.run()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data_juicer.core.RayExporter"><code class="docutils literal notranslate"><span class="pre">RayExporter</span></code></a><ul class="nav section-nav flex-column">

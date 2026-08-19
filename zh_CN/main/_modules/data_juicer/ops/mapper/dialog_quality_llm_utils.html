@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.dialog_quality_llm_utils</span></li>
   </ul>
 </nav>
@@ -515,7 +518,7 @@
   <h1>data_juicer.ops.mapper.dialog_quality_llm_utils 源代码</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2025 The Data-Juicer Authors. All rights reserved.</span>
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
-<span class="sd">&quot;&quot;&quot;Prompt builders and JSON helpers for turn-quality LLM mappers.&quot;&quot;&quot;</span>
+<span class="sd">"""Prompt builders and JSON helpers for turn-quality LLM mappers."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -532,7 +535,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.constant</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fields</span>
 
 <span class="c1"># Backward-compatible alias (English JSON instruction for 1–5 + reason).</span>
-<span class="n">JSON_SCORE_REASON_EN</span> <span class="o">=</span> <span class="n">dialog_score_json_instruction</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">)</span>
+<span class="n">JSON_SCORE_REASON_EN</span> <span class="o">=</span> <span class="n">dialog_score_json_instruction</span><span class="p">(</span><span class="s2">"en"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="extract_json_object">
@@ -541,11 +544,11 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">text</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;```&quot;</span><span class="p">):</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^```(?:json)?\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s*```\s*$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"```"</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"^```(?:json)?\s*"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s*```\s*$"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"{"</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s2">"}"</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="n">start</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
@@ -586,7 +589,7 @@
     <span class="n">max_query_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">max_response_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Earlier turns + last user message + assistant span to score.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Earlier turns + last user message + assistant span to score."""</span>
     <span class="n">turns</span> <span class="o">=</span> <span class="n">_normalize_dialog_tail</span><span class="p">(</span>
         <span class="n">sample</span><span class="p">,</span>
         <span class="n">history_key</span><span class="p">,</span>
@@ -595,7 +598,7 @@
         <span class="n">max_round</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">turns</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">""</span>
     <span class="o">*</span><span class="n">rest</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">turns</span>
     <span class="n">chunks</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">rest</span><span class="p">:</span>
@@ -605,18 +608,18 @@
             <span class="n">max_query_chars</span><span class="p">,</span>
             <span class="n">max_response_chars</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[User]</span><span class="se">\n</span><span class="si">{</span><span class="n">qu</span><span class="si">}</span><span class="se">\n</span><span class="s2">[Assistant]</span><span class="se">\n</span><span class="si">{</span><span class="n">au</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[User]</span><span class="se">\n</span><span class="si">{</span><span class="n">qu</span><span class="si">}</span><span class="se">\n</span><span class="s2">[Assistant]</span><span class="se">\n</span><span class="si">{</span><span class="n">au</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">lu</span><span class="p">,</span> <span class="n">lr</span> <span class="o">=</span> <span class="n">clip_query_response_pair</span><span class="p">(</span>
         <span class="n">last</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">last</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
         <span class="n">max_query_chars</span><span class="p">,</span>
         <span class="n">max_response_chars</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">early</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span>
+    <span class="n">early</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;### Earlier turns</span><span class="se">\n</span><span class="si">{</span><span class="n">early</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;### Current user message</span><span class="se">\n</span><span class="si">{</span><span class="n">lu</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;### Assistant reply to score (evaluate this segment only)</span><span class="se">\n</span><span class="si">{</span><span class="n">lr</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">"### Earlier turns</span><span class="se">\n</span><span class="si">{</span><span class="n">early</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"### Current user message</span><span class="se">\n</span><span class="si">{</span><span class="n">lu</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"### Assistant reply to score (evaluate this segment only)</span><span class="se">\n</span><span class="si">{</span><span class="n">lr</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
     <span class="p">)</span></div>
 
 
@@ -629,12 +632,12 @@
     <span class="n">text_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">max_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Flattened session text (e.g. after agent_dialog_normalize_mapper).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Flattened session text (e.g. after agent_dialog_normalize_mapper)."""</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">text_key</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">clipped</span> <span class="o">=</span> <span class="n">clip_text_for_dialog_prompt</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">max_chars</span><span class="p">,</span> <span class="s2">&quot;text truncated&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;### Session trace excerpt (may include tool output)</span><span class="se">\n</span><span class="si">{</span><span class="n">clipped</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+        <span class="k">return</span> <span class="s2">""</span>
+    <span class="n">clipped</span> <span class="o">=</span> <span class="n">clip_text_for_dialog_prompt</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">max_chars</span><span class="p">,</span> <span class="s2">"text truncated"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"### Session trace excerpt (may include tool output)</span><span class="se">\n</span><span class="si">{</span><span class="n">clipped</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span></div>
 
 
 
@@ -650,8 +653,8 @@
     <span class="n">max_query_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">max_response_chars</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">response_key</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
     <span class="n">qu</span><span class="p">,</span> <span class="n">rs</span> <span class="o">=</span> <span class="n">clip_query_response_pair</span><span class="p">(</span>
         <span class="n">q</span><span class="p">,</span>
         <span class="n">r</span><span class="p">,</span>
@@ -663,15 +666,15 @@
         <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">tools</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tool_types_key</span><span class="p">)</span>
     <span class="n">primary</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">primary_tool_key</span><span class="p">)</span>
-    <span class="n">tools_s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">tools_s</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tools</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">tools_s</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">[:</span><span class="mi">40</span><span class="p">])</span>
+        <span class="n">tools_s</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tools</span><span class="p">[:</span><span class="mi">40</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">tools</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">tools_s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
-    <span class="n">prim_s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">primary</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">primary</span><span class="p">)</span>
-    <span class="n">tline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;### Inferred tool list (</span><span class="si">{</span><span class="n">tool_types_key</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="si">{</span><span class="n">tools_s</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;(none)&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="n">pline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;### Primary tool (</span><span class="si">{</span><span class="n">primary_tool_key</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="si">{</span><span class="n">prim_s</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">&#39;(none)&#39;</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;### User request</span><span class="se">\n</span><span class="si">{</span><span class="n">qu</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;### Assistant reply (may include tool trace)</span><span class="se">\n</span><span class="si">{</span><span class="n">rs</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tline</span><span class="si">}</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pline</span><span class="si">}</span><span class="s2">&quot;</span></div>
+    <span class="n">prim_s</span> <span class="o">=</span> <span class="s2">""</span> <span class="k">if</span> <span class="n">primary</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">primary</span><span class="p">)</span>
+    <span class="n">tline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"### Inferred tool list (</span><span class="si">{</span><span class="n">tool_types_key</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="si">{</span><span class="n">tools_s</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'(none)'</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="n">pline</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"### Primary tool (</span><span class="si">{</span><span class="n">primary_tool_key</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="si">{</span><span class="n">prim_s</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="s1">'(none)'</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"### User request</span><span class="se">\n</span><span class="si">{</span><span class="n">qu</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="sa">f</span><span class="s2">"### Assistant reply (may include tool trace)</span><span class="se">\n</span><span class="si">{</span><span class="n">rs</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">tline</span><span class="si">}</span><span class="s2">"</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pline</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
@@ -679,20 +682,20 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.dialog_quality_llm_utils.html#data_juicer.ops.mapper.dialog_quality_llm_utils.normalize_score_1_5">[文档]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">normalize_score_1_5</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;invalid_json&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
-    <span class="n">raw</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"error"</span><span class="p">:</span> <span class="s2">"invalid_json"</span><span class="p">,</span> <span class="s2">"score"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">""</span><span class="p">}</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">s</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;bad_score&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reason&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="s2">"error"</span><span class="p">:</span> <span class="s2">"bad_score"</span><span class="p">,</span>
+            <span class="s2">"score"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"reason"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reason"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">),</span>
         <span class="p">}</span>
     <span class="n">s</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">{</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
-        <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reason&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)[:</span><span class="mi">2000</span><span class="p">],</span>
+        <span class="s2">"score"</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
+        <span class="s2">"reason"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reason"</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)[:</span><span class="mi">2000</span><span class="p">],</span>
     <span class="p">}</span></div>
 
 </pre></div>

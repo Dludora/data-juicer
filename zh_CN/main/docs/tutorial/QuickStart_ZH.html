@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -603,7 +608,7 @@
 <ul class="simple">
 <li><p>简单场景，本地/HF 文件的单一路径</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/path/to/your/dataset&#39;</span><span class="w"> </span><span class="c1"># 数据集目录或文件的路径</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset_path</span><span class="p">:</span><span class="w"> </span><span class="s">'/path/to/your/dataset'</span><span class="w"> </span><span class="c1"># 数据集目录或文件的路径</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -611,8 +616,8 @@
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">dataset</span><span class="p">:</span>
 <span class="nt">configs</span><span class="p">:</span>
-<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;local&#39;</span>
-<span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;path/to/your/dataset&#39;</span><span class="w"> </span><span class="c1"># 数据集目录或文件的路径</span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">'local'</span>
+<span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="s">'path/to/your/dataset'</span><span class="w"> </span><span class="c1"># 数据集目录或文件的路径</span>
 </pre></div>
 </div>
 <p>更多详细信息，请参阅 <a class="reference internal" href="../DatasetCfg_ZH.html"><span class="std std-doc">数据集配置指南</span></a>。</p>
@@ -634,11 +639,11 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>demos/process_
 <li><p><strong>注意</strong>：对于使用了第三方模型的算子，在填写config文件时需要去声明其对应的<code class="docutils literal notranslate"><span class="pre">memory</span></code>（可以参考<code class="docutils literal notranslate"><span class="pre">data_juicer/config/config_all.yaml</span></code>文件中的设置）。Data-Juicer在运行过程中会根据内存情况和算子模型所需的memory大小来控制对应的进程数，以达成更好的数据处理的性能效率。而在使用CUDA环境运行时，如果不正确的声明算子的<code class="docutils literal notranslate"><span class="pre">memory</span></code>情况，则有可能导致CUDA Out of Memory。</p></li>
 </ul>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># 缓存主目录</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_CACHE_HOME</span><span class="o">=</span><span class="s2">"/path/to/another/directory"</span>
 <span class="c1"># 模型缓存目录</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/models&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_MODELS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/models"</span>
 <span class="c1"># 资源缓存目录</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">&quot;/path/to/another/directory/assets&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATA_JUICER_ASSETS_CACHE</span><span class="o">=</span><span class="s2">"/path/to/another/directory/assets"</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -689,7 +694,7 @@ python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--con
 <span class="c1"># 使用命令行工具</span>
 dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/analyzer.yaml
 
-<span class="c1"># 你也可以使用&quot;自动&quot;模式来避免写一个新的数据菜谱。它会使用全部可产出统计信息的 Filter 来分析</span>
+<span class="c1"># 你也可以使用"自动"模式来避免写一个新的数据菜谱。它会使用全部可产出统计信息的 Filter 来分析</span>
 <span class="c1"># 你的数据集的一小部分（如1000条样本，可通过 `auto_num` 参数指定）</span>
 dj-analyze<span class="w"> </span>--auto<span class="w"> </span>--dataset_path<span class="w"> </span>xx.jsonl<span class="w"> </span><span class="o">[</span>--auto_num<span class="w"> </span><span class="m">1000</span><span class="o">]</span>
 </pre></div>
@@ -703,8 +708,14 @@ dj-analyze<span class="w"> </span>--auto<span class="w"> </span>--dataset_path<s
 </li>
 <li><p>有时会产生 &quot;Glyph missing&quot; 的警告，并且在分析结果图表中会出现一些非法字符。用户可以使用环境变量 <code class="docutils literal notranslate"><span class="pre">ANALYZER_FONT</span></code> 来指定合适的字体。例如：</p></li>
 </ul>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANALYZER_FONT</span><span class="o">=</span><span class="s2">&quot;Heiti TC&quot;</span><span class="w">  </span><span class="c1"># 使用黑体来支持中文字符，这也是 Analyzer 的默认字体</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ANALYZER_FONT</span><span class="o">=</span><span class="s2">"Heiti TC"</span><span class="w">  </span><span class="c1"># 使用黑体来支持中文字符，这也是 Analyzer 的默认字体</span>
 python<span class="w"> </span>tools/analyze_data.py<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/analyzer.yaml
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>基于 Ray 的分布式分析：</strong> <code class="docutils literal notranslate"><span class="pre">dj-analyze</span></code> 同样支持 Ray 模式进行大规模分布式数据分析。在配置文件中设置 <code class="docutils literal notranslate"><span class="pre">executor_type:</span> <span class="pre">ray</span></code>，分析器将自动使用 <code class="docutils literal notranslate"><span class="pre">RayAnalyzer</span></code>，通过 Ray 原生聚合算子计算总体统计信息（count/mean/std/min/max），无需 pandas 物化。注意 RayAnalyzer 不会产出逐列分布图表或相关性分析。更多细节请参考<a class="reference internal" href="../Distributed_ZH.html"><span class="std std-doc">分布式处理文档</span></a>。</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>dj-analyze<span class="w"> </span>--config<span class="w"> </span>demos/analyze_simple/ray_analyzer.yaml
 </pre></div>
 </div>
 </section>

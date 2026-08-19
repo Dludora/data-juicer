@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -620,7 +625,7 @@
 <h3>基本缓存设置<a class="headerlink" href="#id4" title="链接到此标题。">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">use_cache</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">           </span><span class="c1"># 启用/禁用 HuggingFace 数据集缓存</span>
 <span class="nt">ds_cache_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">         </span><span class="c1"># 自定义缓存目录（覆盖 HF_DATASETS_CACHE）</span>
-<span class="nt">cache_compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">       </span><span class="c1"># 压缩方法：&#39;gzip&#39;、&#39;zstd&#39;、&#39;lz4&#39; 或 null</span>
+<span class="nt">cache_compress</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">       </span><span class="c1"># 压缩方法：'gzip'、'zstd'、'lz4' 或 null</span>
 <span class="nt">temp_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">             </span><span class="c1"># 缓存禁用时的中间文件临时目录</span>
 </pre></div>
 </div>
@@ -796,13 +801,13 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml
 <p>底层 API，用于手动压缩/解压：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.compress</span><span class="w"> </span><span class="kn">import</span> <span class="n">CompressManager</span>
 
-<span class="n">manager</span> <span class="o">=</span> <span class="n">CompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">&quot;zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">CompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">"zstd"</span><span class="p">)</span>
 
 <span class="c1"># 压缩文件</span>
-<span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="s2">&quot;input.arrow&quot;</span><span class="p">,</span> <span class="s2">&quot;input.arrow.zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="s2">"input.arrow"</span><span class="p">,</span> <span class="s2">"input.arrow.zstd"</span><span class="p">)</span>
 
 <span class="c1"># 解压文件</span>
-<span class="n">manager</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="s2">&quot;input.arrow.zstd&quot;</span><span class="p">,</span> <span class="s2">&quot;input.arrow&quot;</span><span class="p">)</span>
+<span class="n">manager</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="s2">"input.arrow.zstd"</span><span class="p">,</span> <span class="s2">"input.arrow"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -811,7 +816,7 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml
 <p>高层 API，用于管理 HuggingFace 数据集缓存压缩：</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.compress</span><span class="w"> </span><span class="kn">import</span> <span class="n">CacheCompressManager</span>
 
-<span class="n">manager</span> <span class="o">=</span> <span class="n">CacheCompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">&quot;zstd&quot;</span><span class="p">)</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">CacheCompressManager</span><span class="p">(</span><span class="n">compressor_format</span><span class="o">=</span><span class="s2">"zstd"</span><span class="p">)</span>
 
 <span class="c1"># 压缩前一个数据集的缓存文件</span>
 <span class="n">manager</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">prev_ds</span><span class="o">=</span><span class="n">previous_dataset</span><span class="p">,</span> <span class="n">this_ds</span><span class="o">=</span><span class="n">current_dataset</span><span class="p">,</span> <span class="n">num_proc</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>

@@ -520,28 +520,28 @@
 <a class="viewcode-back" href="../../../api/data_juicer.format.parquet_formatter.html#data_juicer.format.ParquetFormatter">[文档]</a>
 <span class="nd">@FORMATTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">()</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ParquetFormatter</span><span class="p">(</span><span class="n">LocalFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The class is used to load and format parquet-type files.</span>
 
-<span class="sd">    Default suffixes is `[&#39;.parquet&#39;]`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    Default suffixes is `['.parquet']`</span>
+<span class="sd">    """</span>
 
-    <span class="n">SUFFIXES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;.parquet&quot;</span><span class="p">]</span>
+    <span class="n">SUFFIXES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">".parquet"</span><span class="p">]</span>
 
 <div class="viewcode-block" id="ParquetFormatter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.format.parquet_formatter.html#data_juicer.format.ParquetFormatter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_path</span><span class="p">,</span> <span class="n">suffixes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param dataset_path: a dataset file or a dataset directory</span>
 <span class="sd">        :param suffixes: files with specified suffixes to be processed</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">dataset_path</span><span class="o">=</span><span class="n">dataset_path</span><span class="p">,</span>
             <span class="n">suffixes</span><span class="o">=</span><span class="n">suffixes</span> <span class="k">if</span> <span class="n">suffixes</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">SUFFIXES</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;parquet&quot;</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">"parquet"</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>

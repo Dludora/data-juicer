@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../PartitionAndCheckpoint_ZH.html">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -540,6 +541,7 @@
 <li class="toctree-l2"><a class="reference internal" href="video_aesthetics_filter.html">video_aesthetics_filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_aspect_ratio_filter.html">video_aspect_ratio_filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_duration_filter.html">video_duration_filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="video_face_ratio_filter.html">video_face_ratio_filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_frames_text_similarity_filter.html">video_frames_text_similarity_filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_motion_score_filter.html">video_motion_score_filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="video_motion_score_ptlflow_filter.html">video_motion_score_ptlflow_filter</a></li>
@@ -571,8 +573,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -592,6 +597,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -703,7 +709,7 @@
 <h2>📊 Effect demonstration 效果演示<a class="headerlink" href="#effect-demonstration" title="链接到此标题。">#</a></h2>
 <section id="test-en-text-case">
 <h3>test_en_text_case<a class="headerlink" href="#test-en-text-case" title="链接到此标题。">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TextActionFilter</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s1">&#39;en&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TextActionFilter</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s1">'en'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="input-data">
@@ -722,7 +728,7 @@
 </section>
 <section id="test-zh-text-case">
 <h3>test_zh_text_case<a class="headerlink" href="#test-zh-text-case" title="链接到此标题。">#</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TextActionFilter</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s1">&#39;zh&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">TextActionFilter</span><span class="p">(</span><span class="n">lang</span><span class="o">=</span><span class="s1">'zh'</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="id1">

@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.selector.topk_specified_field_selector</span></li>
   </ul>
 </nav>
@@ -526,9 +529,9 @@
 
 <div class="viewcode-block" id="TopkSpecifiedFieldSelector">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.topk_specified_field_selector.html#data_juicer.ops.selector.TopkSpecifiedFieldSelector">[文档]</a>
-<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">&quot;topk_specified_field_selector&quot;</span><span class="p">)</span>
+<span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="s2">"topk_specified_field_selector"</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TopkSpecifiedFieldSelector</span><span class="p">(</span><span class="n">Selector</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Selects top samples based on the sorted values of a specified field.</span>
+<span class="w">    </span><span class="sd">"""Selects top samples based on the sorted values of a specified field.</span>
 
 <span class="sd">    This operator selects the top samples from a dataset based on the values of a specified</span>
 <span class="sd">    field. The field can be multi-level, with keys separated by dots. The selection is based</span>
@@ -536,26 +539,26 @@
 <span class="sd">    `top_ratio` and `topk` are provided, the one resulting in fewer samples is used. The</span>
 <span class="sd">    sorting order can be ascending or descending, controlled by the `reverse` parameter. The</span>
 <span class="sd">    key metric is the value of the specified field, and the operator uses this to determine</span>
-<span class="sd">    which samples to keep.&quot;&quot;&quot;</span>
+<span class="sd">    which samples to keep."""</span>
 
 <div class="viewcode-block" id="TopkSpecifiedFieldSelector.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.selector.topk_specified_field_selector.html#data_juicer.ops.selector.TopkSpecifiedFieldSelector.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">field_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">top_ratio</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Annotated</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1</span><span class="p">)]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">topk</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param field_key: Selector based on the specified value</span>
 <span class="sd">            corresponding to the target key. The target key</span>
 <span class="sd">            corresponding to multi-level field information need to be</span>
-<span class="sd">            separated by &#39;.&#39;.</span>
+<span class="sd">            separated by '.'.</span>
 <span class="sd">        :param top_ratio: Ratio of selected top samples, samples will be</span>
 <span class="sd">            selected if their specified field values are within this</span>
 <span class="sd">            parameter. When both topk and top_ratio are set, the value</span>
@@ -570,7 +573,7 @@
 <span class="sd">            then sort in descending order.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span> <span class="o">=</span> <span class="n">field_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_ratio</span> <span class="o">=</span> <span class="n">top_ratio</span>
@@ -595,8 +598,8 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">topk</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">topk</span> <span class="o">&lt;</span> <span class="n">select_num</span><span class="p">:</span>
                 <span class="n">select_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topk</span>
 
-        <span class="n">field_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">field_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">field_value_list</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
@@ -605,7 +608,7 @@
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">[</span><span class="n">field_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]:</span>
                 <span class="n">field_value</span> <span class="o">=</span> <span class="n">item</span>
                 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_keys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                    <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; not in </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="k">assert</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">"'</span><span class="si">{}</span><span class="s2">' not in </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">field_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
                     <span class="n">field_value</span> <span class="o">=</span> <span class="n">field_value</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">field_value_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stats_to_number</span><span class="p">(</span><span class="n">field_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">))</span>
 

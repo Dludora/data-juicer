@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.text_chunk_mapper</span></li>
   </ul>
 </nav>
@@ -523,14 +526,14 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Mapper</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;text_chunk_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"text_chunk_mapper"</span>
 
 
 <div class="viewcode-block" id="TextChunkMapper">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.TextChunkMapper">[文档]</a>
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextChunkMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split input text into chunks based on specified criteria.</span>
+<span class="w">    </span><span class="sd">"""Split input text into chunks based on specified criteria.</span>
 
 <span class="sd">    - Splits the input text into multiple chunks using a specified maximum length and a</span>
 <span class="sd">      split pattern.</span>
@@ -542,10 +545,10 @@
 <span class="sd">      the split does not occur at the pattern.</span>
 <span class="sd">    - Uses a Hugging Face tokenizer to calculate the text length in tokens if a tokenizer</span>
 <span class="sd">      name is provided; otherwise, it uses the string length.</span>
-<span class="sd">    - Caches the following stats: &#39;chunk_count&#39; (number of chunks generated for each</span>
+<span class="sd">    - Caches the following stats: 'chunk_count' (number of chunks generated for each</span>
 <span class="sd">      sample).</span>
 <span class="sd">    - Raises a `ValueError` if both `max_len` and `split_pattern` are `None` or if</span>
-<span class="sd">      `overlap_len` is greater than or equal to `max_len`.&quot;&quot;&quot;</span>
+<span class="sd">      `overlap_len` is greater than or equal to `max_len`."""</span>
 
     <span class="n">_batched_op</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -554,14 +557,14 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">max_len</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">PositiveInt</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">split_pattern</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\n\n&quot;</span><span class="p">,</span>
+        <span class="n">split_pattern</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"\n\n"</span><span class="p">,</span>
         <span class="n">overlap_len</span><span class="p">:</span> <span class="n">NonNegativeInt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">tokenizer</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param max_len: Split text into multi texts with this max len if not</span>
@@ -574,18 +577,18 @@
 <span class="sd">            The text length will be calculate as the token num if it is</span>
 <span class="sd">            offered. Otherwise, the text length equals to string length.</span>
 <span class="sd">            Support tiktoken tokenizer (such as gpt-4o), dashscope tokenizer (</span>
-<span class="sd">            such as qwen2.5-72b-instruct) and huggingface tokenizer.</span>
+<span class="sd">            such as qwen3.7-max) and huggingface tokenizer.</span>
 <span class="sd">        :param trust_remote_code: whether to trust the remote code of HF models.</span>
 <span class="sd">        :param args: extra args</span>
 <span class="sd">        :param kwargs: extra args</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">max_len</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">split_pattern</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_len and split_pattern cannot be both None&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"max_len and split_pattern cannot be both None"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">max_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">overlap_len</span> <span class="o">&gt;=</span> <span class="n">max_len</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;overlap_len must be less than max_len&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"overlap_len must be less than max_len"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="o">=</span> <span class="n">max_len</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overlap_len</span> <span class="o">=</span> <span class="n">overlap_len</span>
@@ -593,10 +596,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer_name</span> <span class="o">=</span> <span class="n">tokenizer</span>
         <span class="k">if</span> <span class="n">tokenizer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-                <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
+                <span class="n">model_type</span><span class="o">=</span><span class="s2">"api"</span><span class="p">,</span>
                 <span class="n">model</span><span class="o">=</span><span class="n">tokenizer</span><span class="p">,</span>
                 <span class="n">return_processor</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">processor_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;trust_remote_code&quot;</span><span class="p">:</span> <span class="n">trust_remote_code</span><span class="p">},</span>
+                <span class="n">processor_config</span><span class="o">=</span><span class="p">{</span><span class="s2">"trust_remote_code"</span><span class="p">:</span> <span class="n">trust_remote_code</span><span class="p">},</span>
             <span class="p">)</span></div>
 
 
@@ -634,8 +637,8 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.TextChunkMapper.get_text_chunks">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_text_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">chunks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">split_pattern</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
-            <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">chunks</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="n">chunks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split_pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+            <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">chunks</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_pattern</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_len</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tokens</span> <span class="o">=</span> <span class="n">text</span>
             <span class="n">total_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>

@@ -484,6 +484,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Distributed.html">Distributed Data Processing in Data-Juicer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Export.html">Dataset Export</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/JobManagement.html">Job Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/OperatorPlugins.html">Operator Plugins</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/PartitionAndCheckpoint.html">Partitioned Processing with Checkpointing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/Tracing.html">Data Tracing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../docs/awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -510,7 +511,10 @@
 
 <li class="toctree-l1"><a class="reference internal" href="minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts/README.html">Agent pipeline 后分析脚本</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elastic_sharding/README.html">Elastic Multi-Node Sharding on Shared Storage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../process_video_on_ray/data/Note.html">Note for dataset path</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../video_humanvbench_simple/README.html">HumanVBench Operators Demo</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">tools</span></p>
 <ul class="nav bd-sidenav">
@@ -530,6 +534,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">thirdparty</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/LLM_ecosystems/README.html">LLM Ecosystems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../thirdparty/models/README.html">Third-party Model Library</a></li>
 </ul>
 </div>
@@ -598,8 +603,8 @@
 <h2>只想看报告（最少步骤）<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <ol class="arabic simple">
 <li><p>跑完 <code class="docutils literal notranslate"><span class="pre">dj-process</span></code>（或 <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">…</span> <span class="pre">run_bad_case_pipeline.sh</span> <span class="pre">smoke|full</span></code>）。</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">**bash</span> <span class="pre">demos/agent/scripts/run_bad_case_pipeline.sh</span> <span class="pre">report</span> <span class="pre">./outputs/.../processed.jsonl</span></code>**
-→ 打开生成的 <code class="docutils literal notranslate"><span class="pre">**processed_bad_case_report.html**</span></code>。说明见 <code class="docutils literal notranslate"><span class="pre">**BAD_CASE_REPORT.md**</span></code>。</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">demos/agent/scripts/run_bad_case_pipeline.sh</span> <span class="pre">report</span> <span class="pre">./outputs/.../processed.jsonl</span></code></strong>
+→ 打开生成的 <strong><code class="docutils literal notranslate"><span class="pre">processed_bad_case_report.html</span></code></strong>。说明见 <strong><code class="docutils literal notranslate"><span class="pre">BAD_CASE_REPORT.md</span></code></strong>。</p></li>
 </ol>
 </section>
 <section id="id2">
@@ -608,7 +613,7 @@
 <li><p>在<strong>仓库根目录</strong>使用含 <code class="docutils literal notranslate"><span class="pre">dj-process</span></code>环境，例如：</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/data-juicer
 uv<span class="w"> </span>venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[ai_services]&quot;</span><span class="w">   </span><span class="c1"># 全量菜谱需要 LLM；仅 smoke 可只装 -e .</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[ai_services]"</span><span class="w">   </span><span class="c1"># 全量菜谱需要 LLM；仅 smoke 可只装 -e .</span>
 </pre></div>
 </div>
 </li>
@@ -689,16 +694,16 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 </section>
 <section id="id5">
 <h2>脚本目录说明<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
-<p>详见 <code class="docutils literal notranslate"><span class="pre">**demos/agent/scripts/README.md</span></code>**（各 Python 脚本参数与示例）。</p>
+<p>详见 <strong><code class="docutils literal notranslate"><span class="pre">demos/agent/scripts/README.md</span></code></strong>（各 Python 脚本参数与示例）。</p>
 </section>
 <section id="llm">
 <h2>LLM 算子慢、想加速？<a class="headerlink" href="#llm" title="Link to this heading">#</a></h2>
-<p>见 <code class="docutils literal notranslate"><span class="pre">**demos/agent/PERFORMANCE_LLM.md**</span></code>：<code class="docutils literal notranslate"><span class="pre">np</span></code> / <code class="docutils literal notranslate"><span class="pre">num_proc</span></code> / <code class="docutils literal notranslate"><span class="pre">turbo</span></code>、<code class="docutils literal notranslate"><span class="pre">try_num</span></code>、<code class="docutils literal notranslate"><span class="pre">max_round</span></code>、<code class="docutils literal notranslate"><span class="pre">sampling_params</span></code>、换小模型、收窄 <code class="docutils literal notranslate"><span class="pre">agent_insight_llm_mapper</span></code> 等。</p>
+<p>见 <strong><code class="docutils literal notranslate"><span class="pre">demos/agent/PERFORMANCE_LLM.md</span></code></strong>：<code class="docutils literal notranslate"><span class="pre">np</span></code> / <code class="docutils literal notranslate"><span class="pre">num_proc</span></code> / <code class="docutils literal notranslate"><span class="pre">turbo</span></code>、<code class="docutils literal notranslate"><span class="pre">try_num</span></code>、<code class="docutils literal notranslate"><span class="pre">max_round</span></code>、<code class="docutils literal notranslate"><span class="pre">sampling_params</span></code>、换小模型、收窄 <code class="docutils literal notranslate"><span class="pre">agent_insight_llm_mapper</span></code> 等。</p>
 </section>
 <section id="meta">
 <h2>导出里的 meta 键名<a class="headerlink" href="#meta" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>主字段为 <code class="docutils literal notranslate"><span class="pre">**__dj__meta__**</span></code>（不是 <code class="docutils literal notranslate"><span class="pre">meta</span></code>），除非设置 <code class="docutils literal notranslate"><span class="pre">**keep_stats_in_res_ds:</span> <span class="pre">true**</span></code>，否则默认不会出现在主 <code class="docutils literal notranslate"><span class="pre">processed.jsonl</span></code> 里，而在 <code class="docutils literal notranslate"><span class="pre">**processed_stats.jsonl**</span></code>。</p></li>
+<li><p>主字段为 <strong><code class="docutils literal notranslate"><span class="pre">__dj__meta__</span></code></strong>（不是 <code class="docutils literal notranslate"><span class="pre">meta</span></code>），除非设置 <strong><code class="docutils literal notranslate"><span class="pre">keep_stats_in_res_ds:</span> <span class="pre">true</span></code></strong>，否则默认不会出现在主 <code class="docutils literal notranslate"><span class="pre">processed.jsonl</span></code> 里，而在 <strong><code class="docutils literal notranslate"><span class="pre">processed_stats.jsonl</span></code></strong>。</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">demos/agent/scripts/</span></code> 下分析脚本会<strong>自动</strong>把同目录的 <code class="docutils literal notranslate"><span class="pre">*_stats.jsonl</span></code> 按行合并后再读；菜谱 <strong>09</strong> 与 <strong>agent_interaction_quality_analysis.yaml</strong> 已设 <code class="docutils literal notranslate"><span class="pre">keep_stats_in_res_ds:</span> <span class="pre">true</span></code>，便于 <code class="docutils literal notranslate"><span class="pre">jq</span></code> 单文件查看。</p></li>
 </ul>
 </section>
@@ -706,7 +711,7 @@ uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </s
 <h2>常见问题<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>smoke 导出 0 条、verify 报 <code class="docutils literal notranslate"><span class="pre">got</span> <span class="pre">0</span></code></strong>：若 YAML 里含 <code class="docutils literal notranslate"><span class="pre">language_id_score_filter</span></code> 且 <code class="docutils literal notranslate"><span class="pre">lang:</span> <span class="pre">&quot;zh&quot;</span></code>，FastText 标签可能不是字面 <code class="docutils literal notranslate"><span class="pre">&quot;zh&quot;</span></code>，会把 demo 全过滤掉。<code class="docutils literal notranslate"><span class="pre">09_bad_case_smoke.yaml</span></code> 已去掉该算子；全量 <code class="docutils literal notranslate"><span class="pre">agent_interaction_quality_analysis.yaml</span></code> 仍保留，大语料上一般正常。</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">**lid.176.bin</span></code> 下载失败**：全量菜谱里的 <code class="docutils literal notranslate"><span class="pre">language_id_score_filter</span></code> 需要语言模型；可先跑 <code class="docutils literal notranslate"><span class="pre">01_normalize_only</span></code> 或换网络/手动放到 <code class="docutils literal notranslate"><span class="pre">~/.cache/data_juicer/models/</span></code>（见 <code class="docutils literal notranslate"><span class="pre">minimal_configs/README.md</span></code>）。</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">lid.176.bin</span></code> 下载失败</strong>：全量菜谱里的 <code class="docutils literal notranslate"><span class="pre">language_id_score_filter</span></code> 需要语言模型；可先跑 <code class="docutils literal notranslate"><span class="pre">01_normalize_only</span></code> 或换网络/手动放到 <code class="docutils literal notranslate"><span class="pre">~/.cache/data_juicer/models/</span></code>（见 <code class="docutils literal notranslate"><span class="pre">minimal_configs/README.md</span></code>）。</p></li>
 <li><p><strong>full 中途 API 失败</strong>：导出可能不完整；可用 <code class="docutils literal notranslate"><span class="pre">verify_bad_case_export.py</span></code>（不加 <code class="docutils literal notranslate"><span class="pre">--require-insight</span></code>）检查 bad-case 字段是否已写出。</p></li>
 <li><p><strong>分位数为空</strong>：确认 <code class="docutils literal notranslate"><span class="pre">copy_lineage_fields:</span> <span class="pre">true</span></code> 与 <code class="docutils literal notranslate"><span class="pre">usage_counter_mapper</span></code> 已跑，<code class="docutils literal notranslate"><span class="pre">meta.total_tokens</span></code> / <code class="docutils literal notranslate"><span class="pre">meta.agent_request_model</span></code> 存在。</p></li>
 </ul>

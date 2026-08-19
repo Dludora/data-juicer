@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.filter.image_aesthetics_filter</span></li>
   </ul>
 </nav>
@@ -523,9 +526,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">Filter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_aesthetics_filter&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_aesthetics_filter"</span>
 
 
 <div class="viewcode-block" id="ImageAestheticsFilter">
@@ -533,71 +536,71 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageAestheticsFilter</span><span class="p">(</span><span class="n">Filter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Filter to keep samples with aesthetics scores within a specific range.</span>
+<span class="w">    </span><span class="sd">"""Filter to keep samples with aesthetics scores within a specific range.</span>
 
 <span class="sd">    This operator uses a Hugging Face model to predict the aesthetics score of images. It</span>
 <span class="sd">    keeps samples where the predicted scores fall within the specified min and max score</span>
-<span class="sd">    range. The operator supports two strategies: &#39;any&#39; (keep if any image meets the</span>
-<span class="sd">    condition) and &#39;all&#39; (keep only if all images meet the condition). Aesthetics scores are</span>
-<span class="sd">    cached in the &#39;image_aesthetics_scores&#39; field. If no images are present, the sample is</span>
+<span class="sd">    range. The operator supports two strategies: 'any' (keep if any image meets the</span>
+<span class="sd">    condition) and 'all' (keep only if all images meet the condition). Aesthetics scores are</span>
+<span class="sd">    cached in the 'image_aesthetics_scores' field. If no images are present, the sample is</span>
 <span class="sd">    kept. Scores are normalized by dividing by 10 if the model name includes</span>
-<span class="sd">    &#39;shunk031/aesthetics-predictor&#39;.&quot;&quot;&quot;</span>
+<span class="sd">    'shunk031/aesthetics-predictor'."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="ImageAestheticsFilter.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_aesthetics_filter.html#data_juicer.ops.filter.ImageAestheticsFilter.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">hf_scorer_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">hf_scorer_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">min_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
         <span class="n">max_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">any_or_all</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"any"</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_scorer_model: Huggingface model name for the aesthetics</span>
 <span class="sd">            predictor. By default, we will use</span>
-<span class="sd">            &#39;shunk031/aesthetics-predictor-v2-sac-logos-ava1-l14-linearMSE&#39;,</span>
+<span class="sd">            'shunk031/aesthetics-predictor-v2-sac-logos-ava1-l14-linearMSE',</span>
 <span class="sd">            refer to pypi.org/project/simple-aesthetics-predictor</span>
 <span class="sd">        :param trust_remote_code: whether to trust the remote code of HF models.</span>
 <span class="sd">        :param min_score: Min score for the predicted aesthetics in an image.</span>
 <span class="sd">        :param max_score: Max score for the predicted aesthetics in an image.</span>
-<span class="sd">        :param any_or_all: Keep this sample with &#39;any&#39; or &#39;all&#39; strategy of</span>
-<span class="sd">            all images. &#39;any&#39;: keep this sample if any images meet the</span>
-<span class="sd">            condition. &#39;all&#39;: keep this sample only if all images meet the</span>
+<span class="sd">        :param any_or_all: Keep this sample with 'any' or 'all' strategy of</span>
+<span class="sd">            all images. 'any': keep this sample if any images meet the</span>
+<span class="sd">            condition. 'all': keep this sample only if all images meet the</span>
 <span class="sd">            condition.</span>
 <span class="sd">        :param args: Extra positional arguments.</span>
 <span class="sd">        :param kwargs: Extra keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1500MB&quot;</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;memory&quot;</span><span class="p">]</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"1500MB"</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"memory"</span><span class="p">]</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">hf_scorer_model</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">hf_scorer_model</span> <span class="o">=</span> <span class="s2">&quot;shunk031/aesthetics-predictor-v2-sac-logos-ava1-l14-linearMSE&quot;</span>
+        <span class="k">if</span> <span class="n">hf_scorer_model</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="n">hf_scorer_model</span> <span class="o">=</span> <span class="s2">"shunk031/aesthetics-predictor-v2-sac-logos-ava1-l14-linearMSE"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">min_score</span> <span class="o">=</span> <span class="n">min_score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_score</span> <span class="o">=</span> <span class="n">max_score</span>
 
-        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;any&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. &quot;</span> <span class="sa">f</span><span class="s1">&#39;Can only be one of [&quot;any&quot;, &quot;all&quot;].&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">&quot;any&quot;</span>
+        <span class="k">if</span> <span class="n">any_or_all</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"any"</span><span class="p">,</span> <span class="s2">"all"</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Keep strategy [</span><span class="si">{</span><span class="n">any_or_all</span><span class="si">}</span><span class="s2">] is not supported. "</span> <span class="sa">f</span><span class="s1">'Can only be one of ["any", "all"].'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">any</span> <span class="o">=</span> <span class="n">any_or_all</span> <span class="o">==</span> <span class="s2">"any"</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;simple_aesthetics&quot;</span><span class="p">,</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"simple_aesthetics"</span><span class="p">,</span>
             <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">hf_scorer_model</span><span class="p">,</span>
             <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">trust_remote_code</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="c1"># the original score predicted by laion-ai&#39;s scorer is within [0, 10]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">need_normalized_by_ten</span> <span class="o">=</span> <span class="s2">&quot;aesthetics-predictor&quot;</span> <span class="ow">in</span> <span class="n">hf_scorer_model</span></div>
+        <span class="c1"># the original score predicted by laion-ai's scorer is within [0, 10]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">need_normalized_by_ten</span> <span class="o">=</span> <span class="s2">"aesthetics-predictor"</span> <span class="ow">in</span> <span class="n">hf_scorer_model</span></div>
 
 
 <div class="viewcode-block" id="ImageAestheticsFilter.compute_stats_single">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.filter.image_aesthetics_filter.html#data_juicer.ops.filter.ImageAestheticsFilter.compute_stats_single">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">compute_stats_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="c1"># check if it&#39;s computed already</span>
+        <span class="c1"># check if it's computed already</span>
         <span class="k">if</span> <span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_aesthetics_scores</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -614,7 +617,7 @@
 
         <span class="c1"># compute aesthetics_scores</span>
         <span class="n">model</span><span class="p">,</span> <span class="n">processor</span> <span class="o">=</span> <span class="n">get_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_key</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">())</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">processor</span><span class="p">(</span><span class="n">images</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">images</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">need_normalized_by_ten</span><span class="p">:</span>
@@ -624,7 +627,7 @@
 
         <span class="n">aesthetics_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">aesthetics_score</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">aesthetics_score</span> <span class="ow">in</span> <span class="n">aesthetics_scores</span><span class="p">]</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;aesthetics_scores: </span><span class="si">{</span><span class="n">aesthetics_scores</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"aesthetics_scores: </span><span class="si">{</span><span class="n">aesthetics_scores</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">stats</span><span class="p">][</span><span class="n">StatsKeys</span><span class="o">.</span><span class="n">image_aesthetics_scores</span><span class="p">]</span> <span class="o">=</span> <span class="n">aesthetics_scores</span>
         <span class="k">return</span> <span class="n">sample</span></div>

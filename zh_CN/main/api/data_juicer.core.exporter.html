@@ -545,8 +545,8 @@ dataset.</p></li>
 <li><p><strong>encrypt_before_export</strong> -- whether to encrypt each exported file
 in-place immediately after writing. Requires a valid Fernet key
 accessible via <code class="docutils literal notranslate"><span class="pre">encryption_key_path</span></code> or the environment
-variable <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code>. S3 paths are skipped (use S3
-SSE instead). Default: False.</p></li>
+variable <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code>. Remote paths (s3://, hdfs://)
+are skipped. Default: False.</p></li>
 <li><p><strong>encryption_key_path</strong> -- path to a file containing the Fernet key.
 Falls back to the <code class="docutils literal notranslate"><span class="pre">DJ_ENCRYPTION_KEY</span></code> environment variable when
 <code class="docutils literal notranslate"><span class="pre">None</span></code>. Only used when <code class="docutils literal notranslate"><span class="pre">encrypt_before_export</span></code> is True.</p></li>

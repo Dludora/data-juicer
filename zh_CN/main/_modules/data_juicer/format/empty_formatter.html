@@ -522,28 +522,28 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.formatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMATTERS</span><span class="p">,</span> <span class="n">BaseFormatter</span>
 
-<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ray&quot;</span><span class="p">)</span>
+<span class="n">ray</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ray"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="EmptyFormatter">
 <a class="viewcode-back" href="../../../api/data_juicer.format.empty_formatter.html#data_juicer.format.EmptyFormatter">[文档]</a>
 <span class="nd">@FORMATTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">()</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmptyFormatter</span><span class="p">(</span><span class="n">BaseFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The class is used to create empty data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">SUFFIXES</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="EmptyFormatter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.format.empty_formatter.html#data_juicer.format.EmptyFormatter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">feature_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param length: The empty dataset length.</span>
 <span class="sd">        :param feature_keys: feature key name list.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_keys</span> <span class="o">=</span> <span class="n">feature_keys</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -561,7 +561,7 @@
         <span class="n">features</span> <span class="o">=</span> <span class="n">Features</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_keys</span><span class="p">:</span>
-            <span class="n">features</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">Value</span><span class="p">(</span><span class="s2">&quot;string&quot;</span><span class="p">)})</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">Value</span><span class="p">(</span><span class="s2">"string"</span><span class="p">)})</span>
             <span class="n">data_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">null_value</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)]})</span>
 
         <span class="n">empty_dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data_dict</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
@@ -579,21 +579,21 @@
 <a class="viewcode-back" href="../../../api/data_juicer.format.empty_formatter.html#data_juicer.format.RayEmptyFormatter">[文档]</a>
 <span class="nd">@FORMATTERS</span><span class="o">.</span><span class="n">register_module</span><span class="p">()</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RayEmptyFormatter</span><span class="p">(</span><span class="n">BaseFormatter</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    The class is used to create empty data for ray.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">SUFFIXES</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="RayEmptyFormatter.__init__">
 <a class="viewcode-back" href="../../../api/data_juicer.format.empty_formatter.html#data_juicer.format.RayEmptyFormatter.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">feature_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param length: The empty dataset length.</span>
 <span class="sd">        :param feature_keys: feature key name list.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_keys</span> <span class="o">=</span> <span class="n">feature_keys</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>

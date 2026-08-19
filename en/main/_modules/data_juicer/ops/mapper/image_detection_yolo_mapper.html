@@ -494,6 +494,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.image_detection_yolo_mapper</span></li>
   </ul>
 </nav>
@@ -522,10 +525,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">UNFORKABLE</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_IMAGES</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;image_detection_yolo_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"image_detection_yolo_mapper"</span>
 
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
-<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ultralytics&quot;</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
+<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ultralytics"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ImageDetectionYoloMapper">
@@ -535,22 +538,22 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_IMAGES</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ImageDetectionYoloMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform object detection using YOLO on images and return bounding boxes and class</span>
+<span class="w">    </span><span class="sd">"""Perform object detection using YOLO on images and return bounding boxes and class</span>
 <span class="sd">    labels.</span>
 
 <span class="sd">    This operator uses a YOLO model to detect objects in images. It processes each image in</span>
 <span class="sd">    the sample, returning the bounding boxes and class labels for detected objects. The</span>
-<span class="sd">    operator sets the `bbox_tag` and `class_label_tag` fields in the sample&#39;s metadata. If</span>
+<span class="sd">    operator sets the `bbox_tag` and `class_label_tag` fields in the sample's metadata. If</span>
 <span class="sd">    no image is present or no objects are detected, it sets `bbox_tag` to an empty array and</span>
 <span class="sd">    `class_label_tag` to -1. The operator uses a confidence score threshold and IoU</span>
-<span class="sd">    (Intersection over Union) score threshold to filter detections.&quot;&quot;&quot;</span>
+<span class="sd">    (Intersection over Union) score threshold to filter detections."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="ImageDetectionYoloMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.ImageDetectionYoloMapper.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgsz</span><span class="o">=</span><span class="mi">640</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">iou</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="s2">&quot;yolo11n.pt&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imgsz</span><span class="o">=</span><span class="mi">640</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">iou</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="s2">"yolo11n.pt"</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param imgsz: resolution for image resizing</span>
@@ -558,15 +561,15 @@
 <span class="sd">        :param iou: IoU (Intersection over Union) score threshold</span>
 <span class="sd">        :param model_path: the path to the YOLO model.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;memory&quot;</span><span class="p">,</span> <span class="s2">&quot;800MB&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"memory"</span><span class="p">,</span> <span class="s2">"800MB"</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">imgsz</span> <span class="o">=</span> <span class="n">imgsz</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">conf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">iou</span> <span class="o">=</span> <span class="n">iou</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;yolo&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"yolo"</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ImageDetectionYoloMapper.process_single">

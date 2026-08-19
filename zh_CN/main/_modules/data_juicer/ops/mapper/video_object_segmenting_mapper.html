@@ -495,6 +495,9 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">模块代码</a></li>
     
+    
+    <li class="breadcrumb-item"><a href="../../ops.html" class="nav-link">data_juicer.ops</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">data_juicer.ops.mapper.video_object_segmenting_mapper</span></li>
   </ul>
 </nav>
@@ -527,11 +530,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base_op</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPERATORS</span><span class="p">,</span> <span class="n">TAGGING_OPS</span><span class="p">,</span> <span class="n">UNFORKABLE</span><span class="p">,</span> <span class="n">Mapper</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..op_fusion</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOADED_VIDEOS</span>
 
-<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">&quot;video_object_segmenting_mapper&quot;</span>
+<span class="n">OP_NAME</span> <span class="o">=</span> <span class="s2">"video_object_segmenting_mapper"</span>
 
-<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;ultralytics&quot;</span><span class="p">)</span>
-<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;cv2&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-contrib-python&quot;</span><span class="p">)</span>
-<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
+<span class="n">ultralytics</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"ultralytics"</span><span class="p">)</span>
+<span class="n">cv2</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"cv2"</span><span class="p">,</span> <span class="s2">"opencv-contrib-python"</span><span class="p">)</span>
+<span class="n">torch</span> <span class="o">=</span> <span class="n">LazyLoader</span><span class="p">(</span><span class="s2">"torch"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="VideoObjectSegmentingMapper">
@@ -541,49 +544,49 @@
 <span class="nd">@OPERATORS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="nd">@LOADED_VIDEOS</span><span class="o">.</span><span class="n">register_module</span><span class="p">(</span><span class="n">OP_NAME</span><span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VideoObjectSegmentingMapper</span><span class="p">(</span><span class="n">Mapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Text-guided semantic segmentation of valid objects throughout the video (YOLOE + SAM2).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Text-guided semantic segmentation of valid objects throughout the video (YOLOE + SAM2)."""</span>
 
-    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+    <span class="n">_accelerator</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
 <div class="viewcode-block" id="VideoObjectSegmentingMapper.__init__">
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoObjectSegmentingMapper.__init__">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">sam2_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;facebook/sam2.1-hiera-tiny&quot;</span><span class="p">,</span>
-        <span class="n">yoloe_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;yoloe-11l-seg.pt&quot;</span><span class="p">,</span>
+        <span class="n">sam2_hf_model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"facebook/sam2.1-hiera-tiny"</span><span class="p">,</span>
+        <span class="n">yoloe_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"yoloe-11l-seg.pt"</span><span class="p">,</span>
         <span class="n">yoloe_conf</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">torch_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bf16&quot;</span><span class="p">,</span>
+        <span class="n">torch_dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"bf16"</span><span class="p">,</span>
         <span class="n">if_binarize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">if_save_visualization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">save_visualization_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialization method.</span>
 
 <span class="sd">        :param hf_model: Hugginface model id of SAM2.</span>
 <span class="sd">        :param yoloe_path: The path to the YOLOE model.</span>
 <span class="sd">        :param yoloe_conf: Confidence threshold for YOLOE object detection.</span>
 <span class="sd">        :param torch_dtype: The floating point type used for model inference. Can</span>
-<span class="sd">            be one of [&#39;fp32&#39;, &#39;fp16&#39;, &#39;bf16&#39;].</span>
+<span class="sd">            be one of ['fp32', 'fp16', 'bf16'].</span>
 <span class="sd">        :param if_binarize: Whether the final mask requires binarization.</span>
-<span class="sd">            If &#39;if_save_visualization&#39; is set to True, &#39;if_binarize&#39; will</span>
+<span class="sd">            If 'if_save_visualization' is set to True, 'if_binarize' will</span>
 <span class="sd">            automatically be adjusted to True.</span>
 <span class="sd">        :param if_save_visualization: Whether to save visualization results.</span>
 <span class="sd">        :param save_visualization_dir: The path for saving visualization results.</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">_install_package</span><span class="p">(</span><span class="s2">&quot;transformers&gt;=4.56.0.dev0&quot;</span><span class="p">)</span>
+        <span class="n">LazyLoader</span><span class="o">.</span><span class="n">_install_package</span><span class="p">(</span><span class="s2">"transformers&gt;=4.56.0.dev0"</span><span class="p">)</span>
 
         <span class="c1"># Requires the weights for YOLOE and mobileclip_blt.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;yolo&quot;</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">yoloe_path</span><span class="p">)</span>
-        <span class="n">torch_dtype_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fp32&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;fp16&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="s2">&quot;bf16&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">yoloe_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span><span class="n">model_type</span><span class="o">=</span><span class="s2">"yolo"</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">yoloe_path</span><span class="p">)</span>
+        <span class="n">torch_dtype_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"fp32"</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">"fp16"</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">,</span> <span class="s2">"bf16"</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">bfloat16</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span> <span class="o">=</span> <span class="n">torch_dtype_dict</span><span class="p">[</span><span class="n">torch_dtype</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sam2_model_key</span> <span class="o">=</span> <span class="n">prepare_model</span><span class="p">(</span>
-            <span class="n">model_type</span><span class="o">=</span><span class="s2">&quot;huggingface&quot;</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">sam2_hf_model</span>
+            <span class="n">model_type</span><span class="o">=</span><span class="s2">"huggingface"</span><span class="p">,</span> <span class="n">torch_dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span> <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">sam2_hf_model</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="o">=</span> <span class="n">MetaKeys</span><span class="o">.</span><span class="n">video_object_segment_tags</span>
@@ -597,17 +600,17 @@
 <a class="viewcode-back" href="../../../../api/data_juicer.ops.mapper.html#data_juicer.ops.mapper.VideoObjectSegmentingMapper.process_single">[文档]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">process_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># check if it&#39;s generated already</span>
+        <span class="c1"># check if it's generated already</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">sample</span>
 
         <span class="c1"># there is no video in this sample</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">video_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sample</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">]:</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;segment_data&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;cls_id_dict&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;object_cls_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;yoloe_conf_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"segment_data"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"cls_id_dict"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"object_cls_list"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"yoloe_conf_list"</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -622,29 +625,29 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-            <span class="n">temp_video_name</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.mp4&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">temp_video_name</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">".mp4"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
             <span class="n">temp_initial_frame_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">DATA_JUICER_ASSETS_CACHE</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">temp_video_name</span><span class="si">}</span><span class="s2">_initial_frame_</span><span class="si">{</span><span class="n">now_time_str</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num_str</span><span class="si">}</span><span class="s2">.jpg&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">temp_video_name</span><span class="si">}</span><span class="s2">_initial_frame_</span><span class="si">{</span><span class="n">now_time_str</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num_str</span><span class="si">}</span><span class="s2">.jpg"</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_initial_frame_path</span><span class="p">,</span> <span class="n">initial_frame</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Failed to load initial frame</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;segment_data&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;cls_id_dict&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;object_cls_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;yoloe_conf_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"segment_data"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"cls_id_dict"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"object_cls_list"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"yoloe_conf_list"</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">sample</span>
 
-        <span class="n">main_character_list</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;main_character_list&quot;</span><span class="p">)</span>
+        <span class="n">main_character_list</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"main_character_list"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">main_character_list</span><span class="p">:</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;segment_data&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;cls_id_dict&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;object_cls_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;yoloe_conf_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"segment_data"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"cls_id_dict"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"object_cls_list"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"yoloe_conf_list"</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -670,10 +673,10 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;segment_data&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;cls_id_dict&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;object_cls_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
-                <span class="s2">&quot;yoloe_conf_list&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"segment_data"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"cls_id_dict"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"object_cls_list"</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">"yoloe_conf_list"</span><span class="p">:</span> <span class="p">[],</span>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">sample</span>
 
@@ -683,13 +686,13 @@
         <span class="n">video_frames</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">transformers</span><span class="o">.</span><span class="n">video_utils</span><span class="o">.</span><span class="n">load_video</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">video_key</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">device</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"cuda:</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s2">"cuda"</span>
 
         <span class="n">inference_session</span> <span class="o">=</span> <span class="n">sam2_processor</span><span class="o">.</span><span class="n">init_video_session</span><span class="p">(</span>
             <span class="n">video</span><span class="o">=</span><span class="n">video_frames</span><span class="p">,</span>
-            <span class="n">inference_device</span><span class="o">=</span><span class="n">device</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+            <span class="n">inference_device</span><span class="o">=</span><span class="n">device</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">,</span>
             <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">torch_dtype</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -728,17 +731,17 @@
             <span class="n">cls_id_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">cls_id_list</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cls_id_list</span><span class="p">]</span>
 
         <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;segment_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">video_segments</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;cls_id_dict&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls_id_list</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;object_cls_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_cls_list</span>
-        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;yoloe_conf_list&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">yoloe_conf_list</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"segment_data"</span><span class="p">]</span> <span class="o">=</span> <span class="n">video_segments</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"cls_id_dict"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls_id_list</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"object_cls_list"</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_cls_list</span>
+        <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"yoloe_conf_list"</span><span class="p">]</span> <span class="o">=</span> <span class="n">yoloe_conf_list</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">if_save_visualization</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">):</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">temp_frame_masks_id</span><span class="p">,</span> <span class="n">temp_frame_masks</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">&quot;segment_data&quot;</span><span class="p">]</span>
+                <span class="n">sample</span><span class="p">[</span><span class="n">Fields</span><span class="o">.</span><span class="n">meta</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">tag_field_name</span><span class="p">][</span><span class="s2">"segment_data"</span><span class="p">]</span>
             <span class="p">):</span>
                 <span class="k">for</span> <span class="n">temp_obj_id</span><span class="p">,</span> <span class="n">temp_mask</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temp_frame_masks</span><span class="p">):</span>
                     <span class="n">temp_img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">initial_frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial_frame</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
@@ -747,7 +750,7 @@
 
                     <span class="n">temp_mask_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">save_visualization_dir</span><span class="p">,</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">temp_video_name</span><span class="si">}</span><span class="s2">_mask_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_obj_id</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_frame_masks_id</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">now_time_str</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num_str</span><span class="si">}</span><span class="s2">.jpg&quot;</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">temp_video_name</span><span class="si">}</span><span class="s2">_mask_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_obj_id</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_frame_masks_id</span><span class="p">)</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">now_time_str</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">random_num_str</span><span class="si">}</span><span class="s2">.jpg"</span><span class="p">,</span>
                     <span class="p">)</span>
                     <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="n">temp_mask_path</span><span class="p">,</span> <span class="n">temp_img</span><span class="p">)</span>
 

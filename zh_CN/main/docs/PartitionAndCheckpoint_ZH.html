@@ -54,7 +54,7 @@
     <link rel="index" title="索引" href="../genindex.html" />
     <link rel="search" title="搜索" href="../search.html" />
     <link rel="next" title="数据追踪" href="Tracing_ZH.html" />
-    <link rel="prev" title="作业管理" href="JobManagement_ZH.html" />
+    <link rel="prev" title="算子插件" href="OperatorPlugins_ZH.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="zh-CN"/>
   <meta name="docsearch:version" content="" />
@@ -485,6 +485,7 @@
 <li class="toctree-l1"><a class="reference internal" href="Distributed_ZH.html">Data-Juicer 分布式数据处理</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Export_ZH.html">数据集导出</a></li>
 <li class="toctree-l1"><a class="reference internal" href="JobManagement_ZH.html">作业管理</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OperatorPlugins_ZH.html">算子插件</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">分区处理与检查点</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tracing_ZH.html">数据追踪</a></li>
 <li class="toctree-l1"><a class="reference internal" href="awesome_llm_data.html">Awesome Data-Model Co-Development of MLLMs </a></li>
@@ -512,8 +513,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/minimal_configs/README.html">Agent 流水线最小可运行配置（便于逐项调试）</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/agent/scripts/README.html">Agent pipeline 后分析脚本</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/auto_evaluation_helm/README_ZH.html">自动化评测：HELM 评测及可视化</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/ego_hand_action_annotation/README.html">VLA Visualization Demo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/elastic_sharding/README_ZH.html">基于共享存储的多机弹性分片</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/process_video_on_ray/data/Note.html">Note for dataset path</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../demos/role_playing_system_prompt/README_ZH.html">为LLM构造角色扮演的system prompt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demos/video_humanvbench_simple/README_ZH.html">HumanVBench 算子演示</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">工具</span></p>
 <ul class="nav bd-sidenav">
@@ -533,6 +537,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">第三方</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/LLM_ecosystems/README_ZH.html">大语言模型生态</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../thirdparty/humanvbench_models/README.html">HumanVBench Models Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../thirdparty/models/README_ZH.html">第三方模型库</a></li>
 </ul>
 </div>
@@ -615,6 +620,8 @@
 ├── events_{timestamp}.jsonl      # 机器可读事件日志
 ├── dag_execution_plan.json       # DAG 执行计划
 ├── checkpoints/                  # 检查点数据
+│   ├── partitioning_info.json    # 保存的行号边界和分区内容 hash
+│   └── checkpoint_op_*.parquet/  # 各操作、各分区的检查点
 ├── partitions/                   # 输入分区
 ├── logs/                         # 人类可读日志
 └── metadata/                     # 作业元数据
@@ -629,7 +636,8 @@
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">executor_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ray_partitioned</span>
 
 <span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span><span class="w">  </span><span class="c1"># 资源感知的 Driver 并发上限</span>
 <span class="w">  </span><span class="nt">target_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">    </span><span class="c1"># 目标分区大小（128、256、512 或 1024）</span>
 <span class="w">  </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">             </span><span class="c1"># 自动分析失败时的回退值</span>
 <span class="w">  </span><span class="nt">max_size_mb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">256</span><span class="w">       </span><span class="c1"># 回退最大大小</span>
@@ -637,10 +645,12 @@
 </div>
 <p><strong>手动模式</strong> - 指定确切的分区数量：</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">partition</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;manual&quot;</span>
+<span class="w">  </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="s">"manual"</span>
 <span class="w">  </span><span class="nt">num_of_partitions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">max_concurrent_partitions</span><span class="p">:</span><span class="w"> </span><span class="s">"auto"</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">max_concurrent_partitions:</span> <span class="pre">&quot;auto&quot;</span></code> 是默认值。该值会在 Operator 资源规划完成后解析：含 GPU Operator 的 pipeline 根据 Ray 集群可容纳的最小 CPU/GPU worker 数确定，纯 CPU pipeline 的外层并发保守限制为 4。实际并发还会受到 Partition 数量和显式全局 Actor <code class="docutils literal notranslate"><span class="pre">num_proc</span></code> 预算的限制。需要手动调优时，可将其设置为正整数来覆盖自动值。</p>
 </section>
 <section id="id6">
 <h3>检查点<a class="headerlink" href="#id6" title="链接到此标题。">#</a></h3>
@@ -653,14 +663,23 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedding_mapper</span>
 </pre></div>
 </div>
+<p>启用检查点后，首次运行会保存
+<code class="docutils literal notranslate"><span class="pre">checkpoints/partitioning_info.json</span></code>。该文件为每个逻辑分区记录：</p>
+<ul class="simple">
+<li><p>输入数据中的 <code class="docutils literal notranslate"><span class="pre">start_row</span></code>（包含）和 <code class="docutils literal notranslate"><span class="pre">end_row</span></code>（不包含）；</p></li>
+<li><p>分区样本行数；</p></li>
+<li><p>覆盖完整分区内容的稳定 hash；</p></li>
+<li><p>写入 metadata 时使用的分区 hash 算法。</p></li>
+</ul>
+<p>即使新进程中的 Ray 物理 block 布局发生变化，显式续跑也可以用这些信息重建首次运行的逻辑分区。完整分区 hash 对样本顺序敏感、不依赖 Ray batch 边界，并且会在复用任何 checkpoint 前完成校验。</p>
 </section>
 <section id="id7">
 <h3>中间存储<a class="headerlink" href="#id7" title="链接到此标题。">#</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">intermediate_storage</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;parquet&quot;</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
-<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;snappy&quot;</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
+<span class="w">  </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">"parquet"</span><span class="w">              </span><span class="c1"># parquet, arrow, jsonl</span>
+<span class="w">  </span><span class="nt">compression</span><span class="p">:</span><span class="w"> </span><span class="s">"snappy"</span><span class="w">          </span><span class="c1"># snappy, gzip, none</span>
 <span class="w">  </span><span class="nt">preserve_intermediate_data</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;keep_all&quot;</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
+<span class="w">  </span><span class="nt">retention_policy</span><span class="p">:</span><span class="w"> </span><span class="s">"keep_all"</span><span class="w">   </span><span class="c1"># keep_all, keep_failed_only, cleanup_all</span>
 </pre></div>
 </div>
 </section>
@@ -675,14 +694,40 @@ dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<sp
 <span class="c1"># 手动分区模式</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--partition.mode<span class="w"> </span>manual<span class="w"> </span>--partition.num_of_partitions<span class="w"> </span><span class="m">4</span>
 
-<span class="c1"># 自定义作业 ID</span>
+<span class="c1"># 可选：使用自定义作业 ID 启动新任务</span>
 dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p>启用检查点后，新建的 <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> 作业会打印 resume token：</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Resume token: 20260805_115141_81270d. Rerun the original command with
+--resume 20260805_115141_81270d to resume this job.
 </pre></div>
 </div>
 </section>
 <section id="id10">
 <h3>恢复作业<a class="headerlink" href="#id10" title="链接到此标题。">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--job_id<span class="w"> </span>my_experiment_001
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 使用首次运行打印的 token，并保持输入数据和 recipe 不变</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>20260805_115141_81270d
+
+<span class="c1"># 首次运行使用的自定义 ID 也可以作为 resume token</span>
+dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span>--resume<span class="w"> </span>my_experiment_001
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--resume</span></code> 仅支持 <code class="docutils literal notranslate"><span class="pre">ray_partitioned</span></code> 执行器。它会依次执行严格续跑流程：</p>
+<ol class="arabic simple">
+<li><p>定位原任务的工作目录和检查点目录；</p></li>
+<li><p>确认当前配置与首次运行配置一致；</p></li>
+<li><p>读取保存的分区数、行号边界和内容 hash；</p></li>
+<li><p>使用保存的行号边界重建首次运行的逻辑分区；</p></li>
+<li><p>校验所有分区的完整内容 hash；</p></li>
+<li><p>加载已完成的 checkpoint，仅处理尚未完成的部分。</p></li>
+</ol>
+<p>如果 metadata 缺失、行号边界非法、输入内容发生变化或内容 hash 不一致，显式续跑会报错停止，并保留已有 checkpoint，不会将其删除。</p>
+<p><code class="docutils literal notranslate"><span class="pre">--job_id</span></code> 仍可用于自定义任务名称和向后兼容。需要进行容错续跑时，应优先使用 <code class="docutils literal notranslate"><span class="pre">--resume</span></code>：旧的 <code class="docutils literal notranslate"><span class="pre">--job_id</span></code> 续跑路径保持原有行为，在分区不匹配时可能清除 checkpoint 并重新开始。旧版 Data-Juicer 创建的 metadata 仍可读取，但其中没有显式续跑所需的行号边界和完整内容 hash；因此，<code class="docutils literal notranslate"><span class="pre">--resume</span></code> 会拒绝使用这种旧 metadata，同时保留已有 checkpoint。</p>
+<p>如果同时提供两个参数，它们的值必须相同：</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dj-process<span class="w"> </span>--config<span class="w"> </span>config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job_id<span class="w"> </span>my_experiment_001<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--resume<span class="w"> </span>my_experiment_001
 </pre></div>
 </div>
 </section>
@@ -764,7 +809,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.mo
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.monitor</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_job_progress</span>
 
-<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">show_job_progress</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">detailed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -782,7 +827,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">data_juicer.utils.job.stopper</span><span class="w"> </span><span class="kn">import</span> <span class="n">stop_job</span>
 
-<span class="n">stop_job</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">stop_job</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -792,7 +837,7 @@ python<span class="w"> </span>-m<span class="w"> </span>data_juicer.utils.job.st
 
 <span class="n">running_jobs</span> <span class="o">=</span> <span class="n">list_running_jobs</span><span class="p">()</span>
 
-<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">&quot;job_id&quot;</span><span class="p">)</span>
+<span class="n">job_utils</span> <span class="o">=</span> <span class="n">JobUtils</span><span class="p">(</span><span class="s2">"job_id"</span><span class="p">)</span>
 <span class="n">summary</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_job_summary</span><span class="p">()</span>
 <span class="n">events</span> <span class="o">=</span> <span class="n">job_utils</span><span class="o">.</span><span class="n">load_event_logs</span><span class="p">()</span>
 </pre></div>
@@ -928,8 +973,10 @@ disabled          | 0秒     | 重新执行全部
 <p><strong>作业恢复失败：</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/job_summary.json
 ls<span class="w"> </span>-la<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/
+cat<span class="w"> </span>./outputs/<span class="o">{</span>work_dir<span class="o">}</span>/<span class="o">{</span>job_id<span class="o">}</span>/checkpoints/partitioning_info.json
 </pre></div>
 </div>
+<p>请使用首次运行打印的 resume token，并通过 <code class="docutils literal notranslate"><span class="pre">--resume</span></code> 重新执行相同的 recipe。可以在错误日志中检查配置不一致、分区 metadata 缺失、行号边界非法或分区内容 hash 不匹配。显式续跑校验失败时不会删除已有 checkpoint。</p>
 <p><strong>检查 Ray 状态：</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ray<span class="w"> </span>status
 </pre></div>
@@ -953,12 +1000,12 @@ tail<span class="w"> </span>-f<span class="w"> </span>./outputs/<span class="o">
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="JobManagement_ZH.html"
+       href="OperatorPlugins_ZH.html"
        title="上一页">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">上一页</p>
-        <p class="prev-next-title">作业管理</p>
+        <p class="prev-next-title">算子插件</p>
       </div>
     </a>
     <a class="right-next"
