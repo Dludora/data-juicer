@@ -1,6 +1,7 @@
 import os
 import time
 from typing import Optional, Union
+from uuid import uuid4
 
 import numpy as np
 import pyarrow as pa
@@ -15,7 +16,7 @@ from data_juicer.utils.ray_utils import ray_available_gpu_memories, ray_gpu_coun
 
 from ..base_op import OPERATORS, Deduplicator
 from ..op_fusion import LOADED_IMAGES
-from .document_minhash_deduplicator import MAX_HASH, MERSENNE_PRIME, optimal_param
+from .document_minhash_deduplicator import MERSENNE_PRIME, optimal_param
 
 ray = LazyLoader("ray")
 
@@ -251,21 +252,15 @@ class ImageMinHashActor:
     ):
         import torch
 
+        if perm_a is None or perm_b is None:
+            raise ValueError("perm_a and perm_b must be provided (shared across all actors)")
         self.device = torch.device("cuda" if use_cuda else "cpu")
         self.model_key = model_key
         self.use_cuda = use_cuda
         self.model, self.processor = get_model(self.model_key, use_cuda=self.use_cuda)
         logger.info(f"Loading Image Minhash model: {model_key}")
-        self.perm_a = (
-            torch.randint(0, MERSENNE_PRIME, (num_permutation,), device=self.device, dtype=torch.uint64)
-            if perm_a is None
-            else torch.from_numpy(perm_a).to(self.device)
-        )
-        self.perm_b = (
-            torch.randint(0, MERSENNE_PRIME, (num_permutation,), device=self.device, dtype=torch.uint64)
-            if perm_b is None
-            else torch.from_numpy(perm_b).to(self.device)
-        )
+        self.perm_a = torch.from_numpy(perm_a).to(self.device)
+        self.perm_b = torch.from_numpy(perm_b).to(self.device)
         self.prime = torch.tensor(int(MERSENNE_PRIME), device=self.device, dtype=torch.uint64)
         self.batch_size = batch_size
 
@@ -279,9 +274,6 @@ class ImageMinHashActor:
         """
         import io
 
-        import nvidia.dali as dali
-        import nvidia.dali.fn as fn
-        import nvidia.dali.types as types
         import torch
         from PIL import Image, ImageFile
 
@@ -301,14 +293,18 @@ class ImageMinHashActor:
         if use_bytes:
             image_bytes_list = samples[image_bytes_key]
             batch_data = [np.frombuffer(img_bytes, dtype=np.uint8) for img_bytes in image_bytes_list]
-            logger.info(f"Loading with image bytes")
+            logger.info("Loading with image bytes")
         else:
             batch_data = samples[image_key]
-            if isinstance(batch_data[0], list):
+            if isinstance(batch_data[0], (list, np.ndarray)):
                 batch_data = [item[0] for item in batch_data]
-            logger.info(f"Loading with image paths")
+            logger.info("Loading with image paths")
 
         def _decode_image_with_dali():
+            import nvidia.dali as dali
+            import nvidia.dali.fn as fn
+            import nvidia.dali.types as types
+
             @dali.pipeline_def(
                 batch_size=len(batch_data),
                 num_threads=8,
@@ -390,7 +386,7 @@ class ImageMinHashActor:
         return torch_tensors
 
     def compute_minhash(
-        self, samples: dict, image_key: str = "image", image_bytes_key: str = "image_bytes"
+        self, samples: dict, image_key: str = "images", image_bytes_key: str = "image_bytes"
     ) -> pa.Array:
         import torch
 
@@ -423,7 +419,7 @@ class ImageMinHashActor:
         del minhash
         return minhash_arrow
 
-    def __call__(self, table: pa.Table, image_key: str = "image", image_bytes_key: str = "image_bytes") -> dict:
+    def __call__(self, table: pa.Table, image_key: str = "images", image_bytes_key: str = "image_bytes") -> dict:
         samples = table.to_pydict()
         minhash_arrow = self.compute_minhash(samples, image_key=image_key, image_bytes_key=image_bytes_key)
         new_table = table.add_column(table.num_columns, "_minhash", minhash_arrow)
@@ -460,10 +456,9 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
     - Performance: Supports NVIDIA DALI for accelerated image decoding and batch inference on GPUs.
     """
 
-    # TODO: Set a more reasonable value
-    EMPTY_HASH_VALUE = "EMPTY"
     _batched_op = True
     _accelerator = "cuda"
+    _supported_exec_modes = ("ray", "ray_partitioned")
 
     def __init__(
         self,
@@ -592,8 +587,6 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
         self.merge_batch_size = None
         self.remote_edge_buffers = None
         self.union_find_list = None
-        self.empty_hash_value = None
-        self.empty_hash_table_id = None
 
     def _ensure_actors(self):
         """Create actors lazily on first use, when cluster has autoscaled."""
@@ -624,10 +617,6 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
             )
             for i in range(self.union_find_parallel_num)
         ]
-
-        empty_hash_value = np.full((self.num_rows_per_band,), MAX_HASH, dtype=np.uint32)
-        self.empty_hash_value = b"\x00\x00\x00\x00" + empty_hash_value.tobytes()
-        self.empty_hash_table_id = int(MAX_HASH % self.union_find_parallel_num)
 
         self._actors_initialized = True
 
@@ -698,26 +687,7 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
         columns_to_keep = [name for name in samples.column_names if name != HashKeys.uid]
         return samples.select(columns_to_keep).filter(mask)
 
-    def run(self, dataset, **kwargs):
-        # Ignore additional parameters like exporter, tracer, etc.
-        # Initialize actors lazily - now cluster has had time to autoscale
-        self._ensure_actors()
-
-        start_time = time.time()
-        # Get remote IdGenerator only when needed
-        remote_classes = get_remote_classes()
-        id_generator = remote_classes["IdGenerator"].remote()
-
-        def band_with_uid(table: pa.Table) -> pa.Table:
-            num_rows = len(table)
-            min_id, max_id = ray.get(id_generator.get_next_id.remote(num_rows))
-            uid_list = range(min_id, max_id)
-            self.band_minhash(table["_minhash"], uid_list)
-            new_table = table.append_column(HashKeys.uid, pa.array(list(uid_list)))
-            new_table = new_table.drop_columns(["_minhash"])
-            return new_table
-
-        tmp_dir = os.path.join(self.work_dir, ".tmp", ray.get_runtime_context().get_job_id())
+    def _compute_minhash(self, dataset):
         if self.use_cuda():
             logger.info("Using GPU for MinHash computation")
             # Get available GPU count and set concurrency
@@ -760,14 +730,12 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
             bytes_per_sample = self.memory_per_sample * 1024 * 1024
             estimated_batch_size = int(memory_budget_per_worker / bytes_per_sample)
             batch_size = max(32, min(estimated_batch_size, 1024))
-
-            batch_size = batch_size
             logger.info(f"Using batch size of {batch_size} for CPU MinHash computation")
 
         from ray.data._internal.util import get_compute_strategy
 
-        compute = get_compute_strategy(ImageMinHashActor, concurrency=(int(concurrency) // 4, int(concurrency)))
-        dataset = dataset.map_batches(
+        compute = get_compute_strategy(ImageMinHashActor, concurrency=(max(1, int(concurrency) // 4), int(concurrency)))
+        return dataset.map_batches(
             ImageMinHashActor,
             fn_constructor_kwargs={
                 "model_key": self.model_key,
@@ -784,19 +752,41 @@ class RayImageBTSMinhashDeduplicator(Deduplicator):
             num_gpus=1 if self.use_cuda() else 0,
             batch_size=batch_size,
         )
+
+    def run(self, dataset, **kwargs):
+        self._ensure_actors()
+
+        start_time = time.time()
+        remote_classes = get_remote_classes()
+        id_generator = remote_classes["IdGenerator"].remote()
+
+        def band_with_uid(table: pa.Table) -> pa.Table:
+            num_rows = len(table)
+            min_id, max_id = ray.get(id_generator.get_next_id.remote(num_rows))
+            uid_list = range(min_id, max_id)
+            self.band_minhash(table["_minhash"], uid_list)
+            new_table = table.append_column(HashKeys.uid, pa.array(list(uid_list)))
+            new_table = new_table.drop_columns(["_minhash"])
+            return new_table
+
+        # Lazy result datasets may still reference a previous invocation's files.
+        tmp_dir = os.path.join(self.work_dir, ".tmp", ray.get_runtime_context().get_job_id(), uuid4().hex)
+        dataset = self._compute_minhash(dataset)
         dataset.map_batches(band_with_uid, **self._get_map_batches_kwargs()).write_parquet(tmp_dir)
         logger.info(f"Write to temporary dir: {tmp_dir}")
         del dataset
         end_time = time.time()
         logger.info(f"MinHash time = {end_time - start_time}")
-        concurrency = int(ray.available_resources().get("CPU", 1) // 4)
+        concurrency = max(1, int(ray.available_resources().get("CPU", 1) // 4))
         new_dataset = ray.data.read_parquet(tmp_dir, concurrency=concurrency)
         start_time = time.time()
         self.merge()
         end_time = time.time()
         logger.info(f"merge time = {end_time - start_time}")
         start_time = time.time()
-        concurrency = int(ray.available_resources().get("CPU", 1) // 4)
+        from ray.data._internal.util import get_compute_strategy
+
+        concurrency = max(1, int(ray.available_resources().get("CPU", 1) // 4))
         compute = get_compute_strategy(self.filter_with_union_find, concurrency=concurrency)
         result = new_dataset.map_batches(
             self.filter_with_union_find,
@@ -820,72 +810,7 @@ class RayImageBTSMinhashDeduplicatorWithUid(RayImageBTSMinhashDeduplicator):
         self._ensure_actors()
 
         start_time = time.time()
-        if self.use_cuda():
-            logger.info("Using GPU for MinHash computation")
-            # Get available GPU count and set concurrency
-            gpu_count = ray_gpu_count()
-            if gpu_count == 0:
-                logger.error("No GPUs available in Ray cluster")
-                raise RuntimeError("No GPUs available in Ray cluster")
-
-            concurrency = max(1, gpu_count)  # Ensure at least 1 concurrent task
-            logger.info(f"Setting GPU concurrency to {concurrency} based on available GPUs")
-
-            # Get available GPU memory and set batch size
-            gpu_memory = ray_available_gpu_memories()
-            if len(gpu_memory):
-                min_memory = min(gpu_memory)
-                # Use 70% of available memory to leave room for overhead
-                safe_memory = min_memory * 0.7
-                estimated_batch_size = int(safe_memory / self.memory_per_sample)
-                max_reasonable_batch = 2_048
-                batch_size = max(1, min(max_reasonable_batch, estimated_batch_size))
-
-                logger.info(
-                    f"Setting batch size to {batch_size} based on available GPU memory "
-                    f"({min_memory}MB), memory per sample ({self.memory_per_sample}MB), "
-                    f"and safe memory limit ({safe_memory}MB)"
-                )
-            else:
-                batch_size = self.minhash_batch_size
-                logger.info(f"Using default batch size of {batch_size}")
-        else:
-            logger.info("Using CPU for MinHash computation")
-            # Get CPU count for concurrency
-            cpu_count = int(ray.cluster_resources().get("CPU", 1))
-            total_cluster_memory = int(ray.cluster_resources().get("memory", 0))
-            safe_memory_total = total_cluster_memory * 0.7
-
-            concurrency = max(1, cpu_count // 2)  # Use half of CPUs for workers
-            memory_budget_per_worker = safe_memory_total / concurrency
-            logger.info(f"Setting CPU concurrency to {concurrency} based on available CPUs")
-            bytes_per_sample = self.memory_per_sample * 1024 * 1024
-            estimated_batch_size = int(memory_budget_per_worker / bytes_per_sample)
-            batch_size = max(32, min(estimated_batch_size, 1024))
-
-            batch_size = batch_size
-            logger.info(f"Using batch size of {batch_size} for CPU MinHash computation")
-
-        from ray.data._internal.util import get_compute_strategy
-
-        compute = get_compute_strategy(ImageMinHashActor, concurrency=(int(concurrency) // 4, int(concurrency)))
-        dataset = dataset.map_batches(
-            ImageMinHashActor,
-            fn_constructor_kwargs={
-                "model_key": self.model_key,
-                "use_cuda": self.use_cuda(),
-                "perm_a": self.perm_a,
-                "perm_b": self.perm_b,
-                "num_permutation": self.num_permutation,
-                "batch_size": batch_size,
-            },
-            fn_kwargs={"image_key": self.image_key, "image_bytes_key": self.image_bytes_key},
-            batch_format="pyarrow",
-            zero_copy_batch=True,
-            compute=compute,
-            num_gpus=1 if self.use_cuda() else 0,
-            batch_size=batch_size,
-        )
+        dataset = self._compute_minhash(dataset)
 
         def band_existing_uid(table: pa.Table) -> pa.Table:
             if HashKeys.uid not in table.column_names:
